@@ -1,0 +1,123 @@
+{
+    "cardview": "卡片视图",
+    "creativeGroup": "卡片风格",
+
+    "creativeCard": "创意卡片",
+    "creativeCardIcon": "✨",
+    "darkCard": "深色卡片",
+    "darkCardIcon": "🌙",
+    "simpleCard": "极简卡片",
+    "simpleCardIcon": "🍃",
+    "freshCard": "清新卡片",
+    "freshCardIcon": "💧",
+    "vintageCard": "复古卡片",
+    "vintageCardIcon": "📜",
+    "neonCard": "霓虹卡片",
+    "neonCardIcon": "⚡",
+    "frostedCard": "毛玻璃卡片",
+    "frostedCardIcon": "❄️",
+    "woodCard": "暖木卡片",
+    "woodCardIcon": "🪵",
+    "oceanCard": "海洋卡片",
+    "oceanCardIcon": "🌊",
+    "candyCard": "糖果卡片",
+    "candyCardIcon": "🍬",
+    "sciFiCard": "科幻卡片",
+    "sciFiCardIcon": "🤖",
+    "natureCard": "自然卡片",
+    "natureCardIcon": "🌿",
+    "elegantCard": "优雅卡片",
+    "elegantCardIcon": "🕊️",
+
+    "splitColorGroup": "双色分割",
+
+    "successSplitCard": "操作成功卡片",
+    "successSplitCardIcon": "✅",
+    "infoSplitCard": "提示信息卡片",
+    "infoSplitCardIcon": "ℹ️",
+    "warningSplitCard": "警告提醒卡片",
+    "warningSplitCardIcon": "⚠️",
+    "errorSplitCard": "错误反馈卡片",
+    "errorSplitCardIcon": "❌",
+    "neutralSplitCard": "普通通知卡片",
+    "neutralSplitCardIcon": "📌",
+    
+
+    "quoteGroup": "引述块样式",
+
+    "grayQuoteCard": "灰调引述",
+    "blueQuoteCard": "蓝调引述",
+    "greenQuoteCard": "绿调引述",
+    "orangeQuoteCard": "橙调引述",
+    "borderQuoteCard": "边框引述",
+
+    "purpleQuoteCard": "紫调引述",
+    "pinkQuoteCard": "粉调引述",
+    "cyanQuoteCard": "青调引述",
+    "redQuoteCard": "红调引述",
+    "yellowQuoteCard": "黄调引述",
+    "brownQuoteCard": "棕调引述",
+    "tealQuoteCard": "水绿引述",
+    "indigoQuoteCard": "靛蓝引述",
+    "roseQuoteCard": "玫瑰引述",
+    "slateQuoteCard": "石板引述",
+    "stoneQuoteCard": "石色引述",
+    "neutralQuoteCard": "中性引述",
+    "zincQuoteCard": "锌色引述",
+
+        "colorBarGroup": "彩色横条",
+
+    "summaryColorBarCard": "重点总结",
+    "summaryColorBarCardIcon": "🎯",
+
+    "newFeatureColorBarCard": "新特性",
+    "newFeatureColorBarCardIcon": "🚀",
+
+    "growthColorBarCard": "成长笔记",
+    "growthColorBarCardIcon": "🌱",
+
+    "reminderColorBarCard": "重要提醒",
+    "reminderColorBarCardIcon": "❗",
+
+    "techColorBarCard": "技术要点",
+    "techColorBarCardIcon": "⚙️",
+
+    "moodColorBarCard": "今日心情",
+    "moodColorBarCardIcon": "💭",
+
+    "adviceColorBarCard": "专业建议",
+    "adviceColorBarCardIcon": "🏆",
+
+    "ideaColorBarCard": "创意灵感",
+    "ideaColorBarCardIcon": "💡",
+
+    "universalColorBarCard": "万能提示",
+    "universalColorBarCardIcon": "✨",
+
+    "infoColorBarCard": "信息通知",
+    "infoColorBarCardIcon": "ℹ️",
+
+    "warningColorBarCard": "注意提醒",
+    "warningColorBarCardIcon": "⚠️",
+
+    "successColorBarCard": "成功反馈",
+    "successColorBarCardIcon": "✅",
+
+
+    "whisperGroup": "轻言轻语",
+
+    "diaryWhisperCard": "随记",
+    "diaryWhisperCardIcon": "💬",
+    
+
+    "receiveWhisperCard": "接收消息",
+    "sendWhisperCard": "发送消息",
+
+
+    "editCardTitle": "编辑卡片",
+    "cardType": "类型",
+    "cardIcon": "图标",
+    "cardTitle": "标题",
+    "cancel": "取消",
+    "confirm": "确定"
+}
