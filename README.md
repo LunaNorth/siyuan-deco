@@ -1,34 +1,37 @@
-# 轻饰笔记
-
-通过自定义属性为思源笔记块添加精美卡片样式，支持图标、标题与多种预设风格，让笔记视觉更统一、更有美感。
-
-## 功能特点
-
-- **属性驱动样式**：通过设置 `custom-style`、`data-card-icon`、`data-card-title` 等属性，自动应用对应卡片外观。
-- **多组预设卡片**：包含创意卡、分割色卡、引述卡、彩色横条等多种风格，满足不同场景需求。
-- **点击编辑**：在卡片标题区域点击即可快速修改样式、图标或标题。
-- **右键菜单集成**：在选中块的右键菜单中，可一键切换任意卡片样式。
-- **样式持久化**：所有设置自动保存至块属性，重启或同步后依然生效。
-- **轻量无侵入**：不修改原始内容，仅通过属性控制表现层，安全可靠。
-
-## 使用方法
-
-1. 安装并启用本插件。
-2. 选中任意块，右键 → **卡片视图** → 选择一种卡片类型（如“灵感卡片”、“双色分割卡”等）。
-3. 块将自动应用对应样式，显示图标与标题栏。
-4. （可选）点击卡片顶部区域，可打开编辑窗口，自定义图标或标题文字。
-5. 所有设置会自动保存，刷新或重新打开文档后依然保留。
-
-> 💡 提示：引述类卡片（如“引述卡片”）默认禁止编辑，以保持语义一致性。
 
 
+# Light Decor Notes 
 
+Add beautiful card styles to SiYuan blocks via custom attributes. Supports icons, titles, and multiple preset styles to make your notes visually consistent and more aesthetically pleasing.
 
-## 开发者
+## Features
 
-- 作者：LunaNorth
-- GitHub：[https://github.com/LunaNorth/siyuan-deco](https://github.com/LunaNorth/siyuan-deco)
+- **Attribute-driven styling**: Set attributes like `custom-style`, `data-card-icon`, `data-card-title` to automatically apply corresponding card appearances.
+- **Multiple preset card groups**: Includes creative cards, split-color cards, quote cards, colored bars, and more to meet various needs.
+- **Click to edit**: Quickly modify the style, icon, or title by clicking on the card header area.
+- **Right-click menu integration**: Switch to any card style with one click from the context menu of a selected block.
+- **Persistent styling**: All settings are automatically saved to block attributes and remain effective after restart or sync.
+- **Lightweight & non‑intrusive**: No modification of original content; only controls the presentation layer via attributes – safe and reliable.
+
+## Usage
+
+1. Install and enable this plugin.
+2. Select any block, right‑click → **Card View** → choose a card type (e.g., “Inspiration Card”, “Split‑Color Card”).
+3. The block will automatically apply the selected style, displaying an icon and title bar.
+4. (Optional) Click on the top area of the card to open the edit window and customize the icon or title text.
+5. All settings are saved automatically and will persist after refreshing or reopening the document.
+
+> 💡 Note: Quote‑style cards (e.g., “Quote Card”) are not editable by default to maintain semantic consistency.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Developer
+
+- Author: LunaNorth
+- GitHub: [https://github.com/LunaNorth/siyuan-deco](https://github.com/LunaNorth/siyuan-deco)
 
 ---
 
-✨ 让每一块笔记，都拥有属于自己的样子。
+✨ Let every block of notes have its own look.

@@ -2,34 +2,29 @@
 const siyuan = require("siyuan");
 
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
-    styleDefaults = null;  // 动态生成
+    styleDefaults = null;
     attrsCache = new Map();
 
     onload() {
-        this.loadStyleDefaults(); // 从 i18n 读取所有卡片配置
-        this.state = { menu: null, observer: null };
-        this.waitMenu();
+        this.loadStyleDefaults();
+        this.state = { menu: null, observer: null, restoreObserver: null };
+        this.waitForMenu();
         this.addTitleClickListener();
         this.startAttributeRestoreObserver();
     }
 
-    // ---------- 从 i18n 动态加载卡片默认配置 ----------
     loadStyleDefaults() {
         if (!this.i18n) return;
         const defaults = {};
         for (const [key, label] of Object.entries(this.i18n)) {
             if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
                 const icon = this.i18n[key + 'Icon'] || '';
-                defaults[label] = {
-                    icon: icon,
-                    title: label
-                };
+                defaults[label] = { icon, title: label };
             }
         }
         this.styleDefaults = defaults;
     }
 
-    // ---------- 批量设置属性（缓存 + DOM + 服务器）----------
     async setAttrs(id, attrs) {
         if (!this.attrsCache.has(id)) {
             this.attrsCache.set(id, {});
@@ -42,52 +37,54 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             });
         });
 
-        await siyuan.fetchPost("/api/attr/setBlockAttrs", { id, attrs });
+        try {
+            await siyuan.fetchPost("/api/attr/setBlockAttrs", { id, attrs });
+        } catch (err) {
+            console.warn(`[CardStyleWorkshop] 属性保存失败: ${id}`, err);
+        }
     }
 
-    // ---------- 属性恢复监听 ----------
     startAttributeRestoreObserver() {
+        if (this._restoreObserver) this._restoreObserver.disconnect();
+        if (this._interval) clearInterval(this._interval);
+
         const editor = document.querySelector(".protyle-wysiwyg");
         if (!editor) {
             setTimeout(() => this.startAttributeRestoreObserver(), 500);
             return;
         }
 
-        const restoreObserver = new MutationObserver(mutations => {
-            mutations.forEach(mut => {
+        this._restoreObserver = new MutationObserver(mutations => {
+            for (const mut of mutations) {
                 if (mut.type === "childList") {
                     mut.addedNodes.forEach(node => {
-                        if (node.nodeType === 1) {
-                            if (node.hasAttribute?.("data-node-id")) {
-                                this.restoreBlockAttributes(node);
-                            }
-                            node.querySelectorAll?.("[data-node-id]").forEach(el => this.restoreBlockAttributes(el));
+                        if (node.nodeType !== 1) return;
+                        if (node.hasAttribute?.("data-node-id")) {
+                            this.restoreBlockAttributes(node);
                         }
+                        node.querySelectorAll?.("[data-node-id]").forEach(el => this.restoreBlockAttributes(el));
                     });
                 }
-                if (mut.type === "attributes" && mut.target?.hasAttribute?.("custom-deco-style")) {
-                    const attr = mut.attributeName;
-                    if (attr === "custom-deco-card-icon" || attr === "custom-deco-card-title" || attr === "custom-deco-style") {
-                        const id = mut.target.dataset.nodeId;
-                        if (id && this.attrsCache.has(id)) {
-                            const cached = this.attrsCache.get(id);
-                            if (!mut.target.getAttribute(attr) && cached[attr]) {
-                                mut.target.setAttribute(attr, cached[attr]);
-                            }
+                if (mut.type === "attributes" && mut.attributeName?.startsWith("custom-deco-")) {
+                    const el = mut.target;
+                    const id = el.dataset.nodeId;
+                    if (id && this.attrsCache.has(id)) {
+                        const cached = this.attrsCache.get(id);
+                        const attr = mut.attributeName;
+                        if (!el.getAttribute(attr) && cached[attr]) {
+                            el.setAttribute(attr, cached[attr]);
                         }
                     }
                 }
-            });
+            }
         });
 
-        restoreObserver.observe(editor, {
+        this._restoreObserver.observe(editor, {
             childList: true,
             subtree: true,
             attributes: true,
-            attributeFilter: ["custom-deco-card-icon", "custom-deco-card-title", "custom-deco-style"]
+            attributeFilter: ["custom-deco-style", "custom-deco-card-icon", "custom-deco-card-title"]
         });
-
-        this._restoreObserver = restoreObserver;
 
         this._interval = setInterval(() => {
             document.querySelectorAll("[custom-deco-style]").forEach(el => {
@@ -96,27 +93,24 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     this.restoreBlockAttributes(el);
                 }
             });
-        }, 3000);
+        }, 5000);
     }
 
     restoreBlockAttributes(blockEl) {
         const id = blockEl.dataset.nodeId;
         if (!id || !this.attrsCache.has(id)) return;
-
         const attrs = this.attrsCache.get(id);
-        if (attrs["custom-deco-style"] && !blockEl.getAttribute("custom-deco-style")) {
-            blockEl.setAttribute("custom-deco-style", attrs["custom-deco-style"]);
-        }
-        if (attrs["custom-deco-card-icon"] && !blockEl.getAttribute("custom-deco-card-icon")) {
-            blockEl.setAttribute("custom-deco-card-icon", attrs["custom-deco-card-icon"]);
-        }
-        if (attrs["custom-deco-card-title"] && !blockEl.getAttribute("custom-deco-card-title")) {
-            blockEl.setAttribute("custom-deco-card-title", attrs["custom-deco-card-title"]);
+        for (const attr of ["custom-deco-style", "custom-deco-card-icon", "custom-deco-card-title"]) {
+            if (attrs[attr] && !blockEl.getAttribute(attr)) {
+                blockEl.setAttribute(attr, attrs[attr]);
+            }
         }
     }
 
-    // ---------- 标题点击弹窗 ----------
     addTitleClickListener() {
+        if (this._boundHandleTitleClick) {
+            document.removeEventListener('click', this._boundHandleTitleClick);
+        }
         this._boundHandleTitleClick = this.handleTitleClick.bind(this);
         document.addEventListener('click', this._boundHandleTitleClick);
     }
@@ -127,12 +121,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         const style = cardBlock.getAttribute('custom-deco-style');
         const cardKey = this.getCardKeyByLabel(style);
-        
-        // 引述卡片禁止编辑
+
         if (cardKey && cardKey.endsWith('QuoteCard')) {
             return;
         }
-        if (cardKey && cardKey.endsWith('WhisperCard') && cardKey !== 'diaryWhisperCard') {
+        if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryWhisperCard') {
             return;
         }
         if (!cardBlock.hasAttribute('custom-deco-card-title')) return;
@@ -140,21 +133,17 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const rect = cardBlock.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
         const offsetY = e.clientY - rect.top;
-
-        if (offsetY < 40 && offsetX < 200) {
+        if (offsetY < 44 && offsetX < 220) {
             e.preventDefault();
             e.stopPropagation();
             await this.showEditDialog(cardBlock);
         }
     }
 
-    // 辅助方法：通过卡片显示名称查找对应的 i18n 键
     getCardKeyByLabel(label) {
         if (!this.i18n) return null;
         for (const [key, value] of Object.entries(this.i18n)) {
-            if (value === label && key.endsWith('Card')) {
-                return key;
-            }
+            if (value === label && key.endsWith('Card')) return key;
         }
         return null;
     }
@@ -226,19 +215,24 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         dialogElement.querySelector('#cancel-btn').addEventListener('click', () => dialog.destroy());
     }
 
-    // ---------- 菜单相关 ----------
-    waitMenu() {
+    waitForMenu() {
         this.state.menu = document.querySelector("#commonMenu");
-        this.state.menu ? this.observeMenu() : setTimeout(() => this.waitMenu(), 100);
+        if (this.state.menu) {
+            this.observeMenu();
+        } else {
+            setTimeout(() => this.waitForMenu(), 100);
+        }
     }
 
     observeMenu() {
+        if (this.state.observer) this.state.observer.disconnect();
         this.state.observer = new MutationObserver(muts => {
             muts.forEach(m => {
                 if (m.type === "attributes" && m.attributeName === "class") {
                     const oldClass = m.oldValue || "", newClass = m.target.className;
-                    if (oldClass.includes("fn__none") && !newClass.includes("fn__none"))
+                    if (oldClass.includes("fn__none") && !newClass.includes("fn__none")) {
                         this.insertMenuItem();
+                    }
                 }
             });
         });
@@ -247,56 +241,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             attributeFilter: ["class"],
             attributeOldValue: true
         });
-    }
-
-    getText(key, fallback) {
-        return this.i18n?.[key] || fallback;
-    }
-
-    getSecondaryGroups() {
-        return [
-            {
-                id: "cardStyle",
-                labelKey: "creativeGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('Card') && !key.includes('Split')
-                    && !key.includes('Quote') && !key.includes('ColorBarCard') && !key.includes('WhisperCard')
-            },
-            {
-                id: "splitColor",
-                labelKey: "splitColorGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('SplitCard')
-            },
-            {
-                id: "quoteBlock",
-                labelKey: "quoteGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('QuoteCard')
-            },
-            {
-                id: "colorBar",
-                labelKey: "colorBarGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('ColorBarCard')
-            },
-            {
-                id: "whisper",
-                labelKey: "whisperGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('WhisperCard')
-            }
-        ];
-    }
-
-    getAllCardItems() {
-        const items = [];
-        for (const key of Object.keys(this.i18n || {})) {
-            if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
-                items.push({ key, label: this.i18n[key] });
-            }
-        }
-        return items;
     }
 
     insertMenuItem() {
@@ -338,6 +282,23 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
+getSecondaryGroups() {
+    return [
+        {
+            id: "cardStyle",
+            labelKey: "creativeGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('CreativeCard')
+        },
+        {
+            id: "quoteBlock",
+            labelKey: "quoteGroup",
+            icon: "#iconQuote",
+            filter: (label, key) => key.endsWith('QuoteCard')
+        }
+    ];
+}
+
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
         btn.className = "b3-menu__item";
@@ -374,7 +335,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
             const attrs = { "custom-deco-style": label };
 
-            // 只有非引述/非纯样式卡片才自动设置默认图标和标题
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
                 const defaults = this.styleDefaults[label];
                 if (defaults) {
@@ -383,8 +343,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 }
             }
 
-            // 为「随记」卡片自动设置默认日期
-            if (label === "随记" || label === "Diary Note") { // 支持中英文
+            if (key === 'diaryWhisperCard') {
                 const today = new Date();
                 const year = today.getFullYear();
                 const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -400,8 +359,22 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     createSeparator() {
         const sep = document.createElement("button");
         sep.className = "b3-menu__separator";
-        sep.setAttribute("data-id", "deco-separator"); // 修改点：使用 data-id 便于用户隐藏
+        sep.setAttribute("data-id", "deco-separator");
         return sep;
+    }
+
+    getAllCardItems() {
+        const items = [];
+        for (const key of Object.keys(this.i18n || {})) {
+            if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
+                items.push({ key, label: this.i18n[key] });
+            }
+        }
+        return items;
+    }
+
+    getText(key, fallback) {
+        return this.i18n?.[key] || fallback;
     }
 
     onunload() {

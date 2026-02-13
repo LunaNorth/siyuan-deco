@@ -1,1797 +1,542 @@
-/* ------------------------------------------------------------
-   🔥 动态标题覆盖 · 雷打不动
-   优先级拉满，保证自定义图标和标题永远显示
------------------------------------------------------------- */
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-icon][custom-deco-card-title]::before,
-body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-icon][custom-deco-card-title]::before {
-    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title) !important;
-}
-
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-title]:not([custom-deco-card-icon])::before,
-body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-title]:not([custom-deco-card-icon])::before {
-    content: attr(custom-deco-card-title) !important;
-}
-
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-icon]:not([custom-deco-card-title])::before,
-body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-icon]:not([custom-deco-card-title])::before {
-    content: attr(custom-deco-card-icon) !important;
-}
-
-/* 强制伪元素显示，防止被其他样式覆盖 */
-.protyle-wysiwyg [custom-deco-style]::before {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* ------------------------------------------------------------
-   1. 创意卡片 · 紫调灵感
-   标题：✨ 创意灵感 · 三角形：浅紫 (#c4b5fd)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="创意卡片"],
-.b3-typography [custom-deco-style="创意卡片"],
-.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="0"],
-.b3-typography [custom-deco-style="创意卡片"][fold="0"],
-div[custom-deco-style="创意卡片"] {
-    background-color: #f5f3ff !important;
-    background: #f5f3ff !important;
-    border: 1px solid #ddd6fe !important;
-    border-radius: 12px !important;
-    padding: 10px 16px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #581c87 !important;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="创意卡片"]::before,
-.b3-typography [custom-deco-style="创意卡片"]::before,
-div[custom-deco-style="创意卡片"]::before {
-    content: "✨ 创意灵感" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    color: #7e22ce !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="创意卡片"]::after,
-.b3-typography [custom-deco-style="创意卡片"]::after,
-div[custom-deco-style="创意卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #c4b5fd !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="创意卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="创意卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   2. 深色卡片 · 暗夜质感
-   标题：🌙 深夜创作 · 三角形：深灰 (#4b5563)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="深色卡片"],
-.b3-typography [custom-deco-style="深色卡片"],
-.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="0"],
-.b3-typography [custom-deco-style="深色卡片"][fold="0"],
-div[custom-deco-style="深色卡片"] {
-    background-color: #1e1e1e !important;
-    background: #1e1e1e !important;
-    border: 1px solid #4b5563 !important;
-    border-radius: 12px !important;
-    padding: 10px 16px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #e5e7eb !important;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="深色卡片"]::before,
-.b3-typography [custom-deco-style="深色卡片"]::before,
-div[custom-deco-style="深色卡片"]::before {
-    content: "🌙 深夜创作" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    color: #9ca3af !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="深色卡片"]::after,
-.b3-typography [custom-deco-style="深色卡片"]::after,
-div[custom-deco-style="深色卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #4b5563 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="深色卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="深色卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   3. 极简卡片 · 干净留白
-   标题：🍃 极简生活 · 三角形：浅绿 (#86efac)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="极简卡片"],
-.b3-typography [custom-deco-style="极简卡片"],
-.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="0"],
-.b3-typography [custom-deco-style="极简卡片"][fold="0"],
-div[custom-deco-style="极简卡片"] {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #1f2937 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="极简卡片"]::before,
-.b3-typography [custom-deco-style="极简卡片"]::before,
-div[custom-deco-style="极简卡片"]::before {
-    content: "🍃 极简生活" !important;
-    display: block !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #4b5563 !important;
-    line-height: 1.8 !important;
-    margin-bottom: 6px !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="极简卡片"]::after,
-.b3-typography [custom-deco-style="极简卡片"]::after,
-div[custom-deco-style="极简卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 16px solid transparent !important;
-    border-left: 16px solid #86efac !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="极简卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="极简卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   4. 清新卡片 · 氧气薄荷
-   标题：💧 薄荷日记 · 三角形：浅蓝 (#7dd3fc)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="清新卡片"],
-.b3-typography [custom-deco-style="清新卡片"],
-.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="0"],
-.b3-typography [custom-deco-style="清新卡片"][fold="0"],
-div[custom-deco-style="清新卡片"] {
-    background-color: #ecfeff !important;
-    background: #ecfeff !important;
-    border: 1px solid #a5f3fc !important;
-    border-radius: 16px !important;
-    padding: 10px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #155e75 !important;
-    box-shadow: 0 4px 8px rgba(34, 211, 238, 0.1) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="清新卡片"]::before,
-.b3-typography [custom-deco-style="清新卡片"]::before,
-div[custom-deco-style="清新卡片"]::before {
-    content: "💧 薄荷日记" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    color: #0e7490 !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="清新卡片"]::after,
-.b3-typography [custom-deco-style="清新卡片"]::after,
-div[custom-deco-style="清新卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #7dd3fc !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="清新卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="清新卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   5. 复古卡片 · 旧纸质感
-   标题：📜 时光手札 · 三角形：暖棕 (#b45309)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="复古卡片"],
-.b3-typography [custom-deco-style="复古卡片"],
-.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="0"],
-.b3-typography [custom-deco-style="复古卡片"][fold="0"],
-div[custom-deco-style="复古卡片"] {
-    background-color: #fffbeb !important;
-    background: #fffbeb !important;
-    border: 1px solid #d97706 !important;
-    border-radius: 4px !important;
-    padding: 12px 16px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Georgia', 'Times New Roman', serif !important;
-    font-size: 15px !important;
-    color: #78350f !important;
-    box-shadow: 4px 4px 0 rgba(180, 83, 9, 0.1) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="复古卡片"]::before,
-.b3-typography [custom-deco-style="复古卡片"]::before,
-div[custom-deco-style="复古卡片"]::before {
-    content: "📜 时光手札" !important;
-    display: block !important;
-    font-size: 17px !important;
-    font-weight: bold !important;
-    color: #b45309 !important;
-    line-height: 1.8 !important;
-    margin-bottom: 10px !important;
-    font-family: 'Georgia', serif !important;
-    width: 100% !important;
-    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8) !important;
-}
-.protyle-wysiwyg [custom-deco-style="复古卡片"]::after,
-.b3-typography [custom-deco-style="复古卡片"]::after,
-div[custom-deco-style="复古卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #b45309 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="复古卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="复古卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   6. 霓虹卡片 · 荧光酷炫
-   标题：⚡ 霓虹光轨 · 三角形：荧光绿 (#a3e635)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"],
-.b3-typography [custom-deco-style="霓虹卡片"],
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="0"],
-.b3-typography [custom-deco-style="霓虹卡片"][fold="0"],
-div[custom-deco-style="霓虹卡片"] {
-    background-color: #0f172a !important;
-    background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%) !important;
-    border: 1px solid #4ade80 !important;
-    border-radius: 12px !important;
-    padding: 12px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #f0f9ff !important;
-    box-shadow: 0 0 12px rgba(74, 222, 128, 0.4) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"]::before,
-.b3-typography [custom-deco-style="霓虹卡片"]::before,
-div[custom-deco-style="霓虹卡片"]::before {
-    content: "⚡ 霓虹光轨" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: 800 !important;
-    color: #bef264 !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif !important;
-    text-shadow: 0 0 6px #84cc16 !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"]::after,
-.b3-typography [custom-deco-style="霓虹卡片"]::after,
-div[custom-deco-style="霓虹卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #a3e635 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="霓虹卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="霓虹卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   7. 毛玻璃卡片 · 朦胧高级
-   标题：❄️ 浮光掠影 · 三角形：冰蓝 (#7dd3fc)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"],
-.b3-typography [custom-deco-style="毛玻璃卡片"],
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="0"],
-.b3-typography [custom-deco-style="毛玻璃卡片"][fold="0"],
-div[custom-deco-style="毛玻璃卡片"] {
-    background: rgba(255, 255, 255, 0.25) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 16px !important;
-    padding: 12px 20px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Inter', 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #1e293b !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"]::before,
-.b3-typography [custom-deco-style="毛玻璃卡片"]::before,
-div[custom-deco-style="毛玻璃卡片"]::before {
-    content: "❄️ 浮光掠影" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    color: #0f172a !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Inter', 'Microsoft YaHei', sans-serif !important;
-    letter-spacing: 2px !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"]::after,
-.b3-typography [custom-deco-style="毛玻璃卡片"]::after,
-div[custom-deco-style="毛玻璃卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #7dd3fc !important;
-    z-index: 10 !important;
-    background: none !important;
-    opacity: 0.8 !important;
-}
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="毛玻璃卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="毛玻璃卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   8. 暖木卡片 · 温馨治愈
-   标题：🪵 原木时光 · 三角形：驼色 (#a78a7c)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="暖木卡片"],
-.b3-typography [custom-deco-style="暖木卡片"],
-.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="0"],
-.b3-typography [custom-deco-style="暖木卡片"][fold="0"],
-div[custom-deco-style="暖木卡片"] {
-    background-color: #faf6e9 !important;
-    background: linear-gradient(135deg, #faf6e9 0%, #f5efe6 100%) !important;
-    border: 1px solid #d7ccc8 !important;
-    border-radius: 12px !important;
-    padding: 10px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Merriweather', 'Times New Roman', serif !important;
-    font-size: 15px !important;
-    color: #5d4037 !important;
-    box-shadow: 2px 4px 8px rgba(109, 76, 65, 0.1) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="暖木卡片"]::before,
-.b3-typography [custom-deco-style="暖木卡片"]::before,
-div[custom-deco-style="暖木卡片"]::before {
-    content: "🪵 原木时光" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    color: #8d6e63 !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Merriweather', serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="暖木卡片"]::after,
-.b3-typography [custom-deco-style="暖木卡片"]::after,
-div[custom-deco-style="暖木卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #a78a7c !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="暖木卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="暖木卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   9. 海洋卡片 · 深邃宁静
-   标题：🌊 碧波深海 · 三角形：深海蓝 (#0284c7)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="海洋卡片"],
-.b3-typography [custom-deco-style="海洋卡片"],
-.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="0"],
-.b3-typography [custom-deco-style="海洋卡片"][fold="0"],
-div[custom-deco-style="海洋卡片"] {
-    background: linear-gradient(145deg, #0c4a6e 0%, #075985 100%) !important;
-    border: 1px solid #38bdf8 !important;
-    border-radius: 12px !important;
-    padding: 12px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Poppins', 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #e0f2fe !important;
-    box-shadow: 0 6px 14px rgba(2, 132, 199, 0.3) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="海洋卡片"]::before,
-.b3-typography [custom-deco-style="海洋卡片"]::before,
-div[custom-deco-style="海洋卡片"]::before {
-    content: "🌊 碧波深海" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    color: #bae6fd !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Poppins', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="海洋卡片"]::after,
-.b3-typography [custom-deco-style="海洋卡片"]::after,
-div[custom-deco-style="海洋卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #0284c7 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="海洋卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="海洋卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   10. 糖果卡片 · 甜美可爱
-    标题：🍬 蜜糖派对 · 三角形：樱花粉 (#f9a8d4)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="糖果卡片"],
-.b3-typography [custom-deco-style="糖果卡片"],
-.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="0"],
-.b3-typography [custom-deco-style="糖果卡片"][fold="0"],
-div[custom-deco-style="糖果卡片"] {
-    background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 100%) !important;
-    border: 2px solid #f9a8d4 !important;
-    border-radius: 24px !important;
-    padding: 12px 20px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Microsoft YaHei', cursive !important;
-    font-size: 15px !important;
-    color: #831843 !important;
-    box-shadow: 0 8px 0 rgba(249, 168, 212, 0.3) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="糖果卡片"]::before,
-.b3-typography [custom-deco-style="糖果卡片"]::before,
-div[custom-deco-style="糖果卡片"]::before {
-    content: "🍬 蜜糖派对" !important;
-    display: block !important;
-    font-size: 17px !important;
-    font-weight: bold !important;
-    color: #be185d !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Comic Sans MS', cursive !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="糖果卡片"]::after,
-.b3-typography [custom-deco-style="糖果卡片"]::after,
-div[custom-deco-style="糖果卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 24px solid transparent !important;
-    border-left: 24px solid #f9a8d4 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="糖果卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="糖果卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   11. 科幻卡片 · 未来代码
-    标题：🤖 赛博纪元 · 三角形：电光蓝 (#38bdf8)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="科幻卡片"],
-.b3-typography [custom-deco-style="科幻卡片"],
-.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="0"],
-.b3-typography [custom-deco-style="科幻卡片"][fold="0"],
-div[custom-deco-style="科幻卡片"] {
-    background: #0b1120 !important;
-    border: 1px solid #22d3ee !important;
-    border-radius: 8px !important;
-    padding: 12px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
-    font-size: 14px !important;
-    color: #e2e8f0 !important;
-    box-shadow: 0 0 0 1px #22d3ee inset, 0 0 12px rgba(34, 211, 238, 0.2) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="科幻卡片"]::before,
-.b3-typography [custom-deco-style="科幻卡片"]::before,
-div[custom-deco-style="科幻卡片"]::before {
-    content: "🤖 赛博纪元" !important;
-    display: block !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    color: #7dd3fc !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'JetBrains Mono', monospace !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2px !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="科幻卡片"]::after,
-.b3-typography [custom-deco-style="科幻卡片"]::after,
-div[custom-deco-style="科幻卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #38bdf8 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="科幻卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="科幻卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   12. 自然卡片 · 森林呼吸
-    标题：🌿 绿野仙踪 · 三角形：森林绿 (#4ade80)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="自然卡片"],
-.b3-typography [custom-deco-style="自然卡片"],
-.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="0"],
-.b3-typography [custom-deco-style="自然卡片"][fold="0"],
-div[custom-deco-style="自然卡片"] {
-    background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%) !important;
-    border: 1px solid #86efac !important;
-    border-radius: 16px !important;
-    padding: 10px 18px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Quicksand', 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #14532d !important;
-    box-shadow: 0 4px 10px rgba(74, 222, 128, 0.2) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="自然卡片"]::before,
-.b3-typography [custom-deco-style="自然卡片"]::before,
-div[custom-deco-style="自然卡片"]::before {
-    content: "🌿 绿野仙踪" !important;
-    display: block !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    color: #166534 !important;
-    line-height: 2 !important;
-    margin-bottom: 8px !important;
-    font-family: 'Quicksand', sans-serif !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="自然卡片"]::after,
-.b3-typography [custom-deco-style="自然卡片"]::after,
-div[custom-deco-style="自然卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #4ade80 !important;
-    z-index: 10 !important;
-    background: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="自然卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="自然卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   13. 优雅卡片 · 简约轻奢
-    标题：🕊️ 雅致时光 · 三角形：香槟金 (#d4af37)
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="优雅卡片"],
-.b3-typography [custom-deco-style="优雅卡片"],
-.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="0"],
-.b3-typography [custom-deco-style="优雅卡片"][fold="0"],
-div[custom-deco-style="优雅卡片"] {
-    background: #faf9f6 !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    padding: 14px 20px !important;
-    position: relative !important;
-    margin: 2px 0 !important;
-    font-family: 'Cormorant Garamond', 'Times New Roman', serif !important;
-    font-size: 16px !important;
-    color: #334155 !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-    overflow: visible !important;
-}
-.protyle-wysiwyg [custom-deco-style="优雅卡片"]::before,
-.b3-typography [custom-deco-style="优雅卡片"]::before,
-div[custom-deco-style="优雅卡片"]::before {
-    content: "🕊️ 雅致时光" !important;
-    display: block !important;
-    font-size: 17px !important;
-    font-weight: 600 !important;
-    color: #7e5c3d !important;
-    line-height: 1.8 !important;
-    margin-bottom: 10px !important;
-    font-family: 'Cormorant Garamond', serif !important;
-    letter-spacing: 1px !important;
-    width: 100% !important;
-}
-.protyle-wysiwyg [custom-deco-style="优雅卡片"]::after,
-.b3-typography [custom-deco-style="优雅卡片"]::after,
-div[custom-deco-style="优雅卡片"]::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-top: 20px solid transparent !important;
-    border-left: 20px solid #d4af37 !important;
-    z-index: 10 !important;
-    background: none !important;
-    opacity: 0.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="1"]::after,
-.b3-typography [custom-deco-style="优雅卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="优雅卡片"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   双色分割 · 操作成功卡片
-   头部：浅绿底，深绿字，✅ 操作成功
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="操作成功卡片"],
-.b3-typography [custom-deco-style="操作成功卡片"],
-.protyle-wysiwyg [custom-deco-style="操作成功卡片"][fold="0"],
-.b3-typography [custom-deco-style="操作成功卡片"][fold="0"],
-div[custom-deco-style="操作成功卡片"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="操作成功卡片"]::before,
-.b3-typography [custom-deco-style="操作成功卡片"]::before,
-div[custom-deco-style="操作成功卡片"]::before {
-    content: "✅ 操作成功" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: #f0fdf4 !important;
-    color: #166534 !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    padding: 14px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="操作成功卡片"]::after,
-.b3-typography [custom-deco-style="操作成功卡片"]::after,
-div[custom-deco-style="操作成功卡片"]::after {
-    display: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="操作成功卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="操作成功卡片"][fold="1"]::before,
-div[custom-deco-style="操作成功卡片"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   双色分割 · 提示信息卡片
-   头部：浅蓝底，深蓝字，ℹ️ 提示信息
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="提示信息卡片"],
-.b3-typography [custom-deco-style="提示信息卡片"],
-.protyle-wysiwyg [custom-deco-style="提示信息卡片"][fold="0"],
-.b3-typography [custom-deco-style="提示信息卡片"][fold="0"],
-div[custom-deco-style="提示信息卡片"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="提示信息卡片"]::before,
-.b3-typography [custom-deco-style="提示信息卡片"]::before,
-div[custom-deco-style="提示信息卡片"]::before {
-    content: "ℹ️ 提示信息" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: #eff6ff !important;
-    color: #1e40af !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    padding: 14px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="提示信息卡片"]::after,
-.b3-typography [custom-deco-style="提示信息卡片"]::after,
-div[custom-deco-style="提示信息卡片"]::after {
-    display: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="提示信息卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="提示信息卡片"][fold="1"]::before,
-div[custom-deco-style="提示信息卡片"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   双色分割 · 警告提醒卡片
-   头部：浅黄底，深棕字，⚠️ 警告提醒
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="警告提醒卡片"],
-.b3-typography [custom-deco-style="警告提醒卡片"],
-.protyle-wysiwyg [custom-deco-style="警告提醒卡片"][fold="0"],
-.b3-typography [custom-deco-style="警告提醒卡片"][fold="0"],
-div[custom-deco-style="警告提醒卡片"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="警告提醒卡片"]::before,
-.b3-typography [custom-deco-style="警告提醒卡片"]::before,
-div[custom-deco-style="警告提醒卡片"]::before {
-    content: "⚠️ 警告提醒" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: #fef9c3 !important;
-    color: #854d0e !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    padding: 14px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="警告提醒卡片"]::after,
-.b3-typography [custom-deco-style="警告提醒卡片"]::after,
-div[custom-deco-style="警告提醒卡片"]::after {
-    display: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="警告提醒卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="警告提醒卡片"][fold="1"]::before,
-div[custom-deco-style="警告提醒卡片"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   双色分割 · 错误反馈卡片
-   头部：浅红底，深红字，❌ 错误反馈
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="错误反馈卡片"],
-.b3-typography [custom-deco-style="错误反馈卡片"],
-.protyle-wysiwyg [custom-deco-style="错误反馈卡片"][fold="0"],
-.b3-typography [custom-deco-style="错误反馈卡片"][fold="0"],
-div[custom-deco-style="错误反馈卡片"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="错误反馈卡片"]::before,
-.b3-typography [custom-deco-style="错误反馈卡片"]::before,
-div[custom-deco-style="错误反馈卡片"]::before {
-    content: "❌ 错误反馈" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: #fee2e2 !important;
-    color: #991b1b !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    padding: 14px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="错误反馈卡片"]::after,
-.b3-typography [custom-deco-style="错误反馈卡片"]::after,
-div[custom-deco-style="错误反馈卡片"]::after {
-    display: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="错误反馈卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="错误反馈卡片"][fold="1"]::before,
-div[custom-deco-style="错误反馈卡片"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   双色分割 · 普通通知卡片
-   头部：浅灰底，深灰字，📌 普通通知
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="普通通知卡片"],
-.b3-typography [custom-deco-style="普通通知卡片"],
-.protyle-wysiwyg [custom-deco-style="普通通知卡片"][fold="0"],
-.b3-typography [custom-deco-style="普通通知卡片"][fold="0"],
-div[custom-deco-style="普通通知卡片"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-}
-.protyle-wysiwyg [custom-deco-style="普通通知卡片"]::before,
-.b3-typography [custom-deco-style="普通通知卡片"]::before,
-div[custom-deco-style="普通通知卡片"]::before {
-    content: "📌 普通通知" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: #f3f4f6 !important;
-    color: #1f2937 !important;
-    font-size: 15px !important;
-    font-weight: bold !important;
-    padding: 14px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="普通通知卡片"]::after,
-.b3-typography [custom-deco-style="普通通知卡片"]::after,
-div[custom-deco-style="普通通知卡片"]::after {
-    display: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="普通通知卡片"][fold="1"]::before,
-.b3-typography [custom-deco-style="普通通知卡片"][fold="1"]::before,
-div[custom-deco-style="普通通知卡片"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   引述块样式 · 纯引述，无标题、无图标、无三角形
-   统一内边距：10px 10px，外边距：2px 0
-   所有引述卡片均禁用 ::before / ::after
-   （保留7个：灰、蓝、绿、橙、紫、红、黄）
------------------------------------------------------------- */
-
-/* ----- 灰调引述 · 浅灰背景，左侧粗边 ----- */
-.protyle-wysiwyg [custom-deco-style="灰调引述"],
-.b3-typography [custom-deco-style="灰调引述"],
-.protyle-wysiwyg [custom-deco-style="灰调引述"][fold="0"],
-.b3-typography [custom-deco-style="灰调引述"][fold="0"],
-div[custom-deco-style="灰调引述"] {
+/* 灰调引述 - 中英文 */
+[custom-deco-style="灰调引述"]:not([fold="1"]),
+[custom-deco-style="Gray Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #6b7280 !important;
     background-color: #f9fafb !important;
-    border-left: 4px solid #9ca3af !important;
-    padding: 10px 10px !important;
+    color: #374151 !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
-    color: #1f2937 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
+    border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-deco-style="灰调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="灰调引述"]::after,
-.b3-typography [custom-deco-style="灰调引述"]::before,
-.b3-typography [custom-deco-style="灰调引述"]::after,
-div[custom-deco-style="灰调引述"]::before,
-div[custom-deco-style="灰调引述"]::after {
-    display: none !important;
+[custom-deco-style="灰调引述"]:not([fold="1"])::before,
+[custom-deco-style="Gray Quote"]:not([fold="1"])::before { display: none; }
+
+/* 蓝调引述 */
+[custom-deco-style="蓝调引述"]:not([fold="1"]),
+[custom-deco-style="Blue Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #3b82f6 !important;
+    background-color: #eff6ff !important;
+    color: #1e40af !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="蓝调引述"]:not([fold="1"])::before,
+[custom-deco-style="Blue Quote"]:not([fold="1"])::before { display: none; }
+
+/* 绿调引述 */
+[custom-deco-style="绿调引述"]:not([fold="1"]),
+[custom-deco-style="Green Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #22c55e !important;
+    background-color: #f0fdf4 !important;
+    color: #14532d !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="绿调引述"]:not([fold="1"])::before,
+[custom-deco-style="Green Quote"]:not([fold="1"])::before { display: none; }
+
+/* 橙调引述 */
+[custom-deco-style="橙调引述"]:not([fold="1"]),
+[custom-deco-style="Orange Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #f97316 !important;
+    background-color: #fff7ed !important;
+    color: #c2410c !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="橙调引述"]:not([fold="1"])::before,
+[custom-deco-style="Orange Quote"]:not([fold="1"])::before { display: none; }
+
+/* 紫调引述 */
+[custom-deco-style="紫调引述"]:not([fold="1"]),
+[custom-deco-style="Purple Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #a855f7 !important;
+    background-color: #f5f3ff !important;
+    color: #5b21b6 !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="紫调引述"]:not([fold="1"])::before,
+[custom-deco-style="Purple Quote"]:not([fold="1"])::before { display: none; }
+
+/* 红调引述 */
+[custom-deco-style="红调引述"]:not([fold="1"]),
+[custom-deco-style="Red Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #ef4444 !important;
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="红调引述"]:not([fold="1"])::before,
+[custom-deco-style="Red Quote"]:not([fold="1"])::before { display: none; }
+
+/* 黄调引述 */
+[custom-deco-style="黄调引述"]:not([fold="1"]),
+[custom-deco-style="Yellow Quote"]:not([fold="1"]) {
+    padding: 10px 10px;
+    border-left: 4px solid #eab308 !important;
+    background-color: #fef9c3 !important;
+    color: #854d0e !important;
+    margin: 2px 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+[custom-deco-style="黄调引述"]:not([fold="1"])::before,
+[custom-deco-style="Yellow Quote"]:not([fold="1"])::before { display: none; }
+
+/* -------------------------------------------------------卡片----------------------------------------------------------- */
+/* ========== 卡片风格样式集（中英文双支持） ========== */
+
+/* 创意卡片 - 紫色梦幻风 */
+[custom-deco-style="创意卡片"]:not([fold="1"]),
+[custom-deco-style="Creative Card"]:not([fold="1"]) {
+    background: #f9f7ff !important;
+    border: 1px solid #e0d6ff !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #4a216f !important;
+    box-shadow: 2px 2px 8px rgba(126, 34, 206, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="创意卡片"]:not([fold="1"])::before,
+[custom-deco-style="Creative Card"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #8b5cf6 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="创意卡片"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Creative Card"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "✨ 创意卡片";
 }
 
-/* ----- 蓝调引述 · 浅蓝背景，左侧蓝边 ----- */
-.protyle-wysiwyg [custom-deco-style="蓝调引述"],
-.b3-typography [custom-deco-style="蓝调引述"],
-.protyle-wysiwyg [custom-deco-style="蓝调引述"][fold="0"],
-.b3-typography [custom-deco-style="蓝调引述"][fold="0"],
-div[custom-deco-style="蓝调引述"] {
-    background-color: #eff6ff !important;
-    border-left: 4px solid #3b82f6 !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
+/* 学习笔记 - 清新绿意风 */
+[custom-deco-style="学习笔记"]:not([fold="1"]),
+[custom-deco-style="Study Notes"]:not([fold="1"]) {
+    background: #f8fdfa !important;
+    border: 1px solid #a7f3d0 !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #064e3b !important;
+    box-shadow: 2px 2px 8px rgba(34, 197, 94, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="学习笔记"]:not([fold="1"])::before,
+[custom-deco-style="Study Notes"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #10b981 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="学习笔记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Study Notes"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "📚 学习笔记";
+}
+
+/* 重要提醒 - 警示红火风 */
+[custom-deco-style="重要提醒"]:not([fold="1"]),
+[custom-deco-style="Important Reminder"]:not([fold="1"]) {
+    background: #fff8f8 !important;
+    border: 1px solid #fca5a5 !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #7f1d1d !important;
+    box-shadow: 2px 2px 8px rgba(239, 68, 68, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="重要提醒"]:not([fold="1"])::before,
+[custom-deco-style="Important Reminder"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #ef4444 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="重要提醒"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Important Reminder"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "❗ 重要提醒";
+}
+
+/* 代码示例 - 科技蓝调风 */
+[custom-deco-style="代码示例"]:not([fold="1"]),
+[custom-deco-style="Code Example"]:not([fold="1"]) {
+    background: #f8fbff !important;
+    border: 1px solid #93c5fd !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
     font-family: inherit !important;
     font-size: 16px !important;
     color: #1e3a8a !important;
+    box-shadow: 2px 2px 8px rgba(59, 130, 246, 0.08) !important;
     line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-deco-style="蓝调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="蓝调引述"]::after,
-.b3-typography [custom-deco-style="蓝调引述"]::before,
-.b3-typography [custom-deco-style="蓝调引述"]::after,
-div[custom-deco-style="蓝调引述"]::before,
-div[custom-deco-style="蓝调引述"]::after {
-    display: none !important;
+[custom-deco-style="代码示例"]:not([fold="1"])::before,
+[custom-deco-style="Code Example"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #3b82f6 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="代码示例"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Code Example"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "💻 代码示例";
 }
 
-/* ----- 绿调引述 · 浅绿背景，左侧绿边 ----- */
-.protyle-wysiwyg [custom-deco-style="绿调引述"],
-.b3-typography [custom-deco-style="绿调引述"],
-.protyle-wysiwyg [custom-deco-style="绿调引述"][fold="0"],
-.b3-typography [custom-deco-style="绿调引述"][fold="0"],
-div[custom-deco-style="绿调引述"] {
-    background-color: #f0fdf4 !important;
-    border-left: 4px solid #22c55e !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
+/* 读书摘录 - 温暖书卷风 */
+[custom-deco-style="读书摘录"]:not([fold="1"]),
+[custom-deco-style="Reading Quote"]:not([fold="1"]) {
+    background: #fffdf5 !important;
+    border: 1px solid #fcd34d !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
     font-family: inherit !important;
-    font-size: 15px !important;
-    color: #14532d !important;
+    font-size: 16px !important;
+    color: #713f12 !important;
+    box-shadow: 2px 2px 8px rgba(234, 179, 8, 0.08) !important;
     line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-deco-style="绿调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="绿调引述"]::after,
-.b3-typography [custom-deco-style="绿调引述"]::before,
-.b3-typography [custom-deco-style="绿调引述"]::after,
-div[custom-deco-style="绿调引述"]::before,
-div[custom-deco-style="绿调引述"]::after {
-    display: none !important;
+[custom-deco-style="读书摘录"]:not([fold="1"])::before,
+[custom-deco-style="Reading Quote"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #f59e0b !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="读书摘录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Reading Quote"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "📖 读书摘录";
 }
 
-/* ----- 橙调引述 · 浅橙背景，左侧橙边 ----- */
-.protyle-wysiwyg [custom-deco-style="橙调引述"],
-.b3-typography [custom-deco-style="橙调引述"],
-.protyle-wysiwyg [custom-deco-style="橙调引述"][fold="0"],
-.b3-typography [custom-deco-style="橙调引述"][fold="0"],
-div[custom-deco-style="橙调引述"] {
-    background-color: #fff7ed !important;
-    border-left: 4px solid #f97316 !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
+/* 待办事项 - 简约灰调风 */
+[custom-deco-style="待办事项"]:not([fold="1"]),
+[custom-deco-style="To-Do"]:not([fold="1"]) {
+    background: #fafafa !important;
+    border: 1px solid #d4d4d4 !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #3f3f46 !important;
+    box-shadow: 2px 2px 8px rgba(107, 114, 128, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="待办事项"]:not([fold="1"])::before,
+[custom-deco-style="To-Do"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #6b7280 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="待办事项"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="To-Do"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "✅ 待办事项";
+}
+
+/* 知识点 - 明亮青蓝风 */
+[custom-deco-style="知识点"]:not([fold="1"]),
+[custom-deco-style="Knowledge Point"]:not([fold="1"]) {
+    background: #f6feff !important;
+    border: 1px solid #7dd3fc !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #083344 !important;
+    box-shadow: 2px 2px 8px rgba(6, 182, 212, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="知识点"]:not([fold="1"])::before,
+[custom-deco-style="Knowledge Point"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #06b6d4 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="知识点"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Knowledge Point"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "💡 知识点";
+}
+
+/* 灵感记录 - 柔和粉紫风 */
+[custom-deco-style="灵感记录"]:not([fold="1"]),
+[custom-deco-style="Inspiration"]:not([fold="1"]) {
+    background: #fefbff !important;
+    border: 1px solid #e9d5ff !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 2px 0px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #4c1d95 !important;
+    box-shadow: 2px 2px 8px rgba(139, 92, 246, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="灵感记录"]:not([fold="1"])::before,
+[custom-deco-style="Inspiration"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #a78bfa !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="灵感记录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Inspiration"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "💭 灵感记录";
+}
+
+/* 温馨便签 - 暖黄便签风 */
+[custom-deco-style="温馨便签"]:not([fold="1"]),
+[custom-deco-style="Warm Note"]:not([fold="1"]) {
+    background: #fff9e6 !important;
+    border: 1px solid #ffecb3 !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 20px 0 !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #664d03 !important;
+    box-shadow: 2px 2px 8px rgba(251, 191, 36, 0.1) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="温馨便签"]:not([fold="1"])::before,
+[custom-deco-style="Warm Note"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #fbbf24 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="温馨便签"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Warm Note"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "📝 温馨便签";
+}
+
+/* 项目规划 - 深蓝商务风 */
+[custom-deco-style="项目规划"]:not([fold="1"]),
+[custom-deco-style="Project Plan"]:not([fold="1"]) {
+    background: #f0f9ff !important;
+    border: 1px solid #bae6fd !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 20px 0 !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #0369a1 !important;
+    box-shadow: 2px 2px 8px rgba(37, 99, 235, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="项目规划"]:not([fold="1"])::before,
+[custom-deco-style="Project Plan"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #2563eb !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="项目规划"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Project Plan"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "📋 项目规划";
+}
+
+/* 心情日记 - 柔粉治愈风 */
+[custom-deco-style="心情日记"]:not([fold="1"]),
+[custom-deco-style="Mood Diary"]:not([fold="1"]) {
+    background: #fff7f9 !important;
+    border: 1px solid #fbcfe8 !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 20px 0 !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
+    color: #831843 !important;
+    box-shadow: 2px 2px 8px rgba(236, 72, 153, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="心情日记"]:not([fold="1"])::before,
+[custom-deco-style="Mood Diary"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #ec4899 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="心情日记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Mood Diary"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "🌸 心情日记";
+}
+
+/* 数据统计 - 青绿科技风 */
+[custom-deco-style="数据统计"]:not([fold="1"]),
+[custom-deco-style="Data Stats"]:not([fold="1"]) {
+    background: #ecfdf5 !important;
+    border: 1px solid #7dd3ac !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 20px 0 !important;
+    font-family: 'Consolas', 'Monaco', monospace !important;
+    font-size: 15px !important;
+    color: #065f46 !important;
+    box-shadow: 2px 2px 8px rgba(5, 150, 105, 0.08) !important;
+    line-height: 1.6 !important;
+}
+[custom-deco-style="数据统计"]:not([fold="1"])::before,
+[custom-deco-style="Data Stats"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #059669 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+}
+[custom-deco-style="数据统计"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Data Stats"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "📊 数据统计";
+}
+
+/* 会议纪要 - 米棕专业风 */
+[custom-deco-style="会议纪要"]:not([fold="1"]),
+[custom-deco-style="Meeting Minutes"]:not([fold="1"]) {
+    background: #fdf8f3 !important;
+    border: 1px solid #f5c49a !important;
+    border-radius: 12px !important;
+    padding: 45px 20px 20px 20px !important;
+    position: relative !important;
+    margin: 20px 0 !important;
     font-family: inherit !important;
     font-size: 16px !important;
     color: #7c2d12 !important;
-    line-height: 1.625 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-deco-style="橙调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="橙调引述"]::after,
-.b3-typography [custom-deco-style="橙调引述"]::before,
-.b3-typography [custom-deco-style="橙调引述"]::after,
-div[custom-deco-style="橙调引述"]::before,
-div[custom-deco-style="橙调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 紫调引述 · 浅紫背景，左侧紫边 ----- */
-.protyle-wysiwyg [custom-deco-style="紫调引述"],
-.b3-typography [custom-deco-style="紫调引述"],
-.protyle-wysiwyg [custom-deco-style="紫调引述"][fold="0"],
-.b3-typography [custom-deco-style="紫调引述"][fold="0"],
-div[custom-deco-style="紫调引述"] {
-    background-color: #faf5ff !important;
-    border-left: 4px solid #a855f7 !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
-    color: #6b21a8 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-deco-style="紫调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="紫调引述"]::after,
-.b3-typography [custom-deco-style="紫调引述"]::before,
-.b3-typography [custom-deco-style="紫调引述"]::after,
-div[custom-deco-style="紫调引述"]::before,
-div[custom-deco-style="紫调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 红调引述 · 浅红背景，左侧红边 ----- */
-.protyle-wysiwyg [custom-deco-style="红调引述"],
-.b3-typography [custom-deco-style="红调引述"],
-.protyle-wysiwyg [custom-deco-style="红调引述"][fold="0"],
-.b3-typography [custom-deco-style="红调引述"][fold="0"],
-div[custom-deco-style="红调引述"] {
-    background-color: #fef2f2 !important;
-    border-left: 4px solid #ef4444 !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
-    color: #991b1b !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-deco-style="红调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="红调引述"]::after,
-.b3-typography [custom-deco-style="红调引述"]::before,
-.b3-typography [custom-deco-style="红调引述"]::after,
-div[custom-deco-style="红调引述"]::before,
-div[custom-deco-style="红调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 黄调引述 · 浅黄背景，左侧黄边（6px 粗）----- */
-.protyle-wysiwyg [custom-deco-style="黄调引述"],
-.b3-typography [custom-deco-style="黄调引述"],
-.protyle-wysiwyg [custom-deco-style="黄调引述"][fold="0"],
-.b3-typography [custom-deco-style="黄调引述"][fold="0"],
-div[custom-deco-style="黄调引述"] {
-    background-color: #fefce8 !important;
-    border-left: 4px solid #eab308 !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
-    color: #854d0e !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-deco-style="黄调引述"]::before,
-.protyle-wysiwyg [custom-deco-style="黄调引述"]::after,
-.b3-typography [custom-deco-style="黄调引述"]::before,
-.b3-typography [custom-deco-style="黄调引述"]::after,
-div[custom-deco-style="黄调引述"]::before,
-div[custom-deco-style="黄调引述"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   彩色横条 · 渐变头部卡片
-   统一特征：白底、圆角、投影、渐变头部横条、正文区域
-   支持点击标题编辑（custom-deco-card-icon / custom-deco-card-title）
-   禁用三角形伪元素
------------------------------------------------------------- */
-
-/* ----- 基础模板（所有彩色横条卡片共用父级样式）----- */
-.protyle-wysiwyg [custom-deco-style^="重点总结"],
-.protyle-wysiwyg [custom-deco-style^="新特性"],
-.protyle-wysiwyg [custom-deco-style^="成长笔记"],
-.protyle-wysiwyg [custom-deco-style^="重要提醒"],
-.protyle-wysiwyg [custom-deco-style^="技术要点"],
-.protyle-wysiwyg [custom-deco-style^="今日心情"],
-.protyle-wysiwyg [custom-deco-style^="专业建议"],
-.protyle-wysiwyg [custom-deco-style^="创意灵感"],
-.protyle-wysiwyg [custom-deco-style^="万能提示"],
-.protyle-wysiwyg [custom-deco-style^="信息通知"],
-.protyle-wysiwyg [custom-deco-style^="注意提醒"],
-.protyle-wysiwyg [custom-deco-style^="成功反馈"],
-.b3-typography [custom-deco-style^="重点总结"],
-.b3-typography [custom-deco-style^="新特性"],
-.b3-typography [custom-deco-style^="成长笔记"],
-.b3-typography [custom-deco-style^="重要提醒"],
-.b3-typography [custom-deco-style^="技术要点"],
-.b3-typography [custom-deco-style^="今日心情"],
-.b3-typography [custom-deco-style^="专业建议"],
-.b3-typography [custom-deco-style^="创意灵感"],
-.b3-typography [custom-deco-style^="万能提示"],
-.b3-typography [custom-deco-style^="信息通知"],
-.b3-typography [custom-deco-style^="注意提醒"],
-.b3-typography [custom-deco-style^="成功反馈"],
-div[custom-deco-style^="重点总结"],
-div[custom-deco-style^="新特性"],
-div[custom-deco-style^="成长笔记"],
-div[custom-deco-style^="重要提醒"],
-div[custom-deco-style^="技术要点"],
-div[custom-deco-style^="今日心情"],
-div[custom-deco-style^="专业建议"],
-div[custom-deco-style^="创意灵感"],
-div[custom-deco-style^="万能提示"],
-div[custom-deco-style^="信息通知"],
-div[custom-deco-style^="注意提醒"],
-div[custom-deco-style^="成功反馈"] {
-    background: white !important;
-    border: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    padding: 0 20px 20px 20px !important;
-    position: relative !important;
-    color: #374151 !important;
-    font-size: 15px !important;
+    box-shadow: 2px 2px 8px rgba(245, 158, 11, 0.08) !important;
     line-height: 1.6 !important;
 }
-
-/* 所有彩色横条卡片禁用三角形 */
-.protyle-wysiwyg [custom-deco-style^="重点总结"]::after,
-.protyle-wysiwyg [custom-deco-style^="新特性"]::after,
-.protyle-wysiwyg [custom-deco-style^="成长笔记"]::after,
-.protyle-wysiwyg [custom-deco-style^="重要提醒"]::after,
-.protyle-wysiwyg [custom-deco-style^="技术要点"]::after,
-.protyle-wysiwyg [custom-deco-style^="今日心情"]::after,
-.protyle-wysiwyg [custom-deco-style^="专业建议"]::after,
-.protyle-wysiwyg [custom-deco-style^="创意灵感"]::after,
-.protyle-wysiwyg [custom-deco-style^="万能提示"]::after,
-.protyle-wysiwyg [custom-deco-style^="信息通知"]::after,
-.protyle-wysiwyg [custom-deco-style^="注意提醒"]::after,
-.protyle-wysiwyg [custom-deco-style^="成功反馈"]::after,
-.b3-typography [custom-deco-style^="重点总结"]::after,
-.b3-typography [custom-deco-style^="新特性"]::after,
-.b3-typography [custom-deco-style^="成长笔记"]::after,
-.b3-typography [custom-deco-style^="重要提醒"]::after,
-.b3-typography [custom-deco-style^="技术要点"]::after,
-.b3-typography [custom-deco-style^="今日心情"]::after,
-.b3-typography [custom-deco-style^="专业建议"]::after,
-.b3-typography [custom-deco-style^="创意灵感"]::after,
-.b3-typography [custom-deco-style^="万能提示"]::after,
-.b3-typography [custom-deco-style^="信息通知"]::after,
-.b3-typography [custom-deco-style^="注意提醒"]::after,
-.b3-typography [custom-deco-style^="成功反馈"]::after,
-div[custom-deco-style^="重点总结"]::after,
-div[custom-deco-style^="新特性"]::after,
-div[custom-deco-style^="成长笔记"]::after,
-div[custom-deco-style^="重要提醒"]::after,
-div[custom-deco-style^="技术要点"]::after,
-div[custom-deco-style^="今日心情"]::after,
-div[custom-deco-style^="专业建议"]::after,
-div[custom-deco-style^="创意灵感"]::after,
-div[custom-deco-style^="万能提示"]::after,
-div[custom-deco-style^="信息通知"]::after,
-div[custom-deco-style^="注意提醒"]::after,
-div[custom-deco-style^="成功反馈"]::after {
-    display: none !important;
-}
-
-/* ----- 重点总结 · 粉紫渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="重点总结"]::before,
-.b3-typography [custom-deco-style="重点总结"]::before,
-div[custom-deco-style="重点总结"]::before {
-    content: "🎯 重点总结" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
-    color: white !important;
+[custom-deco-style="会议纪要"]:not([fold="1"])::before,
+[custom-deco-style="Meeting Minutes"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 12px !important;
+    left: 20px !important;
     font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
+    font-weight: 600 !important;
+    color: #f59e0b !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
 }
-.protyle-wysiwyg [custom-deco-style="重点总结"][fold="1"]::before,
-.b3-typography [custom-deco-style="重点总结"][fold="1"]::before,
-div[custom-deco-style="重点总结"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 新特性 · 紫蓝渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="新特性"]::before,
-.b3-typography [custom-deco-style="新特性"]::before,
-div[custom-deco-style="新特性"]::before {
-    content: "🚀 新特性" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #8b5cf6, #3b82f6) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="新特性"][fold="1"]::before,
-.b3-typography [custom-deco-style="新特性"][fold="1"]::before,
-div[custom-deco-style="新特性"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 成长笔记 · 绿渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="成长笔记"]::before,
-.b3-typography [custom-deco-style="成长笔记"]::before,
-div[custom-deco-style="成长笔记"]::before {
-    content: "🌱 成长笔记" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #10b981, #34d399) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="成长笔记"][fold="1"]::before,
-.b3-typography [custom-deco-style="成长笔记"][fold="1"]::before,
-div[custom-deco-style="成长笔记"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 重要提醒 · 橙红渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="重要提醒"]::before,
-.b3-typography [custom-deco-style="重要提醒"]::before,
-div[custom-deco-style="重要提醒"]::before {
-    content: "❗ 重要提醒" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #f97316, #f43f5e) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="重要提醒"][fold="1"]::before,
-.b3-typography [custom-deco-style="重要提醒"][fold="1"]::before,
-div[custom-deco-style="重要提醒"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 技术要点 · 蓝青渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="技术要点"]::before,
-.b3-typography [custom-deco-style="技术要点"]::before,
-div[custom-deco-style="技术要点"]::before {
-    content: "⚙️ 技术要点" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #0ea5e9, #06b6d4) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="技术要点"][fold="1"]::before,
-.b3-typography [custom-deco-style="技术要点"][fold="1"]::before,
-div[custom-deco-style="技术要点"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 今日心情 · 粉渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="今日心情"]::before,
-.b3-typography [custom-deco-style="今日心情"]::before,
-div[custom-deco-style="今日心情"]::before {
-    content: "💭 今日心情" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #ec4899, #f472b6) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="今日心情"][fold="1"]::before,
-.b3-typography [custom-deco-style="今日心情"][fold="1"]::before,
-div[custom-deco-style="今日心情"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 专业建议 · 黑金渐变（深底金字）----- */
-.protyle-wysiwyg [custom-deco-style="专业建议"]::before,
-.b3-typography [custom-deco-style="专业建议"]::before,
-div[custom-deco-style="专业建议"]::before {
-    content: "🏆 专业建议" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #1e1e1e, #333333) !important;
-    color: #ffd700 !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="专业建议"][fold="1"]::before,
-.b3-typography [custom-deco-style="专业建议"][fold="1"]::before,
-div[custom-deco-style="专业建议"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 创意灵感 · 橙黄渐变（深色文字）----- */
-.protyle-wysiwyg [custom-deco-style="创意灵感"]::before,
-.b3-typography [custom-deco-style="创意灵感"]::before,
-div[custom-deco-style="创意灵感"]::before {
-    content: "💡 创意灵感" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
-    color: #1c1917 !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="创意灵感"][fold="1"]::before,
-.b3-typography [custom-deco-style="创意灵感"][fold="1"]::before,
-div[custom-deco-style="创意灵感"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 万能提示 · 三色渐变（粉紫橙）----- */
-.protyle-wysiwyg [custom-deco-style="万能提示"]::before,
-.b3-typography [custom-deco-style="万能提示"]::before,
-div[custom-deco-style="万能提示"]::before {
-    content: "✨ 万能提示" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="万能提示"][fold="1"]::before,
-.b3-typography [custom-deco-style="万能提示"][fold="1"]::before,
-div[custom-deco-style="万能提示"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 信息通知 · 蓝渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="信息通知"]::before,
-.b3-typography [custom-deco-style="信息通知"]::before,
-div[custom-deco-style="信息通知"]::before {
-    content: "ℹ️ 信息通知" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="信息通知"][fold="1"]::before,
-.b3-typography [custom-deco-style="信息通知"][fold="1"]::before,
-div[custom-deco-style="信息通知"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 注意提醒 · 黄渐变（深色文字）----- */
-.protyle-wysiwyg [custom-deco-style="注意提醒"]::before,
-.b3-typography [custom-deco-style="注意提醒"]::before,
-div[custom-deco-style="注意提醒"]::before {
-    content: "⚠️ 注意提醒" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #facc15, #fde047) !important;
-    color: #1e293b !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="注意提醒"][fold="1"]::before,
-.b3-typography [custom-deco-style="注意提醒"][fold="1"]::before,
-div[custom-deco-style="注意提醒"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ----- 成功反馈 · 绿渐变 ----- */
-.protyle-wysiwyg [custom-deco-style="成功反馈"]::before,
-.b3-typography [custom-deco-style="成功反馈"]::before,
-div[custom-deco-style="成功反馈"]::before {
-    content: "✅ 成功反馈" !important;
-    display: flex !important;
-    align-items: center !important;
-    background: linear-gradient(90deg, #22c55e, #4ade80) !important;
-    color: white !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-bottom: 20px !important;
-    width: calc(100% + 40px) !important;
-    border-radius: 12px 12px 0 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
-}
-.protyle-wysiwyg [custom-deco-style="成功反馈"][fold="1"]::before,
-.b3-typography [custom-deco-style="成功反馈"][fold="1"]::before,
-div[custom-deco-style="成功反馈"][fold="1"]::before {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   轻言轻语 · 随记卡片（简约日期风格）
-   白底、灰边框、圆角、顶部标签、底部日期栏
-   支持点击标题编辑（custom-deco-card-icon / custom-deco-card-title）
-   支持自定义日期（custom-deco-card-date）
-   禁用三角形伪元素
------------------------------------------------------------- */
-
-.protyle-wysiwyg [custom-deco-style="随记"],
-.b3-typography [custom-deco-style="随记"],
-.protyle-wysiwyg [custom-deco-style="随记"][fold="0"],
-.b3-typography [custom-deco-style="随记"][fold="0"],
-div[custom-deco-style="随记"] {
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
-    padding: 0 20px 0 20px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    box-shadow: none !important;
-    color: #333 !important;
-    font-size: 15px !important;
-    line-height: 1.7 !important;
-}
-
-/* 禁用三角形 */
-.protyle-wysiwyg [custom-deco-style="随记"]::after,
-.b3-typography [custom-deco-style="随记"]::after,
-div[custom-deco-style="随记"]::after {
-    display: none !important;
-}
-
-/* 顶部标签：💬 随记（绿色） */
-.protyle-wysiwyg [custom-deco-style="随记"]::before,
-.b3-typography [custom-deco-style="随记"]::before,
-div[custom-deco-style="随记"]::before {
-    content: "💬 随记" !important;
-    display: block !important;
-    padding: 16px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    width: calc(100% + 40px) !important;
-    color: #10b981 !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    background: none !important;
-    border-bottom: none !important;
-    box-sizing: border-box !important;
-    line-height: 1.4 !important;
-}
-
-/* 底部日期栏（动态获取 custom-deco-card-date，若不存在则显示 2026-2-12） */
-.protyle-wysiwyg [custom-deco-style="随记"]::after,
-.b3-typography [custom-deco-style="随记"]::after,
-div[custom-deco-style="随记"]::after {
-    content: attr(custom-deco-card-date, "2026-2-12") !important;
-    display: block !important;
-    padding: 12px 20px !important;
-    margin-left: -20px !important;
-    margin-right: -20px !important;
-    margin-top: 16px !important;
-    width: calc(100% + 40px) !important;
-    color: #9ca3af !important;
-    font-size: 13px !important;
-    text-align: right !important;
-    border-top: 1px solid #f3f4f6 !important;
-    background: none !important;
-    box-sizing: border-box !important;
-}
-
-/* 折叠状态：隐藏所有伪元素 */
-.protyle-wysiwyg [custom-deco-style="随记"][fold="1"]::before,
-.b3-typography [custom-deco-style="随记"][fold="1"]::before,
-div[custom-deco-style="随记"][fold="1"]::before,
-.protyle-wysiwyg [custom-deco-style="随记"][fold="1"]::after,
-.b3-typography [custom-deco-style="随记"][fold="1"]::after,
-div[custom-deco-style="随记"][fold="1"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   轻言轻语 · 接收消息（左侧气泡）
-   白底，圆角 8px 8px 8px 0，左对齐，自适应宽度
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="接收消息"],
-.b3-typography [custom-deco-style="接收消息"],
-.protyle-wysiwyg [custom-deco-style="接收消息"][fold="0"],
-.b3-typography [custom-deco-style="接收消息"][fold="0"],
-div[custom-deco-style="接收消息"] {
-    background: white !important;
-    border-radius: 8px 8px 8px 0 !important;
-    padding: 12px 20px !important;
-    margin-bottom: 12px;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-    display: inline-block !important;
-    max-width: 1000px !important;
-    width: auto !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-    color: #333 !important;
-    word-break: break-word !important;
-    border: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="接收消息"]::before,
-.protyle-wysiwyg [custom-deco-style="接收消息"]::after,
-.b3-typography [custom-deco-style="接收消息"]::before,
-.b3-typography [custom-deco-style="接收消息"]::after,
-div[custom-deco-style="接收消息"]::before,
-div[custom-deco-style="接收消息"]::after {
-    display: none !important;
-}
-
-/* ------------------------------------------------------------
-   轻言轻语 · 发送消息（右侧气泡）
-   绿底（#9eea6a），圆角 8px 8px 0 8px，右对齐，自适应宽度
------------------------------------------------------------- */
-.protyle-wysiwyg [custom-deco-style="发送消息"],
-.b3-typography [custom-deco-style="发送消息"],
-.protyle-wysiwyg [custom-deco-style="发送消息"][fold="0"],
-.b3-typography [custom-deco-style="发送消息"][fold="0"],
-div[custom-deco-style="发送消息"] {
-    background: #9eea6a !important;
-    border-radius: 8px 8px 0 8px !important;
-    padding: 12px 20px !important;
-    margin-bottom: 12px;
-    margin-left: auto !important;
-    margin-right: 0 !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-    display: inline-block !important;
-    max-width: 1000px !important;
-    width: auto !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    line-height: 1.6 !important;
-    color: #1e293b !important;
-    word-break: break-word !important;
-    border: none !important;
-}
-.protyle-wysiwyg [custom-deco-style="发送消息"]::before,
-.protyle-wysiwyg [custom-deco-style="发送消息"]::after,
-.b3-typography [custom-deco-style="发送消息"]::before,
-.b3-typography [custom-deco-style="发送消息"]::after,
-div[custom-deco-style="发送消息"]::before,
-div[custom-deco-style="发送消息"]::after {
-    display: none !important;
+[custom-deco-style="会议纪要"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
+[custom-deco-style="Meeting Minutes"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "💼 会议纪要";
 }
