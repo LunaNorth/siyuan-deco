@@ -6,7 +6,7 @@
     "minAppVersion": "3.0.0",
     "disabledInPublish": false,
     "backends": ["all"],
-    "frontends": ["desktop"],
+    "frontends": ["all"],
     "displayName": {
         "default": "Light Decor Note",
         "zh_CN": "轻饰笔记"
@@ -16,7 +16,7 @@
         "zh_CN": "通过属性自定义块样式的思源笔记插件"
     },
     "readme": {
-        "default": "README_zh_CN.md",
+        "default": "README.md",
         "zh_CN": "README_zh_CN.md"
     },
     "keywords": ["卡片样式", "属性样式", "笔记美化"],

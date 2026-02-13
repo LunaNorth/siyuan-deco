@@ -2,38 +2,37 @@
    🔥 动态标题覆盖 · 雷打不动
    优先级拉满，保证自定义图标和标题永远显示
 ------------------------------------------------------------ */
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-style][data-card-icon][data-card-title]::before,
-body .protyle-wysiwyg div[custom-style][data-card-icon][data-card-title]::before {
-    content: attr(data-card-icon) " " attr(data-card-title) !important;
+body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-icon][custom-deco-card-title]::before,
+body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-icon][custom-deco-card-title]::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title) !important;
 }
 
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-style][data-card-title]:not([data-card-icon])::before,
-body .protyle-wysiwyg div[custom-style][data-card-title]:not([data-card-icon])::before {
-    content: attr(data-card-title) !important;
+body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-title]:not([custom-deco-card-icon])::before,
+body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-title]:not([custom-deco-card-icon])::before {
+    content: attr(custom-deco-card-title) !important;
 }
 
-body .protyle-wysiwyg .protyle-wysiwyg__p[custom-style][data-card-icon]:not([data-card-title])::before,
-body .protyle-wysiwyg div[custom-style][data-card-icon]:not([data-card-title])::before {
-    content: attr(data-card-icon) !important;
+body .protyle-wysiwyg .protyle-wysiwyg__p[custom-deco-style][custom-deco-card-icon]:not([custom-deco-card-title])::before,
+body .protyle-wysiwyg div[custom-deco-style][custom-deco-card-icon]:not([custom-deco-card-title])::before {
+    content: attr(custom-deco-card-icon) !important;
 }
 
 /* 强制伪元素显示，防止被其他样式覆盖 */
-.protyle-wysiwyg [custom-style]::before {
+.protyle-wysiwyg [custom-deco-style]::before {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
 }
 
-
 /* ------------------------------------------------------------
    1. 创意卡片 · 紫调灵感
    标题：✨ 创意灵感 · 三角形：浅紫 (#c4b5fd)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="创意卡片"],
-.b3-typography [custom-style="创意卡片"],
-.protyle-wysiwyg [custom-style="创意卡片"][fold="0"],
-.b3-typography [custom-style="创意卡片"][fold="0"],
-div[custom-style="创意卡片"] {
+.protyle-wysiwyg [custom-deco-style="创意卡片"],
+.b3-typography [custom-deco-style="创意卡片"],
+.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="0"],
+.b3-typography [custom-deco-style="创意卡片"][fold="0"],
+div[custom-deco-style="创意卡片"] {
     background-color: #f5f3ff !important;
     background: #f5f3ff !important;
     border: 1px solid #ddd6fe !important;
@@ -47,9 +46,9 @@ div[custom-style="创意卡片"] {
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="创意卡片"]::before,
-.b3-typography [custom-style="创意卡片"]::before,
-div[custom-style="创意卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="创意卡片"]::before,
+.b3-typography [custom-deco-style="创意卡片"]::before,
+div[custom-deco-style="创意卡片"]::before {
     content: "✨ 创意灵感" !important;
     display: block !important;
     font-size: 16px !important;
@@ -60,9 +59,9 @@ div[custom-style="创意卡片"]::before {
     font-family: 'Microsoft YaHei', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="创意卡片"]::after,
-.b3-typography [custom-style="创意卡片"]::after,
-div[custom-style="创意卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="创意卡片"]::after,
+.b3-typography [custom-deco-style="创意卡片"]::after,
+div[custom-deco-style="创意卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -74,10 +73,10 @@ div[custom-style="创意卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="创意卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="创意卡片"][fold="1"]::after,
-.b3-typography [custom-style="创意卡片"][fold="1"]::before,
-.b3-typography [custom-style="创意卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="创意卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="创意卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="创意卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -85,11 +84,11 @@ div[custom-style="创意卡片"]::after {
    2. 深色卡片 · 暗夜质感
    标题：🌙 深夜创作 · 三角形：深灰 (#4b5563)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="深色卡片"],
-.b3-typography [custom-style="深色卡片"],
-.protyle-wysiwyg [custom-style="深色卡片"][fold="0"],
-.b3-typography [custom-style="深色卡片"][fold="0"],
-div[custom-style="深色卡片"] {
+.protyle-wysiwyg [custom-deco-style="深色卡片"],
+.b3-typography [custom-deco-style="深色卡片"],
+.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="0"],
+.b3-typography [custom-deco-style="深色卡片"][fold="0"],
+div[custom-deco-style="深色卡片"] {
     background-color: #1e1e1e !important;
     background: #1e1e1e !important;
     border: 1px solid #4b5563 !important;
@@ -103,9 +102,9 @@ div[custom-style="深色卡片"] {
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="深色卡片"]::before,
-.b3-typography [custom-style="深色卡片"]::before,
-div[custom-style="深色卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="深色卡片"]::before,
+.b3-typography [custom-deco-style="深色卡片"]::before,
+div[custom-deco-style="深色卡片"]::before {
     content: "🌙 深夜创作" !important;
     display: block !important;
     font-size: 16px !important;
@@ -116,9 +115,9 @@ div[custom-style="深色卡片"]::before {
     font-family: 'Microsoft YaHei', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="深色卡片"]::after,
-.b3-typography [custom-style="深色卡片"]::after,
-div[custom-style="深色卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="深色卡片"]::after,
+.b3-typography [custom-deco-style="深色卡片"]::after,
+div[custom-deco-style="深色卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -130,10 +129,10 @@ div[custom-style="深色卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="深色卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="深色卡片"][fold="1"]::after,
-.b3-typography [custom-style="深色卡片"][fold="1"]::before,
-.b3-typography [custom-style="深色卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="深色卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="深色卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="深色卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -141,11 +140,11 @@ div[custom-style="深色卡片"]::after {
    3. 极简卡片 · 干净留白
    标题：🍃 极简生活 · 三角形：浅绿 (#86efac)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="极简卡片"],
-.b3-typography [custom-style="极简卡片"],
-.protyle-wysiwyg [custom-style="极简卡片"][fold="0"],
-.b3-typography [custom-style="极简卡片"][fold="0"],
-div[custom-style="极简卡片"] {
+.protyle-wysiwyg [custom-deco-style="极简卡片"],
+.b3-typography [custom-deco-style="极简卡片"],
+.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="0"],
+.b3-typography [custom-deco-style="极简卡片"][fold="0"],
+div[custom-deco-style="极简卡片"] {
     background-color: #ffffff !important;
     background: #ffffff !important;
     border: 1px solid #d1d5db !important;
@@ -159,9 +158,9 @@ div[custom-style="极简卡片"] {
     box-shadow: none !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="极简卡片"]::before,
-.b3-typography [custom-style="极简卡片"]::before,
-div[custom-style="极简卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="极简卡片"]::before,
+.b3-typography [custom-deco-style="极简卡片"]::before,
+div[custom-deco-style="极简卡片"]::before {
     content: "🍃 极简生活" !important;
     display: block !important;
     font-size: 15px !important;
@@ -172,9 +171,9 @@ div[custom-style="极简卡片"]::before {
     font-family: 'Microsoft YaHei', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="极简卡片"]::after,
-.b3-typography [custom-style="极简卡片"]::after,
-div[custom-style="极简卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="极简卡片"]::after,
+.b3-typography [custom-deco-style="极简卡片"]::after,
+div[custom-deco-style="极简卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -186,10 +185,10 @@ div[custom-style="极简卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="极简卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="极简卡片"][fold="1"]::after,
-.b3-typography [custom-style="极简卡片"][fold="1"]::before,
-.b3-typography [custom-style="极简卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="极简卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="极简卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="极简卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -197,11 +196,11 @@ div[custom-style="极简卡片"]::after {
    4. 清新卡片 · 氧气薄荷
    标题：💧 薄荷日记 · 三角形：浅蓝 (#7dd3fc)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="清新卡片"],
-.b3-typography [custom-style="清新卡片"],
-.protyle-wysiwyg [custom-style="清新卡片"][fold="0"],
-.b3-typography [custom-style="清新卡片"][fold="0"],
-div[custom-style="清新卡片"] {
+.protyle-wysiwyg [custom-deco-style="清新卡片"],
+.b3-typography [custom-deco-style="清新卡片"],
+.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="0"],
+.b3-typography [custom-deco-style="清新卡片"][fold="0"],
+div[custom-deco-style="清新卡片"] {
     background-color: #ecfeff !important;
     background: #ecfeff !important;
     border: 1px solid #a5f3fc !important;
@@ -215,9 +214,9 @@ div[custom-style="清新卡片"] {
     box-shadow: 0 4px 8px rgba(34, 211, 238, 0.1) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="清新卡片"]::before,
-.b3-typography [custom-style="清新卡片"]::before,
-div[custom-style="清新卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="清新卡片"]::before,
+.b3-typography [custom-deco-style="清新卡片"]::before,
+div[custom-deco-style="清新卡片"]::before {
     content: "💧 薄荷日记" !important;
     display: block !important;
     font-size: 16px !important;
@@ -228,9 +227,9 @@ div[custom-style="清新卡片"]::before {
     font-family: 'Microsoft YaHei', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="清新卡片"]::after,
-.b3-typography [custom-style="清新卡片"]::after,
-div[custom-style="清新卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="清新卡片"]::after,
+.b3-typography [custom-deco-style="清新卡片"]::after,
+div[custom-deco-style="清新卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -242,10 +241,10 @@ div[custom-style="清新卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="清新卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="清新卡片"][fold="1"]::after,
-.b3-typography [custom-style="清新卡片"][fold="1"]::before,
-.b3-typography [custom-style="清新卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="清新卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="清新卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="清新卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -253,11 +252,11 @@ div[custom-style="清新卡片"]::after {
    5. 复古卡片 · 旧纸质感
    标题：📜 时光手札 · 三角形：暖棕 (#b45309)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="复古卡片"],
-.b3-typography [custom-style="复古卡片"],
-.protyle-wysiwyg [custom-style="复古卡片"][fold="0"],
-.b3-typography [custom-style="复古卡片"][fold="0"],
-div[custom-style="复古卡片"] {
+.protyle-wysiwyg [custom-deco-style="复古卡片"],
+.b3-typography [custom-deco-style="复古卡片"],
+.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="0"],
+.b3-typography [custom-deco-style="复古卡片"][fold="0"],
+div[custom-deco-style="复古卡片"] {
     background-color: #fffbeb !important;
     background: #fffbeb !important;
     border: 1px solid #d97706 !important;
@@ -271,9 +270,9 @@ div[custom-style="复古卡片"] {
     box-shadow: 4px 4px 0 rgba(180, 83, 9, 0.1) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="复古卡片"]::before,
-.b3-typography [custom-style="复古卡片"]::before,
-div[custom-style="复古卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="复古卡片"]::before,
+.b3-typography [custom-deco-style="复古卡片"]::before,
+div[custom-deco-style="复古卡片"]::before {
     content: "📜 时光手札" !important;
     display: block !important;
     font-size: 17px !important;
@@ -285,9 +284,9 @@ div[custom-style="复古卡片"]::before {
     width: 100% !important;
     text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
-.protyle-wysiwyg [custom-style="复古卡片"]::after,
-.b3-typography [custom-style="复古卡片"]::after,
-div[custom-style="复古卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="复古卡片"]::after,
+.b3-typography [custom-deco-style="复古卡片"]::after,
+div[custom-deco-style="复古卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -299,10 +298,10 @@ div[custom-style="复古卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="复古卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="复古卡片"][fold="1"]::after,
-.b3-typography [custom-style="复古卡片"][fold="1"]::before,
-.b3-typography [custom-style="复古卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="复古卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="复古卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="复古卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -310,11 +309,11 @@ div[custom-style="复古卡片"]::after {
    6. 霓虹卡片 · 荧光酷炫
    标题：⚡ 霓虹光轨 · 三角形：荧光绿 (#a3e635)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="霓虹卡片"],
-.b3-typography [custom-style="霓虹卡片"],
-.protyle-wysiwyg [custom-style="霓虹卡片"][fold="0"],
-.b3-typography [custom-style="霓虹卡片"][fold="0"],
-div[custom-style="霓虹卡片"] {
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"],
+.b3-typography [custom-deco-style="霓虹卡片"],
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="0"],
+.b3-typography [custom-deco-style="霓虹卡片"][fold="0"],
+div[custom-deco-style="霓虹卡片"] {
     background-color: #0f172a !important;
     background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%) !important;
     border: 1px solid #4ade80 !important;
@@ -328,9 +327,9 @@ div[custom-style="霓虹卡片"] {
     box-shadow: 0 0 12px rgba(74, 222, 128, 0.4) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="霓虹卡片"]::before,
-.b3-typography [custom-style="霓虹卡片"]::before,
-div[custom-style="霓虹卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"]::before,
+.b3-typography [custom-deco-style="霓虹卡片"]::before,
+div[custom-deco-style="霓虹卡片"]::before {
     content: "⚡ 霓虹光轨" !important;
     display: block !important;
     font-size: 16px !important;
@@ -342,9 +341,9 @@ div[custom-style="霓虹卡片"]::before {
     text-shadow: 0 0 6px #84cc16 !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="霓虹卡片"]::after,
-.b3-typography [custom-style="霓虹卡片"]::after,
-div[custom-style="霓虹卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"]::after,
+.b3-typography [custom-deco-style="霓虹卡片"]::after,
+div[custom-deco-style="霓虹卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -356,10 +355,10 @@ div[custom-style="霓虹卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="霓虹卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="霓虹卡片"][fold="1"]::after,
-.b3-typography [custom-style="霓虹卡片"][fold="1"]::before,
-.b3-typography [custom-style="霓虹卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="霓虹卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="霓虹卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="霓虹卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -367,11 +366,11 @@ div[custom-style="霓虹卡片"]::after {
    7. 毛玻璃卡片 · 朦胧高级
    标题：❄️ 浮光掠影 · 三角形：冰蓝 (#7dd3fc)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="毛玻璃卡片"],
-.b3-typography [custom-style="毛玻璃卡片"],
-.protyle-wysiwyg [custom-style="毛玻璃卡片"][fold="0"],
-.b3-typography [custom-style="毛玻璃卡片"][fold="0"],
-div[custom-style="毛玻璃卡片"] {
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"],
+.b3-typography [custom-deco-style="毛玻璃卡片"],
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="0"],
+.b3-typography [custom-deco-style="毛玻璃卡片"][fold="0"],
+div[custom-deco-style="毛玻璃卡片"] {
     background: rgba(255, 255, 255, 0.25) !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
@@ -386,9 +385,9 @@ div[custom-style="毛玻璃卡片"] {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="毛玻璃卡片"]::before,
-.b3-typography [custom-style="毛玻璃卡片"]::before,
-div[custom-style="毛玻璃卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"]::before,
+.b3-typography [custom-deco-style="毛玻璃卡片"]::before,
+div[custom-deco-style="毛玻璃卡片"]::before {
     content: "❄️ 浮光掠影" !important;
     display: block !important;
     font-size: 16px !important;
@@ -400,9 +399,9 @@ div[custom-style="毛玻璃卡片"]::before {
     letter-spacing: 2px !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="毛玻璃卡片"]::after,
-.b3-typography [custom-style="毛玻璃卡片"]::after,
-div[custom-style="毛玻璃卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"]::after,
+.b3-typography [custom-deco-style="毛玻璃卡片"]::after,
+div[custom-deco-style="毛玻璃卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -415,10 +414,10 @@ div[custom-style="毛玻璃卡片"]::after {
     background: none !important;
     opacity: 0.8 !important;
 }
-.protyle-wysiwyg [custom-style="毛玻璃卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="毛玻璃卡片"][fold="1"]::after,
-.b3-typography [custom-style="毛玻璃卡片"][fold="1"]::before,
-.b3-typography [custom-style="毛玻璃卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="毛玻璃卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="毛玻璃卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="毛玻璃卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -426,11 +425,11 @@ div[custom-style="毛玻璃卡片"]::after {
    8. 暖木卡片 · 温馨治愈
    标题：🪵 原木时光 · 三角形：驼色 (#a78a7c)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="暖木卡片"],
-.b3-typography [custom-style="暖木卡片"],
-.protyle-wysiwyg [custom-style="暖木卡片"][fold="0"],
-.b3-typography [custom-style="暖木卡片"][fold="0"],
-div[custom-style="暖木卡片"] {
+.protyle-wysiwyg [custom-deco-style="暖木卡片"],
+.b3-typography [custom-deco-style="暖木卡片"],
+.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="0"],
+.b3-typography [custom-deco-style="暖木卡片"][fold="0"],
+div[custom-deco-style="暖木卡片"] {
     background-color: #faf6e9 !important;
     background: linear-gradient(135deg, #faf6e9 0%, #f5efe6 100%) !important;
     border: 1px solid #d7ccc8 !important;
@@ -444,9 +443,9 @@ div[custom-style="暖木卡片"] {
     box-shadow: 2px 4px 8px rgba(109, 76, 65, 0.1) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="暖木卡片"]::before,
-.b3-typography [custom-style="暖木卡片"]::before,
-div[custom-style="暖木卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="暖木卡片"]::before,
+.b3-typography [custom-deco-style="暖木卡片"]::before,
+div[custom-deco-style="暖木卡片"]::before {
     content: "🪵 原木时光" !important;
     display: block !important;
     font-size: 16px !important;
@@ -457,9 +456,9 @@ div[custom-style="暖木卡片"]::before {
     font-family: 'Merriweather', serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="暖木卡片"]::after,
-.b3-typography [custom-style="暖木卡片"]::after,
-div[custom-style="暖木卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="暖木卡片"]::after,
+.b3-typography [custom-deco-style="暖木卡片"]::after,
+div[custom-deco-style="暖木卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -471,10 +470,10 @@ div[custom-style="暖木卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="暖木卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="暖木卡片"][fold="1"]::after,
-.b3-typography [custom-style="暖木卡片"][fold="1"]::before,
-.b3-typography [custom-style="暖木卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="暖木卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="暖木卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="暖木卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -482,11 +481,11 @@ div[custom-style="暖木卡片"]::after {
    9. 海洋卡片 · 深邃宁静
    标题：🌊 碧波深海 · 三角形：深海蓝 (#0284c7)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="海洋卡片"],
-.b3-typography [custom-style="海洋卡片"],
-.protyle-wysiwyg [custom-style="海洋卡片"][fold="0"],
-.b3-typography [custom-style="海洋卡片"][fold="0"],
-div[custom-style="海洋卡片"] {
+.protyle-wysiwyg [custom-deco-style="海洋卡片"],
+.b3-typography [custom-deco-style="海洋卡片"],
+.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="0"],
+.b3-typography [custom-deco-style="海洋卡片"][fold="0"],
+div[custom-deco-style="海洋卡片"] {
     background: linear-gradient(145deg, #0c4a6e 0%, #075985 100%) !important;
     border: 1px solid #38bdf8 !important;
     border-radius: 12px !important;
@@ -499,9 +498,9 @@ div[custom-style="海洋卡片"] {
     box-shadow: 0 6px 14px rgba(2, 132, 199, 0.3) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="海洋卡片"]::before,
-.b3-typography [custom-style="海洋卡片"]::before,
-div[custom-style="海洋卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="海洋卡片"]::before,
+.b3-typography [custom-deco-style="海洋卡片"]::before,
+div[custom-deco-style="海洋卡片"]::before {
     content: "🌊 碧波深海" !important;
     display: block !important;
     font-size: 16px !important;
@@ -512,9 +511,9 @@ div[custom-style="海洋卡片"]::before {
     font-family: 'Poppins', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="海洋卡片"]::after,
-.b3-typography [custom-style="海洋卡片"]::after,
-div[custom-style="海洋卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="海洋卡片"]::after,
+.b3-typography [custom-deco-style="海洋卡片"]::after,
+div[custom-deco-style="海洋卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -526,10 +525,10 @@ div[custom-style="海洋卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="海洋卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="海洋卡片"][fold="1"]::after,
-.b3-typography [custom-style="海洋卡片"][fold="1"]::before,
-.b3-typography [custom-style="海洋卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="海洋卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="海洋卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="海洋卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -537,11 +536,11 @@ div[custom-style="海洋卡片"]::after {
    10. 糖果卡片 · 甜美可爱
     标题：🍬 蜜糖派对 · 三角形：樱花粉 (#f9a8d4)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="糖果卡片"],
-.b3-typography [custom-style="糖果卡片"],
-.protyle-wysiwyg [custom-style="糖果卡片"][fold="0"],
-.b3-typography [custom-style="糖果卡片"][fold="0"],
-div[custom-style="糖果卡片"] {
+.protyle-wysiwyg [custom-deco-style="糖果卡片"],
+.b3-typography [custom-deco-style="糖果卡片"],
+.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="0"],
+.b3-typography [custom-deco-style="糖果卡片"][fold="0"],
+div[custom-deco-style="糖果卡片"] {
     background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 100%) !important;
     border: 2px solid #f9a8d4 !important;
     border-radius: 24px !important;
@@ -554,9 +553,9 @@ div[custom-style="糖果卡片"] {
     box-shadow: 0 8px 0 rgba(249, 168, 212, 0.3) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="糖果卡片"]::before,
-.b3-typography [custom-style="糖果卡片"]::before,
-div[custom-style="糖果卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="糖果卡片"]::before,
+.b3-typography [custom-deco-style="糖果卡片"]::before,
+div[custom-deco-style="糖果卡片"]::before {
     content: "🍬 蜜糖派对" !important;
     display: block !important;
     font-size: 17px !important;
@@ -567,9 +566,9 @@ div[custom-style="糖果卡片"]::before {
     font-family: 'Comic Sans MS', cursive !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="糖果卡片"]::after,
-.b3-typography [custom-style="糖果卡片"]::after,
-div[custom-style="糖果卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="糖果卡片"]::after,
+.b3-typography [custom-deco-style="糖果卡片"]::after,
+div[custom-deco-style="糖果卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -581,10 +580,10 @@ div[custom-style="糖果卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="糖果卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="糖果卡片"][fold="1"]::after,
-.b3-typography [custom-style="糖果卡片"][fold="1"]::before,
-.b3-typography [custom-style="糖果卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="糖果卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="糖果卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="糖果卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -592,11 +591,11 @@ div[custom-style="糖果卡片"]::after {
    11. 科幻卡片 · 未来代码
     标题：🤖 赛博纪元 · 三角形：电光蓝 (#38bdf8)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="科幻卡片"],
-.b3-typography [custom-style="科幻卡片"],
-.protyle-wysiwyg [custom-style="科幻卡片"][fold="0"],
-.b3-typography [custom-style="科幻卡片"][fold="0"],
-div[custom-style="科幻卡片"] {
+.protyle-wysiwyg [custom-deco-style="科幻卡片"],
+.b3-typography [custom-deco-style="科幻卡片"],
+.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="0"],
+.b3-typography [custom-deco-style="科幻卡片"][fold="0"],
+div[custom-deco-style="科幻卡片"] {
     background: #0b1120 !important;
     border: 1px solid #22d3ee !important;
     border-radius: 8px !important;
@@ -609,9 +608,9 @@ div[custom-style="科幻卡片"] {
     box-shadow: 0 0 0 1px #22d3ee inset, 0 0 12px rgba(34, 211, 238, 0.2) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="科幻卡片"]::before,
-.b3-typography [custom-style="科幻卡片"]::before,
-div[custom-style="科幻卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="科幻卡片"]::before,
+.b3-typography [custom-deco-style="科幻卡片"]::before,
+div[custom-deco-style="科幻卡片"]::before {
     content: "🤖 赛博纪元" !important;
     display: block !important;
     font-size: 15px !important;
@@ -624,9 +623,9 @@ div[custom-style="科幻卡片"]::before {
     letter-spacing: 2px !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="科幻卡片"]::after,
-.b3-typography [custom-style="科幻卡片"]::after,
-div[custom-style="科幻卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="科幻卡片"]::after,
+.b3-typography [custom-deco-style="科幻卡片"]::after,
+div[custom-deco-style="科幻卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -638,10 +637,10 @@ div[custom-style="科幻卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="科幻卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="科幻卡片"][fold="1"]::after,
-.b3-typography [custom-style="科幻卡片"][fold="1"]::before,
-.b3-typography [custom-style="科幻卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="科幻卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="科幻卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="科幻卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -649,11 +648,11 @@ div[custom-style="科幻卡片"]::after {
    12. 自然卡片 · 森林呼吸
     标题：🌿 绿野仙踪 · 三角形：森林绿 (#4ade80)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="自然卡片"],
-.b3-typography [custom-style="自然卡片"],
-.protyle-wysiwyg [custom-style="自然卡片"][fold="0"],
-.b3-typography [custom-style="自然卡片"][fold="0"],
-div[custom-style="自然卡片"] {
+.protyle-wysiwyg [custom-deco-style="自然卡片"],
+.b3-typography [custom-deco-style="自然卡片"],
+.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="0"],
+.b3-typography [custom-deco-style="自然卡片"][fold="0"],
+div[custom-deco-style="自然卡片"] {
     background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%) !important;
     border: 1px solid #86efac !important;
     border-radius: 16px !important;
@@ -666,9 +665,9 @@ div[custom-style="自然卡片"] {
     box-shadow: 0 4px 10px rgba(74, 222, 128, 0.2) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="自然卡片"]::before,
-.b3-typography [custom-style="自然卡片"]::before,
-div[custom-style="自然卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="自然卡片"]::before,
+.b3-typography [custom-deco-style="自然卡片"]::before,
+div[custom-deco-style="自然卡片"]::before {
     content: "🌿 绿野仙踪" !important;
     display: block !important;
     font-size: 16px !important;
@@ -679,9 +678,9 @@ div[custom-style="自然卡片"]::before {
     font-family: 'Quicksand', sans-serif !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="自然卡片"]::after,
-.b3-typography [custom-style="自然卡片"]::after,
-div[custom-style="自然卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="自然卡片"]::after,
+.b3-typography [custom-deco-style="自然卡片"]::after,
+div[custom-deco-style="自然卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -693,10 +692,10 @@ div[custom-style="自然卡片"]::after {
     z-index: 10 !important;
     background: none !important;
 }
-.protyle-wysiwyg [custom-style="自然卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="自然卡片"][fold="1"]::after,
-.b3-typography [custom-style="自然卡片"][fold="1"]::before,
-.b3-typography [custom-style="自然卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="自然卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="自然卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="自然卡片"][fold="1"]::after {
     display: none !important;
 }
 
@@ -704,11 +703,11 @@ div[custom-style="自然卡片"]::after {
    13. 优雅卡片 · 简约轻奢
     标题：🕊️ 雅致时光 · 三角形：香槟金 (#d4af37)
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="优雅卡片"],
-.b3-typography [custom-style="优雅卡片"],
-.protyle-wysiwyg [custom-style="优雅卡片"][fold="0"],
-.b3-typography [custom-style="优雅卡片"][fold="0"],
-div[custom-style="优雅卡片"] {
+.protyle-wysiwyg [custom-deco-style="优雅卡片"],
+.b3-typography [custom-deco-style="优雅卡片"],
+.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="0"],
+.b3-typography [custom-deco-style="优雅卡片"][fold="0"],
+div[custom-deco-style="优雅卡片"] {
     background: #faf9f6 !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 8px !important;
@@ -721,9 +720,9 @@ div[custom-style="优雅卡片"] {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
     overflow: visible !important;
 }
-.protyle-wysiwyg [custom-style="优雅卡片"]::before,
-.b3-typography [custom-style="优雅卡片"]::before,
-div[custom-style="优雅卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="优雅卡片"]::before,
+.b3-typography [custom-deco-style="优雅卡片"]::before,
+div[custom-deco-style="优雅卡片"]::before {
     content: "🕊️ 雅致时光" !important;
     display: block !important;
     font-size: 17px !important;
@@ -735,9 +734,9 @@ div[custom-style="优雅卡片"]::before {
     letter-spacing: 1px !important;
     width: 100% !important;
 }
-.protyle-wysiwyg [custom-style="优雅卡片"]::after,
-.b3-typography [custom-style="优雅卡片"]::after,
-div[custom-style="优雅卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="优雅卡片"]::after,
+.b3-typography [custom-deco-style="优雅卡片"]::after,
+div[custom-deco-style="优雅卡片"]::after {
     content: "" !important;
     position: absolute !important;
     top: 0 !important;
@@ -750,24 +749,22 @@ div[custom-style="优雅卡片"]::after {
     background: none !important;
     opacity: 0.6 !important;
 }
-.protyle-wysiwyg [custom-style="优雅卡片"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="优雅卡片"][fold="1"]::after,
-.b3-typography [custom-style="优雅卡片"][fold="1"]::before,
-.b3-typography [custom-style="优雅卡片"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="优雅卡片"][fold="1"]::after,
+.b3-typography [custom-deco-style="优雅卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="优雅卡片"][fold="1"]::after {
     display: none !important;
 }
-
-
 
 /* ------------------------------------------------------------
    双色分割 · 操作成功卡片
    头部：浅绿底，深绿字，✅ 操作成功
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="操作成功卡片"],
-.b3-typography [custom-style="操作成功卡片"],
-.protyle-wysiwyg [custom-style="操作成功卡片"][fold="0"],
-.b3-typography [custom-style="操作成功卡片"][fold="0"],
-div[custom-style="操作成功卡片"] {
+.protyle-wysiwyg [custom-deco-style="操作成功卡片"],
+.b3-typography [custom-deco-style="操作成功卡片"],
+.protyle-wysiwyg [custom-deco-style="操作成功卡片"][fold="0"],
+.b3-typography [custom-deco-style="操作成功卡片"][fold="0"],
+div[custom-deco-style="操作成功卡片"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -781,9 +778,9 @@ div[custom-style="操作成功卡片"] {
     font-size: 15px !important;
     line-height: 1.6 !important;
 }
-.protyle-wysiwyg [custom-style="操作成功卡片"]::before,
-.b3-typography [custom-style="操作成功卡片"]::before,
-div[custom-style="操作成功卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="操作成功卡片"]::before,
+.b3-typography [custom-deco-style="操作成功卡片"]::before,
+div[custom-deco-style="操作成功卡片"]::before {
     content: "✅ 操作成功" !important;
     display: flex !important;
     align-items: center !important;
@@ -801,14 +798,14 @@ div[custom-style="操作成功卡片"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="操作成功卡片"]::after,
-.b3-typography [custom-style="操作成功卡片"]::after,
-div[custom-style="操作成功卡片"]::after {
-    display: none !important; /* 禁用三角形 */
+.protyle-wysiwyg [custom-deco-style="操作成功卡片"]::after,
+.b3-typography [custom-deco-style="操作成功卡片"]::after,
+div[custom-deco-style="操作成功卡片"]::after {
+    display: none !important;
 }
-.protyle-wysiwyg [custom-style="操作成功卡片"][fold="1"]::before,
-.b3-typography [custom-style="操作成功卡片"][fold="1"]::before,
-div[custom-style="操作成功卡片"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="操作成功卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="操作成功卡片"][fold="1"]::before,
+div[custom-deco-style="操作成功卡片"][fold="1"]::before {
     display: none !important;
 }
 
@@ -816,11 +813,11 @@ div[custom-style="操作成功卡片"][fold="1"]::before {
    双色分割 · 提示信息卡片
    头部：浅蓝底，深蓝字，ℹ️ 提示信息
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="提示信息卡片"],
-.b3-typography [custom-style="提示信息卡片"],
-.protyle-wysiwyg [custom-style="提示信息卡片"][fold="0"],
-.b3-typography [custom-style="提示信息卡片"][fold="0"],
-div[custom-style="提示信息卡片"] {
+.protyle-wysiwyg [custom-deco-style="提示信息卡片"],
+.b3-typography [custom-deco-style="提示信息卡片"],
+.protyle-wysiwyg [custom-deco-style="提示信息卡片"][fold="0"],
+.b3-typography [custom-deco-style="提示信息卡片"][fold="0"],
+div[custom-deco-style="提示信息卡片"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -834,9 +831,9 @@ div[custom-style="提示信息卡片"] {
     font-size: 15px !important;
     line-height: 1.6 !important;
 }
-.protyle-wysiwyg [custom-style="提示信息卡片"]::before,
-.b3-typography [custom-style="提示信息卡片"]::before,
-div[custom-style="提示信息卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="提示信息卡片"]::before,
+.b3-typography [custom-deco-style="提示信息卡片"]::before,
+div[custom-deco-style="提示信息卡片"]::before {
     content: "ℹ️ 提示信息" !important;
     display: flex !important;
     align-items: center !important;
@@ -854,14 +851,14 @@ div[custom-style="提示信息卡片"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="提示信息卡片"]::after,
-.b3-typography [custom-style="提示信息卡片"]::after,
-div[custom-style="提示信息卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="提示信息卡片"]::after,
+.b3-typography [custom-deco-style="提示信息卡片"]::after,
+div[custom-deco-style="提示信息卡片"]::after {
     display: none !important;
 }
-.protyle-wysiwyg [custom-style="提示信息卡片"][fold="1"]::before,
-.b3-typography [custom-style="提示信息卡片"][fold="1"]::before,
-div[custom-style="提示信息卡片"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="提示信息卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="提示信息卡片"][fold="1"]::before,
+div[custom-deco-style="提示信息卡片"][fold="1"]::before {
     display: none !important;
 }
 
@@ -869,11 +866,11 @@ div[custom-style="提示信息卡片"][fold="1"]::before {
    双色分割 · 警告提醒卡片
    头部：浅黄底，深棕字，⚠️ 警告提醒
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="警告提醒卡片"],
-.b3-typography [custom-style="警告提醒卡片"],
-.protyle-wysiwyg [custom-style="警告提醒卡片"][fold="0"],
-.b3-typography [custom-style="警告提醒卡片"][fold="0"],
-div[custom-style="警告提醒卡片"] {
+.protyle-wysiwyg [custom-deco-style="警告提醒卡片"],
+.b3-typography [custom-deco-style="警告提醒卡片"],
+.protyle-wysiwyg [custom-deco-style="警告提醒卡片"][fold="0"],
+.b3-typography [custom-deco-style="警告提醒卡片"][fold="0"],
+div[custom-deco-style="警告提醒卡片"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -887,9 +884,9 @@ div[custom-style="警告提醒卡片"] {
     font-size: 15px !important;
     line-height: 1.6 !important;
 }
-.protyle-wysiwyg [custom-style="警告提醒卡片"]::before,
-.b3-typography [custom-style="警告提醒卡片"]::before,
-div[custom-style="警告提醒卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="警告提醒卡片"]::before,
+.b3-typography [custom-deco-style="警告提醒卡片"]::before,
+div[custom-deco-style="警告提醒卡片"]::before {
     content: "⚠️ 警告提醒" !important;
     display: flex !important;
     align-items: center !important;
@@ -907,14 +904,14 @@ div[custom-style="警告提醒卡片"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="警告提醒卡片"]::after,
-.b3-typography [custom-style="警告提醒卡片"]::after,
-div[custom-style="警告提醒卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="警告提醒卡片"]::after,
+.b3-typography [custom-deco-style="警告提醒卡片"]::after,
+div[custom-deco-style="警告提醒卡片"]::after {
     display: none !important;
 }
-.protyle-wysiwyg [custom-style="警告提醒卡片"][fold="1"]::before,
-.b3-typography [custom-style="警告提醒卡片"][fold="1"]::before,
-div[custom-style="警告提醒卡片"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="警告提醒卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="警告提醒卡片"][fold="1"]::before,
+div[custom-deco-style="警告提醒卡片"][fold="1"]::before {
     display: none !important;
 }
 
@@ -922,11 +919,11 @@ div[custom-style="警告提醒卡片"][fold="1"]::before {
    双色分割 · 错误反馈卡片
    头部：浅红底，深红字，❌ 错误反馈
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="错误反馈卡片"],
-.b3-typography [custom-style="错误反馈卡片"],
-.protyle-wysiwyg [custom-style="错误反馈卡片"][fold="0"],
-.b3-typography [custom-style="错误反馈卡片"][fold="0"],
-div[custom-style="错误反馈卡片"] {
+.protyle-wysiwyg [custom-deco-style="错误反馈卡片"],
+.b3-typography [custom-deco-style="错误反馈卡片"],
+.protyle-wysiwyg [custom-deco-style="错误反馈卡片"][fold="0"],
+.b3-typography [custom-deco-style="错误反馈卡片"][fold="0"],
+div[custom-deco-style="错误反馈卡片"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -940,9 +937,9 @@ div[custom-style="错误反馈卡片"] {
     font-size: 15px !important;
     line-height: 1.6 !important;
 }
-.protyle-wysiwyg [custom-style="错误反馈卡片"]::before,
-.b3-typography [custom-style="错误反馈卡片"]::before,
-div[custom-style="错误反馈卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="错误反馈卡片"]::before,
+.b3-typography [custom-deco-style="错误反馈卡片"]::before,
+div[custom-deco-style="错误反馈卡片"]::before {
     content: "❌ 错误反馈" !important;
     display: flex !important;
     align-items: center !important;
@@ -960,14 +957,14 @@ div[custom-style="错误反馈卡片"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="错误反馈卡片"]::after,
-.b3-typography [custom-style="错误反馈卡片"]::after,
-div[custom-style="错误反馈卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="错误反馈卡片"]::after,
+.b3-typography [custom-deco-style="错误反馈卡片"]::after,
+div[custom-deco-style="错误反馈卡片"]::after {
     display: none !important;
 }
-.protyle-wysiwyg [custom-style="错误反馈卡片"][fold="1"]::before,
-.b3-typography [custom-style="错误反馈卡片"][fold="1"]::before,
-div[custom-style="错误反馈卡片"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="错误反馈卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="错误反馈卡片"][fold="1"]::before,
+div[custom-deco-style="错误反馈卡片"][fold="1"]::before {
     display: none !important;
 }
 
@@ -975,11 +972,11 @@ div[custom-style="错误反馈卡片"][fold="1"]::before {
    双色分割 · 普通通知卡片
    头部：浅灰底，深灰字，📌 普通通知
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="普通通知卡片"],
-.b3-typography [custom-style="普通通知卡片"],
-.protyle-wysiwyg [custom-style="普通通知卡片"][fold="0"],
-.b3-typography [custom-style="普通通知卡片"][fold="0"],
-div[custom-style="普通通知卡片"] {
+.protyle-wysiwyg [custom-deco-style="普通通知卡片"],
+.b3-typography [custom-deco-style="普通通知卡片"],
+.protyle-wysiwyg [custom-deco-style="普通通知卡片"][fold="0"],
+.b3-typography [custom-deco-style="普通通知卡片"][fold="0"],
+div[custom-deco-style="普通通知卡片"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -993,9 +990,9 @@ div[custom-style="普通通知卡片"] {
     font-size: 15px !important;
     line-height: 1.6 !important;
 }
-.protyle-wysiwyg [custom-style="普通通知卡片"]::before,
-.b3-typography [custom-style="普通通知卡片"]::before,
-div[custom-style="普通通知卡片"]::before {
+.protyle-wysiwyg [custom-deco-style="普通通知卡片"]::before,
+.b3-typography [custom-deco-style="普通通知卡片"]::before,
+div[custom-deco-style="普通通知卡片"]::before {
     content: "📌 普通通知" !important;
     display: flex !important;
     align-items: center !important;
@@ -1013,36 +1010,35 @@ div[custom-style="普通通知卡片"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="普通通知卡片"]::after,
-.b3-typography [custom-style="普通通知卡片"]::after,
-div[custom-style="普通通知卡片"]::after {
+.protyle-wysiwyg [custom-deco-style="普通通知卡片"]::after,
+.b3-typography [custom-deco-style="普通通知卡片"]::after,
+div[custom-deco-style="普通通知卡片"]::after {
     display: none !important;
 }
-.protyle-wysiwyg [custom-style="普通通知卡片"][fold="1"]::before,
-.b3-typography [custom-style="普通通知卡片"][fold="1"]::before,
-div[custom-style="普通通知卡片"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="普通通知卡片"][fold="1"]::before,
+.b3-typography [custom-deco-style="普通通知卡片"][fold="1"]::before,
+div[custom-deco-style="普通通知卡片"][fold="1"]::before {
     display: none !important;
 }
-
 
 /* ------------------------------------------------------------
    引述块样式 · 纯引述，无标题、无图标、无三角形
    统一内边距：10px 10px，外边距：2px 0
    所有引述卡片均禁用 ::before / ::after
+   （保留7个：灰、蓝、绿、橙、紫、红、黄）
 ------------------------------------------------------------ */
 
 /* ----- 灰调引述 · 浅灰背景，左侧粗边 ----- */
-.protyle-wysiwyg [custom-style="灰调引述"],
-.b3-typography [custom-style="灰调引述"],
-.protyle-wysiwyg [custom-style="灰调引述"][fold="0"],
-.b3-typography [custom-style="灰调引述"][fold="0"],
-div[custom-style="灰调引述"] {
+.protyle-wysiwyg [custom-deco-style="灰调引述"],
+.b3-typography [custom-deco-style="灰调引述"],
+.protyle-wysiwyg [custom-deco-style="灰调引述"][fold="0"],
+.b3-typography [custom-deco-style="灰调引述"][fold="0"],
+div[custom-deco-style="灰调引述"] {
     background-color: #f9fafb !important;
-    border-left: 6px solid #9ca3af !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #9ca3af !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
+    font-family: inherit !important;
     font-size: 15px !important;
     color: #1f2937 !important;
     line-height: 1.6 !important;
@@ -1051,28 +1047,27 @@ div[custom-style="灰调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="灰调引述"]::before,
-.protyle-wysiwyg [custom-style="灰调引述"]::after,
-.b3-typography [custom-style="灰调引述"]::before,
-.b3-typography [custom-style="灰调引述"]::after,
-div[custom-style="灰调引述"]::before,
-div[custom-style="灰调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="灰调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="灰调引述"]::after,
+.b3-typography [custom-deco-style="灰调引述"]::before,
+.b3-typography [custom-deco-style="灰调引述"]::after,
+div[custom-deco-style="灰调引述"]::before,
+div[custom-deco-style="灰调引述"]::after {
     display: none !important;
 }
 
 /* ----- 蓝调引述 · 浅蓝背景，左侧蓝边 ----- */
-.protyle-wysiwyg [custom-style="蓝调引述"],
-.b3-typography [custom-style="蓝调引述"],
-.protyle-wysiwyg [custom-style="蓝调引述"][fold="0"],
-.b3-typography [custom-style="蓝调引述"][fold="0"],
-div[custom-style="蓝调引述"] {
+.protyle-wysiwyg [custom-deco-style="蓝调引述"],
+.b3-typography [custom-deco-style="蓝调引述"],
+.protyle-wysiwyg [custom-deco-style="蓝调引述"][fold="0"],
+.b3-typography [custom-deco-style="蓝调引述"][fold="0"],
+div[custom-deco-style="蓝调引述"] {
     background-color: #eff6ff !important;
-    border-left: 6px solid #3b82f6 !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #3b82f6 !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
     color: #1e3a8a !important;
     line-height: 1.6 !important;
     border-top: none !important;
@@ -1080,27 +1075,26 @@ div[custom-style="蓝调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="蓝调引述"]::before,
-.protyle-wysiwyg [custom-style="蓝调引述"]::after,
-.b3-typography [custom-style="蓝调引述"]::before,
-.b3-typography [custom-style="蓝调引述"]::after,
-div[custom-style="蓝调引述"]::before,
-div[custom-style="蓝调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="蓝调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="蓝调引述"]::after,
+.b3-typography [custom-deco-style="蓝调引述"]::before,
+.b3-typography [custom-deco-style="蓝调引述"]::after,
+div[custom-deco-style="蓝调引述"]::before,
+div[custom-deco-style="蓝调引述"]::after {
     display: none !important;
 }
 
 /* ----- 绿调引述 · 浅绿背景，左侧绿边 ----- */
-.protyle-wysiwyg [custom-style="绿调引述"],
-.b3-typography [custom-style="绿调引述"],
-.protyle-wysiwyg [custom-style="绿调引述"][fold="0"],
-.b3-typography [custom-style="绿调引述"][fold="0"],
-div[custom-style="绿调引述"] {
+.protyle-wysiwyg [custom-deco-style="绿调引述"],
+.b3-typography [custom-deco-style="绿调引述"],
+.protyle-wysiwyg [custom-deco-style="绿调引述"][fold="0"],
+.b3-typography [custom-deco-style="绿调引述"][fold="0"],
+div[custom-deco-style="绿调引述"] {
     background-color: #f0fdf4 !important;
-    border-left: 6px solid #22c55e !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #22c55e !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
+    font-family: inherit !important;
     font-size: 15px !important;
     color: #14532d !important;
     line-height: 1.6 !important;
@@ -1109,83 +1103,55 @@ div[custom-style="绿调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="绿调引述"]::before,
-.protyle-wysiwyg [custom-style="绿调引述"]::after,
-.b3-typography [custom-style="绿调引述"]::before,
-.b3-typography [custom-style="绿调引述"]::after,
-div[custom-style="绿调引述"]::before,
-div[custom-style="绿调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="绿调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="绿调引述"]::after,
+.b3-typography [custom-deco-style="绿调引述"]::before,
+.b3-typography [custom-deco-style="绿调引述"]::after,
+div[custom-deco-style="绿调引述"]::before,
+div[custom-deco-style="绿调引述"]::after {
     display: none !important;
 }
 
 /* ----- 橙调引述 · 浅橙背景，左侧橙边 ----- */
-.protyle-wysiwyg [custom-style="橙调引述"],
-.b3-typography [custom-style="橙调引述"],
-.protyle-wysiwyg [custom-style="橙调引述"][fold="0"],
-.b3-typography [custom-style="橙调引述"][fold="0"],
-div[custom-style="橙调引述"] {
+.protyle-wysiwyg [custom-deco-style="橙调引述"],
+.b3-typography [custom-deco-style="橙调引述"],
+.protyle-wysiwyg [custom-deco-style="橙调引述"][fold="0"],
+.b3-typography [custom-deco-style="橙调引述"][fold="0"],
+div[custom-deco-style="橙调引述"] {
     background-color: #fff7ed !important;
-    border-left: 6px solid #f97316 !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #f97316 !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
     color: #7c2d12 !important;
-    line-height: 1.6 !important;
+    line-height: 1.625 !important;
     border-top: none !important;
     border-right: none !important;
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="橙调引述"]::before,
-.protyle-wysiwyg [custom-style="橙调引述"]::after,
-.b3-typography [custom-style="橙调引述"]::before,
-.b3-typography [custom-style="橙调引述"]::after,
-div[custom-style="橙调引述"]::before,
-div[custom-style="橙调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 边框引述 · 纯白背景，灰色虚线边框 ----- */
-.protyle-wysiwyg [custom-style="边框引述"],
-.b3-typography [custom-style="边框引述"],
-.protyle-wysiwyg [custom-style="边框引述"][fold="0"],
-.b3-typography [custom-style="边框引述"][fold="0"],
-div[custom-style="边框引述"] {
-    background-color: white !important;
-    border: 1px dashed #9ca3af !important;
-    border-radius: 12px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #374151 !important;
-    line-height: 1.6 !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
-}
-.protyle-wysiwyg [custom-style="边框引述"]::before,
-.protyle-wysiwyg [custom-style="边框引述"]::after,
-.b3-typography [custom-style="边框引述"]::before,
-.b3-typography [custom-style="边框引述"]::after,
-div[custom-style="边框引述"]::before,
-div[custom-style="边框引述"]::after {
+.protyle-wysiwyg [custom-deco-style="橙调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="橙调引述"]::after,
+.b3-typography [custom-deco-style="橙调引述"]::before,
+.b3-typography [custom-deco-style="橙调引述"]::after,
+div[custom-deco-style="橙调引述"]::before,
+div[custom-deco-style="橙调引述"]::after {
     display: none !important;
 }
 
 /* ----- 紫调引述 · 浅紫背景，左侧紫边 ----- */
-.protyle-wysiwyg [custom-style="紫调引述"],
-.b3-typography [custom-style="紫调引述"],
-.protyle-wysiwyg [custom-style="紫调引述"][fold="0"],
-.b3-typography [custom-style="紫调引述"][fold="0"],
-div[custom-style="紫调引述"] {
+.protyle-wysiwyg [custom-deco-style="紫调引述"],
+.b3-typography [custom-deco-style="紫调引述"],
+.protyle-wysiwyg [custom-deco-style="紫调引述"][fold="0"],
+.b3-typography [custom-deco-style="紫调引述"][fold="0"],
+div[custom-deco-style="紫调引述"] {
     background-color: #faf5ff !important;
-    border-left: 6px solid #a855f7 !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #a855f7 !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
     color: #6b21a8 !important;
     line-height: 1.6 !important;
     border-top: none !important;
@@ -1193,86 +1159,27 @@ div[custom-style="紫调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="紫调引述"]::before,
-.protyle-wysiwyg [custom-style="紫调引述"]::after,
-.b3-typography [custom-style="紫调引述"]::before,
-.b3-typography [custom-style="紫调引述"]::after,
-div[custom-style="紫调引述"]::before,
-div[custom-style="紫调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 粉调引述 · 浅粉背景，左侧粉边 ----- */
-.protyle-wysiwyg [custom-style="粉调引述"],
-.b3-typography [custom-style="粉调引述"],
-.protyle-wysiwyg [custom-style="粉调引述"][fold="0"],
-.b3-typography [custom-style="粉调引述"][fold="0"],
-div[custom-style="粉调引述"] {
-    background-color: #fdf2f8 !important;
-    border-left: 6px solid #ec4899 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #9d174d !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="粉调引述"]::before,
-.protyle-wysiwyg [custom-style="粉调引述"]::after,
-.b3-typography [custom-style="粉调引述"]::before,
-.b3-typography [custom-style="粉调引述"]::after,
-div[custom-style="粉调引述"]::before,
-div[custom-style="粉调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 青调引述 · 浅青背景，左侧青边 ----- */
-.protyle-wysiwyg [custom-style="青调引述"],
-.b3-typography [custom-style="青调引述"],
-.protyle-wysiwyg [custom-style="青调引述"][fold="0"],
-.b3-typography [custom-style="青调引述"][fold="0"],
-div[custom-style="青调引述"] {
-    background-color: #ecfeff !important;
-    border-left: 6px solid #06b6d4 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #155e75 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="青调引述"]::before,
-.protyle-wysiwyg [custom-style="青调引述"]::after,
-.b3-typography [custom-style="青调引述"]::before,
-.b3-typography [custom-style="青调引述"]::after,
-div[custom-style="青调引述"]::before,
-div[custom-style="青调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="紫调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="紫调引述"]::after,
+.b3-typography [custom-deco-style="紫调引述"]::before,
+.b3-typography [custom-deco-style="紫调引述"]::after,
+div[custom-deco-style="紫调引述"]::before,
+div[custom-deco-style="紫调引述"]::after {
     display: none !important;
 }
 
 /* ----- 红调引述 · 浅红背景，左侧红边 ----- */
-.protyle-wysiwyg [custom-style="红调引述"],
-.b3-typography [custom-style="红调引述"],
-.protyle-wysiwyg [custom-style="红调引述"][fold="0"],
-.b3-typography [custom-style="红调引述"][fold="0"],
-div[custom-style="红调引述"] {
+.protyle-wysiwyg [custom-deco-style="红调引述"],
+.b3-typography [custom-deco-style="红调引述"],
+.protyle-wysiwyg [custom-deco-style="红调引述"][fold="0"],
+.b3-typography [custom-deco-style="红调引述"][fold="0"],
+div[custom-deco-style="红调引述"] {
     background-color: #fef2f2 !important;
-    border-left: 6px solid #ef4444 !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #ef4444 !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
     color: #991b1b !important;
     line-height: 1.6 !important;
     border-top: none !important;
@@ -1280,28 +1187,27 @@ div[custom-style="红调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="红调引述"]::before,
-.protyle-wysiwyg [custom-style="红调引述"]::after,
-.b3-typography [custom-style="红调引述"]::before,
-.b3-typography [custom-style="红调引述"]::after,
-div[custom-style="红调引述"]::before,
-div[custom-style="红调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="红调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="红调引述"]::after,
+.b3-typography [custom-deco-style="红调引述"]::before,
+.b3-typography [custom-deco-style="红调引述"]::after,
+div[custom-deco-style="红调引述"]::before,
+div[custom-deco-style="红调引述"]::after {
     display: none !important;
 }
 
-/* ----- 黄调引述 · 浅黄背景，左侧黄边 ----- */
-.protyle-wysiwyg [custom-style="黄调引述"],
-.b3-typography [custom-style="黄调引述"],
-.protyle-wysiwyg [custom-style="黄调引述"][fold="0"],
-.b3-typography [custom-style="黄调引述"][fold="0"],
-div[custom-style="黄调引述"] {
+/* ----- 黄调引述 · 浅黄背景，左侧黄边（6px 粗）----- */
+.protyle-wysiwyg [custom-deco-style="黄调引述"],
+.b3-typography [custom-deco-style="黄调引述"],
+.protyle-wysiwyg [custom-deco-style="黄调引述"][fold="0"],
+.b3-typography [custom-deco-style="黄调引述"][fold="0"],
+div[custom-deco-style="黄调引述"] {
     background-color: #fefce8 !important;
-    border-left: 6px solid #eab308 !important;
-    border-radius: 8px !important;
+    border-left: 4px solid #eab308 !important;
     padding: 10px 10px !important;
     margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
+    font-family: inherit !important;
+    font-size: 16px !important;
     color: #854d0e !important;
     line-height: 1.6 !important;
     border-top: none !important;
@@ -1309,292 +1215,59 @@ div[custom-style="黄调引述"] {
     border-bottom: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-.protyle-wysiwyg [custom-style="黄调引述"]::before,
-.protyle-wysiwyg [custom-style="黄调引述"]::after,
-.b3-typography [custom-style="黄调引述"]::before,
-.b3-typography [custom-style="黄调引述"]::after,
-div[custom-style="黄调引述"]::before,
-div[custom-style="黄调引述"]::after {
+.protyle-wysiwyg [custom-deco-style="黄调引述"]::before,
+.protyle-wysiwyg [custom-deco-style="黄调引述"]::after,
+.b3-typography [custom-deco-style="黄调引述"]::before,
+.b3-typography [custom-deco-style="黄调引述"]::after,
+div[custom-deco-style="黄调引述"]::before,
+div[custom-deco-style="黄调引述"]::after {
     display: none !important;
 }
-
-/* ----- 棕调引述 · 浅棕背景，左侧棕边 ----- */
-.protyle-wysiwyg [custom-style="棕调引述"],
-.b3-typography [custom-style="棕调引述"],
-.protyle-wysiwyg [custom-style="棕调引述"][fold="0"],
-.b3-typography [custom-style="棕调引述"][fold="0"],
-div[custom-style="棕调引述"] {
-    background-color: #fef3e2 !important;
-    border-left: 6px solid #b45309 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #7b341e !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="棕调引述"]::before,
-.protyle-wysiwyg [custom-style="棕调引述"]::after,
-.b3-typography [custom-style="棕调引述"]::before,
-.b3-typography [custom-style="棕调引述"]::after,
-div[custom-style="棕调引述"]::before,
-div[custom-style="棕调引述"]::after {
-    display: none !important;
-}
-
-/* ----- 水绿引述 · 浅水绿背景，左侧水绿边 ----- */
-.protyle-wysiwyg [custom-style="水绿引述"],
-.b3-typography [custom-style="水绿引述"],
-.protyle-wysiwyg [custom-style="水绿引述"][fold="0"],
-.b3-typography [custom-style="水绿引述"][fold="0"],
-div[custom-style="水绿引述"] {
-    background-color: #ecfdf3 !important;
-    border-left: 6px solid #14b8a6 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #115e59 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="水绿引述"]::before,
-.protyle-wysiwyg [custom-style="水绿引述"]::after,
-.b3-typography [custom-style="水绿引述"]::before,
-.b3-typography [custom-style="水绿引述"]::after,
-div[custom-style="水绿引述"]::before,
-div[custom-style="水绿引述"]::after {
-    display: none !important;
-}
-
-/* ----- 靛蓝引述 · 浅靛蓝背景，左侧靛蓝边 ----- */
-.protyle-wysiwyg [custom-style="靛蓝引述"],
-.b3-typography [custom-style="靛蓝引述"],
-.protyle-wysiwyg [custom-style="靛蓝引述"][fold="0"],
-.b3-typography [custom-style="靛蓝引述"][fold="0"],
-div[custom-style="靛蓝引述"] {
-    background-color: #eef2ff !important;
-    border-left: 6px solid #6366f1 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #3730a3 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="靛蓝引述"]::before,
-.protyle-wysiwyg [custom-style="靛蓝引述"]::after,
-.b3-typography [custom-style="靛蓝引述"]::before,
-.b3-typography [custom-style="靛蓝引述"]::after,
-div[custom-style="靛蓝引述"]::before,
-div[custom-style="靛蓝引述"]::after {
-    display: none !important;
-}
-
-/* ----- 玫瑰引述 · 浅玫瑰背景，左侧玫瑰边 ----- */
-.protyle-wysiwyg [custom-style="玫瑰引述"],
-.b3-typography [custom-style="玫瑰引述"],
-.protyle-wysiwyg [custom-style="玫瑰引述"][fold="0"],
-.b3-typography [custom-style="玫瑰引述"][fold="0"],
-div[custom-style="玫瑰引述"] {
-    background-color: #fff1f2 !important;
-    border-left: 6px solid #f43f5e !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #9f1239 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="玫瑰引述"]::before,
-.protyle-wysiwyg [custom-style="玫瑰引述"]::after,
-.b3-typography [custom-style="玫瑰引述"]::before,
-.b3-typography [custom-style="玫瑰引述"]::after,
-div[custom-style="玫瑰引述"]::before,
-div[custom-style="玫瑰引述"]::after {
-    display: none !important;
-}
-
-/* ----- 石板引述 · 浅石板背景，左侧石板边 ----- */
-.protyle-wysiwyg [custom-style="石板引述"],
-.b3-typography [custom-style="石板引述"],
-.protyle-wysiwyg [custom-style="石板引述"][fold="0"],
-.b3-typography [custom-style="石板引述"][fold="0"],
-div[custom-style="石板引述"] {
-    background-color: #f8fafc !important;
-    border-left: 6px solid #64748b !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #1e293b !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="石板引述"]::before,
-.protyle-wysiwyg [custom-style="石板引述"]::after,
-.b3-typography [custom-style="石板引述"]::before,
-.b3-typography [custom-style="石板引述"]::after,
-div[custom-style="石板引述"]::before,
-div[custom-style="石板引述"]::after {
-    display: none !important;
-}
-
-/* ----- 石色引述 · 浅石色背景，左侧石色边 ----- */
-.protyle-wysiwyg [custom-style="石色引述"],
-.b3-typography [custom-style="石色引述"],
-.protyle-wysiwyg [custom-style="石色引述"][fold="0"],
-.b3-typography [custom-style="石色引述"][fold="0"],
-div[custom-style="石色引述"] {
-    background-color: #fafaf9 !important;
-    border-left: 6px solid #78716c !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #292524 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="石色引述"]::before,
-.protyle-wysiwyg [custom-style="石色引述"]::after,
-.b3-typography [custom-style="石色引述"]::before,
-.b3-typography [custom-style="石色引述"]::after,
-div[custom-style="石色引述"]::before,
-div[custom-style="石色引述"]::after {
-    display: none !important;
-}
-
-/* ----- 中性引述 · 浅中性背景，左侧中性边 ----- */
-.protyle-wysiwyg [custom-style="中性引述"],
-.b3-typography [custom-style="中性引述"],
-.protyle-wysiwyg [custom-style="中性引述"][fold="0"],
-.b3-typography [custom-style="中性引述"][fold="0"],
-div[custom-style="中性引述"] {
-    background-color: #f5f5f5 !important;
-    border-left: 6px solid #737373 !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #262626 !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="中性引述"]::before,
-.protyle-wysiwyg [custom-style="中性引述"]::after,
-.b3-typography [custom-style="中性引述"]::before,
-.b3-typography [custom-style="中性引述"]::after,
-div[custom-style="中性引述"]::before,
-div[custom-style="中性引述"]::after {
-    display: none !important;
-}
-
-/* ----- 锌色引述 · 浅锌色背景，左侧锌色边 ----- */
-.protyle-wysiwyg [custom-style="锌色引述"],
-.b3-typography [custom-style="锌色引述"],
-.protyle-wysiwyg [custom-style="锌色引述"][fold="0"],
-.b3-typography [custom-style="锌色引述"][fold="0"],
-div[custom-style="锌色引述"] {
-    background-color: #f4f4f5 !important;
-    border-left: 6px solid #71717a !important;
-    border-radius: 8px !important;
-    padding: 10px 10px !important;
-    margin: 2px 0 !important;
-    font-family: 'Microsoft YaHei', sans-serif !important;
-    font-size: 15px !important;
-    color: #27272a !important;
-    line-height: 1.6 !important;
-    border-top: none !important;
-    border-right: none !important;
-    border-bottom: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-.protyle-wysiwyg [custom-style="锌色引述"]::before,
-.protyle-wysiwyg [custom-style="锌色引述"]::after,
-.b3-typography [custom-style="锌色引述"]::before,
-.b3-typography [custom-style="锌色引述"]::after,
-div[custom-style="锌色引述"]::before,
-div[custom-style="锌色引述"]::after {
-    display: none !important;
-}
-
 
 /* ------------------------------------------------------------
    彩色横条 · 渐变头部卡片
    统一特征：白底、圆角、投影、渐变头部横条、正文区域
-   支持点击标题编辑（data-card-icon / data-card-title）
+   支持点击标题编辑（custom-deco-card-icon / custom-deco-card-title）
    禁用三角形伪元素
 ------------------------------------------------------------ */
 
 /* ----- 基础模板（所有彩色横条卡片共用父级样式）----- */
-.protyle-wysiwyg [custom-style^="重点总结"],
-.protyle-wysiwyg [custom-style^="新特性"],
-.protyle-wysiwyg [custom-style^="成长笔记"],
-.protyle-wysiwyg [custom-style^="重要提醒"],
-.protyle-wysiwyg [custom-style^="技术要点"],
-.protyle-wysiwyg [custom-style^="今日心情"],
-.protyle-wysiwyg [custom-style^="专业建议"],
-.protyle-wysiwyg [custom-style^="创意灵感"],
-.protyle-wysiwyg [custom-style^="万能提示"],
-.protyle-wysiwyg [custom-style^="信息通知"],
-.protyle-wysiwyg [custom-style^="注意提醒"],
-.protyle-wysiwyg [custom-style^="成功反馈"],
-.b3-typography [custom-style^="重点总结"],
-.b3-typography [custom-style^="新特性"],
-.b3-typography [custom-style^="成长笔记"],
-.b3-typography [custom-style^="重要提醒"],
-.b3-typography [custom-style^="技术要点"],
-.b3-typography [custom-style^="今日心情"],
-.b3-typography [custom-style^="专业建议"],
-.b3-typography [custom-style^="创意灵感"],
-.b3-typography [custom-style^="万能提示"],
-.b3-typography [custom-style^="信息通知"],
-.b3-typography [custom-style^="注意提醒"],
-.b3-typography [custom-style^="成功反馈"],
-div[custom-style^="重点总结"],
-div[custom-style^="新特性"],
-div[custom-style^="成长笔记"],
-div[custom-style^="重要提醒"],
-div[custom-style^="技术要点"],
-div[custom-style^="今日心情"],
-div[custom-style^="专业建议"],
-div[custom-style^="创意灵感"],
-div[custom-style^="万能提示"],
-div[custom-style^="信息通知"],
-div[custom-style^="注意提醒"],
-div[custom-style^="成功反馈"] {
+.protyle-wysiwyg [custom-deco-style^="重点总结"],
+.protyle-wysiwyg [custom-deco-style^="新特性"],
+.protyle-wysiwyg [custom-deco-style^="成长笔记"],
+.protyle-wysiwyg [custom-deco-style^="重要提醒"],
+.protyle-wysiwyg [custom-deco-style^="技术要点"],
+.protyle-wysiwyg [custom-deco-style^="今日心情"],
+.protyle-wysiwyg [custom-deco-style^="专业建议"],
+.protyle-wysiwyg [custom-deco-style^="创意灵感"],
+.protyle-wysiwyg [custom-deco-style^="万能提示"],
+.protyle-wysiwyg [custom-deco-style^="信息通知"],
+.protyle-wysiwyg [custom-deco-style^="注意提醒"],
+.protyle-wysiwyg [custom-deco-style^="成功反馈"],
+.b3-typography [custom-deco-style^="重点总结"],
+.b3-typography [custom-deco-style^="新特性"],
+.b3-typography [custom-deco-style^="成长笔记"],
+.b3-typography [custom-deco-style^="重要提醒"],
+.b3-typography [custom-deco-style^="技术要点"],
+.b3-typography [custom-deco-style^="今日心情"],
+.b3-typography [custom-deco-style^="专业建议"],
+.b3-typography [custom-deco-style^="创意灵感"],
+.b3-typography [custom-deco-style^="万能提示"],
+.b3-typography [custom-deco-style^="信息通知"],
+.b3-typography [custom-deco-style^="注意提醒"],
+.b3-typography [custom-deco-style^="成功反馈"],
+div[custom-deco-style^="重点总结"],
+div[custom-deco-style^="新特性"],
+div[custom-deco-style^="成长笔记"],
+div[custom-deco-style^="重要提醒"],
+div[custom-deco-style^="技术要点"],
+div[custom-deco-style^="今日心情"],
+div[custom-deco-style^="专业建议"],
+div[custom-deco-style^="创意灵感"],
+div[custom-deco-style^="万能提示"],
+div[custom-deco-style^="信息通知"],
+div[custom-deco-style^="注意提醒"],
+div[custom-deco-style^="成功反馈"] {
     background: white !important;
     border: none !important;
     border-radius: 12px !important;
@@ -1610,49 +1283,49 @@ div[custom-style^="成功反馈"] {
 }
 
 /* 所有彩色横条卡片禁用三角形 */
-.protyle-wysiwyg [custom-style^="重点总结"]::after,
-.protyle-wysiwyg [custom-style^="新特性"]::after,
-.protyle-wysiwyg [custom-style^="成长笔记"]::after,
-.protyle-wysiwyg [custom-style^="重要提醒"]::after,
-.protyle-wysiwyg [custom-style^="技术要点"]::after,
-.protyle-wysiwyg [custom-style^="今日心情"]::after,
-.protyle-wysiwyg [custom-style^="专业建议"]::after,
-.protyle-wysiwyg [custom-style^="创意灵感"]::after,
-.protyle-wysiwyg [custom-style^="万能提示"]::after,
-.protyle-wysiwyg [custom-style^="信息通知"]::after,
-.protyle-wysiwyg [custom-style^="注意提醒"]::after,
-.protyle-wysiwyg [custom-style^="成功反馈"]::after,
-.b3-typography [custom-style^="重点总结"]::after,
-.b3-typography [custom-style^="新特性"]::after,
-.b3-typography [custom-style^="成长笔记"]::after,
-.b3-typography [custom-style^="重要提醒"]::after,
-.b3-typography [custom-style^="技术要点"]::after,
-.b3-typography [custom-style^="今日心情"]::after,
-.b3-typography [custom-style^="专业建议"]::after,
-.b3-typography [custom-style^="创意灵感"]::after,
-.b3-typography [custom-style^="万能提示"]::after,
-.b3-typography [custom-style^="信息通知"]::after,
-.b3-typography [custom-style^="注意提醒"]::after,
-.b3-typography [custom-style^="成功反馈"]::after,
-div[custom-style^="重点总结"]::after,
-div[custom-style^="新特性"]::after,
-div[custom-style^="成长笔记"]::after,
-div[custom-style^="重要提醒"]::after,
-div[custom-style^="技术要点"]::after,
-div[custom-style^="今日心情"]::after,
-div[custom-style^="专业建议"]::after,
-div[custom-style^="创意灵感"]::after,
-div[custom-style^="万能提示"]::after,
-div[custom-style^="信息通知"]::after,
-div[custom-style^="注意提醒"]::after,
-div[custom-style^="成功反馈"]::after {
+.protyle-wysiwyg [custom-deco-style^="重点总结"]::after,
+.protyle-wysiwyg [custom-deco-style^="新特性"]::after,
+.protyle-wysiwyg [custom-deco-style^="成长笔记"]::after,
+.protyle-wysiwyg [custom-deco-style^="重要提醒"]::after,
+.protyle-wysiwyg [custom-deco-style^="技术要点"]::after,
+.protyle-wysiwyg [custom-deco-style^="今日心情"]::after,
+.protyle-wysiwyg [custom-deco-style^="专业建议"]::after,
+.protyle-wysiwyg [custom-deco-style^="创意灵感"]::after,
+.protyle-wysiwyg [custom-deco-style^="万能提示"]::after,
+.protyle-wysiwyg [custom-deco-style^="信息通知"]::after,
+.protyle-wysiwyg [custom-deco-style^="注意提醒"]::after,
+.protyle-wysiwyg [custom-deco-style^="成功反馈"]::after,
+.b3-typography [custom-deco-style^="重点总结"]::after,
+.b3-typography [custom-deco-style^="新特性"]::after,
+.b3-typography [custom-deco-style^="成长笔记"]::after,
+.b3-typography [custom-deco-style^="重要提醒"]::after,
+.b3-typography [custom-deco-style^="技术要点"]::after,
+.b3-typography [custom-deco-style^="今日心情"]::after,
+.b3-typography [custom-deco-style^="专业建议"]::after,
+.b3-typography [custom-deco-style^="创意灵感"]::after,
+.b3-typography [custom-deco-style^="万能提示"]::after,
+.b3-typography [custom-deco-style^="信息通知"]::after,
+.b3-typography [custom-deco-style^="注意提醒"]::after,
+.b3-typography [custom-deco-style^="成功反馈"]::after,
+div[custom-deco-style^="重点总结"]::after,
+div[custom-deco-style^="新特性"]::after,
+div[custom-deco-style^="成长笔记"]::after,
+div[custom-deco-style^="重要提醒"]::after,
+div[custom-deco-style^="技术要点"]::after,
+div[custom-deco-style^="今日心情"]::after,
+div[custom-deco-style^="专业建议"]::after,
+div[custom-deco-style^="创意灵感"]::after,
+div[custom-deco-style^="万能提示"]::after,
+div[custom-deco-style^="信息通知"]::after,
+div[custom-deco-style^="注意提醒"]::after,
+div[custom-deco-style^="成功反馈"]::after {
     display: none !important;
 }
 
 /* ----- 重点总结 · 粉紫渐变 ----- */
-.protyle-wysiwyg [custom-style="重点总结"]::before,
-.b3-typography [custom-style="重点总结"]::before,
-div[custom-style="重点总结"]::before {
+.protyle-wysiwyg [custom-deco-style="重点总结"]::before,
+.b3-typography [custom-deco-style="重点总结"]::before,
+div[custom-deco-style="重点总结"]::before {
     content: "🎯 重点总结" !important;
     display: flex !important;
     align-items: center !important;
@@ -1670,16 +1343,16 @@ div[custom-style="重点总结"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="重点总结"][fold="1"]::before,
-.b3-typography [custom-style="重点总结"][fold="1"]::before,
-div[custom-style="重点总结"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="重点总结"][fold="1"]::before,
+.b3-typography [custom-deco-style="重点总结"][fold="1"]::before,
+div[custom-deco-style="重点总结"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 新特性 · 紫蓝渐变 ----- */
-.protyle-wysiwyg [custom-style="新特性"]::before,
-.b3-typography [custom-style="新特性"]::before,
-div[custom-style="新特性"]::before {
+.protyle-wysiwyg [custom-deco-style="新特性"]::before,
+.b3-typography [custom-deco-style="新特性"]::before,
+div[custom-deco-style="新特性"]::before {
     content: "🚀 新特性" !important;
     display: flex !important;
     align-items: center !important;
@@ -1697,16 +1370,16 @@ div[custom-style="新特性"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="新特性"][fold="1"]::before,
-.b3-typography [custom-style="新特性"][fold="1"]::before,
-div[custom-style="新特性"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="新特性"][fold="1"]::before,
+.b3-typography [custom-deco-style="新特性"][fold="1"]::before,
+div[custom-deco-style="新特性"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 成长笔记 · 绿渐变 ----- */
-.protyle-wysiwyg [custom-style="成长笔记"]::before,
-.b3-typography [custom-style="成长笔记"]::before,
-div[custom-style="成长笔记"]::before {
+.protyle-wysiwyg [custom-deco-style="成长笔记"]::before,
+.b3-typography [custom-deco-style="成长笔记"]::before,
+div[custom-deco-style="成长笔记"]::before {
     content: "🌱 成长笔记" !important;
     display: flex !important;
     align-items: center !important;
@@ -1724,16 +1397,16 @@ div[custom-style="成长笔记"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="成长笔记"][fold="1"]::before,
-.b3-typography [custom-style="成长笔记"][fold="1"]::before,
-div[custom-style="成长笔记"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="成长笔记"][fold="1"]::before,
+.b3-typography [custom-deco-style="成长笔记"][fold="1"]::before,
+div[custom-deco-style="成长笔记"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 重要提醒 · 橙红渐变 ----- */
-.protyle-wysiwyg [custom-style="重要提醒"]::before,
-.b3-typography [custom-style="重要提醒"]::before,
-div[custom-style="重要提醒"]::before {
+.protyle-wysiwyg [custom-deco-style="重要提醒"]::before,
+.b3-typography [custom-deco-style="重要提醒"]::before,
+div[custom-deco-style="重要提醒"]::before {
     content: "❗ 重要提醒" !important;
     display: flex !important;
     align-items: center !important;
@@ -1751,16 +1424,16 @@ div[custom-style="重要提醒"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="重要提醒"][fold="1"]::before,
-.b3-typography [custom-style="重要提醒"][fold="1"]::before,
-div[custom-style="重要提醒"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="重要提醒"][fold="1"]::before,
+.b3-typography [custom-deco-style="重要提醒"][fold="1"]::before,
+div[custom-deco-style="重要提醒"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 技术要点 · 蓝青渐变 ----- */
-.protyle-wysiwyg [custom-style="技术要点"]::before,
-.b3-typography [custom-style="技术要点"]::before,
-div[custom-style="技术要点"]::before {
+.protyle-wysiwyg [custom-deco-style="技术要点"]::before,
+.b3-typography [custom-deco-style="技术要点"]::before,
+div[custom-deco-style="技术要点"]::before {
     content: "⚙️ 技术要点" !important;
     display: flex !important;
     align-items: center !important;
@@ -1778,16 +1451,16 @@ div[custom-style="技术要点"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="技术要点"][fold="1"]::before,
-.b3-typography [custom-style="技术要点"][fold="1"]::before,
-div[custom-style="技术要点"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="技术要点"][fold="1"]::before,
+.b3-typography [custom-deco-style="技术要点"][fold="1"]::before,
+div[custom-deco-style="技术要点"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 今日心情 · 粉渐变 ----- */
-.protyle-wysiwyg [custom-style="今日心情"]::before,
-.b3-typography [custom-style="今日心情"]::before,
-div[custom-style="今日心情"]::before {
+.protyle-wysiwyg [custom-deco-style="今日心情"]::before,
+.b3-typography [custom-deco-style="今日心情"]::before,
+div[custom-deco-style="今日心情"]::before {
     content: "💭 今日心情" !important;
     display: flex !important;
     align-items: center !important;
@@ -1805,16 +1478,16 @@ div[custom-style="今日心情"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="今日心情"][fold="1"]::before,
-.b3-typography [custom-style="今日心情"][fold="1"]::before,
-div[custom-style="今日心情"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="今日心情"][fold="1"]::before,
+.b3-typography [custom-deco-style="今日心情"][fold="1"]::before,
+div[custom-deco-style="今日心情"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 专业建议 · 黑金渐变（深底金字）----- */
-.protyle-wysiwyg [custom-style="专业建议"]::before,
-.b3-typography [custom-style="专业建议"]::before,
-div[custom-style="专业建议"]::before {
+.protyle-wysiwyg [custom-deco-style="专业建议"]::before,
+.b3-typography [custom-deco-style="专业建议"]::before,
+div[custom-deco-style="专业建议"]::before {
     content: "🏆 专业建议" !important;
     display: flex !important;
     align-items: center !important;
@@ -1832,16 +1505,16 @@ div[custom-style="专业建议"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="专业建议"][fold="1"]::before,
-.b3-typography [custom-style="专业建议"][fold="1"]::before,
-div[custom-style="专业建议"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="专业建议"][fold="1"]::before,
+.b3-typography [custom-deco-style="专业建议"][fold="1"]::before,
+div[custom-deco-style="专业建议"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 创意灵感 · 橙黄渐变（深色文字）----- */
-.protyle-wysiwyg [custom-style="创意灵感"]::before,
-.b3-typography [custom-style="创意灵感"]::before,
-div[custom-style="创意灵感"]::before {
+.protyle-wysiwyg [custom-deco-style="创意灵感"]::before,
+.b3-typography [custom-deco-style="创意灵感"]::before,
+div[custom-deco-style="创意灵感"]::before {
     content: "💡 创意灵感" !important;
     display: flex !important;
     align-items: center !important;
@@ -1859,16 +1532,16 @@ div[custom-style="创意灵感"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="创意灵感"][fold="1"]::before,
-.b3-typography [custom-style="创意灵感"][fold="1"]::before,
-div[custom-style="创意灵感"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="创意灵感"][fold="1"]::before,
+.b3-typography [custom-deco-style="创意灵感"][fold="1"]::before,
+div[custom-deco-style="创意灵感"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 万能提示 · 三色渐变（粉紫橙）----- */
-.protyle-wysiwyg [custom-style="万能提示"]::before,
-.b3-typography [custom-style="万能提示"]::before,
-div[custom-style="万能提示"]::before {
+.protyle-wysiwyg [custom-deco-style="万能提示"]::before,
+.b3-typography [custom-deco-style="万能提示"]::before,
+div[custom-deco-style="万能提示"]::before {
     content: "✨ 万能提示" !important;
     display: flex !important;
     align-items: center !important;
@@ -1886,16 +1559,16 @@ div[custom-style="万能提示"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="万能提示"][fold="1"]::before,
-.b3-typography [custom-style="万能提示"][fold="1"]::before,
-div[custom-style="万能提示"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="万能提示"][fold="1"]::before,
+.b3-typography [custom-deco-style="万能提示"][fold="1"]::before,
+div[custom-deco-style="万能提示"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 信息通知 · 蓝渐变 ----- */
-.protyle-wysiwyg [custom-style="信息通知"]::before,
-.b3-typography [custom-style="信息通知"]::before,
-div[custom-style="信息通知"]::before {
+.protyle-wysiwyg [custom-deco-style="信息通知"]::before,
+.b3-typography [custom-deco-style="信息通知"]::before,
+div[custom-deco-style="信息通知"]::before {
     content: "ℹ️ 信息通知" !important;
     display: flex !important;
     align-items: center !important;
@@ -1913,16 +1586,16 @@ div[custom-style="信息通知"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="信息通知"][fold="1"]::before,
-.b3-typography [custom-style="信息通知"][fold="1"]::before,
-div[custom-style="信息通知"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="信息通知"][fold="1"]::before,
+.b3-typography [custom-deco-style="信息通知"][fold="1"]::before,
+div[custom-deco-style="信息通知"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 注意提醒 · 黄渐变（深色文字）----- */
-.protyle-wysiwyg [custom-style="注意提醒"]::before,
-.b3-typography [custom-style="注意提醒"]::before,
-div[custom-style="注意提醒"]::before {
+.protyle-wysiwyg [custom-deco-style="注意提醒"]::before,
+.b3-typography [custom-deco-style="注意提醒"]::before,
+div[custom-deco-style="注意提醒"]::before {
     content: "⚠️ 注意提醒" !important;
     display: flex !important;
     align-items: center !important;
@@ -1940,16 +1613,16 @@ div[custom-style="注意提醒"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="注意提醒"][fold="1"]::before,
-.b3-typography [custom-style="注意提醒"][fold="1"]::before,
-div[custom-style="注意提醒"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="注意提醒"][fold="1"]::before,
+.b3-typography [custom-deco-style="注意提醒"][fold="1"]::before,
+div[custom-deco-style="注意提醒"][fold="1"]::before {
     display: none !important;
 }
 
 /* ----- 成功反馈 · 绿渐变 ----- */
-.protyle-wysiwyg [custom-style="成功反馈"]::before,
-.b3-typography [custom-style="成功反馈"]::before,
-div[custom-style="成功反馈"]::before {
+.protyle-wysiwyg [custom-deco-style="成功反馈"]::before,
+.b3-typography [custom-deco-style="成功反馈"]::before,
+div[custom-deco-style="成功反馈"]::before {
     content: "✅ 成功反馈" !important;
     display: flex !important;
     align-items: center !important;
@@ -1967,26 +1640,25 @@ div[custom-style="成功反馈"]::before {
     line-height: 1.4 !important;
     box-sizing: border-box !important;
 }
-.protyle-wysiwyg [custom-style="成功反馈"][fold="1"]::before,
-.b3-typography [custom-style="成功反馈"][fold="1"]::before,
-div[custom-style="成功反馈"][fold="1"]::before {
+.protyle-wysiwyg [custom-deco-style="成功反馈"][fold="1"]::before,
+.b3-typography [custom-deco-style="成功反馈"][fold="1"]::before,
+div[custom-deco-style="成功反馈"][fold="1"]::before {
     display: none !important;
 }
-
 
 /* ------------------------------------------------------------
    轻言轻语 · 随记卡片（简约日期风格）
    白底、灰边框、圆角、顶部标签、底部日期栏
-   支持点击标题编辑（data-card-icon / data-card-title）
-   支持自定义日期（data-card-date）
+   支持点击标题编辑（custom-deco-card-icon / custom-deco-card-title）
+   支持自定义日期（custom-deco-card-date）
    禁用三角形伪元素
 ------------------------------------------------------------ */
 
-.protyle-wysiwyg [custom-style="随记"],
-.b3-typography [custom-style="随记"],
-.protyle-wysiwyg [custom-style="随记"][fold="0"],
-.b3-typography [custom-style="随记"][fold="0"],
-div[custom-style="随记"] {
+.protyle-wysiwyg [custom-deco-style="随记"],
+.b3-typography [custom-deco-style="随记"],
+.protyle-wysiwyg [custom-deco-style="随记"][fold="0"],
+.b3-typography [custom-deco-style="随记"][fold="0"],
+div[custom-deco-style="随记"] {
     background: white !important;
     border: 1px solid #e5e7eb !important;
     border-radius: 8px !important;
@@ -2000,16 +1672,16 @@ div[custom-style="随记"] {
 }
 
 /* 禁用三角形 */
-.protyle-wysiwyg [custom-style="随记"]::after,
-.b3-typography [custom-style="随记"]::after,
-div[custom-style="随记"]::after {
+.protyle-wysiwyg [custom-deco-style="随记"]::after,
+.b3-typography [custom-deco-style="随记"]::after,
+div[custom-deco-style="随记"]::after {
     display: none !important;
 }
 
 /* 顶部标签：💬 随记（绿色） */
-.protyle-wysiwyg [custom-style="随记"]::before,
-.b3-typography [custom-style="随记"]::before,
-div[custom-style="随记"]::before {
+.protyle-wysiwyg [custom-deco-style="随记"]::before,
+.b3-typography [custom-deco-style="随记"]::before,
+div[custom-deco-style="随记"]::before {
     content: "💬 随记" !important;
     display: block !important;
     padding: 16px 20px !important;
@@ -2025,11 +1697,11 @@ div[custom-style="随记"]::before {
     line-height: 1.4 !important;
 }
 
-/* 底部日期栏（动态获取 data-card-date，若不存在则显示 2026-2-12） */
-.protyle-wysiwyg [custom-style="随记"]::after,
-.b3-typography [custom-style="随记"]::after,
-div[custom-style="随记"]::after {
-    content: attr(data-card-date, "2026-2-12") !important;  /* ✨ 动态读取属性 */
+/* 底部日期栏（动态获取 custom-deco-card-date，若不存在则显示 2026-2-12） */
+.protyle-wysiwyg [custom-deco-style="随记"]::after,
+.b3-typography [custom-deco-style="随记"]::after,
+div[custom-deco-style="随记"]::after {
+    content: attr(custom-deco-card-date, "2026-2-12") !important;
     display: block !important;
     padding: 12px 20px !important;
     margin-left: -20px !important;
@@ -2045,29 +1717,27 @@ div[custom-style="随记"]::after {
 }
 
 /* 折叠状态：隐藏所有伪元素 */
-.protyle-wysiwyg [custom-style="随记"][fold="1"]::before,
-.b3-typography [custom-style="随记"][fold="1"]::before,
-div[custom-style="随记"][fold="1"]::before,
-.protyle-wysiwyg [custom-style="随记"][fold="1"]::after,
-.b3-typography [custom-style="随记"][fold="1"]::after,
-div[custom-style="随记"][fold="1"]::after {
+.protyle-wysiwyg [custom-deco-style="随记"][fold="1"]::before,
+.b3-typography [custom-deco-style="随记"][fold="1"]::before,
+div[custom-deco-style="随记"][fold="1"]::before,
+.protyle-wysiwyg [custom-deco-style="随记"][fold="1"]::after,
+.b3-typography [custom-deco-style="随记"][fold="1"]::after,
+div[custom-deco-style="随记"][fold="1"]::after {
     display: none !important;
 }
-
 
 /* ------------------------------------------------------------
    轻言轻语 · 接收消息（左侧气泡）
    白底，圆角 8px 8px 8px 0，左对齐，自适应宽度
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="接收消息"],
-.b3-typography [custom-style="接收消息"],
-.protyle-wysiwyg [custom-style="接收消息"][fold="0"],
-.b3-typography [custom-style="接收消息"][fold="0"],
-div[custom-style="接收消息"] {
+.protyle-wysiwyg [custom-deco-style="接收消息"],
+.b3-typography [custom-deco-style="接收消息"],
+.protyle-wysiwyg [custom-deco-style="接收消息"][fold="0"],
+.b3-typography [custom-deco-style="接收消息"][fold="0"],
+div[custom-deco-style="接收消息"] {
     background: white !important;
     border-radius: 8px 8px 8px 0 !important;
     padding: 12px 20px !important;
-    /* margin: 2px 0 !important; */
     margin-bottom: 12px;
     margin-left: 0 !important;
     margin-right: auto !important;
@@ -2082,12 +1752,12 @@ div[custom-style="接收消息"] {
     word-break: break-word !important;
     border: none !important;
 }
-.protyle-wysiwyg [custom-style="接收消息"]::before,
-.protyle-wysiwyg [custom-style="接收消息"]::after,
-.b3-typography [custom-style="接收消息"]::before,
-.b3-typography [custom-style="接收消息"]::after,
-div[custom-style="接收消息"]::before,
-div[custom-style="接收消息"]::after {
+.protyle-wysiwyg [custom-deco-style="接收消息"]::before,
+.protyle-wysiwyg [custom-deco-style="接收消息"]::after,
+.b3-typography [custom-deco-style="接收消息"]::before,
+.b3-typography [custom-deco-style="接收消息"]::after,
+div[custom-deco-style="接收消息"]::before,
+div[custom-deco-style="接收消息"]::after {
     display: none !important;
 }
 
@@ -2095,15 +1765,14 @@ div[custom-style="接收消息"]::after {
    轻言轻语 · 发送消息（右侧气泡）
    绿底（#9eea6a），圆角 8px 8px 0 8px，右对齐，自适应宽度
 ------------------------------------------------------------ */
-.protyle-wysiwyg [custom-style="发送消息"],
-.b3-typography [custom-style="发送消息"],
-.protyle-wysiwyg [custom-style="发送消息"][fold="0"],
-.b3-typography [custom-style="发送消息"][fold="0"],
-div[custom-style="发送消息"] {
+.protyle-wysiwyg [custom-deco-style="发送消息"],
+.b3-typography [custom-deco-style="发送消息"],
+.protyle-wysiwyg [custom-deco-style="发送消息"][fold="0"],
+.b3-typography [custom-deco-style="发送消息"][fold="0"],
+div[custom-deco-style="发送消息"] {
     background: #9eea6a !important;
     border-radius: 8px 8px 0 8px !important;
     padding: 12px 20px !important;
-    /* margin: 2px 0 !important; */
     margin-bottom: 12px;
     margin-left: auto !important;
     margin-right: 0 !important;
@@ -2117,13 +1786,12 @@ div[custom-style="发送消息"] {
     color: #1e293b !important;
     word-break: break-word !important;
     border: none !important;
-
 }
-.protyle-wysiwyg [custom-style="发送消息"]::before,
-.protyle-wysiwyg [custom-style="发送消息"]::after,
-.b3-typography [custom-style="发送消息"]::before,
-.b3-typography [custom-style="发送消息"]::after,
-div[custom-style="发送消息"]::before,
-div[custom-style="发送消息"]::after {
+.protyle-wysiwyg [custom-deco-style="发送消息"]::before,
+.protyle-wysiwyg [custom-deco-style="发送消息"]::after,
+.b3-typography [custom-deco-style="发送消息"]::before,
+.b3-typography [custom-deco-style="发送消息"]::after,
+div[custom-deco-style="发送消息"]::before,
+div[custom-deco-style="发送消息"]::after {
     display: none !important;
 }

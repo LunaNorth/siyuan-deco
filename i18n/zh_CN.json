@@ -1,5 +1,6 @@
 {
-    "cardview": "卡片视图",
+    "cardview": "轻饰笔记",
+    
     "creativeGroup": "卡片风格",
 
     "creativeCard": "创意卡片",
@@ -41,7 +42,6 @@
     "errorSplitCardIcon": "❌",
     "neutralSplitCard": "普通通知卡片",
     "neutralSplitCardIcon": "📌",
-    
 
     "quoteGroup": "引述块样式",
 
@@ -49,70 +49,43 @@
     "blueQuoteCard": "蓝调引述",
     "greenQuoteCard": "绿调引述",
     "orangeQuoteCard": "橙调引述",
-    "borderQuoteCard": "边框引述",
-
     "purpleQuoteCard": "紫调引述",
-    "pinkQuoteCard": "粉调引述",
-    "cyanQuoteCard": "青调引述",
     "redQuoteCard": "红调引述",
     "yellowQuoteCard": "黄调引述",
-    "brownQuoteCard": "棕调引述",
-    "tealQuoteCard": "水绿引述",
-    "indigoQuoteCard": "靛蓝引述",
-    "roseQuoteCard": "玫瑰引述",
-    "slateQuoteCard": "石板引述",
-    "stoneQuoteCard": "石色引述",
-    "neutralQuoteCard": "中性引述",
-    "zincQuoteCard": "锌色引述",
 
-        "colorBarGroup": "彩色横条",
+    "colorBarGroup": "彩色横条",
 
     "summaryColorBarCard": "重点总结",
     "summaryColorBarCardIcon": "🎯",
-
     "newFeatureColorBarCard": "新特性",
     "newFeatureColorBarCardIcon": "🚀",
-
     "growthColorBarCard": "成长笔记",
     "growthColorBarCardIcon": "🌱",
-
     "reminderColorBarCard": "重要提醒",
     "reminderColorBarCardIcon": "❗",
-
     "techColorBarCard": "技术要点",
     "techColorBarCardIcon": "⚙️",
-
     "moodColorBarCard": "今日心情",
     "moodColorBarCardIcon": "💭",
-
     "adviceColorBarCard": "专业建议",
     "adviceColorBarCardIcon": "🏆",
-
     "ideaColorBarCard": "创意灵感",
     "ideaColorBarCardIcon": "💡",
-
     "universalColorBarCard": "万能提示",
     "universalColorBarCardIcon": "✨",
-
     "infoColorBarCard": "信息通知",
     "infoColorBarCardIcon": "ℹ️",
-
     "warningColorBarCard": "注意提醒",
     "warningColorBarCardIcon": "⚠️",
-
     "successColorBarCard": "成功反馈",
     "successColorBarCardIcon": "✅",
-
 
     "whisperGroup": "轻言轻语",
 
     "diaryWhisperCard": "随记",
     "diaryWhisperCardIcon": "💬",
-    
-
     "receiveWhisperCard": "接收消息",
     "sendWhisperCard": "发送消息",
-
 
     "editCardTitle": "编辑卡片",
     "cardType": "类型",

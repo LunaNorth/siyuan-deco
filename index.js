@@ -14,21 +14,21 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     // ---------- 从 i18n 动态加载卡片默认配置 ----------
-loadStyleDefaults() {
-    if (!this.i18n) return;
-    const defaults = {};
-    for (const [key, label] of Object.entries(this.i18n)) {
-        if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
-            // 引述卡片没有图标，直接设为空字符串
-            const icon = this.i18n[key + 'Icon'] || '';
-            defaults[label] = {
-                icon: icon,
-                title: label
-            };
+    loadStyleDefaults() {
+        if (!this.i18n) return;
+        const defaults = {};
+        for (const [key, label] of Object.entries(this.i18n)) {
+            if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
+                const icon = this.i18n[key + 'Icon'] || '';
+                defaults[label] = {
+                    icon: icon,
+                    title: label
+                };
+            }
         }
+        this.styleDefaults = defaults;
     }
-    this.styleDefaults = defaults;
-}
+
     // ---------- 批量设置属性（缓存 + DOM + 服务器）----------
     async setAttrs(id, attrs) {
         if (!this.attrsCache.has(id)) {
@@ -45,7 +45,7 @@ loadStyleDefaults() {
         await siyuan.fetchPost("/api/attr/setBlockAttrs", { id, attrs });
     }
 
-    // ---------- 属性恢复监听（完整，与之前相同）----------
+    // ---------- 属性恢复监听 ----------
     startAttributeRestoreObserver() {
         const editor = document.querySelector(".protyle-wysiwyg");
         if (!editor) {
@@ -65,9 +65,9 @@ loadStyleDefaults() {
                         }
                     });
                 }
-                if (mut.type === "attributes" && mut.target?.hasAttribute?.("custom-style")) {
+                if (mut.type === "attributes" && mut.target?.hasAttribute?.("custom-deco-style")) {
                     const attr = mut.attributeName;
-                    if (attr === "data-card-icon" || attr === "data-card-title" || attr === "custom-style") {
+                    if (attr === "custom-deco-card-icon" || attr === "custom-deco-card-title" || attr === "custom-deco-style") {
                         const id = mut.target.dataset.nodeId;
                         if (id && this.attrsCache.has(id)) {
                             const cached = this.attrsCache.get(id);
@@ -84,13 +84,13 @@ loadStyleDefaults() {
             childList: true,
             subtree: true,
             attributes: true,
-            attributeFilter: ["data-card-icon", "data-card-title", "custom-style"]
+            attributeFilter: ["custom-deco-card-icon", "custom-deco-card-title", "custom-deco-style"]
         });
 
         this._restoreObserver = restoreObserver;
 
         this._interval = setInterval(() => {
-            document.querySelectorAll("[custom-style]").forEach(el => {
+            document.querySelectorAll("[custom-deco-style]").forEach(el => {
                 const id = el.dataset.nodeId;
                 if (id && this.attrsCache.has(id)) {
                     this.restoreBlockAttributes(el);
@@ -104,14 +104,14 @@ loadStyleDefaults() {
         if (!id || !this.attrsCache.has(id)) return;
 
         const attrs = this.attrsCache.get(id);
-        if (attrs["custom-style"] && !blockEl.getAttribute("custom-style")) {
-            blockEl.setAttribute("custom-style", attrs["custom-style"]);
+        if (attrs["custom-deco-style"] && !blockEl.getAttribute("custom-deco-style")) {
+            blockEl.setAttribute("custom-deco-style", attrs["custom-deco-style"]);
         }
-        if (attrs["data-card-icon"] && !blockEl.getAttribute("data-card-icon")) {
-            blockEl.setAttribute("data-card-icon", attrs["data-card-icon"]);
+        if (attrs["custom-deco-card-icon"] && !blockEl.getAttribute("custom-deco-card-icon")) {
+            blockEl.setAttribute("custom-deco-card-icon", attrs["custom-deco-card-icon"]);
         }
-        if (attrs["data-card-title"] && !blockEl.getAttribute("data-card-title")) {
-            blockEl.setAttribute("data-card-title", attrs["data-card-title"]);
+        if (attrs["custom-deco-card-title"] && !blockEl.getAttribute("custom-deco-card-title")) {
+            blockEl.setAttribute("custom-deco-card-title", attrs["custom-deco-card-title"]);
         }
     }
 
@@ -121,50 +121,49 @@ loadStyleDefaults() {
         document.addEventListener('click', this._boundHandleTitleClick);
     }
 
-async handleTitleClick(e) {
-    const cardBlock = e.target.closest('[custom-style]');
-    if (!cardBlock) return;
+    async handleTitleClick(e) {
+        const cardBlock = e.target.closest('[custom-deco-style]');
+        if (!cardBlock) return;
 
-    // 获取卡片对应的 i18n 键名
-    const style = cardBlock.getAttribute('custom-style');
-    const cardKey = this.getCardKeyByLabel(style);
-    
-    // 引述卡片禁止编辑
-    if (cardKey && cardKey.endsWith('QuoteCard')) {
-        return;
-    }
-    if (cardKey && cardKey.endsWith('WhisperCard') && cardKey !== 'diaryWhisperCard') {
-        return;
-    }
-    if (!cardBlock.hasAttribute('data-card-title')) return;
+        const style = cardBlock.getAttribute('custom-deco-style');
+        const cardKey = this.getCardKeyByLabel(style);
+        
+        // 引述卡片禁止编辑
+        if (cardKey && cardKey.endsWith('QuoteCard')) {
+            return;
+        }
+        if (cardKey && cardKey.endsWith('WhisperCard') && cardKey !== 'diaryWhisperCard') {
+            return;
+        }
+        if (!cardBlock.hasAttribute('custom-deco-card-title')) return;
 
-    const rect = cardBlock.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
+        const rect = cardBlock.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const offsetY = e.clientY - rect.top;
 
-    if (offsetY < 40 && offsetX < 200) {
-        e.preventDefault();
-        e.stopPropagation();
-        await this.showEditDialog(cardBlock);
-    }
-}
-
-// 辅助方法：通过卡片显示名称查找对应的 i18n 键
-getCardKeyByLabel(label) {
-    if (!this.i18n) return null;
-    for (const [key, value] of Object.entries(this.i18n)) {
-        if (value === label && key.endsWith('Card')) {
-            return key;
+        if (offsetY < 40 && offsetX < 200) {
+            e.preventDefault();
+            e.stopPropagation();
+            await this.showEditDialog(cardBlock);
         }
     }
-    return null;
-}
+
+    // 辅助方法：通过卡片显示名称查找对应的 i18n 键
+    getCardKeyByLabel(label) {
+        if (!this.i18n) return null;
+        for (const [key, value] of Object.entries(this.i18n)) {
+            if (value === label && key.endsWith('Card')) {
+                return key;
+            }
+        }
+        return null;
+    }
 
     async showEditDialog(blockEl) {
         const blockId = blockEl.dataset.nodeId;
-        const currentStyle = blockEl.getAttribute('custom-style') || Object.keys(this.styleDefaults)[0] || '';
-        const currentTitle = blockEl.getAttribute('data-card-title') || this.styleDefaults[currentStyle]?.title || '';
-        const currentIcon = blockEl.getAttribute('data-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
+        const currentStyle = blockEl.getAttribute('custom-deco-style') || Object.keys(this.styleDefaults)[0] || '';
+        const currentTitle = blockEl.getAttribute('custom-deco-card-title') || this.styleDefaults[currentStyle]?.title || '';
+        const currentIcon = blockEl.getAttribute('custom-deco-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
 
         const allCards = this.getAllCardItems();
         const optionsHtml = allCards.map(item => 
@@ -216,9 +215,9 @@ getCardKeyByLabel(label) {
             const newTitle = titleInput.value.trim();
 
             const attrs = {};
-            if (newStyle !== currentStyle) attrs["custom-style"] = newStyle;
-            if (newIcon !== currentIcon) attrs["data-card-icon"] = newIcon || this.styleDefaults[newStyle]?.icon || '';
-            if (newTitle !== currentTitle) attrs["data-card-title"] = newTitle || this.styleDefaults[newStyle]?.title || '';
+            if (newStyle !== currentStyle) attrs["custom-deco-style"] = newStyle;
+            if (newIcon !== currentIcon) attrs["custom-deco-card-icon"] = newIcon || this.styleDefaults[newStyle]?.icon || '';
+            if (newTitle !== currentTitle) attrs["custom-deco-card-title"] = newTitle || this.styleDefaults[newStyle]?.title || '';
 
             await this.setAttrs(blockId, attrs);
             dialog.destroy();
@@ -227,7 +226,7 @@ getCardKeyByLabel(label) {
         dialogElement.querySelector('#cancel-btn').addEventListener('click', () => dialog.destroy());
     }
 
-    // ---------- 菜单相关（完全动态）----------
+    // ---------- 菜单相关 ----------
     waitMenu() {
         this.state.menu = document.querySelector("#commonMenu");
         this.state.menu ? this.observeMenu() : setTimeout(() => this.waitMenu(), 100);
@@ -256,40 +255,38 @@ getCardKeyByLabel(label) {
 
     getSecondaryGroups() {
         return [
-        {
-            id: "cardStyle",
-            labelKey: "creativeGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('Card') && !key.includes('Split')
-             && !key.includes('Quote') && !key.includes('ColorBarCard') && !key.includes('WhisperCard')
-        },
-        {
-            id: "splitColor",
-            labelKey: "splitColorGroup",   // i18n 键
-            icon: "#iconLayout",           // 可换成 #iconSplit / #iconBoth 等
-            // 筛选条件：卡片键名包含 SplitCard（属于双色分割组）
-            filter: (label, key) => key.includes('SplitCard')
-        },
-        {
-            id: "quoteBlock",
-            labelKey: "quoteGroup",
-            icon: "#iconQuote",      
-            filter: (label, key) => key.endsWith('QuoteCard')
-        },
-        {
-            id: "colorBar",
-            labelKey: "colorBarGroup",      // i18n 键 "彩色横条"
-            icon: "#iconLayout",           // 思源内置彩虹图标（或 #iconColor）
-            filter: (label, key) => key.includes('ColorBarCard')
-        },
-        {
-            id: "whisper",
-            labelKey: "whisperGroup",      // i18n 键 "轻言轻语"
-            icon: "#iconLayout",             // 思源内置笔记图标（或 #iconChat）
-            filter: (label, key) => key.includes('WhisperCard')
-        }
-    
-    ];
+            {
+                id: "cardStyle",
+                labelKey: "creativeGroup",
+                icon: "#iconSparkles",
+                filter: (label, key) => key.endsWith('Card') && !key.includes('Split')
+                    && !key.includes('Quote') && !key.includes('ColorBarCard') && !key.includes('WhisperCard')
+            },
+            {
+                id: "splitColor",
+                labelKey: "splitColorGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.includes('SplitCard')
+            },
+            {
+                id: "quoteBlock",
+                labelKey: "quoteGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.endsWith('QuoteCard')
+            },
+            {
+                id: "colorBar",
+                labelKey: "colorBarGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.includes('ColorBarCard')
+            },
+            {
+                id: "whisper",
+                labelKey: "whisperGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.includes('WhisperCard')
+            }
+        ];
     }
 
     getAllCardItems() {
@@ -359,7 +356,7 @@ getCardKeyByLabel(label) {
 
         this.getAllCardItems().forEach(item => {
             if (filterFunc(item.label, item.key)) {
-                itemsContainer.appendChild(this.createCardItem(blockId, item.label , item.key));
+                itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
             }
         });
 
@@ -367,45 +364,43 @@ getCardKeyByLabel(label) {
         return subMenu;
     }
 
-createCardItem(blockId, label, key) {
-    const item = document.createElement("button");
-    item.className = "b3-menu__item";
-    item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
-                      <span class="b3-menu__label">${label}</span>`;
-    item.onclick = async (e) => {
-        e.stopPropagation();
-        
-        const attrs = { "custom-style": label };
-        
-        // 只有非引述/非纯样式卡片才自动设置默认图标和标题
-        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
-            const defaults = this.styleDefaults[label];
-            if (defaults) {
-                attrs["data-card-icon"] = defaults.icon || '';
-                attrs["data-card-title"] = defaults.title || '';
+    createCardItem(blockId, label, key) {
+        const item = document.createElement("button");
+        item.className = "b3-menu__item";
+        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
+                          <span class="b3-menu__label">${label}</span>`;
+        item.onclick = async (e) => {
+            e.stopPropagation();
+
+            const attrs = { "custom-deco-style": label };
+
+            // 只有非引述/非纯样式卡片才自动设置默认图标和标题
+            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
+                const defaults = this.styleDefaults[label];
+                if (defaults) {
+                    attrs["custom-deco-card-icon"] = defaults.icon || '';
+                    attrs["custom-deco-card-title"] = defaults.title || '';
+                }
             }
-        }
-        
-        // ===== 新增：为「随记」卡片自动设置默认日期 =====
-        if (label === "随记") {
-            // 格式化当天日期：YYYY-MM-DD
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            attrs["data-card-date"] = `${year}-${month}-${day}`;
-        }
-        // ============================================
-        
-        await this.setAttrs(blockId, attrs);
-    };
-    return item;
-}
+
+            // 为「随记」卡片自动设置默认日期
+            if (label === "随记" || label === "Diary Note") { // 支持中英文
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
+            }
+
+            await this.setAttrs(blockId, attrs);
+        };
+        return item;
+    }
 
     createSeparator() {
         const sep = document.createElement("button");
         sep.className = "b3-menu__separator";
-        sep.setAttribute("data-north-sep", "true");
+        sep.setAttribute("data-id", "deco-separator"); // 修改点：使用 data-id 便于用户隐藏
         return sep;
     }
 

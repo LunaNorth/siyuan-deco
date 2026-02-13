@@ -17,6 +17,10 @@ set ORIGINAL_DIR=%cd%
 REM 创建临时目录
 set TEMP_DIR=%TEMP%\plugin_build_%RANDOM%
 mkdir "%TEMP_DIR%" 2>nul
+if not exist "%TEMP_DIR%" (
+    echo ❌ 错误: 无法创建临时目录 '%TEMP_DIR%' >&2
+    exit /b 1
+)
 
 echo 📁 复制插件文件到临时目录...
 xcopy "%PLUGIN_DIR%\*" "%TEMP_DIR%\" /E /I /Q /H /Y >nul 2>&1
@@ -36,10 +40,10 @@ if exist "%TEMP_DIR%\build.sh" del /q "%TEMP_DIR%\build.sh" >nul 2>&1
 if exist "%TEMP_DIR%\build.bat" del /q "%TEMP_DIR%\build.bat" >nul 2>&1
 if exist "%TEMP_DIR%\.hotreload" del /q "%TEMP_DIR%\.hotreload" >nul 2>&1
 
-REM 删除用户指定排除的文件
+REM 删除用户指定排除的文件（保留 en_US.json，删除中文 README）
 if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
-if exist "%TEMP_DIR%\README.md" del /q "%TEMP_DIR%\README.md" >nul 2>&1
-if exist "%TEMP_DIR%\i18n\en_US.json" del /q "%TEMP_DIR%\i18n\en_US.json" >nul 2>&1
+if exist "%TEMP_DIR%\README_zh_CN.md" del /q "%TEMP_DIR%\README_zh_CN.md" >nul 2>&1
+REM ✅ i18n\en_US.json 不再删除，予以保留
 
 REM 删除旧的输出文件
 if exist "%ORIGINAL_DIR%\%OUTPUT%" del /q "%ORIGINAL_DIR%\%OUTPUT%" >nul 2>&1
@@ -54,10 +58,17 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM 验证输出文件
+if not exist "%ORIGINAL_DIR%\%OUTPUT%" (
+    echo ❌ 错误: 打包文件未生成 '%OUTPUT%' >&2
+    rd /s /q "%TEMP_DIR%" >nul 2>&1
+    exit /b 1
+)
+
 REM 清理临时目录
 rd /s /q "%TEMP_DIR%" >nul 2>&1
 
 echo ✅ 打包成功: %OUTPUT%
-echo ℹ️  已排除: LICENSE, README.md, i18n/en_US.json
+echo ℹ️  已排除: LICENSE, README_zh_CN.md 及开发相关文件（.git, node_modules 等）
 
 endlocal
