@@ -10,6 +10,14 @@
 ## 使用
 安装完插件后 ，打开菜单即可看到轻饰笔记这个选项 ，根据里面的内容即可去使用
 
+---
+✨ 让每一块笔记，都拥有属于自己的样子。
+
+
+
+## v1.0.4 
+添加引述卡片样式
+
 ## v1.0.3
 
 添加时间轴样式
@@ -20,6 +28,4 @@
 - 作者：LunaNorth
 - GitHub：[https://github.com/LunaNorth/siyuan-deco](https://github.com/LunaNorth/siyuan-deco)
 
----
 
-✨ 让每一块笔记，都拥有属于自己的样子。
