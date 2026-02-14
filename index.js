@@ -38,6 +38,40 @@ const CARD_ITEMS = [
     { key: 'timelinePinkWhisperCard', label: '时间轴·粉', icon: '⏳' },
     { key: 'timelineBlackWhisperCard', label: '时间轴·黑', icon: '⏳' },
     { key: 'timelineGrayWhisperCard', label: '时间轴·灰', icon: '⏳' },
+
+    // 通知卡片组（NoticeCard）
+    { key: 'systemNoticeCard', label: '系统通知', icon: 'ℹ️' },
+    { key: 'successNoticeCard', label: '成功通知', icon: '✅' },
+    { key: 'warningNoticeCard', label: '警告通知', icon: '⚠️' },
+    { key: 'errorNoticeCard', label: '错误通知', icon: '❌' },
+    { key: 'infoNoticeCard', label: '信息通知', icon: 'ℹ️' },
+    { key: 'questionNoticeCard', label: '疑问通知', icon: '❓' },
+    { key: 'importantNoticeCard', label: '重要通知', icon: '⭐' },
+    { key: 'reminderNoticeCard', label: '提醒通知', icon: '⏰' },
+    { key: 'mailNoticeCard', label: '邮件通知', icon: '✉️' },
+
+     // 彩色顶部组（GradientTopCard）
+    { key: 'summaryGradientTopCard', label: '重点总结', icon: '🎯' },
+    { key: 'newFeatureGradientTopCard', label: '新特性', icon: '🚀' },
+    { key: 'growthGradientTopCard', label: '成长笔记', icon: '🌱' },
+    { key: 'importantGradientTopCard', label: '重要提醒', icon: '❗' },
+    { key: 'techGradientTopCard', label: '技术要点', icon: '⚙️' },
+    { key: 'moodGradientTopCard', label: '今日心情', icon: '💭' },
+    { key: 'adviceGradientTopCard', label: '专业建议', icon: '🏆' },
+    { key: 'ideaGradientTopCard', label: '创意灵感', icon: '💡' },
+    { key: 'universalGradientTopCard', label: '万能提示', icon: '✨' },
+
+
+    // 语录卡片组（ExcerptCard）- 所有键名均以 ExcerptCard 结尾
+    { key: 'quoteExcerptCard', label: '摘录卡片', icon: '❝' },
+    { key: 'famousExcerptCard', label: '名言卡片', icon: '💬' },
+    { key: 'warningExcerptCard', label: '警示卡片', icon: '⚠️' },
+    { key: 'essayExcerptCard', label: '随笔卡片', icon: '📝' },
+    { key: 'poeticExcerptCard', label: '诗意卡片', icon: '🌸' },
+    { key: 'inspirationExcerptCard', label: '灵感卡片', icon: '💡' },
+    { key: 'reflectionExcerptCard', label: '反思卡片', icon: '🤔' },
+    { key: 'epiphanyExcerptCard', label: '顿悟卡片', icon: '⚡' },
+    { key: 'treasureExcerptCard', label: '珍藏卡片', icon: '🔖' },
 ];
 
 
@@ -47,6 +81,9 @@ const TEXT = {
     creativeGroup: '卡片风格',
     quoteGroup: '引述块样式',
     whisperGroup: '轻言轻语',
+    noticeGroup: '通知卡片',
+    gradientTopGroup: '彩色顶部',
+    excerptGroup: '引述卡片',  
 
     editCardTitle: '编辑卡片',
     cardType: '类型',
@@ -348,6 +385,24 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 labelKey: "whisperGroup",
                 icon: "#iconLayout",
                 filter: (label, key) => key.includes('WhisperCard')
+            },
+            {
+            id: "noticeGroup",
+            labelKey: "noticeGroup",
+            icon: "#iconInfo",
+            filter: (label, key) => key.endsWith('NoticeCard')
+            },
+            {
+            id: "gradientTop",
+            labelKey: "gradientTopGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('GradientTopCard')
+            },
+            {
+                id: "excerptGroup",
+                labelKey: "excerptGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.endsWith('ExcerptCard')
             }
         ];
     }

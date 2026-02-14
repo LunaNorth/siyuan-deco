@@ -16,8 +16,7 @@
         "zh_CN": "通过属性自定义块样式的思源笔记插件"
     },
     "readme": {
-        "default": "README.md",
-        "zh_CN": "README.md"
+        "default": "README.md"
     },
     "keywords": ["卡片样式", "属性样式", "笔记美化"],
     "funding": {
