@@ -39,11 +39,14 @@ REM 删除构建脚本自身
 if exist "%TEMP_DIR%\build.sh" del /q "%TEMP_DIR%\build.sh" >nul 2>&1
 if exist "%TEMP_DIR%\build.bat" del /q "%TEMP_DIR%\build.bat" >nul 2>&1
 if exist "%TEMP_DIR%\.hotreload" del /q "%TEMP_DIR%\.hotreload" >nul 2>&1
+if exist "%TEMP_DIR%\update.sh" del /q "%TEMP_DIR%\update.sh" >nul 2>&1
 
-REM 删除用户指定排除的文件（保留 en_US.json，删除中文 README）
-if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
+REM ✅ 按用户要求排除：i18n 文件夹 和 README_zh_CN.md
+if exist "%TEMP_DIR%\i18n" rd /s /q "%TEMP_DIR%\i18n" >nul 2>&1
 if exist "%TEMP_DIR%\README_zh_CN.md" del /q "%TEMP_DIR%\README_zh_CN.md" >nul 2>&1
-REM ✅ i18n\en_US.json 不再删除，予以保留
+
+REM 删除 LICENSE（保留历史排除逻辑）
+if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
 
 REM 删除旧的输出文件
 if exist "%ORIGINAL_DIR%\%OUTPUT%" del /q "%ORIGINAL_DIR%\%OUTPUT%" >nul 2>&1
@@ -68,7 +71,4 @@ if not exist "%ORIGINAL_DIR%\%OUTPUT%" (
 REM 清理临时目录
 rd /s /q "%TEMP_DIR%" >nul 2>&1
 
-echo ✅ 打包成功: %OUTPUT%
-echo ℹ️  已排除: LICENSE, README_zh_CN.md 及开发相关文件（.git, node_modules 等）
-
-endlocal
+echo ✅ 打包成功

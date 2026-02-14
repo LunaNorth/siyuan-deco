@@ -1,6 +1,61 @@
 "use strict";
 const siyuan = require("siyuan");
 
+
+const CARD_ITEMS = [
+    // 卡片风格组（CreativeCard）
+    { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
+    { key: 'studyNoteCreativeCard', label: '学习笔记', icon: '📚' },
+    { key: 'importantReminderCreativeCard', label: '重要提醒', icon: '❗' },
+    { key: 'codeExampleCreativeCard', label: '代码示例', icon: '💻' },
+    { key: 'readingQuoteCreativeCard', label: '读书摘录', icon: '📖' },
+    { key: 'todoCreativeCard', label: '待办事项', icon: '✅' },
+    { key: 'knowledgePointCreativeCard', label: '知识点', icon: '💡' },
+    { key: 'inspirationCreativeCard', label: '灵感记录', icon: '💭' },
+    { key: 'warmNoteCreativeCard', label: '温馨便签', icon: '📝' },
+    { key: 'projectPlanCreativeCard', label: '项目规划', icon: '📋' },
+    { key: 'moodDiaryCreativeCard', label: '心情日记', icon: '🌸' },
+    { key: 'dataStatsCreativeCard', label: '数据统计', icon: '📊' },
+    { key: 'meetingMinutesCreativeCard', label: '会议纪要', icon: '💼' },
+
+    // 引述块组（QuoteCard）
+    { key: 'grayQuoteCard', label: '灰调引述', icon: '' },
+    { key: 'blueQuoteCard', label: '蓝调引述', icon: '' },
+    { key: 'greenQuoteCard', label: '绿调引述', icon: '' },
+    { key: 'orangeQuoteCard', label: '橙调引述', icon: '' },
+    { key: 'purpleQuoteCard', label: '紫调引述', icon: '' },
+    { key: 'redQuoteCard', label: '红调引述', icon: '' },
+    { key: 'yellowQuoteCard', label: '黄调引述', icon: '' },
+
+    // 轻言轻语组（WhisperCard）
+    { key: 'timelineRedWhisperCard', label: '时间轴·红', icon: '⏳' },
+    { key: 'timelineOrangeWhisperCard', label: '时间轴·橙', icon: '⏳' },
+    { key: 'timelineYellowWhisperCard', label: '时间轴·黄', icon: '⏳' },
+    { key: 'timelineGreenWhisperCard', label: '时间轴·绿', icon: '⏳' },
+    { key: 'timelineCyanWhisperCard', label: '时间轴·青', icon: '⏳' },
+    { key: 'timelineBlueWhisperCard', label: '时间轴·蓝', icon: '⏳' },
+    { key: 'timelinePurpleWhisperCard', label: '时间轴·紫', icon: '⏳' },
+    { key: 'timelinePinkWhisperCard', label: '时间轴·粉', icon: '⏳' },
+    { key: 'timelineBlackWhisperCard', label: '时间轴·黑', icon: '⏳' },
+    { key: 'timelineGrayWhisperCard', label: '时间轴·灰', icon: '⏳' },
+];
+
+
+const TEXT = {
+    cardview: '轻饰笔记',
+
+    creativeGroup: '卡片风格',
+    quoteGroup: '引述块样式',
+    whisperGroup: '轻言轻语',
+
+    editCardTitle: '编辑卡片',
+    cardType: '类型',
+    cardIcon: '图标',
+    cardTitle: '标题',
+    cancel: '取消',
+    confirm: '确定',
+};
+
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     styleDefaults = null;
     attrsCache = new Map();
@@ -14,13 +69,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     loadStyleDefaults() {
-        if (!this.i18n) return;
         const defaults = {};
-        for (const [key, label] of Object.entries(this.i18n)) {
-            if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
-                const icon = this.i18n[key + 'Icon'] || '';
-                defaults[label] = { icon, title: label };
-            }
+        for (const item of CARD_ITEMS) {
+            defaults[item.label] = { icon: item.icon, title: item.label };
         }
         this.styleDefaults = defaults;
     }
@@ -122,12 +173,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const style = cardBlock.getAttribute('custom-deco-style');
         const cardKey = this.getCardKeyByLabel(style);
 
-        if (cardKey && cardKey.endsWith('QuoteCard')) {
-            return;
-        }
-        if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryWhisperCard') {
-            return;
-        }
+        // 引述卡片、轻语卡片（除随记外）禁止编辑
+        if (cardKey && cardKey.endsWith('QuoteCard')) return;
+        if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryWhisperCard') return;
         if (!cardBlock.hasAttribute('custom-deco-card-title')) return;
 
         const rect = cardBlock.getBoundingClientRect();
@@ -141,9 +189,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     getCardKeyByLabel(label) {
-        if (!this.i18n) return null;
-        for (const [key, value] of Object.entries(this.i18n)) {
-            if (value === label && key.endsWith('Card')) return key;
+        for (const item of CARD_ITEMS) {
+            if (item.label === label) return item.key;
         }
         return null;
     }
@@ -282,22 +329,28 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-getSecondaryGroups() {
-    return [
-        {
-            id: "cardStyle",
-            labelKey: "creativeGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('CreativeCard')
-        },
-        {
-            id: "quoteBlock",
-            labelKey: "quoteGroup",
-            icon: "#iconQuote",
-            filter: (label, key) => key.endsWith('QuoteCard')
-        }
-    ];
-}
+    getSecondaryGroups() {
+        return [
+            {
+                id: "cardStyle",
+                labelKey: "creativeGroup",
+                icon: "#iconSparkles",
+                filter: (label, key) => key.endsWith('CreativeCard')
+            },
+            {
+                id: "quoteBlock",
+                labelKey: "quoteGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.endsWith('QuoteCard')
+            },
+            {
+                id: "whisper",
+                labelKey: "whisperGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.includes('WhisperCard')
+            }
+        ];
+    }
 
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
@@ -335,20 +388,13 @@ getSecondaryGroups() {
 
             const attrs = { "custom-deco-style": label };
 
+            // 非引述、非轻语卡片自动设置默认图标和标题
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
                 const defaults = this.styleDefaults[label];
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     attrs["custom-deco-card-title"] = defaults.title || '';
                 }
-            }
-
-            if (key === 'diaryWhisperCard') {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
             }
 
             await this.setAttrs(blockId, attrs);
@@ -364,17 +410,11 @@ getSecondaryGroups() {
     }
 
     getAllCardItems() {
-        const items = [];
-        for (const key of Object.keys(this.i18n || {})) {
-            if (key.endsWith('Card') && !key.endsWith('CardIcon')) {
-                items.push({ key, label: this.i18n[key] });
-            }
-        }
-        return items;
+        return CARD_ITEMS.map(item => ({ key: item.key, label: item.label }));
     }
 
     getText(key, fallback) {
-        return this.i18n?.[key] || fallback;
+        return TEXT[key] || fallback;
     }
 
     onunload() {

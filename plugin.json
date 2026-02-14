@@ -17,7 +17,7 @@
     },
     "readme": {
         "default": "README.md",
-        "zh_CN": "README_zh_CN.md"
+        "zh_CN": "README.md"
     },
     "keywords": ["卡片样式", "属性样式", "笔记美化"],
     "funding": {

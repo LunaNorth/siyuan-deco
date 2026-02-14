@@ -1,6 +1,5 @@
-/* 灰调引述 - 中英文 */
-[custom-deco-style="灰调引述"]:not([fold="1"]),
-[custom-deco-style="Gray Quote"]:not([fold="1"]) {
+/* 灰调引述 */
+.protyle-wysiwyg [custom-deco-style="灰调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #6b7280 !important;
     background-color: #f9fafb !important;
@@ -9,12 +8,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="灰调引述"]:not([fold="1"])::before,
-[custom-deco-style="Gray Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="灰调引述"]:not([fold="1"])::before { display: none; }
 
 /* 蓝调引述 */
-[custom-deco-style="蓝调引述"]:not([fold="1"]),
-[custom-deco-style="Blue Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="蓝调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #3b82f6 !important;
     background-color: #eff6ff !important;
@@ -23,12 +20,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="蓝调引述"]:not([fold="1"])::before,
-[custom-deco-style="Blue Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="蓝调引述"]:not([fold="1"])::before { display: none; }
 
 /* 绿调引述 */
-[custom-deco-style="绿调引述"]:not([fold="1"]),
-[custom-deco-style="Green Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="绿调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #22c55e !important;
     background-color: #f0fdf4 !important;
@@ -37,12 +32,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="绿调引述"]:not([fold="1"])::before,
-[custom-deco-style="Green Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="绿调引述"]:not([fold="1"])::before { display: none; }
 
 /* 橙调引述 */
-[custom-deco-style="橙调引述"]:not([fold="1"]),
-[custom-deco-style="Orange Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="橙调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #f97316 !important;
     background-color: #fff7ed !important;
@@ -51,12 +44,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="橙调引述"]:not([fold="1"])::before,
-[custom-deco-style="Orange Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="橙调引述"]:not([fold="1"])::before { display: none; }
 
 /* 紫调引述 */
-[custom-deco-style="紫调引述"]:not([fold="1"]),
-[custom-deco-style="Purple Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="紫调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #a855f7 !important;
     background-color: #f5f3ff !important;
@@ -65,12 +56,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="紫调引述"]:not([fold="1"])::before,
-[custom-deco-style="Purple Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="紫调引述"]:not([fold="1"])::before { display: none; }
 
 /* 红调引述 */
-[custom-deco-style="红调引述"]:not([fold="1"]),
-[custom-deco-style="Red Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="红调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #ef4444 !important;
     background-color: #fef2f2 !important;
@@ -79,12 +68,10 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="红调引述"]:not([fold="1"])::before,
-[custom-deco-style="Red Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="红调引述"]:not([fold="1"])::before { display: none; }
 
 /* 黄调引述 */
-[custom-deco-style="黄调引述"]:not([fold="1"]),
-[custom-deco-style="Yellow Quote"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="黄调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #eab308 !important;
     background-color: #fef9c3 !important;
@@ -93,15 +80,13 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
 }
-[custom-deco-style="黄调引述"]:not([fold="1"])::before,
-[custom-deco-style="Yellow Quote"]:not([fold="1"])::before { display: none; }
+.protyle-wysiwyg [custom-deco-style="黄调引述"]:not([fold="1"])::before { display: none; }
 
 /* -------------------------------------------------------卡片----------------------------------------------------------- */
-/* ========== 卡片风格样式集（中英文双支持） ========== */
+/* ========== 卡片风格样式集 ========== */
 
-/* 创意卡片 - 紫色梦幻风 */
-[custom-deco-style="创意卡片"]:not([fold="1"]),
-[custom-deco-style="Creative Card"]:not([fold="1"]) {
+/* ========== 创意卡片 - 紫色梦幻风 ========== */
+.protyle-wysiwyg [custom-deco-style="创意卡片"]:not([fold="1"]) {
     background: #f9f7ff !important;
     border: 1px solid #e0d6ff !important;
     border-radius: 12px !important;
@@ -114,8 +99,8 @@
     box-shadow: 2px 2px 8px rgba(126, 34, 206, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="创意卡片"]:not([fold="1"])::before,
-[custom-deco-style="Creative Card"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="创意卡片"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -128,14 +113,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="创意卡片"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Creative Card"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="创意卡片"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "✨ 创意卡片";
 }
 
-/* 学习笔记 - 清新绿意风 */
-[custom-deco-style="学习笔记"]:not([fold="1"]),
-[custom-deco-style="Study Notes"]:not([fold="1"]) {
+/* ========== 学习笔记 - 清新绿意风 ========== */
+.protyle-wysiwyg [custom-deco-style="学习笔记"]:not([fold="1"]) {
     background: #f8fdfa !important;
     border: 1px solid #a7f3d0 !important;
     border-radius: 12px !important;
@@ -148,8 +132,8 @@
     box-shadow: 2px 2px 8px rgba(34, 197, 94, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="学习笔记"]:not([fold="1"])::before,
-[custom-deco-style="Study Notes"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="学习笔记"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -162,14 +146,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="学习笔记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Study Notes"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="学习笔记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "📚 学习笔记";
 }
 
-/* 重要提醒 - 警示红火风 */
-[custom-deco-style="重要提醒"]:not([fold="1"]),
-[custom-deco-style="Important Reminder"]:not([fold="1"]) {
+/* ========== 重要提醒 - 警示红火风 ========== */
+.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"]) {
     background: #fff8f8 !important;
     border: 1px solid #fca5a5 !important;
     border-radius: 12px !important;
@@ -182,8 +165,8 @@
     box-shadow: 2px 2px 8px rgba(239, 68, 68, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="重要提醒"]:not([fold="1"])::before,
-[custom-deco-style="Important Reminder"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -196,14 +179,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="重要提醒"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Important Reminder"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "❗ 重要提醒";
 }
 
-/* 代码示例 - 科技蓝调风 */
-[custom-deco-style="代码示例"]:not([fold="1"]),
-[custom-deco-style="Code Example"]:not([fold="1"]) {
+/* ========== 代码示例 - 科技蓝调风 ========== */
+.protyle-wysiwyg [custom-deco-style="代码示例"]:not([fold="1"]) {
     background: #f8fbff !important;
     border: 1px solid #93c5fd !important;
     border-radius: 12px !important;
@@ -216,8 +198,8 @@
     box-shadow: 2px 2px 8px rgba(59, 130, 246, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="代码示例"]:not([fold="1"])::before,
-[custom-deco-style="Code Example"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="代码示例"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -230,14 +212,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="代码示例"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Code Example"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="代码示例"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "💻 代码示例";
 }
 
-/* 读书摘录 - 温暖书卷风 */
-[custom-deco-style="读书摘录"]:not([fold="1"]),
-[custom-deco-style="Reading Quote"]:not([fold="1"]) {
+/* ========== 读书摘录 - 温暖书卷风 ========== */
+.protyle-wysiwyg [custom-deco-style="读书摘录"]:not([fold="1"]) {
     background: #fffdf5 !important;
     border: 1px solid #fcd34d !important;
     border-radius: 12px !important;
@@ -250,8 +231,8 @@
     box-shadow: 2px 2px 8px rgba(234, 179, 8, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="读书摘录"]:not([fold="1"])::before,
-[custom-deco-style="Reading Quote"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="读书摘录"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -264,14 +245,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="读书摘录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Reading Quote"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="读书摘录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "📖 读书摘录";
 }
 
-/* 待办事项 - 简约灰调风 */
-[custom-deco-style="待办事项"]:not([fold="1"]),
-[custom-deco-style="To-Do"]:not([fold="1"]) {
+/* ========== 待办事项 - 简约灰调风 ========== */
+.protyle-wysiwyg [custom-deco-style="待办事项"]:not([fold="1"]) {
     background: #fafafa !important;
     border: 1px solid #d4d4d4 !important;
     border-radius: 12px !important;
@@ -284,8 +264,8 @@
     box-shadow: 2px 2px 8px rgba(107, 114, 128, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="待办事项"]:not([fold="1"])::before,
-[custom-deco-style="To-Do"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="待办事项"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -298,14 +278,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="待办事项"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="To-Do"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="待办事项"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "✅ 待办事项";
 }
 
-/* 知识点 - 明亮青蓝风 */
-[custom-deco-style="知识点"]:not([fold="1"]),
-[custom-deco-style="Knowledge Point"]:not([fold="1"]) {
+/* ========== 知识点 - 明亮青蓝风 ========== */
+.protyle-wysiwyg [custom-deco-style="知识点"]:not([fold="1"]) {
     background: #f6feff !important;
     border: 1px solid #7dd3fc !important;
     border-radius: 12px !important;
@@ -318,8 +297,8 @@
     box-shadow: 2px 2px 8px rgba(6, 182, 212, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="知识点"]:not([fold="1"])::before,
-[custom-deco-style="Knowledge Point"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="知识点"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -332,14 +311,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="知识点"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Knowledge Point"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="知识点"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "💡 知识点";
 }
 
-/* 灵感记录 - 柔和粉紫风 */
-[custom-deco-style="灵感记录"]:not([fold="1"]),
-[custom-deco-style="Inspiration"]:not([fold="1"]) {
+/* ========== 灵感记录 - 柔和粉紫风 ========== */
+.protyle-wysiwyg [custom-deco-style="灵感记录"]:not([fold="1"]) {
     background: #fefbff !important;
     border: 1px solid #e9d5ff !important;
     border-radius: 12px !important;
@@ -352,8 +330,8 @@
     box-shadow: 2px 2px 8px rgba(139, 92, 246, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="灵感记录"]:not([fold="1"])::before,
-[custom-deco-style="Inspiration"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="灵感记录"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -366,14 +344,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="灵感记录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Inspiration"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="灵感记录"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "💭 灵感记录";
 }
 
-/* 温馨便签 - 暖黄便签风 */
-[custom-deco-style="温馨便签"]:not([fold="1"]),
-[custom-deco-style="Warm Note"]:not([fold="1"]) {
+/* ========== 温馨便签 - 暖黄便签风 ========== */
+.protyle-wysiwyg [custom-deco-style="温馨便签"]:not([fold="1"]) {
     background: #fff9e6 !important;
     border: 1px solid #ffecb3 !important;
     border-radius: 12px !important;
@@ -386,8 +363,8 @@
     box-shadow: 2px 2px 8px rgba(251, 191, 36, 0.1) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="温馨便签"]:not([fold="1"])::before,
-[custom-deco-style="Warm Note"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="温馨便签"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -400,14 +377,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="温馨便签"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Warm Note"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="温馨便签"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "📝 温馨便签";
 }
 
-/* 项目规划 - 深蓝商务风 */
-[custom-deco-style="项目规划"]:not([fold="1"]),
-[custom-deco-style="Project Plan"]:not([fold="1"]) {
+/* ========== 项目规划 - 深蓝商务风 ========== */
+.protyle-wysiwyg [custom-deco-style="项目规划"]:not([fold="1"]) {
     background: #f0f9ff !important;
     border: 1px solid #bae6fd !important;
     border-radius: 12px !important;
@@ -420,8 +396,8 @@
     box-shadow: 2px 2px 8px rgba(37, 99, 235, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="项目规划"]:not([fold="1"])::before,
-[custom-deco-style="Project Plan"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="项目规划"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -434,14 +410,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="项目规划"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Project Plan"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="项目规划"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "📋 项目规划";
 }
 
-/* 心情日记 - 柔粉治愈风 */
-[custom-deco-style="心情日记"]:not([fold="1"]),
-[custom-deco-style="Mood Diary"]:not([fold="1"]) {
+/* ========== 心情日记 - 柔粉治愈风 ========== */
+.protyle-wysiwyg [custom-deco-style="心情日记"]:not([fold="1"]) {
     background: #fff7f9 !important;
     border: 1px solid #fbcfe8 !important;
     border-radius: 12px !important;
@@ -454,8 +429,8 @@
     box-shadow: 2px 2px 8px rgba(236, 72, 153, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="心情日记"]:not([fold="1"])::before,
-[custom-deco-style="Mood Diary"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="心情日记"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -468,14 +443,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="心情日记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Mood Diary"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="心情日记"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "🌸 心情日记";
 }
 
-/* 数据统计 - 青绿科技风 */
-[custom-deco-style="数据统计"]:not([fold="1"]),
-[custom-deco-style="Data Stats"]:not([fold="1"]) {
+/* ========== 数据统计 - 青绿科技风 ========== */
+.protyle-wysiwyg [custom-deco-style="数据统计"]:not([fold="1"]) {
     background: #ecfdf5 !important;
     border: 1px solid #7dd3ac !important;
     border-radius: 12px !important;
@@ -488,8 +462,8 @@
     box-shadow: 2px 2px 8px rgba(5, 150, 105, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="数据统计"]:not([fold="1"])::before,
-[custom-deco-style="Data Stats"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="数据统计"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -502,14 +476,13 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="数据统计"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Data Stats"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="数据统计"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "📊 数据统计";
 }
 
-/* 会议纪要 - 米棕专业风 */
-[custom-deco-style="会议纪要"]:not([fold="1"]),
-[custom-deco-style="Meeting Minutes"]:not([fold="1"]) {
+/* ========== 会议纪要 - 米棕专业风 ========== */
+.protyle-wysiwyg [custom-deco-style="会议纪要"]:not([fold="1"]) {
     background: #fdf8f3 !important;
     border: 1px solid #f5c49a !important;
     border-radius: 12px !important;
@@ -522,8 +495,8 @@
     box-shadow: 2px 2px 8px rgba(245, 158, 11, 0.08) !important;
     line-height: 1.6 !important;
 }
-[custom-deco-style="会议纪要"]:not([fold="1"])::before,
-[custom-deco-style="Meeting Minutes"]:not([fold="1"])::before {
+
+.protyle-wysiwyg [custom-deco-style="会议纪要"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -536,7 +509,407 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
 }
-[custom-deco-style="会议纪要"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before,
-[custom-deco-style="Meeting Minutes"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+
+.protyle-wysiwyg [custom-deco-style="会议纪要"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "💼 会议纪要";
+}
+
+
+/* -----------------------------------------------时间轴--------------------------------------------------------------------------------- */
+
+/* 红色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #f43f5e;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) + [custom-deco-style="时间轴·红"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #f43f5e;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #f43f5e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 橙色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #f97316;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) + [custom-deco-style="时间轴·橙"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #f97316;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #f97316;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 黄色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #eab308;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) + [custom-deco-style="时间轴·黄"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #eab308;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #eab308;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 绿色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #22c55e;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) + [custom-deco-style="时间轴·绿"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #22c55e;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #22c55e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 青色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #06b6d4;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) + [custom-deco-style="时间轴·青"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #06b6d4;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #06b6d4;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 蓝色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #3b82f6;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) + [custom-deco-style="时间轴·蓝"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #3b82f6;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #3b82f6;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 紫色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #a855f7;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) + [custom-deco-style="时间轴·紫"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #a855f7;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #a855f7;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 粉色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #ec4899;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) + [custom-deco-style="时间轴·粉"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #ec4899;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #ec4899;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 黑色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #1e293b;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) + [custom-deco-style="时间轴·黑"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #1e293b;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #1e293b;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 灰色时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 5px solid #6b7280;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) + [custom-deco-style="时间轴·灰"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #6b7280;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.4em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #6b7280;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 导出修复（用于预览模式，适用于所有时间轴卡片） */
+#preview .protyle-wysiwyg [custom-deco-style^="时间轴·"]:not([fold="1"]) {
+    margin-left: 10px;
+    box-sizing: border-box;
+    max-width: 100%;
 }
