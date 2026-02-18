@@ -38,6 +38,7 @@ const CARD_ITEMS = [
     { key: 'timelinePinkWhisperCard', label: '时间轴·粉', icon: '⏳' },
     { key: 'timelineBlackWhisperCard', label: '时间轴·黑', icon: '⏳' },
     { key: 'timelineGrayWhisperCard', label: '时间轴·灰', icon: '⏳' },
+    { key: 'timelineRedWhisperCard', label: '时间轴·红卡', icon: '📅' }, 
 
     // 通知卡片组（NoticeCard）
     { key: 'systemNoticeCard', label: '系统通知', icon: 'ℹ️' },
@@ -72,18 +73,38 @@ const CARD_ITEMS = [
     { key: 'reflectionExcerptCard', label: '反思卡片', icon: '🤔' },
     { key: 'epiphanyExcerptCard', label: '顿悟卡片', icon: '⚡' },
     { key: 'treasureExcerptCard', label: '珍藏卡片', icon: '🔖' },
+
+    // 轻语组（ChatWhisperCard）
+    { key: 'receiveChatWhisperCard', label: '接收消息', icon: '' },
+    { key: 'sendChatWhisperCard', label: '发送消息', icon: '' },
+    { key: 'diaryChatWhisperCard', label: '碎碎念', icon: '💬' },
+
+    // 细时间轴组（ThinWhisperCard）
+    { key: 'timelineRedThinWhisperCard', label: '时间轴·红细', icon: '⏳' },
+    { key: 'timelineOrangeThinWhisperCard', label: '时间轴·橙细', icon: '⏳' },
+    { key: 'timelineYellowThinWhisperCard', label: '时间轴·黄细', icon: '⏳' },
+    { key: 'timelineGreenThinWhisperCard', label: '时间轴·绿细', icon: '⏳' },
+    { key: 'timelineCyanThinWhisperCard', label: '时间轴·青细', icon: '⏳' },
+    { key: 'timelineBlueThinWhisperCard', label: '时间轴·蓝细', icon: '⏳' },
+    { key: 'timelinePurpleThinWhisperCard', label: '时间轴·紫细', icon: '⏳' },
+    { key: 'timelinePinkThinWhisperCard', label: '时间轴·粉细', icon: '⏳' },
+    { key: 'timelineBlackThinWhisperCard', label: '时间轴·黑细', icon: '⏳' },
+    { key: 'timelineGrayThinWhisperCard', label: '时间轴·灰细', icon: '⏳' },
 ];
 
 
 const TEXT = {
     cardview: '轻饰笔记',
 
+    whisperGroup: '时间轴粗', 
+    whisperThinGroup: '时间轴细', 
     creativeGroup: '卡片风格',
-    quoteGroup: '引述块样式',
-    whisperGroup: '轻言轻语',
     noticeGroup: '通知卡片',
     gradientTopGroup: '彩色顶部',
     excerptGroup: '引述卡片',  
+    chatWhisperGroup: '轻言轻语',       
+    quoteGroup: '引述块样式',        
+      
 
     editCardTitle: '编辑卡片',
     cardType: '类型',
@@ -212,8 +233,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         // 引述卡片、轻语卡片（除随记外）禁止编辑
         if (cardKey && cardKey.endsWith('QuoteCard')) return;
-        if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryWhisperCard') return;
-        if (!cardBlock.hasAttribute('custom-deco-card-title')) return;
+        if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryChatWhisperCard') return;
+        // 允许无标题的碎碎念卡片编辑
+        if (!cardBlock.hasAttribute('custom-deco-card-title') && !cardKey.includes('WhisperCard')) return;
 
         const rect = cardBlock.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
@@ -366,46 +388,59 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-    getSecondaryGroups() {
-        return [
-            {
-                id: "cardStyle",
-                labelKey: "creativeGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('CreativeCard')
-            },
-            {
-                id: "quoteBlock",
-                labelKey: "quoteGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('QuoteCard')
-            },
-            {
-                id: "whisper",
-                labelKey: "whisperGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('WhisperCard')
-            },
-            {
+
+getSecondaryGroups() {
+    return [
+        {
+            id: "whisper", 
+            labelKey: "whisperGroup",
+            icon: "#iconLayout",
+            filter: (label, key) => key.includes('WhisperCard') && !key.includes('Thin')
+        },
+        {
+            id: "whisperThin", 
+            labelKey: "whisperThinGroup",
+            icon: "#iconLayout",
+            filter: (label, key) => key.includes('ThinWhisperCard')
+        },
+        {
+            id: "cardStyle",
+            labelKey: "creativeGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('CreativeCard')
+        },
+        {
             id: "noticeGroup",
             labelKey: "noticeGroup",
             icon: "#iconInfo",
             filter: (label, key) => key.endsWith('NoticeCard')
-            },
-            {
+        },
+        {
             id: "gradientTop",
             labelKey: "gradientTopGroup",
             icon: "#iconSparkles",
             filter: (label, key) => key.endsWith('GradientTopCard')
-            },
-            {
-                id: "excerptGroup",
-                labelKey: "excerptGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('ExcerptCard')
-            }
-        ];
-    }
+        },
+        {
+            id: "chatWhisper",
+            labelKey: "chatWhisperGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('ChatWhisperCard')
+        },
+        {
+            id: "excerptGroup",
+            labelKey: "excerptGroup",
+            icon: "#iconQuote",
+            filter: (label, key) => key.endsWith('ExcerptCard')
+        },
+        {
+            id: "quoteBlock",
+            labelKey: "quoteGroup",
+            icon: "#iconQuote",
+            filter: (label, key) => key.endsWith('QuoteCard')
+        }
+    ];
+}
 
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
@@ -433,29 +468,38 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-    createCardItem(blockId, label, key) {
-        const item = document.createElement("button");
-        item.className = "b3-menu__item";
-        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
-                          <span class="b3-menu__label">${label}</span>`;
-        item.onclick = async (e) => {
-            e.stopPropagation();
+createCardItem(blockId, label, key) {
+    const item = document.createElement("button");
+    item.className = "b3-menu__item";
+    item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
+                      <span class="b3-menu__label">${label}</span>`;
+    item.onclick = async (e) => {
+        e.stopPropagation();
 
-            const attrs = { "custom-deco-style": label };
+        const attrs = { "custom-deco-style": label };
 
-            // 非引述、非轻语卡片自动设置默认图标和标题
-            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
-                const defaults = this.styleDefaults[label];
-                if (defaults) {
-                    attrs["custom-deco-card-icon"] = defaults.icon || '';
-                    attrs["custom-deco-card-title"] = defaults.title || '';
-                }
+        // 非引述、非轻语卡片自动设置默认图标和标题
+        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
+            const defaults = this.styleDefaults[label];
+            if (defaults) {
+                attrs["custom-deco-card-icon"] = defaults.icon || '';
+                attrs["custom-deco-card-title"] = defaults.title || '';
             }
+        }
 
-            await this.setAttrs(blockId, attrs);
-        };
-        return item;
-    }
+        // 随记卡片自动设置当前日期
+        if (key === 'diaryChatWhisperCard' || key === 'diaryChatWhisperCard') {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
+        }
+
+        await this.setAttrs(blockId, attrs);
+    };
+    return item;
+}
 
     createSeparator() {
         const sep = document.createElement("button");
@@ -483,4 +527,4 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     uninstall() { this.onunload(); }
-};
+}; 

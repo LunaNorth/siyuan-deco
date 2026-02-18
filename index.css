@@ -870,7 +870,6 @@
     display: none;
 }
 
-/* 灰色时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) {
     padding: 0px 6px;
     border-left: 5px solid #6b7280;
@@ -882,10 +881,9 @@
     position: relative;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) + [custom-deco-style="时间轴·灰"]:not([fold="1"]) {
-    margin-top: -2px;
+    margin-top: -2px;    /* 无圆角时，用-2px即可消除边框间隙 */
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) > [data-node-id]:first-child {
-    border-radius: 0;
     color: #6b7280;
     font-weight: bold;
     position: relative;
@@ -909,11 +907,145 @@
     display: none;
 }
 
-/* 导出修复（用于预览模式，适用于所有时间轴卡片） */
-#preview .protyle-wysiwyg [custom-deco-style^="时间轴·"]:not([fold="1"]) {
-    margin-left: 10px;
-    box-sizing: border-box;
-    max-width: 100%;
+
+/* ------------------------------------------------时间轴细----------------------------------------------------------------------------------- */
+/* ========== 细时间轴卡片 ========== */
+/* 红色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: 3px solid #f43f5e;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) + [custom-deco-style="时间轴·红细"]:not([fold="1"]) {
+    margin-top: -2px;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
+    color: #f43f5e;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em #f43f5e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 橙色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) {
+    border-left: 3px solid #f97316;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #f97316;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #f97316;
+}
+
+/* 黄色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) {
+    border-left: 3px solid #eab308;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #eab308;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #eab308;
+}
+
+/* 绿色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) {
+    border-left: 3px solid #22c55e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #22c55e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #22c55e;
+}
+
+/* 青色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) {
+    border-left: 3px solid #06b6d4;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #06b6d4;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #06b6d4;
+}
+
+/* 蓝色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) {
+    border-left: 3px solid #3b82f6;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #3b82f6;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #3b82f6;
+}
+
+/* 紫色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) {
+    border-left: 3px solid #a855f7;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #a855f7;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #a855f7;
+}
+
+/* 粉色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) {
+    border-left: 3px solid #ec4899;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #ec4899;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #ec4899;
+}
+
+/* 黑色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) {
+    border-left: 3px solid #1e293b;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #1e293b;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #1e293b;
+}
+
+/* 灰色细时间轴 */
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) {
+    border-left: 3px solid #6b7280;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #6b7280;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    box-shadow: 0 0 0 0.2em #6b7280;
 }
 
 
@@ -1855,3 +1987,108 @@
 .protyle-wysiwyg [custom-deco-style="珍藏卡片"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "🔖 珍藏";
 }
+
+
+/* -----------------轻语------------------------- */
+/* ========== 接收消息（轻语组） ========== */
+.protyle-wysiwyg [custom-deco-style="接收消息"]:not([fold="1"]) {
+    display: block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    border-radius: 8px 8px 8px 0 !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    margin-bottom: 15px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    word-break: break-word !important;
+    line-height: 1.6 !important;
+    font-size: 15px !important;
+    font-family: inherit !important;
+    position: relative !important;
+}
+/* 隐藏默认标题栏 */
+.protyle-wysiwyg [custom-deco-style="接收消息"]:not([fold="1"])::before {
+    display: none !important;
+}
+
+/* ========== 发送消息（轻语组） ========== */
+.protyle-wysiwyg [custom-deco-style="发送消息"]:not([fold="1"]) {
+    display: block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background: #9eea6a !important;
+    border-radius: 8px 8px 0 8px !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    margin-bottom: 15px !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    word-break: break-word !important;
+    line-height: 1.6 !important;
+    font-size: 15px !important;
+    font-family: inherit !important;
+    position: relative !important;
+}
+/* 隐藏默认标题栏 */
+.protyle-wysiwyg [custom-deco-style="发送消息"]:not([fold="1"])::before {
+    display: none !important;
+}
+
+
+/* ========== 随记卡片（轻语组） - 动态日期版 ========== */
+.protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"]) {
+    background: #ffffff !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    margin: 15px 0 !important;
+    font-family: inherit !important;
+    font-size: 15px !important;
+    color: #333333 !important;
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 50px 20px 50px 20px !important;  /* 为标题和日期留出空间 */
+    position: relative !important;
+    line-height: 1.7 !important;
+}
+
+/* 标题（左上角）- 支持动态图标和标题 */
+.protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 16px !important;
+    left: 20px !important;
+    color: #10b981 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px);
+    line-height: normal;
+}
+
+/* 日期（底部，右对齐，带分割线）- 支持动态日期 */
+.protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::after {
+    content: attr(custom-deco-card-date);
+    position: absolute !important;
+    bottom: 12px !important;
+    left: 20px !important;
+    right: 20px !important;
+    color: #9ca3af !important;
+    font-size: 13px !important;
+    border-top: 1px solid #f3f4f6 !important;
+    padding-top: 12px !important;
+    text-align: right !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+}
+
+/* 默认标题（未设置图标/标题属性时）- 与HTML默认一致 */
+.protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "💬 碎碎念";
+} 
+
