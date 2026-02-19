@@ -38,7 +38,6 @@ const CARD_ITEMS = [
     { key: 'timelinePinkWhisperCard', label: '时间轴·粉', icon: '⏳' },
     { key: 'timelineBlackWhisperCard', label: '时间轴·黑', icon: '⏳' },
     { key: 'timelineGrayWhisperCard', label: '时间轴·灰', icon: '⏳' },
-    { key: 'timelineRedWhisperCard', label: '时间轴·红卡', icon: '📅' }, 
 
     // 通知卡片组（NoticeCard）
     { key: 'systemNoticeCard', label: '系统通知', icon: 'ℹ️' },
@@ -90,6 +89,27 @@ const CARD_ITEMS = [
     { key: 'timelinePinkThinWhisperCard', label: '时间轴·粉细', icon: '⏳' },
     { key: 'timelineBlackThinWhisperCard', label: '时间轴·黑细', icon: '⏳' },
     { key: 'timelineGrayThinWhisperCard', label: '时间轴·灰细', icon: '⏳' },
+
+    // 图片相关设置组（ImageCard）
+    { key: 'nineGridImageCard', label: '九宫格排列', icon: '🖼️' },
+
+
+    // Callout样式组（CalloutCard）
+    { key: 'foldedExampleCalloutCard', label: 'Callout-折叠示例', icon: '📌' },
+    { key: 'abstractCalloutCard',       label: 'Callout-抽象',     icon: '✨' },
+    { key: 'infoCalloutCard',           label: 'Callout-信息',     icon: 'ℹ️' },
+    { key: 'tipCalloutCard',            label: 'Callout-提示',     icon: '💡' },
+    { key: 'successCalloutCard',        label: 'Callout-成功',     icon: '✅' },
+    { key: 'warningCalloutCard',        label: 'Callout-警告',     icon: '⚠️' },
+    { key: 'dangerCalloutCard',         label: 'Callout-危险',     icon: '🔥' },
+    { key: 'noteCalloutCard',       label: 'Callout-笔记',   icon: '📝' },
+    { key: 'quoteCalloutCard',      label: 'Callout-引用',   icon: '❝' },
+    { key: 'importantCalloutCard',  label: 'Callout-重要',   icon: '⭐' },
+    { key: 'questionCalloutCard',   label: 'Callout-问题',   icon: '❓' },
+    { key: 'bugCalloutCard',        label: 'Callout-错误',   icon: '🐞' },
+    { key: 'exampleCalloutCard',    label: 'Callout-示例',   icon: '📋' },
+    { key: 'todoCalloutCard',       label: 'Callout-待办',   icon: '✅' },
+    { key: 'ideaCalloutCard',       label: 'Callout-想法',   icon: '💡' },
 ];
 
 
@@ -102,10 +122,11 @@ const TEXT = {
     noticeGroup: '通知卡片',
     gradientTopGroup: '彩色顶部',
     excerptGroup: '引述卡片',  
+    calloutGroup: 'Callout样式',
+    imageGroup: '图片相关设置',
     chatWhisperGroup: '轻言轻语',       
     quoteGroup: '引述块样式',        
       
-
     editCardTitle: '编辑卡片',
     cardType: '类型',
     cardIcon: '图标',
@@ -392,13 +413,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 getSecondaryGroups() {
     return [
         {
-            id: "whisper", 
+            id: "whisper", // 时间轴粗
             labelKey: "whisperGroup",
             icon: "#iconLayout",
-            filter: (label, key) => key.includes('WhisperCard') && !key.includes('Thin')
+            filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
         },
         {
-            id: "whisperThin", 
+            id: "whisperThin", // 时间轴细
             labelKey: "whisperThinGroup",
             icon: "#iconLayout",
             filter: (label, key) => key.includes('ThinWhisperCard')
@@ -422,16 +443,28 @@ getSecondaryGroups() {
             filter: (label, key) => key.endsWith('GradientTopCard')
         },
         {
-            id: "chatWhisper",
-            labelKey: "chatWhisperGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('ChatWhisperCard')
+            id: "calloutGroup",            
+            labelKey: "calloutGroup",
+            icon: "#iconInfo",              
+            filter: (label, key) => key.endsWith('CalloutCard')
+        },
+        {
+            id: "imageGroup", // 图片相关设置
+            labelKey: "imageGroup",
+            icon: "#iconImage",
+            filter: (label, key) => key.endsWith('ImageCard')
         },
         {
             id: "excerptGroup",
             labelKey: "excerptGroup",
             icon: "#iconQuote",
             filter: (label, key) => key.endsWith('ExcerptCard')
+        },
+        {
+            id: "chatWhisper", // 轻言轻语
+            labelKey: "chatWhisperGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('ChatWhisperCard')
         },
         {
             id: "quoteBlock",
@@ -478,8 +511,8 @@ createCardItem(blockId, label, key) {
 
         const attrs = { "custom-deco-style": label };
 
-        // 非引述、非轻语卡片自动设置默认图标和标题
-        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard')) {
+        // 非引述、非轻语、非图片卡片自动设置默认图标和标题
+        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
             const defaults = this.styleDefaults[label];
             if (defaults) {
                 attrs["custom-deco-card-icon"] = defaults.icon || '';

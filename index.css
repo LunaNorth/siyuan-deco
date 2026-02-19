@@ -951,102 +951,355 @@
 
 /* 橙色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #f97316;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) + [custom-deco-style="时间轴·橙细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #f97316;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #f97316;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 黄色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #eab308;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) + [custom-deco-style="时间轴·黄细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #eab308;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #eab308;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 绿色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #22c55e;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) + [custom-deco-style="时间轴·绿细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #22c55e;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #22c55e;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 青色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #06b6d4;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) + [custom-deco-style="时间轴·青细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #06b6d4;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #06b6d4;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 蓝色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #3b82f6;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) + [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #3b82f6;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #3b82f6;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 紫色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #a855f7;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) + [custom-deco-style="时间轴·紫细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #a855f7;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #a855f7;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 粉色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #ec4899;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) + [custom-deco-style="时间轴·粉细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #ec4899;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #ec4899;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 黑色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #1e293b;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) + [custom-deco-style="时间轴·黑细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #1e293b;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #1e293b;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"])::before {
+    display: none;
 }
 
 /* 灰色细时间轴 */
 .protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) {
+    padding: 0px 6px;
     border-left: 3px solid #6b7280;
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) + [custom-deco-style="时间轴·灰细"]:not([fold="1"]) {
+    margin-top: -2px;
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child {
+    border-radius: 0;
     color: #6b7280;
+    font-weight: bold;
+    position: relative;
+}
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
 .protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: 0.5em;
+    height: 0.5em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - 0.2em);
+    border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: 0 0 0 0.2em #6b7280;
 }
+.protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"])::before {
+    display: none;
+}
+
 
 
 /* --------------------------------------------信息卡片------------------------------------------------------------ */
@@ -2092,3 +2345,295 @@
     content: "💬 碎碎念";
 } 
 
+
+/* ========== 图片相关设置 - 九宫格排列 ========== */
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5px 0px;
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img {
+    flex: 0 0 calc((100% - 6px) / 3);
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    margin: 0;
+    container-type: inline-size;
+}
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:hover .protyle-action__drag {
+    display: none;
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(n+10) {
+    display: none;
+}
+
+@keyframes QYL9enter {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.03);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.98);
+    }
+    85% {
+        transform: scale(1.01);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes QYL9in {
+    0% {
+        transform: scale(1.05);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 40cqw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    z-index: 1;
+    animation: QYL9in 0.3s cubic-bezier(0.8, 0, 0.9, 1);
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable]:hover > span.img:nth-of-type(n+10) {
+    display: block;
+    animation: QYL9enter 0.6s cubic-bezier(0.8, 0, 0.9, 1);
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable]:hover > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after {
+    display: none;
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after { content: "+1"; }
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+3) > span:nth-child(2)::after { content: "+2"; }
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+4) > span:nth-child(2)::after { content: "+3"; }
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+5) > span:nth-child(2)::after { content: "+4"; }
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+6) > span:nth-child(2)::after { content: "+5"; }
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+7) > span:nth-child(2)::after { content: "+N"; }
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img > span:nth-child(2) {
+    aspect-ratio: 1 / 1;
+    width: 100% !important;
+}
+
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img > span > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    min-width: 100%;
+    min-height: 100%;
+}
+.protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img > span > img:not([title]) ~ .protyle-action__title {
+    display: none;
+}
+
+/* 圆角与圆形边框（依赖 custom-img-border 属性） */
+.protyle-wysiwyg [custom-deco-style="九宫格排列"][custom-img-border="圆角"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after {
+    border-radius: 12px;
+}
+.protyle-wysiwyg [custom-deco-style="九宫格排列"][custom-img-border="圆形"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after {
+    border-radius: 50%;
+}
+
+
+/* ========== Obsidian Callout 样式 - 精准复刻折叠式示例样式 ========== */
+/* 基础样式：匹配示例的核心视觉特征（折叠/展开通用） */
+.protyle-wysiwyg [custom-deco-style^="Callout-"] {
+    /* 核心：移除所有边框（和图片完全一致） */
+    border: none !important;
+    border-left: none !important;
+    
+    /* 圆角：匹配图片的轻微圆角（更贴近原图的柔和感） */
+    border-radius: 4px !important;
+    
+    /* 内边距：上调上下内边距，让文字整体向下移（关键调整） */
+    padding: 18px 18px 14px 18px !important; /* 上内边距加大，文字自然下移 */
+    
+    /* 外边距：按要求改为 2px 上下、0px 左右 */
+    margin: 2px 0px !important;
+    
+    /* 清除阴影、继承系统字体 */
+    box-shadow: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    line-height: 1.55;
+}
+
+/* 展开状态样式：匹配图片的浅橙底色 */
+.protyle-wysiwyg [custom-deco-style^="Callout-"]:not([fold="1"]) {
+    background-color: #fff5e6 !important; /* 精准匹配图片的浅橙底色 */
+}
+
+/* 折叠状态样式：保持底色一致（可选，如需折叠后变色可修改） */
+.protyle-wysiwyg [custom-deco-style^="Callout-"][fold="1"] {
+    background-color: #fff5e6 !important;
+    padding: 18px 18px 14px 18px !important; /* 折叠后文字也保持下移效果 */
+}
+
+/* 标题行：完全匹配图片的橙棕色标题+图标+折叠箭头 */
+.protyle-wysiwyg [custom-deco-style^="Callout-"]::before {
+    /* 内容：图标 + 标题 + 折叠箭头（和原图布局一致） */
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title) " " attr(custom-deco-fold-icon);
+    
+    /* 排版：独占一行、字重/字号/行高完全匹配 */
+    display: block;
+    font-weight: 600; /* 匹配图片的标题加粗程度 */
+    font-size: 1em;   /* 和原图标题字号一致 */
+    margin-bottom: 6px; /* 标题和正文间距更贴近原图 */
+    line-height: 1.4;
+    
+    /* 标题颜色：精准匹配图片的橙棕色（#c2410c） */
+    color: #c2410c !important;
+    
+    /* 箭头对齐：让折叠箭头和标题文字居中对齐 */
+    vertical-align: middle;
+}
+
+/* 正文文字样式：匹配图片的正文效果 */
+.protyle-wysiwyg [custom-deco-style^="Callout-"]:not([fold="1"]) > div {
+    color: #1f2937 !important; /* 正文深灰色，和原图一致 */
+    font-size: 0.95em;         /* 正文字号略小于标题 */
+    line-height: 1.5;          /* 正文行高匹配原图 */
+}
+
+/* 禁用多余伪元素，避免干扰 */
+/* .protyle-wysiwyg [custom-deco-style^="Callout-"]::after {
+    display: none !important;
+} */
+
+/* ----- 专属类型：Callout-折叠示例（直接使用这个类型即可） ----- */
+.protyle-wysiwyg [custom-deco-style="Callout-折叠示例"] {
+    background-color: #fff5e6 !important; /* 锁定浅橙底色 */
+}
+.protyle-wysiwyg [custom-deco-style="Callout-折叠示例"]::before {
+    color: #c2410c !important; /* 锁定橙棕色标题 */
+}
+
+/* 如需保留原有其他类型样式，可保留以下区块；无需则删除 */
+/* 抽象 */
+.protyle-wysiwyg [custom-deco-style="Callout-抽象"]:not([fold="1"]) {
+    background-color: #f8f9fc !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-抽象"]::before {
+    color: #495057 !important;
+}
+/* 信息 */
+.protyle-wysiwyg [custom-deco-style="Callout-信息"]:not([fold="1"]) {
+    background-color: #f0f6ff !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-信息"]::before {
+    color: #1e4fa3 !important;
+}
+/* 提示 */
+.protyle-wysiwyg [custom-deco-style="Callout-提示"]:not([fold="1"]) {
+    background-color: #f0fdf6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-提示"]::before {
+    color: #0b7c5a !important;
+}
+/* 成功 */
+.protyle-wysiwyg [custom-deco-style="Callout-成功"]:not([fold="1"]) {
+    background-color: #f0fdf8 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-成功"]::before {
+    color: #046c4e !important;
+}
+/* 警告 */
+.protyle-wysiwyg [custom-deco-style="Callout-警告"]:not([fold="1"]) {
+    background-color: #fff9e6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-警告"]::before {
+    color: #b45a0c !important;
+}
+/* 危险 */
+.protyle-wysiwyg [custom-deco-style="Callout-危险"]:not([fold="1"]) {
+    background-color: #fff4f4 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-危险"]::before {
+    color: #b91c1c !important;
+}
+/* 笔记 */
+.protyle-wysiwyg [custom-deco-style="Callout-笔记"]:not([fold="1"]) {
+    background-color: #f0f4fa !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-笔记"]::before {
+    color: #2e4a7a !important;
+}
+
+/* 引用 */
+.protyle-wysiwyg [custom-deco-style="Callout-引用"]:not([fold="1"]) {
+    background-color: #f3f0e8 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-引用"]::before {
+    color: #7a5e3a !important;
+}
+
+/* 重要 */
+.protyle-wysiwyg [custom-deco-style="Callout-重要"]:not([fold="1"]) {
+    background-color: #fef2e6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-重要"]::before {
+    color: #b45b0f !important;
+}
+
+/* 问题 */
+.protyle-wysiwyg [custom-deco-style="Callout-问题"]:not([fold="1"]) {
+    background-color: #f3e8fd !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-问题"]::before {
+    color: #6b3f9e !important;
+}
+
+/* 错误 */
+.protyle-wysiwyg [custom-deco-style="Callout-错误"]:not([fold="1"]) {
+    background-color: #fde9e9 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-错误"]::before {
+    color: #b33c3c !important;
+}
+
+/* 示例 */
+.protyle-wysiwyg [custom-deco-style="Callout-示例"]:not([fold="1"]) {
+    background-color: #e9f3f5 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-示例"]::before {
+    color: #1b7e8a !important;
+}
+
+/* 待办 */
+.protyle-wysiwyg [custom-deco-style="Callout-待办"]:not([fold="1"]) {
+    background-color: #eaf6ea !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-待办"]::before {
+    color: #2d6e2d !important;
+}
+
+/* 想法 */
+.protyle-wysiwyg [custom-deco-style="Callout-想法"]:not([fold="1"]) {
+    background-color: #fff1d6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="Callout-想法"]::before {
+    color: #c96b1c !important;
+}
