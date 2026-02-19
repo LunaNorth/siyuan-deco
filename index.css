@@ -2637,3 +2637,221 @@
 .protyle-wysiwyg [custom-deco-style="Callout-想法"]::before {
     color: #c96b1c !important;
 }
+
+
+
+
+/* -----------------------------------------------面板展示相关css------------------------------------------------------------- */
+.timeaxis-panel {
+    padding: 16px 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: transparent;
+    display: flex;
+    gap: 24px;
+}
+.timeaxis-left {
+    flex: 0 0 280px;
+    background: rgba(var(--b3-theme-background-rgb), 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.timeaxis-right {
+    flex: 1;
+    min-width: 0;
+}
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.calendar-header .month-year {
+    font-weight: 600;
+    font-size: 16px;
+}
+.calendar-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--b3-theme-primary);
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+.calendar-header button:hover {
+    background: var(--b3-theme-surface-lighter);
+}
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+.calendar-table th {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--b3-theme-on-surface-light);
+    padding: 4px 0;
+}
+.calendar-cell {
+    position: relative;
+    padding: 6px 0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.calendar-cell:hover {
+    background: var(--b3-theme-surface-lighter);
+}
+.calendar-cell.today .day-number {
+    background: var(--b3-theme-primary);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.calendar-cell.selected {
+     /* background: var(--b3-theme-primary-light); */
+}
+.day-number {
+    font-size: 14px;
+    font-weight: 500;
+}
+.dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--b3-theme-primary);
+}
+.chart-container {
+    width: 100%;
+    height: 220px; /* 增加图表高度 */
+    margin-top: 10px;
+}
+.chart-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--b3-theme-on-surface);
+}
+/* 右侧时间轴样式 */
+.timeline-container { max-width: 100%; }
+.timeline-item { display: flex; align-items: flex-start; position: relative; }
+.timeline-item:not(:last-child) { margin-bottom: 23px; }
+.timeline-time {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    padding: 5px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+ 
+.timeline-axis {
+    width: 40px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0 15px;
+}
+.timeline-axis::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    bottom: -150px;
+    width: 2px;
+    background-color: #e2e8f0;
+    transform: translateX(-50%);
+    z-index: 0;
+}
+.timeline-item:last-child .timeline-axis::after { display: none; }
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 0 3px #f9fafb;
+}
+.timeline-content {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.timeline-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: #3b82f6;
+}
+.timeline-text {
+    font-size: 15px;
+    color: #1e293b;
+    font-weight: 500;
+    line-height: 1.5;
+    word-break: break-word;
+}
+.timeline-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+.timeaxis-empty {
+    text-align: center;
+    color: var(--b3-theme-on-surface-light);
+    padding: 40px 0;
+    font-size: 14px;
+}
+/* 毛玻璃效果 */
+.timeaxis-dialog {
+    background: transparent !important;
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    background-color: rgba(var(--b3-theme-background-rgb), 0.6) !important;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+.body--dark .timeaxis-dialog {
+    background-color: rgba(0,0,0,0.7) !important;
+    border-color: rgba(255,255,255,0.05);
+}
+.body--dark .timeline-content {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+.body--dark .timeline-text { color: #e5e7eb; }
+.body--dark .timeline-axis::after { background-color: #404040; }
+.body--dark .timeline-dot { box-shadow: 0 0 0 3px #2d2d2d; }
+
+/* -----------------------------------------------面板展示相关css------------------------------------------------------------- */
