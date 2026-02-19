@@ -2642,6 +2642,7 @@
 
 
 /* -----------------------------------------------面板展示相关css------------------------------------------------------------- */
+/* -----------------------------------------------面板展示相关css（防闪烁最终版）------------------------------------------------------------- */
 .timeaxis-panel {
     padding: 16px 20px;
     max-height: 70vh;
@@ -2652,13 +2653,14 @@
 }
 .timeaxis-left {
     flex: 0 0 280px;
-    background: rgba(var(--b3-theme-background-rgb), 0.3);
+    background: var(--b3-theme-surface, #f6f6f6); /* fallback亮色，若变量未定义则显示该色 */
     border-radius: 12px;
     padding: 16px;
-    backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
     gap: 20px;
+    /* 确保没有任何过渡 */
+    transition: none;
 }
 .timeaxis-right {
     flex: 1;
@@ -2673,18 +2675,20 @@
 .calendar-header .month-year {
     font-weight: 600;
     font-size: 16px;
+    color: var(--b3-theme-on-surface, #5f6368);
 }
 .calendar-header button {
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--b3-theme-primary);
+    color: var(--b3-theme-primary, #3575f0);
     font-size: 18px;
     padding: 4px 8px;
     border-radius: 4px;
+    transition: background-color 0.2s; /* 只过渡背景色，不影响颜色变化 */
 }
 .calendar-header button:hover {
-    background: var(--b3-theme-surface-lighter);
+    background: var(--b3-theme-surface-lighter, #e0e0e0);
 }
 .calendar-table {
     width: 100%;
@@ -2694,7 +2698,7 @@
 .calendar-table th {
     font-size: 12px;
     font-weight: 400;
-    color: var(--b3-theme-on-surface-light);
+    color: var(--b3-theme-on-surface-light, rgba(95,99,104,0.68));
     padding: 4px 0;
 }
 .calendar-cell {
@@ -2702,13 +2706,14 @@
     padding: 6px 0;
     cursor: pointer;
     border-radius: 4px;
+    transition: none; /* 确保无过渡 */
 }
 .calendar-cell:hover {
-    background: var(--b3-theme-surface-lighter);
+    background: var(--b3-theme-surface-lighter, #e0e0e0);
 }
 .calendar-cell.today .day-number {
-    background: var(--b3-theme-primary);
-    color: white;
+    background: var(--b3-theme-primary, #3575f0);
+    color: var(--b3-theme-on-primary, #fff);
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -2716,12 +2721,10 @@
     align-items: center;
     justify-content: center;
 }
-.calendar-cell.selected {
-     /* background: var(--b3-theme-primary-light); */
-}
 .day-number {
     font-size: 14px;
     font-weight: 500;
+    color: var(--b3-theme-on-surface, #5f6368);
 }
 .dot {
     position: absolute;
@@ -2731,18 +2734,18 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--b3-theme-primary);
+    background: var(--b3-theme-primary, #3575f0);
 }
 .chart-container {
     width: 100%;
-    height: 220px; /* 增加图表高度 */
+    height: 220px;
     margin-top: 10px;
 }
 .chart-title {
     font-size: 13px;
     font-weight: 500;
     margin-bottom: 6px;
-    color: var(--b3-theme-on-surface);
+    color: var(--b3-theme-on-surface, #5f6368);
 }
 /* 右侧时间轴样式 */
 .timeline-container { max-width: 100%; }
@@ -2752,15 +2755,15 @@
     flex-shrink: 0;
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: var(--b3-theme-on-primary, #fff);
+    background: var(--b3-theme-primary, #3575f0);
     padding: 5px 14px;
     border-radius: 20px;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 8px var(--b3-theme-primary-lighter, rgba(53,117,240,0.38));
+    transition: none;
 }
 
- 
 .timeline-axis {
     width: 40px;
     flex-shrink: 0;
@@ -2776,7 +2779,7 @@
     top: 5px;
     bottom: -150px;
     width: 2px;
-    background-color: #e2e8f0;
+    background-color: var(--b3-border-color, #e0e0e0);
     transform: translateX(-50%);
     z-index: 0;
 }
@@ -2785,34 +2788,35 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #3b82f6;
+    background-color: var(--b3-theme-primary, #3575f0);
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    box-shadow: 0 0 0 3px #f9fafb;
+    box-shadow: 0 0 0 3px var(--b3-theme-background, #fff); /* 使用背景色光晕，fallback白色 */
 }
 .timeline-content {
     flex: 1;
-    background: #ffffff;
+    background: var(--b3-theme-surface, #f6f6f6); /* 明确背景，避免透明 */
     border-radius: 12px;
     padding: 10px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border: 1px solid #f1f5f9;
-    transition: all 0.3s ease;
+    box-shadow: var(--b3-point-shadow, 0 0 1px 0 rgba(0,0,0,0.1));
+    border: 1px solid var(--b3-border-color, #e0e0e0);
+    /* 仅过渡不影响背景色的属性 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .timeline-content:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    border-color: #3b82f6;
+    box-shadow: var(--b3-dialog-shadow, 0 8px 24px rgba(0,0,0,0.2));
+    border-color: var(--b3-theme-primary, #3575f0);
 }
 .timeline-text {
     font-size: 15px;
-    color: #1e293b;
+    color: var(--b3-theme-on-surface, #5f6368);
     font-weight: 500;
     line-height: 1.5;
     word-break: break-word;
@@ -2820,38 +2824,25 @@
 .timeline-tag {
     font-size: 12px;
     font-weight: 600;
-    color: #fff;
+    color: var(--b3-theme-on-primary, #fff);
     padding: 4px 10px;
     border-radius: 12px;
     white-space: nowrap;
     margin-left: 10px;
     flex-shrink: 0;
+    background: var(--b3-theme-secondary, #ff9200); /* 示例：使用辅助色作为标签背景，可自定义 */
 }
 .timeaxis-empty {
     text-align: center;
-    color: var(--b3-theme-on-surface-light);
+    color: var(--b3-theme-on-surface-light, rgba(95,99,104,0.68));
     padding: 40px 0;
     font-size: 14px;
 }
-/* 毛玻璃效果 */
+/* 对话框样式：纯色背景，无毛玻璃 */
 .timeaxis-dialog {
-    background: transparent !important;
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    background-color: rgba(var(--b3-theme-background-rgb), 0.6) !important;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    background: var(--b3-theme-surface, #f6f6f6) !important;
+    border: 1px solid var(--b3-border-color, #e0e0e0);
+    box-shadow: var(--b3-dialog-shadow, 0 8px 24px rgba(0,0,0,0.2));
+    transition: none; /* 确保无过渡 */
 }
-.body--dark .timeaxis-dialog {
-    background-color: rgba(0,0,0,0.7) !important;
-    border-color: rgba(255,255,255,0.05);
-}
-.body--dark .timeline-content {
-    background: #2d2d2d;
-    border-color: #404040;
-}
-.body--dark .timeline-text { color: #e5e7eb; }
-.body--dark .timeline-axis::after { background-color: #404040; }
-.body--dark .timeline-dot { box-shadow: 0 0 0 3px #2d2d2d; }
-
 /* -----------------------------------------------面板展示相关css------------------------------------------------------------- */
