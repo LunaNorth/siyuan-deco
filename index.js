@@ -6,7 +6,7 @@ const CARD_ITEMS = [
     // 卡片风格组（CreativeCard）
     { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
     { key: 'studyNoteCreativeCard', label: '学习笔记', icon: '📚' },
-    { key: 'importantReminderCreativeCard', label: '重要提醒', icon: '❗' },
+    { key: 'importantReminderCreativeCard', label: '提醒', icon: '❗' },
     { key: 'codeExampleCreativeCard', label: '代码示例', icon: '💻' },
     { key: 'readingQuoteCreativeCard', label: '读书摘录', icon: '📖' },
     { key: 'todoCreativeCard', label: '待办事项', icon: '✅' },
@@ -510,38 +510,48 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-    createCardItem(blockId, label, key) {
-        const item = document.createElement("button");
-        item.className = "b3-menu__item";
-        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
-                          <span class="b3-menu__label">${label}</span>`;
-        item.onclick = async (e) => {
-            e.stopPropagation();
 
-            const attrs = { "custom-deco-style": label };
+createCardItem(blockId, label, key) {
+    const item = document.createElement("button");
+    item.className = "b3-menu__item";
+    item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
+                      <span class="b3-menu__label">${label}</span>`;
+    item.onclick = async (e) => {
+        e.stopPropagation();
 
-            // 非引述、非轻语、非图片卡片自动设置默认图标和标题
-            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
-                const defaults = this.styleDefaults[label];
-                if (defaults) {
-                    attrs["custom-deco-card-icon"] = defaults.icon || '';
+        // 获取当前块的现有标题（从 DOM 元素读取）
+        const currentBlock = document.querySelector(`[data-node-id="${blockId}"]`);
+        const existingTitle = currentBlock?.getAttribute('custom-deco-card-title') || '';
+
+        const attrs = { "custom-deco-style": label };
+
+        // 对于需要设置图标和标题的卡片类型（非引述、非轻语、非图片卡片）
+        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
+            const defaults = this.styleDefaults[label];
+            if (defaults) {
+                // 图标始终设置为新样式的默认图标
+                attrs["custom-deco-card-icon"] = defaults.icon || '';
+
+                // 标题：仅当用户没有自定义标题时才填入默认标题，否则保留现有标题（即不设置此属性）
+                if (!existingTitle) {
                     attrs["custom-deco-card-title"] = defaults.title || '';
                 }
             }
+        }
 
-            // 随记卡片自动设置当前日期
-            if (key === 'diaryChatWhisperCard') {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
-            }
+        // 碎碎念卡片：每次切换都更新日期（可根据需要调整）
+        if (key === 'diaryChatWhisperCard') {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
+        }
 
-            await this.setAttrs(blockId, attrs);
-        };
-        return item;
-    }
+        await this.setAttrs(blockId, attrs);
+    };
+    return item;
+}    
 
     createSeparator() {
         const sep = document.createElement("button");

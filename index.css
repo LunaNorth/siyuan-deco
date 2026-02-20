@@ -154,7 +154,7 @@
 }
 
 /* ========== 重要提醒 - 警示红火风 ========== */
-.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"]) {
+.protyle-wysiwyg [custom-deco-style="提醒"]:not([fold="1"]) {
     background: #fff8f8 !important;
     border: 1px solid #fca5a5 !important;
     border-radius: 12px !important;
@@ -168,7 +168,7 @@
     line-height: 1.6 !important;
 }
 
-.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"])::before {
+.protyle-wysiwyg [custom-deco-style="提醒"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
     position: absolute !important;
     top: 12px !important;
@@ -182,8 +182,8 @@
     max-width: calc(100% - 40px);
 }
 
-.protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
-    content: "❗ 重要提醒";
+.protyle-wysiwyg [custom-deco-style="提醒"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
+    content: "❗ 提醒";
 }
 
 /* ========== 代码示例 - 科技蓝调风 ========== */
