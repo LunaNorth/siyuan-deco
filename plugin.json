@@ -2,7 +2,7 @@
     "name": "siyuan-deco",
     "author": "LunaNorth",
     "url": "https://github.com/LunaNorth/siyuan-deco",
-    "version": "1.0.9",
+    "version": "1.1.0",
     "minAppVersion": "3.0.0",
     "disabledInPublish": false,
     "backends": ["all"],
