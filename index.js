@@ -1,7 +1,7 @@
 "use strict";
 const siyuan = require("siyuan");
 
-// 完整的卡片项定义（用于右键菜单）
+
 const CARD_ITEMS = [
     // 卡片风格组（CreativeCard）
     { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
@@ -50,7 +50,7 @@ const CARD_ITEMS = [
     { key: 'reminderNoticeCard', label: '提醒通知', icon: '⏰' },
     { key: 'mailNoticeCard', label: '邮件通知', icon: '✉️' },
 
-    // 彩色顶部组（GradientTopCard）
+     // 彩色顶部组（GradientTopCard）
     { key: 'summaryGradientTopCard', label: '重点总结', icon: '🎯' },
     { key: 'newFeatureGradientTopCard', label: '新特性', icon: '🚀' },
     { key: 'growthGradientTopCard', label: '成长笔记', icon: '🌱' },
@@ -61,7 +61,8 @@ const CARD_ITEMS = [
     { key: 'ideaGradientTopCard', label: '创意灵感', icon: '💡' },
     { key: 'universalGradientTopCard', label: '万能提示', icon: '✨' },
 
-    // 语录卡片组（ExcerptCard）
+
+    // 语录卡片组（ExcerptCard）- 所有键名均以 ExcerptCard 结尾
     { key: 'quoteExcerptCard', label: '摘录卡片', icon: '❝' },
     { key: 'famousExcerptCard', label: '名言卡片', icon: '💬' },
     { key: 'warningExcerptCard', label: '警示卡片', icon: '⚠️' },
@@ -92,6 +93,7 @@ const CARD_ITEMS = [
     // 图片相关设置组（ImageCard）
     { key: 'nineGridImageCard', label: '九宫格排列', icon: '🖼️' },
 
+
     // Callout样式组（CalloutCard）
     { key: 'foldedExampleCalloutCard', label: 'Callout-折叠示例', icon: '📌' },
     { key: 'abstractCalloutCard',       label: 'Callout-抽象',     icon: '✨' },
@@ -110,42 +112,32 @@ const CARD_ITEMS = [
     { key: 'ideaCalloutCard',       label: 'Callout-想法',   icon: '💡' },
 ];
 
+
 const TEXT = {
     cardview: '轻饰笔记',
-    whisperGroup: '时间轴粗',
-    whisperThinGroup: '时间轴细',
+
+    whisperGroup: '时间轴粗', 
+    whisperThinGroup: '时间轴细', 
     creativeGroup: '卡片风格',
     noticeGroup: '通知卡片',
     gradientTopGroup: '彩色顶部',
-    excerptGroup: '引述卡片',
+    excerptGroup: '引述卡片',  
     calloutGroup: 'Callout样式',
     imageGroup: '图片相关设置',
-    chatWhisperGroup: '轻言轻语',
-    quoteGroup: '引述块样式',
-
+    chatWhisperGroup: '轻言轻语',       
+    quoteGroup: '引述块样式',        
+      
     editCardTitle: '编辑卡片',
     cardType: '类型',
     cardIcon: '图标',
     cardTitle: '标题',
     cancel: '取消',
     confirm: '确定',
-
-    // 专注时间轴文本
-    topbarTitle: '时间信息',
-    topbarPanelTitle: '时间信息',
-    close: '关闭',
-    loading: '加载中...',
-    noData: '暂无时间记录',
-    selectDate: '选择日期',
-    today: '今天',
-    chartTitle: '时段分布',
 };
 
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     styleDefaults = null;
     attrsCache = new Map();
-    topBarItem = null;
-    colorCache = new Map(); // 缓存类型对应的颜色
 
     onload() {
         this.loadStyleDefaults();
@@ -153,8 +145,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.waitForMenu();
         this.addTitleClickListener();
         this.startAttributeRestoreObserver();
-
-        this.addTopBarButton();
     }
 
     loadStyleDefaults() {
@@ -419,70 +409,71 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-    getSecondaryGroups() {
-        return [
-            {
-                id: "whisper",
-                labelKey: "whisperGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
-            },
-            {
-                id: "whisperThin",
-                labelKey: "whisperThinGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('ThinWhisperCard')
-            },
-            {
-                id: "cardStyle",
-                labelKey: "creativeGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('CreativeCard')
-            },
-            {
-                id: "noticeGroup",
-                labelKey: "noticeGroup",
-                icon: "#iconInfo",
-                filter: (label, key) => key.endsWith('NoticeCard')
-            },
-            {
-                id: "gradientTop",
-                labelKey: "gradientTopGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('GradientTopCard')
-            },
-            {
-                id: "calloutGroup",
-                labelKey: "calloutGroup",
-                icon: "#iconInfo",
-                filter: (label, key) => key.endsWith('CalloutCard')
-            },
-            {
-                id: "imageGroup",
-                labelKey: "imageGroup",
-                icon: "#iconImage",
-                filter: (label, key) => key.endsWith('ImageCard')
-            },
-            {
-                id: "excerptGroup",
-                labelKey: "excerptGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('ExcerptCard')
-            },
-            {
-                id: "chatWhisper",
-                labelKey: "chatWhisperGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('ChatWhisperCard')
-            },
-            {
-                id: "quoteBlock",
-                labelKey: "quoteGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('QuoteCard')
-            }
-        ];
-    }
+
+getSecondaryGroups() {
+    return [
+        {
+            id: "whisper", // 时间轴粗
+            labelKey: "whisperGroup",
+            icon: "#iconLayout",
+            filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
+        },
+        {
+            id: "whisperThin", // 时间轴细
+            labelKey: "whisperThinGroup",
+            icon: "#iconLayout",
+            filter: (label, key) => key.includes('ThinWhisperCard')
+        },
+        {
+            id: "cardStyle",
+            labelKey: "creativeGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('CreativeCard')
+        },
+        {
+            id: "noticeGroup",
+            labelKey: "noticeGroup",
+            icon: "#iconInfo",
+            filter: (label, key) => key.endsWith('NoticeCard')
+        },
+        {
+            id: "gradientTop",
+            labelKey: "gradientTopGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('GradientTopCard')
+        },
+        {
+            id: "calloutGroup",            
+            labelKey: "calloutGroup",
+            icon: "#iconInfo",              
+            filter: (label, key) => key.endsWith('CalloutCard')
+        },
+        {
+            id: "imageGroup", // 图片相关设置
+            labelKey: "imageGroup",
+            icon: "#iconImage",
+            filter: (label, key) => key.endsWith('ImageCard')
+        },
+        {
+            id: "excerptGroup",
+            labelKey: "excerptGroup",
+            icon: "#iconQuote",
+            filter: (label, key) => key.endsWith('ExcerptCard')
+        },
+        {
+            id: "chatWhisper", // 轻言轻语
+            labelKey: "chatWhisperGroup",
+            icon: "#iconSparkles",
+            filter: (label, key) => key.endsWith('ChatWhisperCard')
+        },
+        {
+            id: "quoteBlock",
+            labelKey: "quoteGroup",
+            icon: "#iconQuote",
+            filter: (label, key) => key.endsWith('QuoteCard')
+        }
+    ];
+}
 
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
@@ -509,7 +500,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         subMenu.appendChild(itemsContainer);
         return subMenu;
     }
-
 
 createCardItem(blockId, label, key) {
     const item = document.createElement("button");
@@ -551,7 +541,7 @@ createCardItem(blockId, label, key) {
         await this.setAttrs(blockId, attrs);
     };
     return item;
-}    
+}
 
     createSeparator() {
         const sep = document.createElement("button");
@@ -568,404 +558,6 @@ createCardItem(blockId, label, key) {
         return TEXT[key] || fallback;
     }
 
-    // ========== SQL 查询方法 ==========
-
-    async executeSQL(sql) {
-        try {
-            const response = await fetch('/api/query/sql', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ stmt: sql })
-            });
-            if (!response.ok) throw new Error(`API调用失败: ${response.status}`);
-            const result = await response.json();
-            return result.code === 0 ? (result.data || []) : [];
-        } catch (error) {
-            console.error('执行SQL失败:', error);
-            return [];
-        }
-    }
-
-    async fetchTimeRecords(dateStr) {
-        const dbDate = dateStr.replace(/-/g, '/');
-        const sql = `
-            SELECT
-                b.id,
-                b.content,
-                b.created,
-                a1.value as lifelog_created,
-                a2.value as lifelog_type
-            FROM blocks b
-            LEFT JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-created'
-            LEFT JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-lifelog-type'
-            WHERE
-                b.type = 'p'
-                AND a1.value IS NOT NULL
-                AND a2.value IS NOT NULL
-                AND b.hpath NOT LIKE '%template%'
-                AND a1.value LIKE '${dbDate}%'
-            ORDER BY a1.value DESC
-            LIMIT 500
-        `;
-        return this.executeSQL(sql);
-    }
-
-    async fetchMonthStats(year, month) {
-        const monthStr = `${year}/${String(month).padStart(2,'0')}`;
-        const sql = `
-            SELECT
-                substr(a1.value, 1, 10) as day,
-                count(*) as count
-            FROM blocks b
-            LEFT JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-created'
-            WHERE
-                b.type = 'p'
-                AND a1.value IS NOT NULL
-                AND b.hpath NOT LIKE '%template%'
-                AND a1.value LIKE '${monthStr}%'
-            GROUP BY day
-            ORDER BY day
-        `;
-        return this.executeSQL(sql);
-    }
-
-    // ========== 工具函数 ==========
-
-    /**
-     * 清洗内容：去除开头的 "HH:MM " 时间戳，再去除 "类型：" 前缀
-     */
-    cleanContent(content) {
-        if (!content) return '';
-        // 去除开头的时间戳，如 "12:34 " 或 "12:34:56 "
-        let cleaned = content.replace(/^\s*\d{1,2}:\d{2}(:\d{2})?\s*/, '');
-        // 去除开头的 "类型：" 前缀（中文冒号或英文冒号）
-        cleaned = cleaned.replace(/^[^:：]+[：:]\s*/, '');
-        return cleaned;
-    }
-
-    /**
-     * 根据类型获取对应的 CSS 变量 --en-lifelog-border-color 的值
-     */
-    getColorForType(type) {
-        if (this.colorCache.has(type)) {
-            return this.colorCache.get(type);
-        }
-
-        // 创建临时元素模拟 [data-type="NodeParagraph"][custom-lifelog-type="xxx"]
-        const temp = document.createElement('div');
-        temp.setAttribute('data-type', 'NodeParagraph');
-        temp.setAttribute('custom-lifelog-type', type);
-        temp.style.position = 'absolute';
-        temp.style.visibility = 'hidden';
-        temp.style.pointerEvents = 'none';
-        document.body.appendChild(temp);
-
-        // 获取计算样式中的变量值
-        const styles = getComputedStyle(temp);
-        const color = styles.getPropertyValue('--en-lifelog-border-color').trim();
-
-        // 移除临时元素
-        document.body.removeChild(temp);
-
-        // 如果变量有效则缓存，否则缓存默认颜色
-        const finalColor = color && color !== '' ? color : '#94a3b8';
-        this.colorCache.set(type, finalColor);
-        return finalColor;
-    }
-
-    drawChart(canvas, records) {
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        canvas.width = width;
-        canvas.height = height;
-
-        // 统计每小时记录数
-        const hourCounts = new Array(24).fill(0);
-        records.forEach(r => {
-            const timeStr = r.lifelog_created || '';
-            const match = timeStr.match(/\d{2}:\d{2}/);
-            if (match) {
-                const hour = parseInt(match[0].split(':')[0]);
-                if (!isNaN(hour) && hour >= 0 && hour < 24) {
-                    hourCounts[hour]++;
-                }
-            }
-        });
-
-        const maxCount = Math.max(...hourCounts, 1);
-        const barWidth = (width - 60) / 24; // 左右留边距
-        const chartHeight = height - 40; // 底部留标签空间
-
-        ctx.clearRect(0, 0, width, height);
-
-        // 绘制背景网格
-        ctx.strokeStyle = 'rgba(128,128,128,0.2)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= 5; i++) {
-            const y = 20 + (chartHeight / 5) * i;
-            ctx.beginPath();
-            ctx.moveTo(30, y);
-            ctx.lineTo(width - 30, y);
-            ctx.stroke();
-        }
-
-        // 绘制柱状图
-        for (let h = 0; h < 24; h++) {
-            const count = hourCounts[h];
-            const barHeight = (count / maxCount) * (chartHeight - 20);
-            const x = 30 + h * barWidth;
-            const y = 20 + (chartHeight - 20 - barHeight);
-
-            // 渐变色
-            const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
-            gradient.addColorStop(0, 'rgba(59,130,246,0.8)');
-            gradient.addColorStop(1, 'rgba(37,99,235,0.6)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(x, y, barWidth - 2, barHeight);
-
-            // 显示数值（如果柱子够高）
-            if (barHeight > 15) {
-                ctx.fillStyle = '#000000';
-                ctx.font = '9px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(count, x + barWidth/2 - 1, y - 4);
-            }
-        }
-
-        // 绘制横轴标签（部分小时）
-        ctx.fillStyle = '#000000';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
-        for (let h = 0; h < 24; h+=3) {
-            const x = 30 + h * barWidth + barWidth/2;
-            ctx.fillText(h, x, height - 8);
-        }
-    }
-
-    // ========== 顶部栏按钮及面板 ==========
-
-    addTopBarButton() {
-        this.topBarItem = this.addTopBar({
-            icon: `<svg><use xlink:href="#iconClock"></use></svg>`,
-            title: this.getText('topbarTitle', '时间信息'),
-            position: 'right',
-            callback: () => {
-                this.showTimeAxisPanel();
-            }
-        });
-    }
-
-    async showTimeAxisPanel() {
-        const dialog = new siyuan.Dialog({
-            title: this.getText('topbarPanelTitle', '时间信息'),
-            content: `<div class="b3-dialog__content" style="padding:20px; text-align:center;">${this.getText('loading', '加载中...')}</div>`,
-            width: "1000px",
-        });
-
-        const dialogContainer = dialog.element.querySelector('.b3-dialog__container');
-        if (dialogContainer) {
-            dialogContainer.classList.add('timeaxis-dialog');
-        }
-
-        const today = new Date();
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-        let currentYear = today.getFullYear();
-        let currentMonth = today.getMonth() + 1;
-        let currentDate = todayStr;
-
-        const [records, monthStats] = await Promise.all([
-            this.fetchTimeRecords(currentDate),
-            this.fetchMonthStats(currentYear, currentMonth)
-        ]);
-
-        const renderContent = (records, monthStats, selectedDate, year, month) => {
-            const daysInMonth = new Date(year, month, 0).getDate();
-            const firstDay = new Date(year, month-1, 1).getDay(); // 0 = Sunday
-            const monthStatsMap = new Map(monthStats.map(s => [s.day.split('/').slice(1).join('/'), true]));
-
-            let calendarHtml = '<table class="calendar-table">';
-            calendarHtml += '<thead><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr></thead><tbody><tr>';
-            for (let i = 0; i < firstDay; i++) {
-                calendarHtml += '<td></td>';
-            }
-            for (let d = 1; d <= daysInMonth; d++) {
-                const cellDate = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const dayKey = `${String(month).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
-                const hasRecord = monthStatsMap.has(dayKey);
-                const isToday = cellDate === todayStr;
-                const isSelected = cellDate === selectedDate;
-                calendarHtml += `<td class="calendar-cell ${isToday?'today':''} ${isSelected?'selected':''}" data-date="${cellDate}">
-                    <span class="day-number">${d}</span>
-                    ${hasRecord ? '<span class="dot"></span>' : ''}
-                </td>`;
-                if ((firstDay + d) % 7 === 0) {
-                    calendarHtml += '</tr><tr>';
-                }
-            }
-            const totalCells = firstDay + daysInMonth;
-            const remaining = 7 - (totalCells % 7);
-            if (remaining < 7) {
-                for (let i = 0; i < remaining; i++) {
-                    calendarHtml += '<td></td>';
-                }
-            }
-            calendarHtml += '</tr></tbody></table>';
-
-            // 右侧时间轴列表
-            let listHtml = '';
-            if (records.length === 0) {
-                listHtml = `<div class="timeaxis-empty">${this.getText('noData', '暂无时间记录')}</div>`;
-            } else {
-                listHtml = '<div class="timeline-container">';
-                records.forEach(record => {
-                    const timeStr = record.lifelog_created || '';
-                    let displayTime = '';
-                    if (timeStr) {
-                        const match = timeStr.match(/\d{2}:\d{2}/);
-                        displayTime = match ? match[0] : timeStr;
-                    }
-                    const rawContent = record.content || '';
-                    const cleanContent = this.cleanContent(rawContent);
-                    const type = record.lifelog_type || '其他';
-                    // 动态获取颜色
-                    const tagColor = this.getColorForType(type);
-
-                    listHtml += `
-                        <div class="timeline-item">
-                            <div class="timeline-time">${displayTime}</div>
-                            <div class="timeline-axis">
-                                <div class="timeline-dot"></div>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="timeline-text">${this.escapeHtml(cleanContent)}</div>
-                                <span class="timeline-tag" style="background-color: ${tagColor};">${this.escapeHtml(type)}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                listHtml += '</div>';
-            }
-
-            return `
-                <div class="timeaxis-panel">
-                    <div class="timeaxis-left">
-                        <div class="calendar-header">
-                            <button class="prev-month" data-year="${year}" data-month="${month}">‹</button>
-                            <span class="month-year">${year}年${month}月</span>
-                            <button class="next-month" data-year="${year}" data-month="${month}">›</button>
-                        </div>
-                        ${calendarHtml}
-                        <div class="chart-container">
-                            <div class="chart-title">${this.getText('chartTitle', '时段分布')}</div>
-                            <canvas id="stats-chart" width="250" height="220" style="width:100%; height:220px;"></canvas>
-                        </div>
-                    </div>
-                    <div class="timeaxis-right">
-                        ${listHtml}
-                    </div>
-                </div>
-                <div class="b3-dialog__action" style="justify-content: flex-end; padding: 8px 16px;">
-                    <button class="b3-button b3-button--cancel" id="closePanelBtn">${this.getText('close', '关闭')}</button>
-                </div>
-            `;
-        };
-
-        const dialogElement = dialog.element;
-        const contentDiv = dialogElement.querySelector('.b3-dialog__content');
-        contentDiv.innerHTML = renderContent(records, monthStats, currentDate, currentYear, currentMonth);
-        contentDiv.style.padding = '0';
-
-        // 绘制图表
-        const chartCanvas = dialogElement.querySelector('#stats-chart');
-        if (chartCanvas) {
-            this.drawChart(chartCanvas, records);
-        }
-
-        const bindEvents = () => {
-            dialogElement.querySelectorAll('.calendar-cell[data-date]').forEach(cell => {
-                cell.addEventListener('click', async (e) => {
-                    const date = cell.dataset.date;
-                    if (!date) return;
-                    contentDiv.innerHTML = `<div style="padding:20px; text-align:center;">${this.getText('loading', '加载中...')}</div>`;
-                    const newRecords = await this.fetchTimeRecords(date);
-                    const newMonthStats = await this.fetchMonthStats(currentYear, currentMonth);
-                    contentDiv.innerHTML = renderContent(newRecords, newMonthStats, date, currentYear, currentMonth);
-                    contentDiv.style.padding = '0';
-                    // 重新绘制图表
-                    const newCanvas = dialogElement.querySelector('#stats-chart');
-                    if (newCanvas) this.drawChart(newCanvas, newRecords);
-                    bindEvents();
-                });
-            });
-
-            const prevBtn = dialogElement.querySelector('.prev-month');
-            if (prevBtn) {
-                prevBtn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    let year = parseInt(prevBtn.dataset.year);
-                    let month = parseInt(prevBtn.dataset.month);
-                    if (month === 1) { year--; month = 12; } else { month--; }
-                    currentYear = year; currentMonth = month;
-                    contentDiv.innerHTML = `<div style="padding:20px; text-align:center;">${this.getText('loading', '加载中...')}</div>`;
-                    const newMonthStats = await this.fetchMonthStats(year, month);
-                    let newDate = currentDate;
-                    if (!newDate.startsWith(`${year}-${String(month).padStart(2,'0')}`)) {
-                        newDate = `${year}-${String(month).padStart(2,'0')}-01`;
-                    }
-                    const newRecords = await this.fetchTimeRecords(newDate);
-                    contentDiv.innerHTML = renderContent(newRecords, newMonthStats, newDate, year, month);
-                    contentDiv.style.padding = '0';
-                    const newCanvas = dialogElement.querySelector('#stats-chart');
-                    if (newCanvas) this.drawChart(newCanvas, newRecords);
-                    bindEvents();
-                });
-            }
-
-            const nextBtn = dialogElement.querySelector('.next-month');
-            if (nextBtn) {
-                nextBtn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    let year = parseInt(nextBtn.dataset.year);
-                    let month = parseInt(nextBtn.dataset.month);
-                    if (month === 12) { year++; month = 1; } else { month++; }
-                    currentYear = year; currentMonth = month;
-                    contentDiv.innerHTML = `<div style="padding:20px; text-align:center;">${this.getText('loading', '加载中...')}</div>`;
-                    const newMonthStats = await this.fetchMonthStats(year, month);
-                    let newDate = currentDate;
-                    if (!newDate.startsWith(`${year}-${String(month).padStart(2,'0')}`)) {
-                        newDate = `${year}-${String(month).padStart(2,'0')}-01`;
-                    }
-                    const newRecords = await this.fetchTimeRecords(newDate);
-                    contentDiv.innerHTML = renderContent(newRecords, newMonthStats, newDate, year, month);
-                    contentDiv.style.padding = '0';
-                    const newCanvas = dialogElement.querySelector('#stats-chart');
-                    if (newCanvas) this.drawChart(newCanvas, newRecords);
-                    bindEvents();
-                });
-            }
-
-            const closeBtn = dialogElement.querySelector('#closePanelBtn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => dialog.destroy());
-            }
-        };
-
-        bindEvents();
-    }
-
-    escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    // ========== 生命周期清理 ==========
-
     onunload() {
         this.state.observer?.disconnect();
         this._restoreObserver?.disconnect();
@@ -974,12 +566,7 @@ createCardItem(blockId, label, key) {
             document.removeEventListener('click', this._boundHandleTitleClick);
         }
         this.attrsCache.clear();
-        this.colorCache.clear();
-
-        if (this.topBarItem && this.topBarItem.remove) {
-            this.topBarItem.remove();
-        }
     }
 
     uninstall() { this.onunload(); }
-};
+}; 
