@@ -569,4 +569,4 @@ createCardItem(blockId, label, key) {
     }
 
     uninstall() { this.onunload(); }
-}; 
+};

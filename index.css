@@ -2636,8 +2636,632 @@
     color: #c96b1c !important;
 }
 
+/* ========== 暗色模式适配 ========== */
+:root[data-theme-mode=dark] {
+    /* 灰调引述 */
+    .protyle-wysiwyg [custom-deco-style="灰调引述"]:not([fold="1"]) {
+        border-left-color: #9ca3af !important;
+        background-color: #2d2d2d !important;
+        color: #e5e7eb !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
 
+    /* 蓝调引述 */
+    .protyle-wysiwyg [custom-deco-style="蓝调引述"]:not([fold="1"]) {
+        border-left-color: #3b82f6 !important;
+        background-color: #1e3a5f !important;
+        color: #bfdbfe !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
 
+    /* 绿调引述 */
+    .protyle-wysiwyg [custom-deco-style="绿调引述"]:not([fold="1"]) {
+        border-left-color: #22c55e !important;
+        background-color: #1a3a2a !important;
+        color: #bbf7d0 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
 
+    /* 橙调引述 */
+    .protyle-wysiwyg [custom-deco-style="橙调引述"]:not([fold="1"]) {
+        border-left-color: #f97316 !important;
+        background-color: #4a2e1a !important;
+        color: #fed7aa !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
 
+    /* 紫调引述 */
+    .protyle-wysiwyg [custom-deco-style="紫调引述"]:not([fold="1"]) {
+        border-left-color: #a855f7 !important;
+        background-color: #392d5a !important;
+        color: #e9d5ff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
 
+    /* 红调引述 */
+    .protyle-wysiwyg [custom-deco-style="红调引述"]:not([fold="1"]) {
+        border-left-color: #ef4444 !important;
+        background-color: #5b2b2b !important;
+        color: #fecaca !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
+
+    /* 黄调引述 */
+    .protyle-wysiwyg [custom-deco-style="黄调引述"]:not([fold="1"]) {
+        border-left-color: #eab308 !important;
+        background-color: #4d4015 !important;
+        color: #fef9c3 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    }
+
+    /* 创意卡片 */
+    .protyle-wysiwyg [custom-deco-style="创意卡片"]:not([fold="1"]) {
+        background: #2d2a3a !important;
+        border-color: #6d5c8c !important;
+        color: #d9c9ff !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="创意卡片"]:not([fold="1"])::before {
+        color: #b794f4 !important;
+    }
+
+    /* 学习笔记 */
+    .protyle-wysiwyg [custom-deco-style="学习笔记"]:not([fold="1"]) {
+        background: #1f3a2f !important;
+        border-color: #3b8c6e !important;
+        color: #b4f0d8 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="学习笔记"]:not([fold="1"])::before {
+        color: #4fd1b5 !important;
+    }
+
+    /* 提醒 */
+    .protyle-wysiwyg [custom-deco-style="提醒"]:not([fold="1"]) {
+        background: #442b2b !important;
+        border-color: #c56565 !important;
+        color: #fbc1c1 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="提醒"]:not([fold="1"])::before {
+        color: #f87171 !important;
+    }
+
+    /* 代码示例 */
+    .protyle-wysiwyg [custom-deco-style="代码示例"]:not([fold="1"]) {
+        background: #1f3345 !important;
+        border-color: #4682b4 !important;
+        color: #b6d4fe !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="代码示例"]:not([fold="1"])::before {
+        color: #63b3ed !important;
+    }
+
+    /* 读书摘录 */
+    .protyle-wysiwyg [custom-deco-style="读书摘录"]:not([fold="1"]) {
+        background: #443d2b !important;
+        border-color: #b8860b !important;
+        color: #fbe9b1 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="读书摘录"]:not([fold="1"])::before {
+        color: #fbbf24 !important;
+    }
+
+    /* 待办事项 */
+    .protyle-wysiwyg [custom-deco-style="待办事项"]:not([fold="1"]) {
+        background: #2d2d2d !important;
+        border-color: #7a7a7a !important;
+        color: #d4d4d4 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="待办事项"]:not([fold="1"])::before {
+        color: #9ca3af !important;
+    }
+
+    /* 知识点 */
+    .protyle-wysiwyg [custom-deco-style="知识点"]:not([fold="1"]) {
+        background: #1f4047 !important;
+        border-color: #2c7a7b !important;
+        color: #b2f5ea !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="知识点"]:not([fold="1"])::before {
+        color: #4fd1c5 !important;
+    }
+
+    /* 灵感记录 */
+    .protyle-wysiwyg [custom-deco-style="灵感记录"]:not([fold="1"]) {
+        background: #382e46 !important;
+        border-color: #8b5cf6 !important;
+        color: #ddd6fe !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="灵感记录"]:not([fold="1"])::before {
+        color: #c4b5fd !important;
+    }
+
+    /* 温馨便签 */
+    .protyle-wysiwyg [custom-deco-style="温馨便签"]:not([fold="1"]) {
+        background: #4a3d27 !important;
+        border-color: #ca8a04 !important;
+        color: #fde68a !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="温馨便签"]:not([fold="1"])::before {
+        color: #fbbf24 !important;
+    }
+
+    /* 项目规划 */
+    .protyle-wysiwyg [custom-deco-style="项目规划"]:not([fold="1"]) {
+        background: #1e3a5f !important;
+        border-color: #3b82f6 !important;
+        color: #bfdbfe !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="项目规划"]:not([fold="1"])::before {
+        color: #60a5fa !important;
+    }
+
+    /* 心情日记 */
+    .protyle-wysiwyg [custom-deco-style="心情日记"]:not([fold="1"]) {
+        background: #4a2d3b !important;
+        border-color: #db2777 !important;
+        color: #fbcfe8 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="心情日记"]:not([fold="1"])::before {
+        color: #f472b6 !important;
+    }
+
+    /* 数据统计 */
+    .protyle-wysiwyg [custom-deco-style="数据统计"]:not([fold="1"]) {
+        background: #1f3d2f !important;
+        border-color: #10b981 !important;
+        color: #a7f3d0 !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="数据统计"]:not([fold="1"])::before {
+        color: #34d399 !important;
+    }
+
+    /* 会议纪要 */
+    .protyle-wysiwyg [custom-deco-style="会议纪要"]:not([fold="1"]) {
+        background: #4d3a28 !important;
+        border-color: #d97706 !important;
+        color: #fde68a !important;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="会议纪要"]:not([fold="1"])::before {
+        color: #f59e0b !important;
+    }
+
+    /* 时间轴文字颜色 */
+    .protyle-wysiwyg [custom-deco-style="时间轴·红"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fca5a5 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·橙"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fdba74 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·黄"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fde047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·绿"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #86efac !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·青"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #5eead4 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·蓝"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #93c5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·紫"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #d8b4fe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·粉"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #f9a8d4 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·黑"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #9ca3af !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·灰"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #d1d5db !important;
+    }
+
+    /* 细时间轴文字颜色 */
+    .protyle-wysiwyg [custom-deco-style="时间轴·红细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fca5a5 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·橙细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fdba74 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·黄细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #fde047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·绿细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #86efac !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·青细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #5eead4 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·蓝细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #93c5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·紫细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #d8b4fe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·粉细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #f9a8d4 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·黑细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #9ca3af !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="时间轴·灰细"]:not([fold="1"]) > [data-node-id]:first-child {
+        color: #d1d5db !important;
+    }
+
+    /* 通知卡片 */
+    .protyle-wysiwyg [custom-deco-style="系统通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="系统通知"]:not([fold="1"])::before {
+        background: #1e3a5f !important;
+        color: #bfdbfe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="成功通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="成功通知"]:not([fold="1"])::before {
+        background: #1a3a2a !important;
+        color: #bbf7d0 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="警告通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="警告通知"]:not([fold="1"])::before {
+        background: #4d4015 !important;
+        color: #fde047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="错误通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="错误通知"]:not([fold="1"])::before {
+        background: #5b2b2b !important;
+        color: #fecaca !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="信息通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="信息通知"]:not([fold="1"])::before {
+        background: #1f4047 !important;
+        color: #b2f5ea !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="疑问通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="疑问通知"]:not([fold="1"])::before {
+        background: #382e46 !important;
+        color: #ddd6fe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="重要通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="重要通知"]:not([fold="1"])::before {
+        background: #5b2b2b !important;
+        color: #fbc1c1 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="提醒通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="提醒通知"]:not([fold="1"])::before {
+        background: #4d4015 !important;
+        color: #fde047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="邮件通知"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="邮件通知"]:not([fold="1"])::before {
+        background: #2d2d2d !important;
+        color: #d4d4d4 !important;
+    }
+
+    /* 彩色顶部 */
+    .protyle-wysiwyg [custom-deco-style="重点总结"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="重点总结"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #b2498e, #6d47b9) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #6d47b9, #2b6bb0) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="成长笔记"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="成长笔记"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #1e7b5c, #1f9d7a) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #c05621, #c53030) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="技术要点"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="技术要点"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #0e7490, #0e7f8b) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="今日心情"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="今日心情"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #b2498e, #d172b5) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="专业建议"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="专业建议"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #1e1e1e, #2d2d2d) !important;
+        color: #fbbf24 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="创意灵感"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="创意灵感"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #b45309, #d97706) !important;
+        color: #1c1917 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="万能提示"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="万能提示"]:not([fold="1"])::before {
+        background: linear-gradient(90deg, #6d47b9, #b2498e, #b45309) !important;
+    }
+
+    /* 引述卡片 */
+    .protyle-wysiwyg [custom-deco-style="摘录卡片"]:not([fold="1"]) {
+        background: #1f3d2f !important;
+        border-left-color: #4fd1b5 !important;
+        color: #a7f3d0 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="摘录卡片"]:not([fold="1"])::before {
+        color: #4fd1b5 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="名言卡片"]:not([fold="1"]) {
+        background: #1f3345 !important;
+        border-left-color: #63b3ed !important;
+        color: #bfdbfe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="名言卡片"]:not([fold="1"])::before {
+        color: #63b3ed !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="警示卡片"]:not([fold="1"]) {
+        background: #4d2b2b !important;
+        border-left-color: #f87171 !important;
+        color: #fecaca !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="警示卡片"]:not([fold="1"])::before {
+        color: #f87171 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="随笔卡片"]:not([fold="1"]) {
+        background: #382e46 !important;
+        border-left-color: #c4b5fd !important;
+        color: #ddd6fe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="随笔卡片"]:not([fold="1"])::before {
+        color: #c4b5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="诗意卡片"]:not([fold="1"]) {
+        background: #4a2d3b !important;
+        border-left-color: #f472b6 !important;
+        color: #fbcfe8 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="诗意卡片"]:not([fold="1"])::before {
+        color: #f472b6 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="灵感卡片"]:not([fold="1"]) {
+        background: #4d4015 !important;
+        border-left-color: #fbbf24 !important;
+        color: #fde68a !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="灵感卡片"]:not([fold="1"])::before {
+        color: #fbbf24 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="反思卡片"]:not([fold="1"]) {
+        background: #2d2d2d !important;
+        border-left-color: #9ca3af !important;
+        color: #d4d4d4 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="反思卡片"]:not([fold="1"])::before {
+        color: #9ca3af !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="顿悟卡片"]:not([fold="1"]) {
+        background: #4d4015 !important;
+        border-left-color: #fbbf24 !important;
+        color: #fde68a !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="顿悟卡片"]:not([fold="1"])::before {
+        color: #fbbf24 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="珍藏卡片"]:not([fold="1"]) {
+        background: #382e46 !important;
+        border-left-color: #c4b5fd !important;
+        color: #ddd6fe !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="珍藏卡片"]:not([fold="1"])::before {
+        color: #c4b5fd !important;
+    }
+
+    /* 轻语组 */
+    .protyle-wysiwyg [custom-deco-style="接收消息"]:not([fold="1"]) {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="发送消息"]:not([fold="1"]) {
+        background: #2b5f2b !important;
+        color: #e0e0e0 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+    }
+    .protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"]) {
+        background: #1e1e1e !important;
+        border-color: #3a3a3a !important;
+        color: #e0e0e0 !important;
+    }
+    .protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::before {
+        color: #4fd1b5 !important;
+    }
+    .protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::after {
+        color: #9ca3af !important;
+        border-top-color: #3a3a3a !important;
+    }
+
+    /* 九宫格排列覆盖层 */
+    .protyle-wysiwyg [custom-deco-style="九宫格排列"] > div[contenteditable] > span.img:nth-of-type(9):nth-last-child(n+2) > span:nth-child(2)::after {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        color: #fff !important;
+    }
+
+    /* Callout 样式 */
+    .protyle-wysiwyg [custom-deco-style^="Callout-"]:not([fold="1"]) {
+        background-color: #2d2d2d !important;
+    }
+    .protyle-wysiwyg [custom-deco-style^="Callout-"]::before {
+        color: #e0e0e0 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style^="Callout-"]:not([fold="1"]) > div {
+        color: #e0e0e0 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-折叠示例"]:not([fold="1"]) {
+        background-color: #4a3d27 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-折叠示例"]::before {
+        color: #fbbf24 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-抽象"]:not([fold="1"]) {
+        background-color: #2d2d2d !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-抽象"]::before {
+        color: #9ca3af !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-信息"]:not([fold="1"]) {
+        background-color: #1f3345 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-信息"]::before {
+        color: #93c5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-提示"]:not([fold="1"]) {
+        background-color: #1f3d2f !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-提示"]::before {
+        color: #86efac !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-成功"]:not([fold="1"]) {
+        background-color: #1f3d2f !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-成功"]::before {
+        color: #86efac !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-警告"]:not([fold="1"]) {
+        background-color: #4d4015 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-警告"]::before {
+        color: #fde047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-危险"]:not([fold="1"]) {
+        background-color: #5b2b2b !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-危险"]::before {
+        color: #fecaca !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-笔记"]:not([fold="1"]) {
+        background-color: #1f3345 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-笔记"]::before {
+        color: #93c5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-引用"]:not([fold="1"]) {
+        background-color: #2d2d2d !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-引用"]::before {
+        color: #9ca3af !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-重要"]:not([fold="1"]) {
+        background-color: #4d2b2b !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-重要"]::before {
+        color: #f87171 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-问题"]:not([fold="1"]) {
+        background-color: #382e46 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-问题"]::before {
+        color: #c4b5fd !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-错误"]:not([fold="1"]) {
+        background-color: #5b2b2b !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-错误"]::before {
+        color: #fecaca !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-示例"]:not([fold="1"]) {
+        background-color: #1f4047 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-示例"]::before {
+        color: #b2f5ea !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-待办"]:not([fold="1"]) {
+        background-color: #1f3d2f !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-待办"]::before {
+        color: #86efac !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-想法"]:not([fold="1"]) {
+        background-color: #4d4015 !important;
+    }
+    .protyle-wysiwyg [custom-deco-style="Callout-想法"]::before {
+        color: #fde047 !important;
+    }
+}
