@@ -3265,3 +3265,485 @@
         color: #fde047 !important;
     }
 }
+
+
+
+
+/* -------------------------------------------------------------------------------------------------- */
+/* ========== 时间线对话框布局 ========== */
+.timeline-dialog-content {
+    height: 100%;
+    overflow-y: auto; /* 确保整体可滚动 */
+    padding: 16px;
+    box-sizing: border-box;
+    background: var(--b3-theme-background);
+}
+
+.timeline-container {
+    height: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+/* 左右面板固定宽度，但不允许收缩，设置最小宽度 */
+.timeline-left-panel {
+    width: 260px;
+    flex: 0 0 260px;
+    min-width: 200px;
+    background: var(--b3-theme-surface);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: hidden;
+}
+
+.timeline-middle-panel {
+    flex: 1 1 auto;
+    min-width: 300px;
+    overflow-y: auto;
+    background: var(--b3-theme-surface);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.timeline-right-panel {
+    width: 240px;
+    flex: 0 0 280px;
+    min-width: 220px;
+    background: var(--b3-theme-surface);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    overflow-y: auto;
+}
+
+/* 其他共用样式（保留原样） */
+.trends-container .trends-header,
+.trends-container .timeline-header,
+.timeline-container .trends-header,
+.timeline-container .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -29px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 左侧头部 */
+.timeline-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--b3-border-color);
+}
+
+.timeline-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--b3-theme-surface-lighter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--b3-theme-on-surface-light);
+    flex-shrink: 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.timeline-avatar svg {
+    width: 36px;
+    height: 36px;
+    color: var(--b3-theme-on-surface-light);
+}
+
+.timeline-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.timeline-header-text {
+    flex: 1;
+}
+
+.timeline-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+}
+
+.timeline-subtitle {
+    font-size: 12px;
+    color: var(--b3-theme-on-surface-light);
+}
+
+.timeline-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.timeline-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--b3-theme-on-surface-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.timeline-btn:hover {
+    background: var(--b3-list-hover);
+    color: var(--b3-theme-on-background);
+}
+
+.timeline-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* 统计卡片网格 - 简约现代 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.stat-card {
+    background: var(--b3-theme-surface);
+    border-radius: 14px;
+    padding: 14px 6px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+    border: 1px solid var(--b3-border-color);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+    border-color: var(--b3-border-color);
+}
+
+.stat-value {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--b3-theme-on-background);
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--b3-theme-on-surface-light);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* 贡献图 - 自适应宽度，无滚动条 */
+.timeline-contribution {
+    margin-top: 8px;
+    border-top: 1px solid var(--b3-border-color);
+    padding: 16px 0 0 0;
+    width: 100%;
+}
+
+.contribution-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+    margin-bottom: 8px;
+}
+
+.contribution-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.contribution-cell {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 2px;
+    transition: opacity 0.1s;
+    cursor: default;
+}
+
+.contribution-cell:hover {
+    opacity: 0.8;
+}
+
+.contribution-cell.level-0 { background-color: var(--b3-border-color); }
+.contribution-cell.level-1 { background-color: #9be9a8; }
+.contribution-cell.level-2 { background-color: #40c463; }
+.contribution-cell.level-3 { background-color: #30a14e; }
+.contribution-cell.level-4 { background-color: #216e39; }
+
+.contribution-cell.selected {
+    outline: 2px solid var(--b3-theme-primary);
+    outline-offset: -2px;
+}
+
+/* 月份轴暂时隐藏（自适应布局下难以精确定位） */
+.contribution-month-axis {
+    display: none;
+}
+
+/* 中栏时间线 */
+.timeline-date-header {
+    font-size: 13px;
+    color: var(--b3-theme-on-surface-light);
+    margin: 20px 0 10px;
+    font-weight: 500;
+    border-bottom: 1px dashed var(--b3-border-color);
+    padding-bottom: 4px;
+}
+
+.timeline-date-header:first-of-type {
+    margin-top: 0;
+}
+
+.timeline-item {
+    background: var(--b3-theme-surface);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid var(--b3-border-color);
+    margin-bottom: 8px;
+    transition: box-shadow 0.2s;
+}
+
+.timeline-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.timeline-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.timeline-time {
+    font-size: 12px;
+    color: var(--b3-theme-on-surface-light);
+}
+
+.timeline-type {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: var(--b3-theme-on-primary);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.timeline-content {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--b3-theme-on-background);
+    word-break: break-word;
+}
+
+/* 右栏日历 */
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.calendar-nav-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.calendar-nav-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 4px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--b3-theme-on-surface-light);
+    padding: 4px 0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    background: var(--b3-theme-surface);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.calendar-cell:hover {
+    background: var(--b3-list-hover);
+}
+
+.calendar-cell.empty {
+    background: var(--b3-theme-background-light);
+    cursor: default;
+    display: none; /* 隐藏空白单元格 */
+}
+
+.calendar-cell.has-record {
+    background: transparent;
+    color: var(--b3-theme-on-background);
+    font-weight: normal;
+    position: relative;
+}
+
+.calendar-cell.has-record:hover {
+    background: var(--b3-list-hover);
+}
+
+.calendar-cell.has-record::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--b3-theme-primary);
+}
+
+.calendar-cell.selected {
+    outline: 2px solid var(--b3-theme-primary);
+    outline-offset: -2px;
+}
+
+/* 类型列表 */
+.timeline-types {
+    margin-top: 24px;
+}
+
+.timeline-types-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+    margin-bottom: 12px;
+}
+
+.timeline-types-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.timeline-type-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.timeline-type-item:hover {
+    background: var(--b3-list-hover);
+}
+
+.timeline-type-item.selected {
+    background: var(--b3-theme-primary-light);
+}
+
+.type-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.type-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--b3-theme-on-background);
+}
+
+.type-count {
+    font-size: 12px;
+    color: var(--b3-theme-on-surface-light);
+}
+
+/* 通用 */
+.timeline-loading,
+.timeline-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--b3-empty-color);
+}
+
+/* 月份轴 - 使用flex三等分 */
+.contribution-month-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--b3-theme-on-surface-light);
+}
+
+.month-axis-label {
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ========== 自适应布局优化 ========== */
+@media screen and (max-width: 1000px) {
+    .timeline-container {
+        flex-wrap: wrap; /* 宽度不足时换行 */
+    }
+    .timeline-left-panel,
+    .timeline-right-panel {
+        width: 100%; /* 占满整行 */
+        flex: none;
+    }
+    .timeline-middle-panel {
+        width: 100%;
+        flex: none;
+        order: -1; /* 让中间面板显示在最前面（可选） */
+    }
+}
