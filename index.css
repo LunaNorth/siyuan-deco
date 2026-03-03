@@ -3621,7 +3621,7 @@
 .calendar-cell.empty {
     background: var(--b3-theme-background-light);
     cursor: default;
-    display: none; /* 隐藏空白单元格 */
+    opacity: 0;
 }
 
 .calendar-cell.has-record {
@@ -3729,6 +3729,26 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.calendar-cell.other-month {
+    opacity: 0.5;                /* 半透明浅色效果 */
+    background: transparent;      /* 可保持背景透明或浅色 */
+    color: var(--b3-theme-on-surface-light); /* 使用浅色文字 */
+}
+
+/* 如果有记录的小点也适当淡化 */
+.calendar-cell.other-month.has-record::after {
+    background-color: var(--b3-theme-on-surface-light);
+    opacity: 0.5;
+}
+
+/* 给“无记录类型”提示添加样式 */
+.timeline-type-empty {
+    padding: 8px;
+    text-align: center;
+    color: var(--b3-theme-on-surface-light);
+    font-size: 12px;
 }
 
 /* ========== 自适应布局优化 ========== */

@@ -1,7 +1,8 @@
 "use strict";
 const siyuan = require("siyuan");
-const { showMessage, Dialog, openTab, getFrontend } = siyuan; // 补充解构
+const { showMessage, Dialog, openTab, getFrontend } = siyuan;
 
+// ========== 卡片定义 ==========
 const CARD_ITEMS = [
     // 卡片风格组（CreativeCard）
     { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
@@ -62,7 +63,7 @@ const CARD_ITEMS = [
     { key: 'universalGradientTopCard', label: '万能提示', icon: '✨' },
 
 
-    // 语录卡片组（ExcerptCard）- 所有键名均以 ExcerptCard 结尾
+    // 语录卡片组（ExcerptCard）
     { key: 'quoteExcerptCard', label: '摘录卡片', icon: '❝' },
     { key: 'famousExcerptCard', label: '名言卡片', icon: '💬' },
     { key: 'warningExcerptCard', label: '警示卡片', icon: '⚠️' },
@@ -125,7 +126,8 @@ const TEXT = {
     calloutGroup: 'Callout样式',
     imageGroup: '图片相关设置',
     chatWhisperGroup: '轻言轻语',       
-    quoteGroup: '引述块样式',        
+    quoteGroup: '引述块样式',    
+    removeStyle: '移除样式',   // 新增  
       
     editCardTitle: '编辑卡片',
     cardType: '类型',
@@ -328,22 +330,23 @@ class TimelineView {
         return map;
     }
 
-    setFilter(date, type) {
-        if (date !== undefined) this.selectedDate = date;
-        if (type !== undefined) this.selectedType = type;
+setFilter(date, type) {
+    if (date !== undefined) this.selectedDate = date;
+    if (type !== undefined) this.selectedType = type;
 
-        this.filteredRecords = this.allRecords.filter(r => {
-            const date = parseLifelogDate(r.lifelog_created);
-            if (!date) return false;
-            const ds = formatDate(date);
-            if (this.selectedDate && ds !== this.selectedDate) return false;
-            if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
-            return true;
-        });
+    this.filteredRecords = this.allRecords.filter(r => {
+        const dateObj = parseLifelogDate(r.lifelog_created);
+        if (!dateObj) return false;
+        const ds = formatDate(dateObj);
+        if (this.selectedDate && ds !== this.selectedDate) return false;
+        if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
+        return true;
+    });
 
-        this.renderMiddlePanel();
-        this.updateHighlight();
-    }
+    this.renderMiddlePanel();
+    this.renderTypesList();
+    this.updateHighlight();
+}
 
     clearFilter() {
         this.selectedDate = null;
@@ -371,9 +374,9 @@ class TimelineView {
         this.middlePanel = middle;
         this.rightPanel = right;
 
-        this.renderHeader();              // ① 头像 + 标题
-        this.renderContributionGraph();   // ② 贡献图
-        this.renderStats();               // ③ 统计卡片
+        this.renderHeader();
+        this.renderContributionGraph();
+        this.renderStats();
         this.renderMiddlePanel();
         this.renderCalendarAndTypes();
     }
@@ -401,7 +404,6 @@ class TimelineView {
 
         const text = document.createElement('div');
         text.className = 'timeline-header-text';
-        // 从 store 读取自定义标题，若为空则使用默认值
         const title = this.plugin.store.getCustomTitle() || '时光笺';
         const subtitle = this.plugin.store.getCustomSubtitle() || '今日更新';
         text.innerHTML = `<div class="timeline-title"><span class="timeline-title-text">${title}</span></div><div class="timeline-subtitle"><span class="timeline-subtitle-text">${subtitle}</span></div>`;
@@ -418,7 +420,7 @@ class TimelineView {
         moreBtn.className = 'b3-tooltips b3-tooltips__sw timeline-btn';
         moreBtn.setAttribute('aria-label', '更多');
         moreBtn.innerHTML = `<svg><use xlink:href="#iconMore"></use></svg>`;
-        moreBtn.onclick = () => this.showSettingsDialog(); // 打开设置对话框
+        moreBtn.onclick = () => this.showSettingsDialog();
 
         actions.appendChild(refreshBtn);
         actions.appendChild(moreBtn);
@@ -429,7 +431,6 @@ class TimelineView {
         this.leftPanel.appendChild(header);
     }
 
-    // 显示设置对话框（手动添加按钮版本）
     showSettingsDialog() {
         const dialog = new Dialog({
             title: '时光笺设置',
@@ -448,7 +449,6 @@ class TimelineView {
             width: '400px',
         });
 
-        // 等待 DOM 插入后绑定事件
         setTimeout(() => {
             const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
             const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
@@ -463,7 +463,6 @@ class TimelineView {
                     const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
                     await this.plugin.store.setCustomTitle(title);
                     await this.plugin.store.setCustomSubtitle(subtitle);
-                    // 更新界面上的文字
                     const titleEl = this.leftPanel.querySelector('.timeline-title-text');
                     const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
                     if (titleEl) titleEl.textContent = title || '时光笺';
@@ -506,11 +505,6 @@ renderContributionGraph() {
     const graph = document.createElement('div');
     graph.className = 'timeline-contribution';
 
-    // const title = document.createElement('div');
-    // title.className = 'contribution-title';
-    // title.textContent = '最近三个月';
-    // graph.appendChild(title);
-
     const today = new Date();
     const currentDay = today.getDay();
     let mondayOfThisWeek = new Date(today);
@@ -521,7 +515,6 @@ renderContributionGraph() {
     const startMonday = new Date(mondayOfThisWeek);
     startMonday.setDate(mondayOfThisWeek.getDate() - 11 * 7);
 
-    // 存储每周的周一日期，用于月份计算
     const weekMondays = [];
     const dates = [];
     for (let col = 0; col < 12; col++) {
@@ -578,14 +571,12 @@ renderContributionGraph() {
     }
     graph.appendChild(grid);
 
-    // ----- 生成月份轴：分为三组，每组四列，显示一个月份标签 -----
     const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
     const monthAxis = document.createElement('div');
     monthAxis.className = 'contribution-month-axis';
 
-    // 将12周分为3组，每组4周，取每组第一周的月份作为该组月份
     for (let group = 0; group < 3; group++) {
-        const firstColIndex = group * 4; // 每组第一列的索引：0,4,8
+        const firstColIndex = group * 4;
         const weekMonday = weekMondays[firstColIndex];
         const monthIndex = weekMonday.getMonth();
         const label = monthNames[monthIndex];
@@ -647,134 +638,192 @@ renderContributionGraph() {
         });
     }
 
-    renderCalendarAndTypes() {
-        this.rightPanel.innerHTML = '';
+renderCalendarAndTypes() {
+    this.rightPanel.innerHTML = '';
 
-        const cal = document.createElement('div');
-        cal.className = 'timeline-calendar';
-        this.renderCalendar(cal);
-        this.rightPanel.appendChild(cal);
+    const cal = document.createElement('div');
+    cal.className = 'timeline-calendar';
+    this.renderCalendar(cal);
+    this.rightPanel.appendChild(cal);
 
-        const types = document.createElement('div');
-        types.className = 'timeline-types';
-        const typeTitle = document.createElement('div');
-        typeTitle.className = 'timeline-types-title';
-        typeTitle.textContent = '记录类型';
-        types.appendChild(typeTitle);
+    const types = document.createElement('div');
+    types.className = 'timeline-types';
+    const typeTitle = document.createElement('div');
+    typeTitle.className = 'timeline-types-title';
+    typeTitle.textContent = '记录类型';
+    types.appendChild(typeTitle);
 
-        const typeCounts = new Map();
-        this.allRecords.forEach(r => {
-            if (r.lifelog_type) {
-                typeCounts.set(r.lifelog_type, (typeCounts.get(r.lifelog_type) || 0) + 1);
+    const list = document.createElement('div');
+    list.className = 'timeline-types-list';
+    types.appendChild(list);
+
+    this.rightPanel.appendChild(types);
+    this.typesContainer = list;
+    this.renderTypesList();
+}
+
+renderTypesList() {
+    if (!this.typesContainer) return;
+    const list = this.typesContainer;
+    list.innerHTML = '';
+
+    const typeCounts = new Map();
+    this.filteredRecords.forEach(r => {
+        if (r.lifelog_type) {
+            typeCounts.set(r.lifelog_type, (typeCounts.get(r.lifelog_type) || 0) + 1);
+        }
+    });
+
+    for (const [type, cnt] of typeCounts) {
+        const color = getTypeColorFromCSS(type);
+        const item = document.createElement('div');
+        item.className = 'timeline-type-item';
+        item.dataset.type = type;
+        item.innerHTML = `
+            <span class="type-dot" style="background-color:${color}"></span>
+            <span class="type-name">${type}</span>
+            <span class="type-count">${cnt}</span>
+        `;
+        item.addEventListener('click', () => {
+            if (this.selectedType === type) {
+                this.setFilter(undefined, null);
+            } else {
+                this.setFilter(undefined, type);
+            }
+        });
+        list.appendChild(item);
+    }
+
+    if (typeCounts.size === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'timeline-type-empty';
+        empty.textContent = '无记录类型';
+        list.appendChild(empty);
+    }
+}
+
+renderCalendar(container) {
+    const nav = document.createElement('div');
+    nav.className = 'calendar-nav';
+    const prev = document.createElement('button');
+    prev.className = 'b3-button b3-button--outline calendar-nav-btn';
+    prev.innerHTML = '‹';
+    prev.onclick = () => {
+        if (this.calendarMonth === 0) {
+            this.calendarMonth = 11;
+            this.calendarYear -= 1;
+        } else {
+            this.calendarMonth -= 1;
+        }
+        this.renderCalendar(container);
+    };
+    const next = document.createElement('button');
+    next.className = 'b3-button b3-button--outline calendar-nav-btn';
+    next.innerHTML = '›';
+    next.onclick = () => {
+        if (this.calendarMonth === 11) {
+            this.calendarMonth = 0;
+            this.calendarYear += 1;
+        } else {
+            this.calendarMonth += 1;
+        }
+        this.renderCalendar(container);
+    };
+    const title = document.createElement('span');
+    title.className = 'calendar-nav-title';
+    title.textContent = `${this.calendarYear}年${this.calendarMonth + 1}月`;
+
+    nav.appendChild(prev);
+    nav.appendChild(title);
+    nav.appendChild(next);
+    container.innerHTML = '';
+    container.appendChild(nav);
+
+    const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+    const wd = document.createElement('div');
+    wd.className = 'calendar-weekdays';
+    weekdays.forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-weekday';
+        cell.textContent = d;
+        wd.appendChild(cell);
+    });
+    container.appendChild(wd);
+
+    const grid = document.createElement('div');
+    grid.className = 'calendar-grid';
+
+    const firstDayOfMonth = new Date(this.calendarYear, this.calendarMonth, 1);
+    const lastDayOfMonth = new Date(this.calendarYear, this.calendarMonth + 1, 0);
+
+    let startDow = firstDayOfMonth.getDay();
+    if (startDow === 0) startDow = 7;
+
+    const prevMonthDays = startDow - 1;
+    const daysInMonth = lastDayOfMonth.getDate();
+    const totalCells = 42;
+    const nextMonthDays = totalCells - prevMonthDays - daysInMonth;
+
+    let prevYear = this.calendarYear;
+    let prevMonth = this.calendarMonth - 1;
+    if (prevMonth < 0) {
+        prevMonth = 11;
+        prevYear -= 1;
+    }
+    const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
+
+    let nextYear = this.calendarYear;
+    let nextMonth = this.calendarMonth + 1;
+    if (nextMonth > 11) {
+        nextMonth = 0;
+        nextYear += 1;
+    }
+
+    for (let i = 0; i < totalCells; i++) {
+        let dateObj, dateStr, isCurrentMonth = false;
+
+        if (i < prevMonthDays) {
+            const day = prevMonthLastDay - (prevMonthDays - 1 - i);
+            dateObj = new Date(prevYear, prevMonth, day);
+        } else if (i < prevMonthDays + daysInMonth) {
+            const day = i - prevMonthDays + 1;
+            dateObj = new Date(this.calendarYear, this.calendarMonth, day);
+            isCurrentMonth = true;
+        } else {
+            const day = i - (prevMonthDays + daysInMonth) + 1;
+            dateObj = new Date(nextYear, nextMonth, day);
+        }
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        dateStr = `${year}-${month}-${day}`;
+
+        const hasRecord = this.dailyCounts.has(dateStr);
+
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        if (!isCurrentMonth) {
+            cell.classList.add('other-month');
+        }
+        if (hasRecord) {
+            cell.classList.add('has-record');
+        }
+        cell.textContent = dateObj.getDate();
+        cell.dataset.date = dateStr;
+        cell.addEventListener('click', () => {
+            if (this.selectedDate === dateStr) {
+                this.setFilter(null, undefined);
+            } else {
+                this.setFilter(dateStr, undefined);
             }
         });
 
-        const list = document.createElement('div');
-        list.className = 'timeline-types-list';
-        for (const [type, cnt] of typeCounts) {
-            const color = getTypeColorFromCSS(type);
-            const item = document.createElement('div');
-            item.className = 'timeline-type-item';
-            item.dataset.type = type;
-            item.innerHTML = `
-                <span class="type-dot" style="background-color:${color}"></span>
-                <span class="type-name">${type}</span>
-                <span class="type-count">${cnt}</span>
-            `;
-            item.addEventListener('click', () => {
-                if (this.selectedType === type) {
-                    this.setFilter(undefined, null);
-                } else {
-                    this.setFilter(undefined, type);
-                }
-            });
-            list.appendChild(item);
-        }
-        types.appendChild(list);
-        this.rightPanel.appendChild(types);
+        grid.appendChild(cell);
     }
 
-    renderCalendar(container) {
-        const nav = document.createElement('div');
-        nav.className = 'calendar-nav';
-        const prev = document.createElement('button');
-        prev.className = 'b3-button b3-button--outline calendar-nav-btn';
-        prev.innerHTML = '‹';
-        prev.onclick = () => {
-            if (this.calendarMonth === 0) {
-                this.calendarMonth = 11;
-                this.calendarYear -= 1;
-            } else {
-                this.calendarMonth -= 1;
-            }
-            this.renderCalendar(container);
-        };
-        const next = document.createElement('button');
-        next.className = 'b3-button b3-button--outline calendar-nav-btn';
-        next.innerHTML = '›';
-        next.onclick = () => {
-            if (this.calendarMonth === 11) {
-                this.calendarMonth = 0;
-                this.calendarYear += 1;
-            } else {
-                this.calendarMonth += 1;
-            }
-            this.renderCalendar(container);
-        };
-        const title = document.createElement('span');
-        title.className = 'calendar-nav-title';
-        title.textContent = `${this.calendarYear}年${this.calendarMonth+1}月`;
-
-        nav.appendChild(prev);
-        nav.appendChild(title);
-        nav.appendChild(next);
-        container.innerHTML = '';
-        container.appendChild(nav);
-
-        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
-        const wd = document.createElement('div');
-        wd.className = 'calendar-weekdays';
-        weekdays.forEach(d => {
-            const cell = document.createElement('div');
-            cell.className = 'calendar-weekday';
-            cell.textContent = d;
-            wd.appendChild(cell);
-        });
-        container.appendChild(wd);
-
-        const grid = document.createElement('div');
-        grid.className = 'calendar-grid';
-
-        const first = new Date(this.calendarYear, this.calendarMonth, 1);
-        const last = new Date(this.calendarYear, this.calendarMonth + 1, 0);
-        const startDow = first.getDay() === 0 ? 7 : first.getDay();
-        const daysInMonth = last.getDate();
-
-        for (let i = 1; i < startDow; i++) {
-            const empty = document.createElement('div');
-            empty.className = 'calendar-cell empty';
-            grid.appendChild(empty);
-        }
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            const ds = formatDate(new Date(this.calendarYear, this.calendarMonth, d));
-            const has = this.dailyCounts.has(ds);
-            const cell = document.createElement('div');
-            cell.className = `calendar-cell ${has ? 'has-record' : ''}`;
-            cell.textContent = d;
-            cell.dataset.date = ds;
-            cell.addEventListener('click', () => {
-                if (this.selectedDate === ds) {
-                    this.setFilter(null, undefined);
-                } else {
-                    this.setFilter(ds, undefined);
-                }
-            });
-            grid.appendChild(cell);
-        }
-
-        container.appendChild(grid);
-    }
+    container.appendChild(grid);
+}
 
     updateHighlight() {
         this.rightPanel.querySelectorAll('.calendar-cell').forEach(c => c.classList.remove('selected'));
@@ -798,11 +847,11 @@ renderContributionGraph() {
     }
 
     async refresh() {
-        // 触发全局刷新事件，由标签页重新加载数据并重建视图
         this.plugin.eventBus.emit('timeline-refresh');
     }
 }
 
+// ========== 主插件类 ==========
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     styleDefaults = null;
     attrsCache = new Map();
@@ -821,7 +870,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.store = new TimelineStore(this);
         await this.store.loadConfig();
 
-        // 添加时间线图标
+        // 添加图标
         this.addIcons(`<symbol id="iconUser" viewBox="0 0 24 24">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
         </symbol>`);
@@ -834,47 +883,42 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.addIcons(`<symbol id="iconTimeline" viewBox="0 0 24 24">
             <path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm0 16h12v2H6v-2zm-2-4h16v2H4v-2zm0-8h16v2H4V6z" fill="currentColor"/>
         </symbol>`);
+        // 新增垃圾桶图标
+        this.addIcons(`<symbol id="iconTrashcan" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+        </symbol>`);
 
         // 注册时间线标签页
-        const plugin = this; // 闭包引用
+        const plugin = this;
         this.addTab({
             type: TIMELINE_TAB_TYPE,
             init() {
-                // this 是标签页实例
                 this.plugin = plugin;
-                // 给标签页根容器添加样式类，复用原对话框的布局
                 this.element.classList.add('timeline-dialog-content');
-                // 创建内部容器，作为时间线视图的根
                 this.container = document.createElement('div');
                 this.container.className = 'timeline-container';
                 this.element.appendChild(this.container);
 
-                // 加载数据并渲染
                 this.loadDataAndRender = async () => {
                     this.container.innerHTML = '<div class="timeline-loading">加载数据...</div>';
                     const data = await this.plugin.queryAllRecords();
-                    this.container.innerHTML = ''; // 清空 loading
+                    this.container.innerHTML = '';
                     this.view = new TimelineView(this.plugin, this.container, data);
                 };
 
                 this.loadDataAndRender();
 
-                // 监听刷新事件
                 this.refreshHandler = () => this.loadDataAndRender();
                 this.plugin.eventBus.on('timeline-refresh', this.refreshHandler);
             },
             beforeDestroy() {
                 this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
-                // 清理视图（如果有额外清理逻辑）
-                if (this.view) {
-                    // 可选：调用视图的销毁方法
-                }
+                if (this.view) {}
             }
         });
     }
 
     onLayoutReady() {
-        // 添加时间线顶部栏按钮
         this.addTopBar({
             icon: 'iconTimeline',
             title: '时光笺',
@@ -984,7 +1028,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         fileInput.click();
     }
 
-    // 以下为卡片样式插件原有方法
+    // 加载默认样式
     loadStyleDefaults() {
         const defaults = {};
         for (const item of CARD_ITEMS) {
@@ -993,6 +1037,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.styleDefaults = defaults;
     }
 
+    // 设置块属性（用于应用样式）
     async setAttrs(id, attrs) {
         if (!this.attrsCache.has(id)) {
             this.attrsCache.set(id, {});
@@ -1001,7 +1046,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         document.querySelectorAll(`[data-node-id="${id}"]`).forEach(el => {
             Object.entries(attrs).forEach(([key, val]) => {
-                el.setAttribute(key, val);
+                if (val === '') {
+                    el.removeAttribute(key);
+                } else {
+                    el.setAttribute(key, val);
+                }
             });
         });
 
@@ -1010,6 +1059,63 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         } catch (err) {
             console.warn(`[CardStyleWorkshop] 属性保存失败: ${id}`, err);
         }
+    }
+
+    // ===== 新增：使用 resetBlockAttrs 彻底移除卡片样式 =====
+    async removeCardStyles(blockId) {
+        // 1. 获取当前块的所有属性
+        const attrsResult = await this.callSiyuanAPI('/api/attr/getBlockAttrs', { id: blockId });
+        if (!attrsResult || attrsResult.code !== 0) {
+            showMessage('获取块属性失败');
+            return false;
+        }
+        const currentAttrs = attrsResult.data || {};
+
+        // 2. 过滤掉所有以 custom-deco- 开头的属性，保留其他属性
+        const newAttrs = {};
+        for (const [key, value] of Object.entries(currentAttrs)) {
+            if (!key.startsWith('custom-deco-')) {
+                newAttrs[key] = value;
+            }
+        }
+
+        // 3. 调用 resetBlockAttrs 覆盖属性（这会删除所有未包含的属性）
+        try {
+            const resetResult = await this.callSiyuanAPI('/api/attr/resetBlockAttrs', {
+                id: blockId,
+                attrs: newAttrs
+            });
+            if (!resetResult || resetResult.code !== 0) {
+                showMessage('重置块属性失败');
+                return false;
+            }
+        } catch (e) {
+            console.error(e);
+            showMessage('重置块属性时出错');
+            return false;
+        }
+
+        // 4. 更新本地缓存：删除所有 custom-deco- 键
+        if (this.attrsCache.has(blockId)) {
+            const cached = this.attrsCache.get(blockId);
+            Object.keys(cached).forEach(key => {
+                if (key.startsWith('custom-deco-')) {
+                    delete cached[key];
+                }
+            });
+        }
+
+        // 5. 更新 DOM：移除所有 custom-deco- 属性
+        document.querySelectorAll(`[data-node-id="${blockId}"]`).forEach(el => {
+            Array.from(el.attributes).forEach(attr => {
+                if (attr.name.startsWith('custom-deco-')) {
+                    el.removeAttribute(attr.name);
+                }
+            });
+        });
+
+        showMessage('卡片样式已移除');
+        return true;
     }
 
     startAttributeRestoreObserver() {
@@ -1090,10 +1196,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const style = cardBlock.getAttribute('custom-deco-style');
         const cardKey = this.getCardKeyByLabel(style);
 
-        // 引述卡片、轻语卡片（除随记外）禁止编辑
         if (cardKey && cardKey.endsWith('QuoteCard')) return;
         if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryChatWhisperCard') return;
-        // 允许无标题的碎碎念卡片编辑
         if (!cardBlock.hasAttribute('custom-deco-card-title') && !cardKey.includes('WhisperCard')) return;
 
         const rect = cardBlock.getBoundingClientRect();
@@ -1139,9 +1243,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     <input id="card-title-input" class="b3-text-field" type="text" value="${currentTitle}" placeholder="卡片标题" style="width:100%;">
                 </div>
             </div>
-            <div class="b3-dialog__action">
-                <button class="b3-button b3-button--cancel" id="cancel-btn">${this.getText('cancel', '取消')}</button>
-                <button class="b3-button b3-button--outline" id="confirm-btn">${this.getText('confirm', '确定')}</button>
+            <div class="b3-dialog__action" style="display: flex; justify-content: space-between; padding: 7px 24px;">
+                <button class="b3-button b3-button--outline" id="remove-style-btn">${this.getText('removeStyle', '移除样式')}</button>
+                <div>
+                    <button class="b3-button b3-button--cancel" id="cancel-btn">${this.getText('cancel', '取消')}</button>
+                    <button class="b3-button b3-button--outline" id="confirm-btn">${this.getText('confirm', '确定')}</button>
+                </div>
             </div>
         `;
 
@@ -1178,6 +1285,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         });
 
         dialogElement.querySelector('#cancel-btn').addEventListener('click', () => dialog.destroy());
+
+        // 使用新的 removeCardStyles 方法
+        dialogElement.querySelector('#remove-style-btn').addEventListener('click', async () => {
+            await this.removeCardStyles(blockId);
+            dialog.destroy();
+        });
     }
 
     waitForMenu() {
@@ -1229,89 +1342,39 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         btn.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconList"></use></svg>
                          <span class="b3-menu__label">${this.getText('cardview', '卡片视图')}</span>
                          <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
-        btn.appendChild(this.createSecondaryMenuContainer(blockId));
-        return btn;
-    }
-
-    createSecondaryMenuContainer(blockId) {
+        
         const subMenu = document.createElement("div");
         subMenu.className = "b3-menu__submenu";
         const itemsContainer = document.createElement("div");
         itemsContainer.className = "b3-menu__items";
 
+        // 原有分组
         this.getSecondaryGroups().forEach(group => {
             itemsContainer.appendChild(this.createSecondaryGroupButton(blockId, group));
         });
 
+        // 添加分隔符和“移除样式”按钮
+        itemsContainer.appendChild(this.createSeparator());
+        const removeItem = this.createRemoveStyleItem(blockId);
+        itemsContainer.appendChild(removeItem);
+
         subMenu.appendChild(itemsContainer);
-        return subMenu;
+        btn.appendChild(subMenu);
+        return btn;
     }
 
-
-getSecondaryGroups() {
-    return [
-        {
-            id: "whisper", // 时间轴粗
-            labelKey: "whisperGroup",
-            icon: "#iconLayout",
-            filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
-        },
-        {
-            id: "whisperThin", // 时间轴细
-            labelKey: "whisperThinGroup",
-            icon: "#iconLayout",
-            filter: (label, key) => key.includes('ThinWhisperCard')
-        },
-        {
-            id: "cardStyle",
-            labelKey: "creativeGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('CreativeCard')
-        },
-        {
-            id: "noticeGroup",
-            labelKey: "noticeGroup",
-            icon: "#iconInfo",
-            filter: (label, key) => key.endsWith('NoticeCard')
-        },
-        {
-            id: "gradientTop",
-            labelKey: "gradientTopGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('GradientTopCard')
-        },
-        {
-            id: "calloutGroup",            
-            labelKey: "calloutGroup",
-            icon: "#iconInfo",              
-            filter: (label, key) => key.endsWith('CalloutCard')
-        },
-        {
-            id: "imageGroup", // 图片相关设置
-            labelKey: "imageGroup",
-            icon: "#iconImage",
-            filter: (label, key) => key.endsWith('ImageCard')
-        },
-        {
-            id: "excerptGroup",
-            labelKey: "excerptGroup",
-            icon: "#iconQuote",
-            filter: (label, key) => key.endsWith('ExcerptCard')
-        },
-        {
-            id: "chatWhisper", // 轻言轻语
-            labelKey: "chatWhisperGroup",
-            icon: "#iconSparkles",
-            filter: (label, key) => key.endsWith('ChatWhisperCard')
-        },
-        {
-            id: "quoteBlock",
-            labelKey: "quoteGroup",
-            icon: "#iconQuote",
-            filter: (label, key) => key.endsWith('QuoteCard')
-        }
-    ];
-}
+    // 创建移除样式菜单项（使用新的 removeCardStyles）
+    createRemoveStyleItem(blockId) {
+        const item = document.createElement("button");
+        item.className = "b3-menu__item";
+        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconTrashcan"></use></svg>
+                          <span class="b3-menu__label">${this.getText('removeStyle', '移除样式')}</span>`;
+        item.onclick = async (e) => {
+            e.stopPropagation();
+            await this.removeCardStyles(blockId);
+        };
+        return item;
+    }
 
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
@@ -1347,27 +1410,21 @@ createCardItem(blockId, label, key) {
     item.onclick = async (e) => {
         e.stopPropagation();
 
-        // 获取当前块的现有标题（从 DOM 元素读取）
         const currentBlock = document.querySelector(`[data-node-id="${blockId}"]`);
         const existingTitle = currentBlock?.getAttribute('custom-deco-card-title') || '';
 
         const attrs = { "custom-deco-style": label };
 
-        // 对于需要设置图标和标题的卡片类型（非引述、非轻语、非图片卡片）
         if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
             const defaults = this.styleDefaults[label];
             if (defaults) {
-                // 图标始终设置为新样式的默认图标
                 attrs["custom-deco-card-icon"] = defaults.icon || '';
-
-                // 标题：仅当用户没有自定义标题时才填入默认标题，否则保留现有标题（即不设置此属性）
                 if (!existingTitle) {
                     attrs["custom-deco-card-title"] = defaults.title || '';
                 }
             }
         }
 
-        // 碎碎念卡片：每次切换都更新日期（可根据需要调整）
         if (key === 'diaryChatWhisperCard') {
             const today = new Date();
             const year = today.getFullYear();
@@ -1390,6 +1447,71 @@ createCardItem(blockId, label, key) {
 
     getAllCardItems() {
         return CARD_ITEMS.map(item => ({ key: item.key, label: item.label }));
+    }
+
+    getSecondaryGroups() {
+        return [
+            {
+                id: "whisper",
+                labelKey: "whisperGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
+            },
+            {
+                id: "whisperThin",
+                labelKey: "whisperThinGroup",
+                icon: "#iconLayout",
+                filter: (label, key) => key.includes('ThinWhisperCard')
+            },
+            {
+                id: "cardStyle",
+                labelKey: "creativeGroup",
+                icon: "#iconSparkles",
+                filter: (label, key) => key.endsWith('CreativeCard')
+            },
+            {
+                id: "noticeGroup",
+                labelKey: "noticeGroup",
+                icon: "#iconInfo",
+                filter: (label, key) => key.endsWith('NoticeCard')
+            },
+            {
+                id: "gradientTop",
+                labelKey: "gradientTopGroup",
+                icon: "#iconSparkles",
+                filter: (label, key) => key.endsWith('GradientTopCard')
+            },
+            {
+                id: "calloutGroup",            
+                labelKey: "calloutGroup",
+                icon: "#iconInfo",              
+                filter: (label, key) => key.endsWith('CalloutCard')
+            },
+            {
+                id: "imageGroup",
+                labelKey: "imageGroup",
+                icon: "#iconImage",
+                filter: (label, key) => key.endsWith('ImageCard')
+            },
+            {
+                id: "excerptGroup",
+                labelKey: "excerptGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.endsWith('ExcerptCard')
+            },
+            {
+                id: "chatWhisper",
+                labelKey: "chatWhisperGroup",
+                icon: "#iconSparkles",
+                filter: (label, key) => key.endsWith('ChatWhisperCard')
+            },
+            {
+                id: "quoteBlock",
+                labelKey: "quoteGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.endsWith('QuoteCard')
+            }
+        ];
     }
 
     getText(key, fallback) {
