@@ -3751,6 +3751,14 @@
     font-size: 12px;
 }
 
+.timeline-context-menu {
+    background: var(--b3-menu-background);
+    border: 1px solid var(--b3-menu-border);
+    border-radius: 4px;
+    box-shadow: var(--b3-menu-shadow);
+    min-width: 120px;
+}
+
 /* ========== 自适应布局优化 ========== */
 @media screen and (max-width: 1000px) {
     .timeline-container {

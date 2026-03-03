@@ -262,7 +262,21 @@ class TimelineView {
         this.calendarYear = new Date().getFullYear();
         this.calendarMonth = new Date().getMonth();
 
+        // 监听记录更新事件
+        this.recordUpdatedHandler = (data) => {
+            if (data.id) {
+                this.updateRecordContent(data.id, data.content);
+            }
+        };
+        this.plugin.eventBus.on('timeline-record-updated', this.recordUpdatedHandler);
+
         this.render();
+    }
+
+    destroy() {
+        if (this.recordUpdatedHandler) {
+            this.plugin.eventBus.off('timeline-record-updated', this.recordUpdatedHandler);
+        }
     }
 
     calculateStats(records) {
@@ -590,6 +604,8 @@ renderContributionGraph() {
     graph.appendChild(monthAxis);
     this.leftPanel.appendChild(graph);
 }
+
+    // 修改后的 renderMiddlePanel：为每个记录项设置 data-id，并绑定右键菜单
     renderMiddlePanel() {
         this.middlePanel.innerHTML = '';
 
@@ -626,6 +642,7 @@ renderContributionGraph() {
 
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
+                item.dataset.id = rec.id;  // 设置 data-id 用于更新
                 item.innerHTML = `
                     <div class="timeline-item-header">
                         <span class="timeline-time">${time}</span>
@@ -633,9 +650,80 @@ renderContributionGraph() {
                     </div>
                     <div class="timeline-content">${content}</div>
                 `;
+
+                // 添加右键菜单事件
+                item.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showContextMenu(e, rec);
+                });
+
                 this.middlePanel.appendChild(item);
             });
         });
+    }
+
+    // 更新单条记录的内容
+    updateRecordContent(blockId, newContent) {
+        const item = this.middlePanel.querySelector(`.timeline-item[data-id="${blockId}"]`);
+        if (item) {
+            const contentDiv = item.querySelector('.timeline-content');
+            if (contentDiv) {
+                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                contentDiv.textContent = displayContent;
+            }
+        }
+    }
+
+    // 显示自定义右键菜单
+    showContextMenu(event, record) {
+        // 移除已存在的菜单
+        const existingMenu = document.querySelector('.timeline-context-menu');
+        if (existingMenu) existingMenu.remove();
+
+        const menu = document.createElement('div');
+        menu.className = 'timeline-context-menu b3-menu';
+        menu.style.position = 'fixed';
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        menu.style.zIndex = '9999';
+        menu.innerHTML = `
+            <div class="b3-menu__items">
+                <button class="b3-menu__item" data-action="edit">
+                    <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
+                    <span class="b3-menu__label">编辑</span>
+                </button>
+                <button class="b3-menu__item" data-action="open">
+                    <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
+                    <span class="b3-menu__label">打开文档</span>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(menu);
+
+        // 绑定事件
+        menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
+            this.plugin.showEditBlockDialog(record.id, record.content);
+            menu.remove();
+        });
+        menu.querySelector('[data-action="open"]').addEventListener('click', () => {
+            this.plugin.openBlockDocument(record.id);
+            menu.remove();
+        });
+
+        // 点击其他地方关闭菜单
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('contextmenu', closeMenu);
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener('click', closeMenu);
+            document.addEventListener('contextmenu', closeMenu);
+        }, 0);
     }
 
 renderCalendarAndTypes() {
@@ -870,7 +958,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.store = new TimelineStore(this);
         await this.store.loadConfig();
 
-        // 添加图标
+        // 添加图标（包括编辑和文件图标）
         this.addIcons(`<symbol id="iconUser" viewBox="0 0 24 24">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
         </symbol>`);
@@ -883,9 +971,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.addIcons(`<symbol id="iconTimeline" viewBox="0 0 24 24">
             <path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm0 16h12v2H6v-2zm-2-4h16v2H4v-2zm0-8h16v2H4V6z" fill="currentColor"/>
         </symbol>`);
-        // 新增垃圾桶图标
         this.addIcons(`<symbol id="iconTrashcan" viewBox="0 0 24 24">
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+        </symbol>`);
+        // 新增编辑和文件图标
+        this.addIcons(`<symbol id="iconEdit" viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+        </symbol>`);
+        this.addIcons(`<symbol id="iconFile" viewBox="0 0 24 24">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/>
         </symbol>`);
 
         // 注册时间线标签页
@@ -913,7 +1007,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             },
             beforeDestroy() {
                 this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
-                if (this.view) {}
+                if (this.view) {
+                    this.view.destroy();
+                }
             }
         });
     }
@@ -1516,6 +1612,117 @@ createCardItem(blockId, label, key) {
 
     getText(key, fallback) {
         return TEXT[key] || fallback;
+    }
+
+    // ========== 时间线编辑和文档跳转功能 ==========
+
+    /**
+     * 获取块所在的文档信息
+     */
+    async getBlockInfo(blockId) {
+        return await this.callSiyuanAPI('/api/block/getBlockInfo', { id: blockId });
+    }
+
+    /**
+     * 打开块所在的文档
+     */
+    async openBlockDocument(blockId) {
+        const info = await this.getBlockInfo(blockId);
+        if (info && info.code === 0) {
+            const rootID = info.data.rootID;
+            openTab({
+                app: this.app,
+                doc: { id: rootID }
+            });
+        } else {
+            showMessage('无法获取文档信息');
+        }
+    }
+
+    /**
+     * 更新块内容，并确保 custom-lifelog-created 属性不被修改
+     */
+    async editBlockContent(blockId, newContent) {
+        // 1. 获取编辑前的 custom-lifelog-created 值
+        const before = await this.callSiyuanAPI('/api/attr/getBlockAttrs', { id: blockId });
+        if (!before || before.code !== 0) {
+            showMessage('获取块属性失败，无法确保时间属性不被修改');
+            return;
+        }
+        const originalAttrs = before.data || {};
+        const originalCreated = originalAttrs['custom-lifelog-created'];
+
+        // 2. 更新内容
+        const result = await this.callSiyuanAPI('/api/block/updateBlock', {
+            dataType: 'markdown',
+            data: newContent,
+            id: blockId
+        });
+
+        if (result && result.code === 0) {
+            // 3. 如果原始存在该属性，强制恢复它（最多重试3次）
+            if (originalCreated) {
+                const maxRetries = 3;
+                for (let i = 0; i < maxRetries; i++) {
+                    // 等待一小段时间，避免与其他自动修改冲突
+                    await new Promise(resolve => setTimeout(resolve, 200));
+
+                    // 设置回原始值
+                    await this.callSiyuanAPI('/api/attr/setBlockAttrs', {
+                        id: blockId,
+                        attrs: { 'custom-lifelog-created': originalCreated }
+                    });
+
+                    // 验证是否成功
+                    const after = await this.callSiyuanAPI('/api/attr/getBlockAttrs', { id: blockId });
+                    const newCreated = (after?.code === 0 && after.data) ? after.data['custom-lifelog-created'] : null;
+                    if (newCreated === originalCreated) {
+                        break; // 成功恢复
+                    }
+                    // 否则重试
+                }
+            }
+
+            showMessage('更新成功');
+
+            // 发送事件通知视图更新单条记录，而不是全局刷新
+            this.eventBus.emit('timeline-record-updated', { id: blockId, content: newContent });
+        } else {
+            showMessage('更新失败');
+        }
+    }
+
+    /**
+     * 显示编辑对话框
+     */
+    showEditBlockDialog(blockId, currentContent) {
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+
+        const dialog = new Dialog({
+            title: '编辑记录',
+            content: `
+                <div class="b3-dialog__content" style="padding: 20px;">
+                    <textarea id="edit-content" class="b3-text-field" style="width:100%; min-height:150px;">${escapeHtml(currentContent)}</textarea>
+                </div>
+                <div class="b3-dialog__action" style="display:flex; justify-content:flex-end; padding:7px 24px;">
+                    <button class="b3-button b3-button--cancel" id="cancelEdit">取消</button>
+                    <button class="b3-button b3-button--outline" id="saveEdit">保存</button>
+                </div>
+            `,
+            width: '500px'
+        });
+
+        const dialogElement = dialog.element;
+        dialogElement.querySelector('#saveEdit').addEventListener('click', async () => {
+            const newContent = dialogElement.querySelector('#edit-content').value;
+            await this.editBlockContent(blockId, newContent);
+            dialog.destroy();
+        });
+        dialogElement.querySelector('#cancelEdit').addEventListener('click', () => dialog.destroy());
     }
 
     onunload() {
