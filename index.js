@@ -197,8 +197,10 @@ class TimelineStore {
         this.plugin = plugin;
         this.config = {
             avatar: null,
+            cover: null,          // 新增：封面图片路径
             customTitle: '',
-            customSubtitle: ''
+            customSubtitle: '',
+            displayMode: 'list'   // 默认列表样式
         };
     }
 
@@ -207,8 +209,10 @@ class TimelineStore {
             const saved = await this.plugin.loadData(TIMELINE_STORAGE_NAME);
             if (saved) {
                 this.config.avatar = saved.avatar || null;
+                this.config.cover = saved.cover || null;          // 新增
                 this.config.customTitle = saved.customTitle || '';
                 this.config.customSubtitle = saved.customSubtitle || '';
+                this.config.displayMode = saved.displayMode || 'list';
             }
         } catch (e) {
             console.warn("加载配置失败", e);
@@ -225,6 +229,17 @@ class TimelineStore {
 
     async setAvatar(path) {
         this.config.avatar = path;
+        await this.saveConfig();
+    }
+
+    // 新增：获取封面
+    getCover() {
+        return this.config.cover;
+    }
+
+    // 新增：设置封面
+    async setCover(path) {
+        this.config.cover = path;
         await this.saveConfig();
     }
 
@@ -245,6 +260,17 @@ class TimelineStore {
         this.config.customSubtitle = subtitle;
         await this.saveConfig();
     }
+
+    // 获取显示模式
+    getDisplayMode() {
+        return this.config.displayMode;
+    }
+
+    // 设置显示模式并保存
+    async setDisplayMode(mode) {
+        this.config.displayMode = mode;
+        await this.saveConfig();
+    }
 }
 
 // ---------- 时间线视图类 ----------
@@ -261,6 +287,9 @@ class TimelineView {
 
         this.calendarYear = new Date().getFullYear();
         this.calendarMonth = new Date().getMonth();
+
+        // 显示模式
+        this.displayMode = this.plugin.store.getDisplayMode() || 'list';
 
         // 监听记录更新事件
         this.recordUpdatedHandler = (data) => {
@@ -446,6 +475,9 @@ setFilter(date, type) {
     }
 
     showSettingsDialog() {
+        // 根据当前模式动态决定按钮文字
+        const toggleBtnText = this.displayMode === 'list' ? '切换到朋友圈样式' : '切换到列表样式';
+
         const dialog = new Dialog({
             title: '时光笺设置',
             content: `
@@ -454,9 +486,12 @@ setFilter(date, type) {
                     <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
                     <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
                     <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
-                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
-                        <button class="b3-button" id="cancelSettingsBtn">取消</button>
-                        <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                        <button class="b3-button" id="toggleStyleBtn">${toggleBtnText}</button>
+                        <div>
+                            <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
+                            <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
+                        </div>
                     </div>
                 </div>
             `,
@@ -466,25 +501,32 @@ setFilter(date, type) {
         setTimeout(() => {
             const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
             const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
+            const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
 
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => dialog.destroy());
-            }
+            // 取消
+            cancelBtn.addEventListener('click', () => dialog.destroy());
 
-            if (saveBtn) {
-                saveBtn.addEventListener('click', async () => {
-                    const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
-                    const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
-                    await this.plugin.store.setCustomTitle(title);
-                    await this.plugin.store.setCustomSubtitle(subtitle);
-                    const titleEl = this.leftPanel.querySelector('.timeline-title-text');
-                    const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
-                    if (titleEl) titleEl.textContent = title || '时光笺';
-                    if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
-                    dialog.destroy();
-                    showMessage('设置已保存');
-                });
-            }
+            // 保存（标题/副标题）
+            saveBtn.addEventListener('click', async () => {
+                const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
+                const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
+                await this.plugin.store.setCustomTitle(title);
+                await this.plugin.store.setCustomSubtitle(subtitle);
+                const titleEl = this.leftPanel.querySelector('.timeline-title-text');
+                const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
+                if (titleEl) titleEl.textContent = title || '时光笺';
+                if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
+                dialog.destroy();
+                showMessage('设置已保存');
+            });
+
+            // 切换样式
+            toggleBtn.addEventListener('click', () => {
+                const newMode = this.displayMode === 'list' ? 'moments' : 'list';
+                this.setDisplayMode(newMode);
+                dialog.destroy();
+                showMessage(`已切换到${newMode === 'list' ? '列表样式' : '朋友圈样式'}`);
+            });
         }, 0);
     }
 
@@ -605,8 +647,17 @@ renderContributionGraph() {
     this.leftPanel.appendChild(graph);
 }
 
-    // 修改后的 renderMiddlePanel：为每个记录项设置 data-id，并绑定右键菜单
+    // 修改后的 renderMiddlePanel：根据显示模式分发
     renderMiddlePanel() {
+        if (this.displayMode === 'list') {
+            this.renderListPanel();
+        } else {
+            this.renderMomentsPanel();
+        }
+    }
+
+    // 原有的列表样式渲染方法
+    renderListPanel() {
         this.middlePanel.innerHTML = '';
 
         const recs = this.filteredRecords;
@@ -663,17 +714,193 @@ renderContributionGraph() {
         });
     }
 
-    // 更新单条记录的内容
-    updateRecordContent(blockId, newContent) {
-        const item = this.middlePanel.querySelector(`.timeline-item[data-id="${blockId}"]`);
-        if (item) {
-            const contentDiv = item.querySelector('.timeline-content');
-            if (contentDiv) {
-                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-                contentDiv.textContent = displayContent;
+    // 新增：朋友圈样式渲染（含封面和卡片列表）
+    renderMomentsPanel() {
+        this.middlePanel.innerHTML = '';
+
+        // --- 封面区 ---
+        const coverDiv = document.createElement('div');
+        coverDiv.className = 'north-moments-cover';  
+        coverDiv.setAttribute('title', '点击上传封面');
+
+        const coverPath = this.plugin.store.getCover();
+        if (coverPath) {
+            coverDiv.style.backgroundImage = `url('${coverPath.startsWith('http') ? coverPath : '/' + coverPath}')`;
+            coverDiv.style.backgroundSize = 'cover';
+            coverDiv.style.backgroundPosition = 'center';
+        } else {
+            // 默认背景色
+            coverDiv.style.backgroundColor = '#e9ecef';
+        }
+
+        // 点击上传封面
+        coverDiv.addEventListener('click', () => this.plugin.uploadCover(coverDiv));
+
+        // 右下角用户信息
+        const userInfo = document.createElement('div');
+        userInfo.className = 'north-cover-user-info';
+
+        const avatarSmall = document.createElement('div');
+        avatarSmall.className = 'north-cover-avatar';
+        const avatarPath = this.plugin.store.getAvatar();
+        if (avatarPath) {
+            const img = document.createElement('img');
+            img.src = avatarPath.startsWith('http') ? avatarPath : '/' + avatarPath;
+            img.onerror = () => {
+                avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+            };
+            avatarSmall.appendChild(img);
+        } else {
+            avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+        }
+        // 头像点击上传
+        avatarSmall.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.plugin.uploadAvatar(avatarSmall);
+        });
+
+        const nick = document.createElement('span');
+        nick.className = 'north-cover-nickname';
+        nick.textContent = this.plugin.store.getCustomTitle() || '时光笺';
+
+        userInfo.appendChild(avatarSmall);
+        userInfo.appendChild(nick);
+        coverDiv.appendChild(userInfo);
+
+        this.middlePanel.appendChild(coverDiv);
+
+        // --- 动态卡片列表 ---
+        const recs = this.filteredRecords;
+        if (!recs.length) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'timeline-empty';
+            emptyDiv.textContent = '暂无动态';
+            this.middlePanel.appendChild(emptyDiv);
+            return;
+        }
+
+        // 按时间倒序排列（最新的在前）
+        const sorted = [...recs].sort((a, b) => {
+            const da = parseLifelogDate(a.lifelog_created);
+            const db = parseLifelogDate(b.lifelog_created);
+            return db - da;
+        });
+
+        // 获取用户信息（用于卡片）
+        const userAvatar = this.plugin.store.getAvatar();
+        const userNickname = this.plugin.store.getCustomTitle() || '时光笺';
+
+        sorted.forEach(rec => {
+            const dateObj = parseLifelogDate(rec.lifelog_created);
+            const timeStr = dateObj ? this.formatRelativeTime(dateObj) : '';
+            let content = rec.content || '';
+            content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+
+            const card = document.createElement('div');
+            card.className = 'north-moments-card';
+            card.dataset.id = rec.id;
+
+            // 用户信息栏
+            const userBar = document.createElement('div');
+            userBar.className = 'north-moments-userbar';
+
+            const cardAvatar = document.createElement('div');
+            cardAvatar.className = 'north-moments-card-avatar';
+            if (userAvatar) {
+                const img = document.createElement('img');
+                img.src = userAvatar.startsWith('http') ? userAvatar : '/' + userAvatar;
+                img.onerror = () => {
+                    cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                };
+                cardAvatar.appendChild(img);
+            } else {
+                cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
             }
+
+            const cardNick = document.createElement('span');
+            cardNick.className = 'north-moments-card-nickname';
+            cardNick.textContent = userNickname;
+
+            userBar.appendChild(cardAvatar);
+            userBar.appendChild(cardNick);
+
+            // 内容区
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'north-moments-card-content';
+            contentDiv.textContent = content;
+
+            // 元数据区
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'north-moments-card-meta';
+            metaDiv.textContent = timeStr;
+
+            card.appendChild(userBar);
+            card.appendChild(contentDiv);
+            card.appendChild(metaDiv);
+
+            // 右键菜单
+            card.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showContextMenu(e, rec);
+            });
+
+            this.middlePanel.appendChild(card);
+        });
+    }
+
+    // 新增：格式化相对时间
+    formatRelativeTime(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffDay > 7) {
+            // 超过一周显示具体日期
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        } else if (diffDay >= 2) {
+            return `${diffDay}天前`;
+        } else if (diffDay === 1) {
+            return '昨天';
+        } else if (diffHour >= 1) {
+            return `${diffHour}小时前`;
+        } else if (diffMin >= 1) {
+            return `${diffMin}分钟前`;
+        } else {
+            return '刚刚';
         }
     }
+
+    // 新增：设置显示模式
+    setDisplayMode(mode) {
+        if (mode === this.displayMode) return;
+        this.displayMode = mode;
+        // 保存到 store
+        this.plugin.store.setDisplayMode(mode);
+        // 重新渲染中间面板
+        this.renderMiddlePanel();
+    }
+
+    // 更新单条记录的内容
+updateRecordContent(blockId, newContent) {
+    // 兼容两种样式：列表样式的 .timeline-item 和朋友圈样式的 .north-moments-card
+    const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"]`;
+    const item = this.middlePanel.querySelector(selector);
+    if (item) {
+        // 内容区域可能是 .timeline-content 或 .north-moments-card-content
+        const contentDiv = item.querySelector('.timeline-content, .north-moments-card-content');
+        if (contentDiv) {
+            let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+            contentDiv.textContent = displayContent;
+        }
+    }
+}
 
     // 显示自定义右键菜单
     showContextMenu(event, record) {
@@ -1072,6 +1299,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
     }
 
+    // 上传头像（原有）
     uploadAvatar(avatarElement) {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -1098,15 +1326,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     const newPath = succMap[originalName];
                     if (newPath) {
                         await this.store.setAvatar(newPath);
-                        if (avatarElement) {
-                            avatarElement.innerHTML = '';
-                            const img = document.createElement('img');
-                            img.src = '/' + newPath;
-                            img.onerror = () => {
-                                avatarElement.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                            };
-                            avatarElement.appendChild(img);
-                        }
+                        // 更新所有相关头像元素
+                        this.updateAllAvatars(newPath);
                         showMessage('头像上传成功');
                     }
                 } else {
@@ -1122,6 +1343,71 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         document.body.appendChild(fileInput);
         fileInput.click();
+    }
+
+    // 新增：上传封面
+    uploadCover(coverElement) {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
+        fileInput.onchange = async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('assetsDirPath', '/assets/');
+            formData.append('file[]', file);
+
+            try {
+                const response = await fetch('/api/asset/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.code === 0) {
+                    const succMap = result.data.succMap;
+                    const originalName = file.name;
+                    const newPath = succMap[originalName];
+                    if (newPath) {
+                        await this.store.setCover(newPath);
+                        // 更新封面元素背景
+                        if (coverElement) {
+                            coverElement.style.backgroundImage = `url('${'/' + newPath}')`;
+                            coverElement.style.backgroundSize = 'cover';
+                            coverElement.style.backgroundPosition = 'center';
+                        }
+                        showMessage('封面上传成功');
+                    }
+                } else {
+                    showMessage('上传失败：' + (result.msg || '未知错误'));
+                }
+            } catch (e) {
+                console.error(e);
+                showMessage('上传失败：' + e.message);
+            } finally {
+                document.body.removeChild(fileInput);
+            }
+        };
+
+        document.body.appendChild(fileInput);
+        fileInput.click();
+    }
+
+    // 辅助方法：更新所有头像元素（左侧头像和卡片头像）
+    updateAllAvatars(path) {
+        const avatarElements = document.querySelectorAll('.timeline-avatar, .cover-avatar, .moments-card-avatar');
+        avatarElements.forEach(el => {
+            // 清空原有内容
+            el.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = path.startsWith('http') ? path : '/' + path;
+            img.onerror = () => {
+                el.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+            };
+            el.appendChild(img);
+        });
     }
 
     // 加载默认样式
