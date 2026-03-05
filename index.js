@@ -491,7 +491,7 @@ class TimelineView {
         const nextModeText = {
             [TimelineView.MODE_LIST]: '列表样式',
             [TimelineView.MODE_MOMENTS]: '朋友圈样式',
-            [TimelineView.MODE_TIMELINE]: '时间轴样式'
+            [TimelineView.MODE_TIMELINE]: '时间日志样式'
         }[nextMode];
 
         const dialog = new Dialog({
@@ -942,7 +942,7 @@ renderTimelinePanel() {
                     if (mins === 0) {
                         intervalText = `${hours}小时`;
                     } else {
-                        intervalText = `${hours}小时${mins}分钟`;
+                        intervalText = `${hours}小时${mins}分`;
                     }
                 } else {
                     intervalText = `${diffMinutes}分钟`;

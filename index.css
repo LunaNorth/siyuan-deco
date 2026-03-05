@@ -4140,16 +4140,19 @@
 
 /* 左侧时间列 */
 .timeline-timeline-time-col {
-    margin-right: 15px;
-    min-width: 60px;
-    text-align: left;
+    margin-right: 20px;
+    min-width: 70px;
+    text-align: right;
+    line-height: 1.5;
 }
 
 .timeline-timeline-time-main {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 400;
     color: var(--b3-theme-on-surface);
     line-height: 1.2;
+    letter-spacing: 0.5px;
+    margin-top: 15px;
 }
 
 /* 右侧卡片 */
@@ -4204,4 +4207,5 @@
     color: var(--b3-theme-on-surface-light);
     margin-top: 2px;
     line-height: 1.2;
+    opacity: 0.8;
 }
