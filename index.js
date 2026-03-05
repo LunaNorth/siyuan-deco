@@ -275,6 +275,11 @@ class TimelineStore {
 
 // ---------- 时间线视图类 ----------
 class TimelineView {
+    // 模式常量
+    static MODE_LIST = 'list';
+    static MODE_MOMENTS = 'moments';
+    static MODE_TIMELINE = 'timeline';
+
     constructor(plugin, container, records) {
         this.plugin = plugin;
         this.container = container;
@@ -289,7 +294,7 @@ class TimelineView {
         this.calendarMonth = new Date().getMonth();
 
         // 显示模式
-        this.displayMode = this.plugin.store.getDisplayMode() || 'list';
+        this.displayMode = this.plugin.store.getDisplayMode() || TimelineView.MODE_LIST;
 
         // 监听记录更新事件
         this.recordUpdatedHandler = (data) => {
@@ -373,23 +378,23 @@ class TimelineView {
         return map;
     }
 
-setFilter(date, type) {
-    if (date !== undefined) this.selectedDate = date;
-    if (type !== undefined) this.selectedType = type;
+    setFilter(date, type) {
+        if (date !== undefined) this.selectedDate = date;
+        if (type !== undefined) this.selectedType = type;
 
-    this.filteredRecords = this.allRecords.filter(r => {
-        const dateObj = parseLifelogDate(r.lifelog_created);
-        if (!dateObj) return false;
-        const ds = formatDate(dateObj);
-        if (this.selectedDate && ds !== this.selectedDate) return false;
-        if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
-        return true;
-    });
+        this.filteredRecords = this.allRecords.filter(r => {
+            const dateObj = parseLifelogDate(r.lifelog_created);
+            if (!dateObj) return false;
+            const ds = formatDate(dateObj);
+            if (this.selectedDate && ds !== this.selectedDate) return false;
+            if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
+            return true;
+        });
 
-    this.renderMiddlePanel();
-    this.renderTypesList();
-    this.updateHighlight();
-}
+        this.renderMiddlePanel();
+        this.renderTypesList();
+        this.updateHighlight();
+    }
 
     clearFilter() {
         this.selectedDate = null;
@@ -475,8 +480,19 @@ setFilter(date, type) {
     }
 
     showSettingsDialog() {
-        // 根据当前模式动态决定按钮文字
-        const toggleBtnText = this.displayMode === 'list' ? '切换到朋友圈样式' : '切换到列表样式';
+        // 根据当前模式确定下一个模式
+        const modeOrder = [
+            TimelineView.MODE_LIST,
+            TimelineView.MODE_MOMENTS,
+            TimelineView.MODE_TIMELINE
+        ];
+        const currentIndex = modeOrder.indexOf(this.displayMode);
+        const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
+        const nextModeText = {
+            [TimelineView.MODE_LIST]: '列表样式',
+            [TimelineView.MODE_MOMENTS]: '朋友圈样式',
+            [TimelineView.MODE_TIMELINE]: '时间轴样式'
+        }[nextMode];
 
         const dialog = new Dialog({
             title: '时光笺设置',
@@ -487,7 +503,7 @@ setFilter(date, type) {
                     <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
                     <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                        <button class="b3-button" id="toggleStyleBtn">${toggleBtnText}</button>
+                        <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
                         <div>
                             <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
                             <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
@@ -503,10 +519,8 @@ setFilter(date, type) {
             const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
             const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
 
-            // 取消
             cancelBtn.addEventListener('click', () => dialog.destroy());
 
-            // 保存（标题/副标题）
             saveBtn.addEventListener('click', async () => {
                 const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
                 const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
@@ -520,12 +534,10 @@ setFilter(date, type) {
                 showMessage('设置已保存');
             });
 
-            // 切换样式
             toggleBtn.addEventListener('click', () => {
-                const newMode = this.displayMode === 'list' ? 'moments' : 'list';
-                this.setDisplayMode(newMode);
+                this.setDisplayMode(nextMode);
                 dialog.destroy();
-                showMessage(`已切换到${newMode === 'list' ? '列表样式' : '朋友圈样式'}`);
+                showMessage(`已切换到${nextModeText}`);
             });
         }, 0);
     }
@@ -539,7 +551,7 @@ setFilter(date, type) {
             { label: '总记录', value: s.total },
             { label: '本月', value: s.month },
             { label: '今日', value: s.today },
-            { label: '连续', value: s.streak + '天' },
+            { label: '连续', value: s.streak },          // 去掉了 "天"
             { label: '最活跃', value: s.mostActive },
             { label: '使用类型', value: s.usedTypeCount }
         ];
@@ -557,102 +569,115 @@ setFilter(date, type) {
         this.leftPanel.appendChild(grid);
     }
 
-renderContributionGraph() {
-    const graph = document.createElement('div');
-    graph.className = 'timeline-contribution';
+    renderContributionGraph() {
+        const graph = document.createElement('div');
+        graph.className = 'timeline-contribution';
 
-    const today = new Date();
-    const currentDay = today.getDay();
-    let mondayOfThisWeek = new Date(today);
-    const diff = currentDay === 0 ? 6 : currentDay - 1;
-    mondayOfThisWeek.setDate(today.getDate() - diff);
-    mondayOfThisWeek.setHours(0, 0, 0, 0);
+        const today = new Date();
+        const currentDay = today.getDay();
+        let mondayOfThisWeek = new Date(today);
+        const diff = currentDay === 0 ? 6 : currentDay - 1;
+        mondayOfThisWeek.setDate(today.getDate() - diff);
+        mondayOfThisWeek.setHours(0, 0, 0, 0);
 
-    const startMonday = new Date(mondayOfThisWeek);
-    startMonday.setDate(mondayOfThisWeek.getDate() - 11 * 7);
+        const startMonday = new Date(mondayOfThisWeek);
+        startMonday.setDate(mondayOfThisWeek.getDate() - 11 * 7);
 
-    const weekMondays = [];
-    const dates = [];
-    for (let col = 0; col < 12; col++) {
-        const weekMonday = new Date(startMonday);
-        weekMonday.setDate(startMonday.getDate() + col * 7);
-        weekMondays.push(weekMonday);
-        for (let row = 0; row < 7; row++) {
-            const date = new Date(weekMonday);
-            date.setDate(weekMonday.getDate() + row);
-            const ds = formatDate(date);
-            const cnt = this.dailyCounts.get(ds) || 0;
-            dates.push({ date: ds, cnt, fullDate: date });
-        }
-    }
-
-    const counts = dates.map(d => d.cnt);
-    const maxCount = counts.length ? Math.max(...counts) : 0;
-
-    const level = (cnt) => {
-        if (cnt === 0) return 0;
-        if (maxCount === 0) return 0;
-        const r = cnt / maxCount;
-        if (r <= 0.25) return 1;
-        if (r <= 0.5) return 2;
-        if (r <= 0.75) return 3;
-        return 4;
-    };
-
-    const grid = document.createElement('div');
-    grid.className = 'contribution-grid';
-
-    for (let row = 0; row < 7; row++) {
+        const weekMondays = [];
+        const dates = [];
         for (let col = 0; col < 12; col++) {
-            const idx = col * 7 + row;
-            const { date, cnt } = dates[idx];
-            const lv = level(cnt);
-            const cell = document.createElement('div');
-            cell.className = `contribution-cell level-${lv}`;
-            if (this.selectedDate === date) {
-                cell.classList.add('selected');
+            const weekMonday = new Date(startMonday);
+            weekMonday.setDate(startMonday.getDate() + col * 7);
+            weekMondays.push(weekMonday);
+            for (let row = 0; row < 7; row++) {
+                const date = new Date(weekMonday);
+                date.setDate(weekMonday.getDate() + row);
+                const ds = formatDate(date);
+                const cnt = this.dailyCounts.get(ds) || 0;
+                dates.push({ date: ds, cnt, fullDate: date });
             }
-            cell.title = `${date}: ${cnt}条记录`;
-            cell.dataset.date = date;
-            cell.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (this.selectedDate === date) {
-                    this.setFilter(null, undefined);
-                } else {
-                    this.setFilter(date, undefined);
-                }
-            });
-            grid.appendChild(cell);
         }
+
+        const counts = dates.map(d => d.cnt);
+        const maxCount = counts.length ? Math.max(...counts) : 0;
+
+        const level = (cnt) => {
+            if (cnt === 0) return 0;
+            if (maxCount === 0) return 0;
+            const r = cnt / maxCount;
+            if (r <= 0.25) return 1;
+            if (r <= 0.5) return 2;
+            if (r <= 0.75) return 3;
+            return 4;
+        };
+
+        const grid = document.createElement('div');
+        grid.className = 'contribution-grid';
+
+        for (let row = 0; row < 7; row++) {
+            for (let col = 0; col < 12; col++) {
+                const idx = col * 7 + row;
+                const { date, cnt } = dates[idx];
+                const lv = level(cnt);
+                const cell = document.createElement('div');
+                cell.className = `contribution-cell level-${lv}`;
+                if (this.selectedDate === date) {
+                    cell.classList.add('selected');
+                }
+                cell.title = `${date}: ${cnt}条记录`;
+                cell.dataset.date = date;
+                cell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (this.selectedDate === date) {
+                        this.setFilter(null, undefined);
+                    } else {
+                        this.setFilter(date, undefined);
+                    }
+                });
+                grid.appendChild(cell);
+            }
+        }
+        graph.appendChild(grid);
+
+        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        const monthAxis = document.createElement('div');
+        monthAxis.className = 'contribution-month-axis';
+
+        for (let group = 0; group < 3; group++) {
+            const firstColIndex = group * 4;
+            const weekMonday = weekMondays[firstColIndex];
+            const monthIndex = weekMonday.getMonth();
+            const label = monthNames[monthIndex];
+            
+            const span = document.createElement('span');
+            span.className = 'month-axis-label';
+            span.textContent = label;
+            monthAxis.appendChild(span);
+        }
+
+        graph.appendChild(monthAxis);
+        this.leftPanel.appendChild(graph);
     }
-    graph.appendChild(grid);
 
-    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-    const monthAxis = document.createElement('div');
-    monthAxis.className = 'contribution-month-axis';
-
-    for (let group = 0; group < 3; group++) {
-        const firstColIndex = group * 4;
-        const weekMonday = weekMondays[firstColIndex];
-        const monthIndex = weekMonday.getMonth();
-        const label = monthNames[monthIndex];
-        
-        const span = document.createElement('span');
-        span.className = 'month-axis-label';
-        span.textContent = label;
-        monthAxis.appendChild(span);
+    // ========== 新增：绝对时间格式化 ==========
+    formatAbsoluteTime(date) {
+        if (!date) return '';
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;          // 不加前导零
+        const day = date.getDate();                  // 不加前导零
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}年${month}月${day}日 ${hours}:${minutes}`;
     }
-
-    graph.appendChild(monthAxis);
-    this.leftPanel.appendChild(graph);
-}
 
     // 修改后的 renderMiddlePanel：根据显示模式分发
     renderMiddlePanel() {
-        if (this.displayMode === 'list') {
+        if (this.displayMode === TimelineView.MODE_LIST) {
             this.renderListPanel();
-        } else {
+        } else if (this.displayMode === TimelineView.MODE_MOMENTS) {
             this.renderMomentsPanel();
+        } else if (this.displayMode === TimelineView.MODE_TIMELINE) {
+            this.renderTimelinePanel();
         }
     }
 
@@ -714,7 +739,7 @@ renderContributionGraph() {
         });
     }
 
-    // 新增：朋友圈样式渲染（含封面和卡片列表）
+    // 修改后的朋友圈样式渲染：绝对时间 + #类型
     renderMomentsPanel() {
         this.middlePanel.innerHTML = '';
 
@@ -792,7 +817,10 @@ renderContributionGraph() {
 
         sorted.forEach(rec => {
             const dateObj = parseLifelogDate(rec.lifelog_created);
-            const timeStr = dateObj ? this.formatRelativeTime(dateObj) : '';
+            // 使用绝对时间格式化
+            const timeStr = dateObj ? this.formatAbsoluteTime(dateObj) : '';
+            // 类型字符串（如果存在则添加 #前缀）
+            const typeStr = rec.lifelog_type ? ` #${rec.lifelog_type}` : '';
             let content = rec.content || '';
             content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
 
@@ -829,10 +857,10 @@ renderContributionGraph() {
             contentDiv.className = 'north-moments-card-content';
             contentDiv.textContent = content;
 
-            // 元数据区
+            // 元数据区：显示时间和类型（拼接）
             const metaDiv = document.createElement('div');
             metaDiv.className = 'north-moments-card-meta';
-            metaDiv.textContent = timeStr;
+            metaDiv.textContent = timeStr + typeStr;  // 例如 "2026年3月5日 08:59 #笔记"
 
             card.appendChild(userBar);
             card.appendChild(contentDiv);
@@ -849,58 +877,152 @@ renderContributionGraph() {
         });
     }
 
-    // 新增：格式化相对时间
-    formatRelativeTime(date) {
-        const now = new Date();
-        const diffMs = now - date;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
+    // 新增：时间轴样式渲染
+// 时间轴样式渲染（卡片式，带到下一条的时间间隔）
+renderTimelinePanel() {
+    this.middlePanel.innerHTML = '';
 
-        if (diffDay > 7) {
-            // 超过一周显示具体日期
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        } else if (diffDay >= 2) {
-            return `${diffDay}天前`;
-        } else if (diffDay === 1) {
-            return '昨天';
-        } else if (diffHour >= 1) {
-            return `${diffHour}小时前`;
-        } else if (diffMin >= 1) {
-            return `${diffMin}分钟前`;
-        } else {
-            return '刚刚';
+    const recs = this.filteredRecords;
+    if (!recs.length) {
+        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
+        return;
+    }
+
+    // 按日期分组
+    const grouped = new Map();
+    recs.forEach(r => {
+        const dateObj = parseLifelogDate(r.lifelog_created);
+        if (!dateObj) return;
+        const dateStr = formatDate(dateObj); // YYYY-MM-DD
+        if (!grouped.has(dateStr)) {
+            grouped.set(dateStr, []);
         }
-    }
+        grouped.get(dateStr).push({ ...r, dateObj });
+    });
 
-    // 新增：设置显示模式
-    setDisplayMode(mode) {
-        if (mode === this.displayMode) return;
-        this.displayMode = mode;
-        // 保存到 store
-        this.plugin.store.setDisplayMode(mode);
-        // 重新渲染中间面板
-        this.renderMiddlePanel();
-    }
+    // 将日期从新到旧排序（最新的日期在上）
+    const sortedDates = Array.from(grouped.keys()).sort().reverse();
+
+    // 创建时间轴容器
+    const timelinePanel = document.createElement('div');
+    timelinePanel.className = 'timeline-timeline-panel';
+
+    sortedDates.forEach(dateStr => {
+        const records = grouped.get(dateStr);
+        // 按时间升序排列（从早到晚）
+        records.sort((a, b) => a.dateObj - b.dateObj);
+
+        // 日期标题
+        const dateHeader = document.createElement('div');
+        dateHeader.className = 'timeline-timeline-date-header';
+        // 格式化显示日期，例如 "2026年3月5日"
+        const [year, month, day] = dateStr.split('-');
+        dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
+        timelinePanel.appendChild(dateHeader);
+
+        // 遍历该日期下的每条记录，计算到下一条的间隔
+        for (let i = 0; i < records.length; i++) {
+            const rec = records[i];
+            const dateObj = rec.dateObj;
+            const timeStr = dateObj ? 
+                `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+            const type = rec.lifelog_type || '';
+            const typeColor = getTypeColorFromCSS(type);
+            let content = rec.content || '';
+            content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+
+            // 计算到下一条记录的时间间隔（分钟）
+            let intervalText = '';
+            if (i < records.length - 1) {
+                const nextDateObj = records[i + 1].dateObj;
+                const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
+                if (diffMinutes >= 60) {
+                    const hours = Math.floor(diffMinutes / 60);
+                    const mins = diffMinutes % 60;
+                    if (mins === 0) {
+                        intervalText = `${hours}小时`;
+                    } else {
+                        intervalText = `${hours}小时${mins}分钟`;
+                    }
+                } else {
+                    intervalText = `${diffMinutes}分钟`;
+                }
+            }
+
+            // 创建条目容器
+            const item = document.createElement('div');
+            item.className = 'timeline-timeline-item';
+            item.dataset.id = rec.id;
+
+            // 左侧时间列
+            const timeCol = document.createElement('div');
+            timeCol.className = 'timeline-timeline-time-col';
+            const timeMain = document.createElement('div');
+            timeMain.className = 'timeline-timeline-time-main';
+            timeMain.textContent = timeStr;
+            timeCol.appendChild(timeMain);
+
+            // 如果有到下一条的间隔，添加间隔小字
+            if (intervalText) {
+                const intervalDiv = document.createElement('div');
+                intervalDiv.className = 'timeline-timeline-interval';
+                intervalDiv.textContent = intervalText;
+                timeCol.appendChild(intervalDiv);
+            }
+
+            // 右侧卡片
+            const card = document.createElement('div');
+            card.className = 'timeline-timeline-card';
+
+            // 类型标签（右上角）
+            const tag = document.createElement('div');
+            tag.className = 'timeline-timeline-tag';
+            tag.textContent = type;
+            tag.style.backgroundColor = typeColor;
+            tag.style.color = '#fff';
+
+            // 卡片内容
+            const cardContent = document.createElement('div');
+            cardContent.className = 'timeline-timeline-card-content';
+            const desc = document.createElement('div');
+            desc.className = 'timeline-timeline-desc';
+            desc.textContent = content;
+            cardContent.appendChild(desc);
+
+            card.appendChild(tag);
+            card.appendChild(cardContent);
+
+            item.appendChild(timeCol);
+            item.appendChild(card);
+
+            // 右键菜单
+            item.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showContextMenu(e, rec);
+            });
+
+            timelinePanel.appendChild(item);
+        }
+    });
+
+    this.middlePanel.appendChild(timelinePanel);
+}
 
     // 更新单条记录的内容
-updateRecordContent(blockId, newContent) {
-    // 兼容两种样式：列表样式的 .timeline-item 和朋友圈样式的 .north-moments-card
-    const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"]`;
-    const item = this.middlePanel.querySelector(selector);
-    if (item) {
-        // 内容区域可能是 .timeline-content 或 .north-moments-card-content
-        const contentDiv = item.querySelector('.timeline-content, .north-moments-card-content');
-        if (contentDiv) {
-            let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-            contentDiv.textContent = displayContent;
+    updateRecordContent(blockId, newContent) {
+        // 兼容三种样式
+        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"]`;
+        const item = this.middlePanel.querySelector(selector);
+        if (item) {
+            // 内容区域可能是 .timeline-content, .north-moments-card-content, .timeline-timeline-text
+            const contentDiv = item.querySelector('.timeline-content, .north-moments-card-content, .timeline-timeline-text');
+            if (contentDiv) {
+                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                contentDiv.textContent = displayContent;
+            }
         }
     }
-}
 
     // 显示自定义右键菜单
     showContextMenu(event, record) {
@@ -953,192 +1075,192 @@ updateRecordContent(blockId, newContent) {
         }, 0);
     }
 
-renderCalendarAndTypes() {
-    this.rightPanel.innerHTML = '';
+    renderCalendarAndTypes() {
+        this.rightPanel.innerHTML = '';
 
-    const cal = document.createElement('div');
-    cal.className = 'timeline-calendar';
-    this.renderCalendar(cal);
-    this.rightPanel.appendChild(cal);
+        const cal = document.createElement('div');
+        cal.className = 'timeline-calendar';
+        this.renderCalendar(cal);
+        this.rightPanel.appendChild(cal);
 
-    const types = document.createElement('div');
-    types.className = 'timeline-types';
-    const typeTitle = document.createElement('div');
-    typeTitle.className = 'timeline-types-title';
-    typeTitle.textContent = '记录类型';
-    types.appendChild(typeTitle);
+        const types = document.createElement('div');
+        types.className = 'timeline-types';
+        const typeTitle = document.createElement('div');
+        typeTitle.className = 'timeline-types-title';
+        typeTitle.textContent = '记录类型';
+        types.appendChild(typeTitle);
 
-    const list = document.createElement('div');
-    list.className = 'timeline-types-list';
-    types.appendChild(list);
+        const list = document.createElement('div');
+        list.className = 'timeline-types-list';
+        types.appendChild(list);
 
-    this.rightPanel.appendChild(types);
-    this.typesContainer = list;
-    this.renderTypesList();
-}
-
-renderTypesList() {
-    if (!this.typesContainer) return;
-    const list = this.typesContainer;
-    list.innerHTML = '';
-
-    const typeCounts = new Map();
-    this.filteredRecords.forEach(r => {
-        if (r.lifelog_type) {
-            typeCounts.set(r.lifelog_type, (typeCounts.get(r.lifelog_type) || 0) + 1);
-        }
-    });
-
-    for (const [type, cnt] of typeCounts) {
-        const color = getTypeColorFromCSS(type);
-        const item = document.createElement('div');
-        item.className = 'timeline-type-item';
-        item.dataset.type = type;
-        item.innerHTML = `
-            <span class="type-dot" style="background-color:${color}"></span>
-            <span class="type-name">${type}</span>
-            <span class="type-count">${cnt}</span>
-        `;
-        item.addEventListener('click', () => {
-            if (this.selectedType === type) {
-                this.setFilter(undefined, null);
-            } else {
-                this.setFilter(undefined, type);
-            }
-        });
-        list.appendChild(item);
+        this.rightPanel.appendChild(types);
+        this.typesContainer = list;
+        this.renderTypesList();
     }
 
-    if (typeCounts.size === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'timeline-type-empty';
-        empty.textContent = '无记录类型';
-        list.appendChild(empty);
-    }
-}
+    renderTypesList() {
+        if (!this.typesContainer) return;
+        const list = this.typesContainer;
+        list.innerHTML = '';
 
-renderCalendar(container) {
-    const nav = document.createElement('div');
-    nav.className = 'calendar-nav';
-    const prev = document.createElement('button');
-    prev.className = 'b3-button b3-button--outline calendar-nav-btn';
-    prev.innerHTML = '‹';
-    prev.onclick = () => {
-        if (this.calendarMonth === 0) {
-            this.calendarMonth = 11;
-            this.calendarYear -= 1;
-        } else {
-            this.calendarMonth -= 1;
-        }
-        this.renderCalendar(container);
-    };
-    const next = document.createElement('button');
-    next.className = 'b3-button b3-button--outline calendar-nav-btn';
-    next.innerHTML = '›';
-    next.onclick = () => {
-        if (this.calendarMonth === 11) {
-            this.calendarMonth = 0;
-            this.calendarYear += 1;
-        } else {
-            this.calendarMonth += 1;
-        }
-        this.renderCalendar(container);
-    };
-    const title = document.createElement('span');
-    title.className = 'calendar-nav-title';
-    title.textContent = `${this.calendarYear}年${this.calendarMonth + 1}月`;
-
-    nav.appendChild(prev);
-    nav.appendChild(title);
-    nav.appendChild(next);
-    container.innerHTML = '';
-    container.appendChild(nav);
-
-    const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
-    const wd = document.createElement('div');
-    wd.className = 'calendar-weekdays';
-    weekdays.forEach(d => {
-        const cell = document.createElement('div');
-        cell.className = 'calendar-weekday';
-        cell.textContent = d;
-        wd.appendChild(cell);
-    });
-    container.appendChild(wd);
-
-    const grid = document.createElement('div');
-    grid.className = 'calendar-grid';
-
-    const firstDayOfMonth = new Date(this.calendarYear, this.calendarMonth, 1);
-    const lastDayOfMonth = new Date(this.calendarYear, this.calendarMonth + 1, 0);
-
-    let startDow = firstDayOfMonth.getDay();
-    if (startDow === 0) startDow = 7;
-
-    const prevMonthDays = startDow - 1;
-    const daysInMonth = lastDayOfMonth.getDate();
-    const totalCells = 42;
-    const nextMonthDays = totalCells - prevMonthDays - daysInMonth;
-
-    let prevYear = this.calendarYear;
-    let prevMonth = this.calendarMonth - 1;
-    if (prevMonth < 0) {
-        prevMonth = 11;
-        prevYear -= 1;
-    }
-    const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
-
-    let nextYear = this.calendarYear;
-    let nextMonth = this.calendarMonth + 1;
-    if (nextMonth > 11) {
-        nextMonth = 0;
-        nextYear += 1;
-    }
-
-    for (let i = 0; i < totalCells; i++) {
-        let dateObj, dateStr, isCurrentMonth = false;
-
-        if (i < prevMonthDays) {
-            const day = prevMonthLastDay - (prevMonthDays - 1 - i);
-            dateObj = new Date(prevYear, prevMonth, day);
-        } else if (i < prevMonthDays + daysInMonth) {
-            const day = i - prevMonthDays + 1;
-            dateObj = new Date(this.calendarYear, this.calendarMonth, day);
-            isCurrentMonth = true;
-        } else {
-            const day = i - (prevMonthDays + daysInMonth) + 1;
-            dateObj = new Date(nextYear, nextMonth, day);
-        }
-
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        dateStr = `${year}-${month}-${day}`;
-
-        const hasRecord = this.dailyCounts.has(dateStr);
-
-        const cell = document.createElement('div');
-        cell.className = 'calendar-cell';
-        if (!isCurrentMonth) {
-            cell.classList.add('other-month');
-        }
-        if (hasRecord) {
-            cell.classList.add('has-record');
-        }
-        cell.textContent = dateObj.getDate();
-        cell.dataset.date = dateStr;
-        cell.addEventListener('click', () => {
-            if (this.selectedDate === dateStr) {
-                this.setFilter(null, undefined);
-            } else {
-                this.setFilter(dateStr, undefined);
+        const typeCounts = new Map();
+        this.filteredRecords.forEach(r => {
+            if (r.lifelog_type) {
+                typeCounts.set(r.lifelog_type, (typeCounts.get(r.lifelog_type) || 0) + 1);
             }
         });
 
-        grid.appendChild(cell);
+        for (const [type, cnt] of typeCounts) {
+            const color = getTypeColorFromCSS(type);
+            const item = document.createElement('div');
+            item.className = 'timeline-type-item';
+            item.dataset.type = type;
+            item.innerHTML = `
+                <span class="type-dot" style="background-color:${color}"></span>
+                <span class="type-name">${type}</span>
+                <span class="type-count">${cnt}</span>
+            `;
+            item.addEventListener('click', () => {
+                if (this.selectedType === type) {
+                    this.setFilter(undefined, null);
+                } else {
+                    this.setFilter(undefined, type);
+                }
+            });
+            list.appendChild(item);
+        }
+
+        if (typeCounts.size === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'timeline-type-empty';
+            empty.textContent = '无记录类型';
+            list.appendChild(empty);
+        }
     }
 
-    container.appendChild(grid);
-}
+    renderCalendar(container) {
+        const nav = document.createElement('div');
+        nav.className = 'calendar-nav';
+        const prev = document.createElement('button');
+        prev.className = 'b3-button b3-button--outline calendar-nav-btn';
+        prev.innerHTML = '‹';
+        prev.onclick = () => {
+            if (this.calendarMonth === 0) {
+                this.calendarMonth = 11;
+                this.calendarYear -= 1;
+            } else {
+                this.calendarMonth -= 1;
+            }
+            this.renderCalendar(container);
+        };
+        const next = document.createElement('button');
+        next.className = 'b3-button b3-button--outline calendar-nav-btn';
+        next.innerHTML = '›';
+        next.onclick = () => {
+            if (this.calendarMonth === 11) {
+                this.calendarMonth = 0;
+                this.calendarYear += 1;
+            } else {
+                this.calendarMonth += 1;
+            }
+            this.renderCalendar(container);
+        };
+        const title = document.createElement('span');
+        title.className = 'calendar-nav-title';
+        title.textContent = `${this.calendarYear}年${this.calendarMonth + 1}月`;
+
+        nav.appendChild(prev);
+        nav.appendChild(title);
+        nav.appendChild(next);
+        container.innerHTML = '';
+        container.appendChild(nav);
+
+        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+        const wd = document.createElement('div');
+        wd.className = 'calendar-weekdays';
+        weekdays.forEach(d => {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-weekday';
+            cell.textContent = d;
+            wd.appendChild(cell);
+        });
+        container.appendChild(wd);
+
+        const grid = document.createElement('div');
+        grid.className = 'calendar-grid';
+
+        const firstDayOfMonth = new Date(this.calendarYear, this.calendarMonth, 1);
+        const lastDayOfMonth = new Date(this.calendarYear, this.calendarMonth + 1, 0);
+
+        let startDow = firstDayOfMonth.getDay();
+        if (startDow === 0) startDow = 7;
+
+        const prevMonthDays = startDow - 1;
+        const daysInMonth = lastDayOfMonth.getDate();
+        const totalCells = 42;
+        const nextMonthDays = totalCells - prevMonthDays - daysInMonth;
+
+        let prevYear = this.calendarYear;
+        let prevMonth = this.calendarMonth - 1;
+        if (prevMonth < 0) {
+            prevMonth = 11;
+            prevYear -= 1;
+        }
+        const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
+
+        let nextYear = this.calendarYear;
+        let nextMonth = this.calendarMonth + 1;
+        if (nextMonth > 11) {
+            nextMonth = 0;
+            nextYear += 1;
+        }
+
+        for (let i = 0; i < totalCells; i++) {
+            let dateObj, dateStr, isCurrentMonth = false;
+
+            if (i < prevMonthDays) {
+                const day = prevMonthLastDay - (prevMonthDays - 1 - i);
+                dateObj = new Date(prevYear, prevMonth, day);
+            } else if (i < prevMonthDays + daysInMonth) {
+                const day = i - prevMonthDays + 1;
+                dateObj = new Date(this.calendarYear, this.calendarMonth, day);
+                isCurrentMonth = true;
+            } else {
+                const day = i - (prevMonthDays + daysInMonth) + 1;
+                dateObj = new Date(nextYear, nextMonth, day);
+            }
+
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            dateStr = `${year}-${month}-${day}`;
+
+            const hasRecord = this.dailyCounts.has(dateStr);
+
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell';
+            if (!isCurrentMonth) {
+                cell.classList.add('other-month');
+            }
+            if (hasRecord) {
+                cell.classList.add('has-record');
+            }
+            cell.textContent = dateObj.getDate();
+            cell.dataset.date = dateStr;
+            cell.addEventListener('click', () => {
+                if (this.selectedDate === dateStr) {
+                    this.setFilter(null, undefined);
+                } else {
+                    this.setFilter(dateStr, undefined);
+                }
+            });
+
+            grid.appendChild(cell);
+        }
+
+        container.appendChild(grid);
+    }
 
     updateHighlight() {
         this.rightPanel.querySelectorAll('.calendar-cell').forEach(c => c.classList.remove('selected'));
@@ -1163,6 +1285,19 @@ renderCalendar(container) {
 
     async refresh() {
         this.plugin.eventBus.emit('timeline-refresh');
+    }
+
+    // 设置显示模式
+    setDisplayMode(mode) {
+        if (mode === this.displayMode) return;
+        // 验证模式有效性
+        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE].includes(mode)) {
+            console.warn('无效模式:', mode);
+            return;
+        }
+        this.displayMode = mode;
+        this.plugin.store.setDisplayMode(mode);
+        this.renderMiddlePanel();
     }
 }
 
@@ -1599,81 +1734,153 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return null;
     }
 
-    async showEditDialog(blockEl) {
-        const blockId = blockEl.dataset.nodeId;
-        const currentStyle = blockEl.getAttribute('custom-deco-style') || Object.keys(this.styleDefaults)[0] || '';
-        const currentTitle = blockEl.getAttribute('custom-deco-card-title') || this.styleDefaults[currentStyle]?.title || '';
-        const currentIcon = blockEl.getAttribute('custom-deco-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
+async showEditDialog(blockEl) {
+    const blockId = blockEl.dataset.nodeId;
+    const currentStyle = blockEl.getAttribute('custom-deco-style') || Object.keys(this.styleDefaults)[0] || '';
+    const currentTitle = blockEl.getAttribute('custom-deco-card-title') || this.styleDefaults[currentStyle]?.title || '';
+    const currentIcon = blockEl.getAttribute('custom-deco-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
 
-        const allCards = this.getAllCardItems();
-        const optionsHtml = allCards.map(item => 
-            `<option value="${item.label}" ${item.label === currentStyle ? 'selected' : ''}>${item.label}</option>`
-        ).join('');
+    const allCards = this.getAllCardItems();
+    const optionsHtml = allCards.map(item => 
+        `<option value="${item.label}" ${item.label === currentStyle ? 'selected' : ''}>${item.label}</option>`
+    ).join('');
 
-        const contentHtml = `
-            <div class="b3-dialog__content" style="padding: 20px;">
-                <div class="b3-dialog__item" style="margin-bottom: 16px;">
-                    <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardType', '类型')}</label>
-                    <select id="card-type-select" class="b3-select" style="width:100%;">${optionsHtml}</select>
-                </div>
-                <div class="b3-dialog__item" style="margin-bottom: 16px;">
-                    <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardIcon', '图标')}</label>
-                    <input id="card-icon-input" class="b3-text-field" type="text" value="${currentIcon}" placeholder="例如 ✨" style="width:100%;">
-                </div>
-                <div class="b3-dialog__item" style="margin-bottom: 16px;">
-                    <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardTitle', '标题')}</label>
-                    <input id="card-title-input" class="b3-text-field" type="text" value="${currentTitle}" placeholder="卡片标题" style="width:100%;">
+    const contentHtml = `
+        <div class="b3-dialog__content" style="padding: 20px;">
+            <div class="b3-dialog__item" style="margin-bottom: 16px;">
+                <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardType', '类型')}</label>
+                <select id="card-type-select" class="b3-select" style="width:100%;">${optionsHtml}</select>
+            </div>
+            <div class="b3-dialog__item" style="margin-bottom: 16px;">
+                <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardIcon', '图标')}</label>
+                <div style="display: flex; gap: 8px;">
+                    <input id="card-icon-input" class="b3-text-field" type="text" value="${currentIcon}" placeholder="例如 ✨" style="flex:1;">
+                    <button class="b3-button b3-button--outline" id="choose-emoji-btn">选择</button>
                 </div>
             </div>
-            <div class="b3-dialog__action" style="display: flex; justify-content: space-between; padding: 7px 24px;">
-                <button class="b3-button b3-button--outline" id="remove-style-btn">${this.getText('removeStyle', '移除样式')}</button>
-                <div>
-                    <button class="b3-button b3-button--cancel" id="cancel-btn">${this.getText('cancel', '取消')}</button>
-                    <button class="b3-button b3-button--outline" id="confirm-btn">${this.getText('confirm', '确定')}</button>
-                </div>
+            <div class="b3-dialog__item" style="margin-bottom: 16px;">
+                <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardTitle', '标题')}</label>
+                <input id="card-title-input" class="b3-text-field" type="text" value="${currentTitle}" placeholder="卡片标题" style="width:100%;">
+            </div>
+        </div>
+        <div class="b3-dialog__action" style="display: flex; justify-content: space-between; padding: 7px 24px;">
+            <button class="b3-button b3-button--outline" id="remove-style-btn">${this.getText('removeStyle', '移除样式')}</button>
+            <div>
+                <button class="b3-button b3-button--cancel" id="cancel-btn">${this.getText('cancel', '取消')}</button>
+                <button class="b3-button b3-button--outline" id="confirm-btn">${this.getText('confirm', '确定')}</button>
+            </div>
+        </div>
+    `;
+
+    const dialog = new Dialog({
+        title: this.getText('editCardTitle', '编辑卡片'),
+        content: contentHtml,
+        width: "480px"
+    });
+
+    const dialogElement = dialog.element;
+    const typeSelect = dialogElement.querySelector('#card-type-select');
+    const iconInput = dialogElement.querySelector('#card-icon-input');
+    const titleInput = dialogElement.querySelector('#card-title-input');
+
+    typeSelect.addEventListener('change', () => {
+        const selectedLabel = typeSelect.value;
+        const defaults = this.styleDefaults[selectedLabel] || { icon: '', title: '' };
+        iconInput.value = defaults.icon;
+        titleInput.value = defaults.title;
+    });
+
+    // 选择图标按钮
+    dialogElement.querySelector('#choose-emoji-btn').addEventListener('click', () => {
+        this.showEmojiPicker(iconInput);
+    });
+
+    dialogElement.querySelector('#confirm-btn').addEventListener('click', async () => {
+        const newStyle = typeSelect.value;
+        const newIcon = iconInput.value.trim();
+        const newTitle = titleInput.value.trim();
+
+        const attrs = {};
+        if (newStyle !== currentStyle) attrs["custom-deco-style"] = newStyle;
+        if (newIcon !== currentIcon) attrs["custom-deco-card-icon"] = newIcon || this.styleDefaults[newStyle]?.icon || '';
+        if (newTitle !== currentTitle) attrs["custom-deco-card-title"] = newTitle || this.styleDefaults[newStyle]?.title || '';
+
+        await this.setAttrs(blockId, attrs);
+        dialog.destroy();
+    });
+
+    dialogElement.querySelector('#cancel-btn').addEventListener('click', () => dialog.destroy());
+
+    dialogElement.querySelector('#remove-style-btn').addEventListener('click', async () => {
+        await this.removeCardStyles(blockId);
+        dialog.destroy();
+    });
+}
+
+async showEmojiPicker(targetInput) {
+    const result = await this.callSiyuanAPI('/api/system/getEmojiConf', {});
+    if (!result || result.code !== 0) {
+        showMessage('获取表情列表失败');
+        return;
+    }
+
+    const groups = result.data || [];
+    // 过滤掉自定义分组（id === 'custom'），只保留内置字符 Emoji
+    const builtinGroups = groups.filter(g => g.id !== 'custom');
+
+    // 辅助函数：将可能的 Unicode 码点字符串转换为实际字符
+    const unicodeToChar = (unicodeStr) => {
+        if (!unicodeStr) return '';
+        // 如果字符串中包含非十六进制字符（且不是分隔符 '-'），说明可能已是普通文本或图片路径，直接返回
+        if (/[^0-9a-fA-F\-]/.test(unicodeStr)) {
+            return unicodeStr;
+        }
+        try {
+            // 按 '-' 分割，将每部分解析为十六进制整数，然后合成字符
+            const codePoints = unicodeStr.split('-').map(part => parseInt(part, 16));
+            return String.fromCodePoint(...codePoints);
+        } catch (e) {
+            console.warn('Emoji 转换失败:', unicodeStr, e);
+            return unicodeStr; // 降级返回原串
+        }
+    };
+
+    let groupsHtml = '';
+    builtinGroups.forEach(group => {
+        const title = group.title_zh_cn || group.title || '表情';
+        let itemsHtml = '';
+        group.items.forEach(item => {
+            const emojiChar = unicodeToChar(item.unicode);
+            // 按钮样式调整为更小尺寸：字体 1.4rem，宽高 36px，边距 2px
+            itemsHtml += `<button class="b3-button emoji-item" data-emoji="${emojiChar}" style="font-size: 1.4rem; width: 36px; height: 36px; margin: 2px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">${emojiChar}</button>`;
+        });
+        groupsHtml += `
+            <div class="emoji-group" style="margin-bottom: 20px;">
+                <div class="emoji-group-title" style="font-weight: 600; margin-bottom: 8px;">${title}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 2px;">${itemsHtml}</div>
             </div>
         `;
+    });
 
-        const dialog = new Dialog({
-            title: this.getText('editCardTitle', '编辑卡片'),
-            content: contentHtml,
-            width: "480px"
-        });
+    const dialog = new Dialog({
+        title: '选择图标',
+        content: `
+            <div style="padding: 16px; max-height: 400px; overflow-y: auto;">
+                ${groupsHtml}
+            </div>
+        `,
+        width: '600px',
+    });
 
-        const dialogElement = dialog.element;
-        const typeSelect = dialogElement.querySelector('#card-type-select');
-        const iconInput = dialogElement.querySelector('#card-icon-input');
-        const titleInput = dialogElement.querySelector('#card-title-input');
-
-        typeSelect.addEventListener('change', () => {
-            const selectedLabel = typeSelect.value;
-            const defaults = this.styleDefaults[selectedLabel] || { icon: '', title: '' };
-            iconInput.value = defaults.icon;
-            titleInput.value = defaults.title;
-        });
-
-        dialogElement.querySelector('#confirm-btn').addEventListener('click', async () => {
-            const newStyle = typeSelect.value;
-            const newIcon = iconInput.value.trim();
-            const newTitle = titleInput.value.trim();
-
-            const attrs = {};
-            if (newStyle !== currentStyle) attrs["custom-deco-style"] = newStyle;
-            if (newIcon !== currentIcon) attrs["custom-deco-card-icon"] = newIcon || this.styleDefaults[newStyle]?.icon || '';
-            if (newTitle !== currentTitle) attrs["custom-deco-card-title"] = newTitle || this.styleDefaults[newStyle]?.title || '';
-
-            await this.setAttrs(blockId, attrs);
+    const dialogElement = dialog.element;
+    dialogElement.querySelectorAll('.emoji-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const emoji = btn.dataset.emoji;
+            targetInput.value = emoji;
             dialog.destroy();
         });
-
-        dialogElement.querySelector('#cancel-btn').addEventListener('click', () => dialog.destroy());
-
-        // 使用新的 removeCardStyles 方法
-        dialogElement.querySelector('#remove-style-btn').addEventListener('click', async () => {
-            await this.removeCardStyles(blockId);
-            dialog.destroy();
-        });
-    }
+    });
+}
 
     waitForMenu() {
         this.state.menu = document.querySelector("#commonMenu");
@@ -1784,41 +1991,41 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return subMenu;
     }
 
-createCardItem(blockId, label, key) {
-    const item = document.createElement("button");
-    item.className = "b3-menu__item";
-    item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
-                      <span class="b3-menu__label">${label}</span>`;
-    item.onclick = async (e) => {
-        e.stopPropagation();
+    createCardItem(blockId, label, key) {
+        const item = document.createElement("button");
+        item.className = "b3-menu__item";
+        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
+                          <span class="b3-menu__label">${label}</span>`;
+        item.onclick = async (e) => {
+            e.stopPropagation();
 
-        const currentBlock = document.querySelector(`[data-node-id="${blockId}"]`);
-        const existingTitle = currentBlock?.getAttribute('custom-deco-card-title') || '';
+            const currentBlock = document.querySelector(`[data-node-id="${blockId}"]`);
+            const existingTitle = currentBlock?.getAttribute('custom-deco-card-title') || '';
 
-        const attrs = { "custom-deco-style": label };
+            const attrs = { "custom-deco-style": label };
 
-        if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
-            const defaults = this.styleDefaults[label];
-            if (defaults) {
-                attrs["custom-deco-card-icon"] = defaults.icon || '';
-                if (!existingTitle) {
-                    attrs["custom-deco-card-title"] = defaults.title || '';
+            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
+                const defaults = this.styleDefaults[label];
+                if (defaults) {
+                    attrs["custom-deco-card-icon"] = defaults.icon || '';
+                    if (!existingTitle) {
+                        attrs["custom-deco-card-title"] = defaults.title || '';
+                    }
                 }
             }
-        }
 
-        if (key === 'diaryChatWhisperCard') {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
-        }
+            if (key === 'diaryChatWhisperCard') {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
+            }
 
-        await this.setAttrs(blockId, attrs);
-    };
-    return item;
-}
+            await this.setAttrs(blockId, attrs);
+        };
+        return item;
+    }
 
     createSeparator() {
         const sep = document.createElement("button");
