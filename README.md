@@ -50,7 +50,7 @@
   <!-- v1.1.8 -->
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
-      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.5</strong>
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.8</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">✨ 样式</span>
     </div>
     <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">微调时间日志样式 ，将时间轴样式命名修改为时间日志样式</div>
