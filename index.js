@@ -279,6 +279,8 @@ class TimelineView {
     static MODE_LIST = 'list';
     static MODE_MOMENTS = 'moments';
     static MODE_TIMELINE = 'timeline';
+    // === 新增：第四个模式，时间轴样式 ===
+    static MODE_TIMELINE_V2 = 'timeline_v2';
 
     constructor(plugin, container, records) {
         this.plugin = plugin;
@@ -296,6 +298,7 @@ class TimelineView {
         // 显示模式
         this.displayMode = this.plugin.store.getDisplayMode() || TimelineView.MODE_LIST;
 
+        
         // 监听记录更新事件
         this.recordUpdatedHandler = (data) => {
             if (data.id) {
@@ -480,18 +483,20 @@ class TimelineView {
     }
 
     showSettingsDialog() {
-        // 根据当前模式确定下一个模式
+        // === 修改：增加第四种模式 ===
         const modeOrder = [
             TimelineView.MODE_LIST,
             TimelineView.MODE_MOMENTS,
-            TimelineView.MODE_TIMELINE
+            TimelineView.MODE_TIMELINE,
+            TimelineView.MODE_TIMELINE_V2   // 新增
         ];
         const currentIndex = modeOrder.indexOf(this.displayMode);
         const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
         const nextModeText = {
             [TimelineView.MODE_LIST]: '列表样式',
             [TimelineView.MODE_MOMENTS]: '朋友圈样式',
-            [TimelineView.MODE_TIMELINE]: '时间日志样式'
+            [TimelineView.MODE_TIMELINE]: '时间日志样式',
+            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'   // 自定义名称
         }[nextMode];
 
         const dialog = new Dialog({
@@ -678,6 +683,8 @@ class TimelineView {
             this.renderMomentsPanel();
         } else if (this.displayMode === TimelineView.MODE_TIMELINE) {
             this.renderTimelinePanel();
+        } else if (this.displayMode === TimelineView.MODE_TIMELINE_V2) {
+            this.renderTimelineV2Panel();   // === 新增 ===
         }
     }
 
@@ -877,9 +884,211 @@ class TimelineView {
         });
     }
 
-    // 新增：时间轴样式渲染
-// 时间轴样式渲染（卡片式，带到下一条的时间间隔）
-renderTimelinePanel() {
+    // 原有时间日志样式渲染
+    renderTimelinePanel() {
+        this.middlePanel.innerHTML = '';
+
+        const recs = this.filteredRecords;
+        if (!recs.length) {
+            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
+            return;
+        }
+
+        // 按日期分组
+        const grouped = new Map();
+        recs.forEach(r => {
+            const dateObj = parseLifelogDate(r.lifelog_created);
+            if (!dateObj) return;
+            const dateStr = formatDate(dateObj); // YYYY-MM-DD
+            if (!grouped.has(dateStr)) {
+                grouped.set(dateStr, []);
+            }
+            grouped.get(dateStr).push({ ...r, dateObj });
+        });
+
+        // 将日期从新到旧排序（最新的日期在上）
+        const sortedDates = Array.from(grouped.keys()).sort().reverse();
+
+        // 创建时间轴容器
+        const timelinePanel = document.createElement('div');
+        timelinePanel.className = 'timeline-timeline-panel';
+
+        sortedDates.forEach(dateStr => {
+            const records = grouped.get(dateStr);
+            // 按时间升序排列（从早到晚）
+            records.sort((a, b) => a.dateObj - b.dateObj);
+
+            // 日期标题
+            const dateHeader = document.createElement('div');
+            dateHeader.className = 'timeline-timeline-date-header';
+            // 格式化显示日期，例如 "2026年3月5日"
+            const [year, month, day] = dateStr.split('-');
+            dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
+            timelinePanel.appendChild(dateHeader);
+
+            // 遍历该日期下的每条记录，计算到下一条的间隔
+            for (let i = 0; i < records.length; i++) {
+                const rec = records[i];
+                const dateObj = rec.dateObj;
+                const timeStr = dateObj ? 
+                    `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+                const type = rec.lifelog_type || '';
+                const typeColor = getTypeColorFromCSS(type);
+                let content = rec.content || '';
+                content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+
+                // 计算到下一条记录的时间间隔（分钟）
+                let intervalText = '';
+                if (i < records.length - 1) {
+                    const nextDateObj = records[i + 1].dateObj;
+                    const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
+                    if (diffMinutes >= 60) {
+                        const hours = Math.floor(diffMinutes / 60);
+                        const mins = diffMinutes % 60;
+                        if (mins === 0) {
+                            intervalText = `${hours}小时`;
+                        } else {
+                            intervalText = `${hours}小时${mins}分`;
+                        }
+                    } else {
+                        intervalText = `${diffMinutes}分钟`;
+                    }
+                }
+
+                // 创建条目容器
+                const item = document.createElement('div');
+                item.className = 'timeline-timeline-item';
+                item.dataset.id = rec.id;
+
+                // 左侧时间列
+                const timeCol = document.createElement('div');
+                timeCol.className = 'timeline-timeline-time-col';
+                const timeMain = document.createElement('div');
+                timeMain.className = 'timeline-timeline-time-main';
+                timeMain.textContent = timeStr;
+                timeCol.appendChild(timeMain);
+
+                // 如果有到下一条的间隔，添加间隔小字
+                if (intervalText) {
+                    const intervalDiv = document.createElement('div');
+                    intervalDiv.className = 'timeline-timeline-interval';
+                    intervalDiv.textContent = intervalText;
+                    timeCol.appendChild(intervalDiv);
+                }
+
+                // 右侧卡片
+                const card = document.createElement('div');
+                card.className = 'timeline-timeline-card';
+
+                // 类型标签（右上角）
+                const tag = document.createElement('div');
+                tag.className = 'timeline-timeline-tag';
+                tag.textContent = type;
+                tag.style.backgroundColor = typeColor;
+                tag.style.color = '#fff';
+
+                // 卡片内容
+                const cardContent = document.createElement('div');
+                cardContent.className = 'timeline-timeline-card-content';
+                const desc = document.createElement('div');
+                desc.className = 'timeline-timeline-desc';
+                desc.textContent = content;
+                cardContent.appendChild(desc);
+
+                card.appendChild(tag);
+                card.appendChild(cardContent);
+
+                item.appendChild(timeCol);
+                item.appendChild(card);
+
+                // 右键菜单
+                item.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showContextMenu(e, rec);
+                });
+
+                timelinePanel.appendChild(item);
+            }
+        });
+
+        this.middlePanel.appendChild(timelinePanel);
+    }
+
+    // ===== 新增：伪农历生成函数 =====
+    getPseudoLunar(day) {
+        const chineseNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+        // 使用公历日 + 9 模拟农历日，范围 1~40，但数组只到30，超出时取模循环
+        let lunarDay = day + 9;
+        if (lunarDay > 30) lunarDay = lunarDay - 30;
+        return chineseNumbers[lunarDay] || '廿二';
+    }
+
+    // ===== 新增：渲染一周日历 =====
+    renderWeeklyCalendar() {
+        const container = document.createElement('div');
+        container.className = 'timeline-v2-calendar';
+
+        // 确定基准日期：如果有 selectedDate 则用该日期，否则用今天
+        let baseDate = this.selectedDate ? new Date(this.selectedDate + 'T00:00:00') : new Date();
+        // 调整为周一（中国习惯）
+        const dayOfWeek = baseDate.getDay(); // 0=周日, 1=周一, ..., 6=周六
+        const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+        const monday = new Date(baseDate);
+        monday.setDate(baseDate.getDate() - diffToMonday);
+        monday.setHours(0, 0, 0, 0);
+
+        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + i);
+            const day = date.getDate();
+            const dateStr = formatDate(date);
+            const isActive = (this.selectedDate === dateStr);
+
+            // 生成伪农历
+            const lunar = this.getPseudoLunar(day);
+
+            const dayItem = document.createElement('div');
+            dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
+            dayItem.dataset.date = dateStr;
+            dayItem.innerHTML = `
+                <div class="day-name">${weekdays[i]}</div>
+                <div class="date-group">
+                    <span class="day-num">${day}</span>
+                    <span class="day-lunar">${lunar}</span>
+                </div>
+            `;
+            dayItem.addEventListener('click', () => {
+                if (this.selectedDate === dateStr) {
+                    this.setFilter(null, undefined);
+                } else {
+                    this.setFilter(dateStr, undefined);
+                }
+            });
+
+            container.appendChild(dayItem);
+        }
+
+        return container;
+    }
+
+    // === 新增：时间轴新样式（V2）渲染 ===
+// === 替换为完全匹配HTML示例的时间轴新样式 ===
+renderTimelineV2Panel() {
+    // === 新增：如果没有选中日期，默认显示今天 ===
+    if (!this.selectedDate) {
+        const today = new Date();
+        const todayStr = formatDate(today);
+        this.selectedDate = todayStr;
+        this.filteredRecords = this.allRecords.filter(r => {
+            const dateObj = parseLifelogDate(r.lifelog_created);
+            if (!dateObj) return false;
+            return formatDate(dateObj) === todayStr;
+        });
+    }
+
     this.middlePanel.innerHTML = '';
 
     const recs = this.filteredRecords;
@@ -888,138 +1097,206 @@ renderTimelinePanel() {
         return;
     }
 
-    // 按日期分组
-    const grouped = new Map();
-    recs.forEach(r => {
-        const dateObj = parseLifelogDate(r.lifelog_created);
-        if (!dateObj) return;
-        const dateStr = formatDate(dateObj); // YYYY-MM-DD
-        if (!grouped.has(dateStr)) {
-            grouped.set(dateStr, []);
-        }
-        grouped.get(dateStr).push({ ...r, dateObj });
+    // 按时间升序排序
+    const sorted = [...recs]
+        .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
+        .filter(r => r.dateObj)
+        .sort((a, b) => a.dateObj - b.dateObj);
+
+    // 顶部一周日历
+    const calendarEl = this.renderWeeklyCalendarV2();
+    this.middlePanel.appendChild(calendarEl);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'timeline-v2-wrapper';
+
+    // 按日期分组，用于计算时间段
+    const dayGroups = new Map();
+    sorted.forEach(rec => {
+        const dateStr = formatDate(rec.dateObj);
+        if (!dayGroups.has(dateStr)) dayGroups.set(dateStr, []);
+        dayGroups.get(dateStr).push(rec);
     });
 
-    // 将日期从新到旧排序（最新的日期在上）
-    const sortedDates = Array.from(grouped.keys()).sort().reverse();
+    sorted.forEach(rec => {
+        const dateObj = rec.dateObj;
+        const timeStr = dateObj ? `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+        const type = rec.lifelog_type || '';
+        const typeColor = getTypeColorFromCSS(type);
+        let content = rec.content || '';
+        content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
 
-    // 创建时间轴容器
-    const timelinePanel = document.createElement('div');
-    timelinePanel.className = 'timeline-timeline-panel';
-
-    sortedDates.forEach(dateStr => {
-        const records = grouped.get(dateStr);
-        // 按时间升序排列（从早到晚）
-        records.sort((a, b) => a.dateObj - b.dateObj);
-
-        // 日期标题
-        const dateHeader = document.createElement('div');
-        dateHeader.className = 'timeline-timeline-date-header';
-        // 格式化显示日期，例如 "2026年3月5日"
-        const [year, month, day] = dateStr.split('-');
-        dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
-        timelinePanel.appendChild(dateHeader);
-
-        // 遍历该日期下的每条记录，计算到下一条的间隔
-        for (let i = 0; i < records.length; i++) {
-            const rec = records[i];
-            const dateObj = rec.dateObj;
-            const timeStr = dateObj ? 
-                `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-            const type = rec.lifelog_type || '';
-            const typeColor = getTypeColorFromCSS(type);
-            let content = rec.content || '';
-            content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-
-            // 计算到下一条记录的时间间隔（分钟）
-            let intervalText = '';
-            if (i < records.length - 1) {
-                const nextDateObj = records[i + 1].dateObj;
-                const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
-                if (diffMinutes >= 60) {
-                    const hours = Math.floor(diffMinutes / 60);
-                    const mins = diffMinutes % 60;
-                    if (mins === 0) {
-                        intervalText = `${hours}小时`;
-                    } else {
-                        intervalText = `${hours}小时${mins}分`;
-                    }
-                } else {
-                    intervalText = `${diffMinutes}分钟`;
-                }
-            }
-
-            // 创建条目容器
-            const item = document.createElement('div');
-            item.className = 'timeline-timeline-item';
-            item.dataset.id = rec.id;
-
-            // 左侧时间列
-            const timeCol = document.createElement('div');
-            timeCol.className = 'timeline-timeline-time-col';
-            const timeMain = document.createElement('div');
-            timeMain.className = 'timeline-timeline-time-main';
-            timeMain.textContent = timeStr;
-            timeCol.appendChild(timeMain);
-
-            // 如果有到下一条的间隔，添加间隔小字
-            if (intervalText) {
-                const intervalDiv = document.createElement('div');
-                intervalDiv.className = 'timeline-timeline-interval';
-                intervalDiv.textContent = intervalText;
-                timeCol.appendChild(intervalDiv);
-            }
-
-            // 右侧卡片
-            const card = document.createElement('div');
-            card.className = 'timeline-timeline-card';
-
-            // 类型标签（右上角）
-            const tag = document.createElement('div');
-            tag.className = 'timeline-timeline-tag';
-            tag.textContent = type;
-            tag.style.backgroundColor = typeColor;
-            tag.style.color = '#fff';
-
-            // 卡片内容
-            const cardContent = document.createElement('div');
-            cardContent.className = 'timeline-timeline-card-content';
-            const desc = document.createElement('div');
-            desc.className = 'timeline-timeline-desc';
-            desc.textContent = content;
-            cardContent.appendChild(desc);
-
-            card.appendChild(tag);
-            card.appendChild(cardContent);
-
-            item.appendChild(timeCol);
-            item.appendChild(card);
-
-            // 右键菜单
-            item.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showContextMenu(e, rec);
-            });
-
-            timelinePanel.appendChild(item);
+        // 计算时间段（与同一天的下一条记录）
+        let timeRange = '';
+        const currentDateStr = formatDate(dateObj);
+        const dayRecords = dayGroups.get(currentDateStr) || [];
+        const currentIndex = dayRecords.findIndex(r => r.id === rec.id);
+        if (currentIndex !== -1 && currentIndex < dayRecords.length - 1) {
+            const nextRec = dayRecords[currentIndex + 1];
+            const nextDateObj = nextRec.dateObj;
+            const endStr = `${String(nextDateObj.getHours()).padStart(2, '0')}:${String(nextDateObj.getMinutes()).padStart(2, '0')}`;
+            timeRange = `${timeStr} - ${endStr}`;
         }
+
+        // 创建条目
+        const item = document.createElement('div');
+        item.className = 'timeline-v2-item';
+        item.dataset.id = rec.id;
+
+        // 左侧时间列
+        const timeCol = document.createElement('div');
+        timeCol.className = 'timeline-v2-time-col';
+        timeCol.textContent = timeStr;
+        item.appendChild(timeCol);
+
+        // 中间连接列
+        const connectorCol = document.createElement('div');
+        connectorCol.className = 'timeline-v2-connector-col';
+        const dot = document.createElement('div');
+        dot.className = 'timeline-v2-dot';
+        dot.style.borderColor = typeColor;
+        connectorCol.appendChild(dot);
+        item.appendChild(connectorCol);
+
+        // 右侧卡片列
+        const cardCol = document.createElement('div');
+        cardCol.className = 'timeline-v2-card-col';
+
+        // 时间段（第一行，灰色小字）
+        if (timeRange) {
+            const rangeSpan = document.createElement('span');
+            rangeSpan.className = 'timeline-v2-card-time-range';
+            rangeSpan.textContent = timeRange;
+            cardCol.appendChild(rangeSpan);
+        }
+
+        // 类型（第二行，较大字体，类型色）
+        const typeDiv = document.createElement('div');
+        typeDiv.className = 'timeline-v2-card-type';
+        typeDiv.textContent = type;
+        typeDiv.style.color = typeColor;
+        cardCol.appendChild(typeDiv);
+
+        // 内容（第三行，灰色小字，保持换行）
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'timeline-v2-card-content';
+        contentDiv.textContent = content;
+        cardCol.appendChild(contentDiv);
+
+        // 时钟图标
+        const icon = document.createElement('svg');
+        icon.className = 'timeline-v2-card-icon';
+        icon.innerHTML = '<use xlink:href="#iconTime"></use>';
+        cardCol.appendChild(icon);
+
+        item.appendChild(cardCol);
+
+        // 右键菜单
+        item.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.showContextMenu(e, rec);
+        });
+
+        wrapper.appendChild(item);
     });
 
-    this.middlePanel.appendChild(timelinePanel);
+    this.middlePanel.appendChild(wrapper);
+}
+
+// === 新增：渲染一周日历（完全匹配示例） ===
+renderWeeklyCalendarV2() {
+    const container = document.createElement('div');
+    container.className = 'timeline-v2-calendar';
+
+    // 确定基准日期：如果有 selectedDate 则用该日期，否则用今天
+    const today = new Date();
+    const todayStr = formatDate(today);
+    const baseDate = this.selectedDate ? new Date(this.selectedDate + 'T00:00:00') : today;
+
+    // 调整为周一（中国习惯）
+    const dayOfWeek = baseDate.getDay(); // 0=周日, 1=周一, ..., 6=周六
+    const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+    const monday = new Date(baseDate);
+    monday.setDate(baseDate.getDate() - diffToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        const day = date.getDate();
+        const dateStr = formatDate(date);
+
+        // 判断是否高亮：如果 selectedDate 存在，则与之比较；否则高亮今天
+        let isActive = false;
+        if (this.selectedDate) {
+            isActive = (this.selectedDate === dateStr);
+        } else {
+            isActive = (dateStr === todayStr);
+        }
+
+        // 生成伪农历
+        const lunar = this.getPseudoLunar(day);
+
+        const dayItem = document.createElement('div');
+        dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
+        dayItem.dataset.date = dateStr;
+
+        const dayName = document.createElement('span');
+        dayName.className = 'day-name';
+        dayName.textContent = weekdays[i];
+        dayItem.appendChild(dayName);
+
+        const dateGroup = document.createElement('div');
+        dateGroup.className = 'date-group';
+
+        const dayNum = document.createElement('span');
+        dayNum.className = 'day-num';
+        dayNum.textContent = day;
+        dateGroup.appendChild(dayNum);
+
+        const dayLunar = document.createElement('span');
+        dayLunar.className = 'day-lunar';
+        dayLunar.textContent = lunar;
+        dateGroup.appendChild(dayLunar);
+
+        dayItem.appendChild(dateGroup);
+
+        dayItem.addEventListener('click', () => {
+            if (this.selectedDate === dateStr) {
+                // 取消选中 -> 恢复高亮今天
+                this.setFilter(null, undefined);
+            } else {
+                this.setFilter(dateStr, undefined);
+            }
+        });
+
+        container.appendChild(dayItem);
+    }
+
+    return container;
 }
 
     // 更新单条记录的内容
     updateRecordContent(blockId, newContent) {
-        // 兼容三种样式
-        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"]`;
+        // 兼容多种样式
+        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"], .timeline-v2-item[data-id="${blockId}"]`;
         const item = this.middlePanel.querySelector(selector);
         if (item) {
-            // 内容区域可能是 .timeline-content, .north-moments-card-content, .timeline-timeline-text
-            const contentDiv = item.querySelector('.timeline-content, .north-moments-card-content, .timeline-timeline-text');
+            // 新样式内容区域
+            const contentDiv = item.querySelector('.timeline-v2-card-content');
             if (contentDiv) {
                 let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
                 contentDiv.textContent = displayContent;
+            } else {
+                // 兼容其他样式
+                const fallbackDiv = item.querySelector('.timeline-content, .north-moments-card-content, .timeline-timeline-text');
+                if (fallbackDiv) {
+                    let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                    fallbackDiv.textContent = displayContent;
+                }
             }
         }
     }
@@ -1291,7 +1568,7 @@ renderTimelinePanel() {
     setDisplayMode(mode) {
         if (mode === this.displayMode) return;
         // 验证模式有效性
-        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE].includes(mode)) {
+        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2].includes(mode)) {
             console.warn('无效模式:', mode);
             return;
         }
@@ -1320,7 +1597,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.store = new TimelineStore(this);
         await this.store.loadConfig();
 
-        // 添加图标（包括编辑和文件图标）
+        // 添加图标（包括编辑、文件、时间等）
         this.addIcons(`<symbol id="iconUser" viewBox="0 0 24 24">
             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
         </symbol>`);
@@ -1343,6 +1620,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.addIcons(`<symbol id="iconFile" viewBox="0 0 24 24">
             <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/>
         </symbol>`);
+        // 新增：时间图标（用于新时间轴样式）
+        this.addIcons(`<symbol id="iconTime" viewBox="0 0 24 24">
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.1.8-1.2-4.5-2.7V7z" fill="currentColor"/>
+        </symbol>`);
+
+
 
         // 注册时间线标签页
         const plugin = this;
@@ -1375,10 +1658,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             }
         });
     }
-
+        addIcons(svgContent) {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.style.display = 'none';
+            svg.innerHTML = svgContent;
+            document.body.appendChild(svg);
+        }
     onLayoutReady() {
         this.addTopBar({
-            icon: 'iconTimeline',
+            icon: 'iconGlobalGraph',
             title: '时光笺',
             position: 'right',
             callback: () => this.openTimelineTab()
@@ -1389,7 +1677,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         openTab({
             app: this.app,
             custom: {
-                icon: "iconTimeline",
+                icon: "iconGlobalGraph",
                 title: "时光笺",
                 data: {},
                 id: this.name + TIMELINE_TAB_TYPE
@@ -2119,18 +2407,38 @@ async showEmojiPicker(targetInput) {
     /**
      * 打开块所在的文档
      */
-    async openBlockDocument(blockId) {
+/**
+ * 打开块所在的文档，并自动定位到该块
+ */
+async openBlockDocument(blockId) {
+    try {
+        // 直接使用块ID打开文档，思源笔记会自动定位
+        await openTab({
+            app: this.app,
+            doc: { 
+                id: blockId,
+                action: ["cb-get-hl", "cb-get-focus"]   // 高亮并获取焦点
+            }
+        });
+    } catch (e) {
+        // 降级方案：如果直接使用块ID失败，则使用根ID+anchor
+        // console.warn('直接使用块ID打开失败，尝试降级方案', e);
         const info = await this.getBlockInfo(blockId);
         if (info && info.code === 0) {
             const rootID = info.data.rootID;
-            openTab({
+            await openTab({
                 app: this.app,
-                doc: { id: rootID }
+                doc: { 
+                    id: rootID,
+                    anchor: blockId,
+                    action: ["cb-get-hl", "cb-get-focus"]
+                }
             });
         } else {
             showMessage('无法获取文档信息');
         }
     }
+}
 
     /**
      * 更新块内容，并确保 custom-lifelog-created 属性不被修改

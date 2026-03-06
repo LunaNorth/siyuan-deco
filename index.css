@@ -4018,6 +4018,12 @@
     scrollbar-width: none; /* Firefox */
 }
 
+
+.timeline-right-panel {
+    -ms-overflow-style: none; /* IE 和 Edge 旧版 */
+    scrollbar-width: none; /* Firefox */
+}
+
 /* 如果整个标签页也有滚动条，一并隐藏 */
 .timeline-dialog-content::-webkit-scrollbar {
     display: none;
@@ -4025,6 +4031,11 @@
 .timeline-dialog-content {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+/* 隐藏右边面板滚动条 */
+.timeline-right-panel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge (WebKit) */
 }
 
 
@@ -4208,4 +4219,185 @@
     margin-top: 2px;
     line-height: 1.2;
     opacity: 0.8;
+}
+
+
+/* --------------------------------------------------------------- */
+/* 时间轴新样式 v2（完全匹配HTML示例） */
+.timeline-v2-calendar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.timeline-v2-calendar-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    width: 14%;
+}
+
+.timeline-v2-calendar-day .day-name {
+    font-size: 14px;
+    color: var(--b3-theme-on-surface-light);
+    margin-bottom: 8px;
+}
+
+.timeline-v2-calendar-day .date-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.timeline-v2-calendar-day .day-num {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.2;
+    color: var(--b3-theme-on-background);
+}
+
+.timeline-v2-calendar-day .day-lunar {
+    font-size: 10px;
+    color: var(--b3-theme-on-surface-light);
+    margin-top: 2px;
+}
+
+.timeline-v2-calendar-day.active .date-group {
+    background-color: var(--b3-theme-primary-light, #8fbc8f);
+    color: var(--b3-theme-on-primary, white);
+}
+
+.timeline-v2-calendar-day.active .day-num {
+    color: white;
+    font-size: 16px;
+}
+
+.timeline-v2-calendar-day.active .day-lunar {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 9px;
+}
+
+.timeline-v2-wrapper {
+    position: relative;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* 竖线（通过每个 .connector-col 的伪元素实现，而不是共享线） */
+.timeline-v2-item {
+    display: flex;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.timeline-v2-time-col {
+    width: 60px;
+    text-align: right;
+    padding-right: 3px;
+    color: var(--b3-theme-on-surface-light);
+    font-size: 13px;
+    flex-shrink: 0;
+    padding-top: 15px;
+}
+
+.timeline-v2-connector-col {
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+    right: 3px;
+}
+
+/* 竖线：每个 .connector-col 的伪元素，从圆点下方延伸到下一个条目的上方 */
+.timeline-v2-connector-col::before {
+    content: '';
+    position: absolute;
+    top: 25px; /* 圆点中心约在15px+6px=21px，从圆点下方开始 */
+    bottom: -25px;
+    width: 2px;
+    background-color: var(--b3-border-color, #e0e0e0);
+    z-index: 0;
+}
+
+.timeline-v2-item:last-child .timeline-v2-connector-col::before {
+    display: none;
+}
+
+.timeline-v2-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--b3-theme-background);
+    border: 2px solid; /* 保持空心效果 */
+    z-index: 1;
+    margin-top: 15px;
+}
+
+.timeline-v2-card-col {
+    flex-grow: 1;
+    /* background: var(--b3-theme-background); */
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    position: relative;
+    border: 1px solid var(--b3-border-color);
+    /* border: none;  */
+}
+
+.timeline-v2-card-time-range {
+    font-size: 14px;
+    color: var(--b3-theme-on-surface-light);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.timeline-v2-card-type {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    word-break: break-word;
+    margin-right: 30px;
+    color: black;
+}
+
+.timeline-v2-card-content {
+    font-size: 14px;
+    color: var(--b3-theme-on-surface-light);
+    word-break: break-word;
+    white-space: pre-wrap; /* 保留换行 */
+    margin-right: 30px;
+}
+
+
+.timeline-v2-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+    margin-bottom: 5px;
+    margin-right: 30px;
+    word-break: break-word;
+}
+
+.timeline-v2-card-desc {
+    font-size: 14px;
+    color: var(--b3-theme-on-surface-light);
+    word-break: break-word;
+}
+
+.timeline-v2-card-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    color: var(--b3-theme-on-surface-light);
+    opacity: 0.5;
 }
