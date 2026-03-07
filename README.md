@@ -51,9 +51,14 @@
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.2.0</strong>
-      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-warning-background, #fff3cd); color: var(--b3-card-warning-color, #856404); border-radius: 12px; font-weight: 500;">🌓 样式</span>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-warning-background, #fff3cd); color: var(--b3-card-warning-color, #856404); border-radius: 12px; font-weight: 500;">✨ 新增样式</span>
     </div>
-    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">细调时间轴样式</div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">
+      • 新增统计视图样式<br>
+      • 修改时间记录-由创建时间改成读取LifeLog对应时间标记值<br>
+      • 修改时间轴内容字颜色太浅问题<br>
+      • 修改时光笺图标<br>
+    </div>
   </div>
 
   <!-- v1.1.9 -->
