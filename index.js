@@ -2128,7 +2128,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
         }
     onLayoutReady() {
         this.addTopBar({
-            icon: 'iconTimeline',
+            icon: 'iconCamera',
             title: '时光笺',
             position: 'right',
             callback: () => this.openTimelineTab()
@@ -2139,7 +2139,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
         openTab({
             app: this.app,
             custom: {
-                icon: "iconTimeline",
+                icon: "iconCamera",
                 title: "时光笺",
                 data: {},
                 id: this.name + TIMELINE_TAB_TYPE
@@ -2164,7 +2164,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
                 AND a1.value IS NOT NULL
                 AND a2.value IS NOT NULL
                 AND a3.value IS NOT NULL
-            ORDER BY a1.value || ' ' || a2.value DESC
+            ORDER BY a1.value || ' ' || a2.value DESC Limit 1000
         `;
         const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
         if (result && result.code === 0) {

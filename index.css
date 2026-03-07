@@ -4197,7 +4197,8 @@
 
 .timeline-timeline-desc {
     font-size: 15px;
-    color: var(--b3-theme-on-surface);
+    /* color: var(--b3-theme-on-surface); */
+    color: var(--b3-theme-on-background);
     line-height: 1.5;
     word-break: break-word;
 }

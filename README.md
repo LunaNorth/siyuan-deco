@@ -36,6 +36,7 @@
     </div>
   </div>
 
+
   <!-- 励志标语 -->
   <div style="text-align: center; margin: 1.8em 0; font-style: italic; color: var(--b3-theme-primary); font-size: 14px; width: 100%;">✨ 让每一块笔记，都拥有属于自己的样子</div>
 
@@ -47,8 +48,21 @@
   <!-- 分割线 -->
   <div style="height: 1px; background: var(--b3-border-color, #eee); margin: 8px 0 12px;"></div>
 
+  <!-- v1.2.1 -->
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.2.1</strong>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-success-background, #d4edda); color: var(--b3-card-success-color, #155724); border-radius: 12px; font-weight: 500;">🐛 修复</span>
+    </div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">
+    • 修改时光笺图标<br>
+    • 修改时间轴样式，时间日志样式文字配色<br>
+    • 修改左侧贡献图显示不全问题<br>
+    </div>
+  </div>
+
   <!-- v1.2.0 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.2.0</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-warning-background, #fff3cd); color: var(--b3-card-warning-color, #856404); border-radius: 12px; font-weight: 500;">✨ 新增样式</span>
@@ -62,7 +76,7 @@
   </div>
 
   <!-- v1.1.9 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.9</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 新功能-优化</span>
@@ -75,7 +89,7 @@
   </div>
 
   <!-- v1.1.8 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.8</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">✨ 样式</span>
@@ -84,7 +98,7 @@
   </div>
 
   <!-- v1.1.7 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.7</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 新功能-优化</span>
@@ -98,7 +112,7 @@
   </div>
 
   <!-- v1.1.6 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.6</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 新功能</span>
@@ -107,7 +121,7 @@
   </div>
 
   <!-- v1.1.5 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.5</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 优化</span>
@@ -116,7 +130,7 @@
   </div>
 
   <!-- v1.1.4 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.4</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-success-background, #d4edda); color: var(--b3-card-success-color, #155724); border-radius: 12px; font-weight: 500;">🐛 修复</span>
@@ -130,7 +144,7 @@
   </div>
 
   <!-- v1.1.3 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.3</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">🎨 样式</span>
@@ -139,7 +153,7 @@
   </div>
 
   <!-- v1.1.2 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.2</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 功能</span>
@@ -148,7 +162,7 @@
   </div>
 
   <!-- v1.1.1 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.1</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-warning-background, #fff3cd); color: var(--b3-card-warning-color, #856404); border-radius: 12px; font-weight: 500;">🌓 适配</span>
@@ -157,7 +171,7 @@
   </div>
 
   <!-- v1.1.0 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-on-surface-light, #aaa); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-on-surface-light, #aaa); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.1.0</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-surface-lighter, #e0e0e0); color: var(--b3-theme-on-surface, #5f6368); border-radius: 12px; font-weight: 500;">🗑️ 调整</span>
@@ -166,7 +180,7 @@
   </div>
 
   <!-- v1.0.9 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.9</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-success-background, #d4edda); color: var(--b3-card-success-color, #155724); border-radius: 12px; font-weight: 500;">🐛 修复</span>
@@ -175,7 +189,7 @@
   </div>
 
   <!-- v1.0.8 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.8</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">🎨 样式</span>
@@ -184,7 +198,7 @@
   </div>
 
   <!-- v1.0.7 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.7</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 功能</span>
@@ -193,7 +207,7 @@
   </div>
 
   <!-- v1.0.6 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-error, #d23f31); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-error, #d23f31); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.6</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-error-background, #f8d7da); color: var(--b3-card-error-color, #721c24); border-radius: 12px; font-weight: 500;">🚀 重大</span>
@@ -207,7 +221,7 @@
   </div>
 
   <!-- v1.0.5 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.5</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">✨ 样式</span>
@@ -216,7 +230,7 @@
   </div>
 
   <!-- v1.0.4 -->
-  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-protyle-inline-blockref-color, #9b59b6); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.4</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-info-background, #d1ecf1); color: var(--b3-card-info-color, #0c5460); border-radius: 12px; font-weight: 500;">✨ 样式</span>
@@ -225,7 +239,7 @@
   </div>
 
   <!-- v1.0.3 -->
-  <div style="padding: 12px 14px; margin-bottom: 0; background: var(--b3-theme-surface-light, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="padding: 12px 14px; margin-bottom: 0; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
       <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.0.3</strong>
       <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-success-background, #d4edda); color: var(--b3-card-success-color, #155724); border-radius: 12px; font-weight: 500;">🌱 初始</span>
@@ -245,6 +259,6 @@
   </div>
 
   <!-- 页脚 -->
-  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.0</div>
+  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.1</div>
 
 </div>
