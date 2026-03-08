@@ -2164,7 +2164,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
                 AND a1.value IS NOT NULL
                 AND a2.value IS NOT NULL
                 AND a3.value IS NOT NULL
-            ORDER BY a1.value || ' ' || a2.value DESC Limit 1000
+            ORDER BY a1.value || ' ' || a2.value DESC Limit -1
         `;
         const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
         if (result && result.code === 0) {
