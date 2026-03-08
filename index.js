@@ -505,98 +505,102 @@ class TimelineView {
     }
 
     // ========== 修改：设置对话框，时间模式改为两行单选 ==========
-    showSettingsDialog() {
-        const modeOrder = [
-            TimelineView.MODE_LIST,
-            TimelineView.MODE_MOMENTS,
-            TimelineView.MODE_TIMELINE,
-            TimelineView.MODE_TIMELINE_V2
-        ];
-        const currentIndex = modeOrder.indexOf(this.displayMode);
-        const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
-        const nextModeText = {
-            [TimelineView.MODE_LIST]: '列表样式',
-            [TimelineView.MODE_MOMENTS]: '朋友圈样式',
-            [TimelineView.MODE_TIMELINE]: '时间日志样式',
-            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'
-        }[nextMode];
+showSettingsDialog() {
+    const modeOrder = [
+        TimelineView.MODE_LIST,
+        TimelineView.MODE_MOMENTS,
+        TimelineView.MODE_TIMELINE,
+        TimelineView.MODE_TIMELINE_V2
+    ];
+    const currentIndex = modeOrder.indexOf(this.displayMode);
+    const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
+    const nextModeText = {
+        [TimelineView.MODE_LIST]: '列表样式',
+        [TimelineView.MODE_MOMENTS]: '朋友圈样式',
+        [TimelineView.MODE_TIMELINE]: '时间日志样式',
+        [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'
+    }[nextMode];
 
-        const currentTimeMode = this.timeMode;
-        const startChecked = currentTimeMode === 'start' ? 'checked' : '';
-        const endChecked = currentTimeMode === 'end' ? 'checked' : '';
+    const currentTimeMode = this.timeMode;
+    const startChecked = currentTimeMode === 'start' ? 'checked' : '';
+    const endChecked = currentTimeMode === 'end' ? 'checked' : '';
 
-        const dialog = new Dialog({
-            title: '时光笺设置',
-            content: `
-                <div style="padding: 20px;">
-                    <div class="b3-dialog__label">标题</div>
-                    <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
-                    <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
-                    <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
-                    
-                    <div class="b3-dialog__label" style="margin-top: 12px;">记录时间模式</div>
-                    <div style="margin: 8px 0; display: flex; flex-direction: column; gap: 8px;">
-                        <label>
-                            <input type="radio" name="timeMode" value="start" ${startChecked}> 开始模式（节点时间为开始时间）
-                        </label>
-                        <label>
-                            <input type="radio" name="timeMode" value="end" ${endChecked}> 结束模式（节点时间为结束时间）
-                        </label>
+    const dialog = new Dialog({
+        title: '时光笺设置',
+        content: `
+            <div style="padding: 20px;">
+                <div class="b3-dialog__label">标题</div>
+                <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
+                <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
+                <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
+                
+                <div class="b3-dialog__label" style="margin-top: 12px;">记录时间模式</div>
+                <div style="margin: 8px 0 16px 0; display: flex; flex-direction: column; gap: 8px;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.4;">
+                        <input type="radio" name="timeMode" value="start" ${startChecked} 
+                               style="flex-shrink: 0; width: 14px; height: 14px; margin: 0; vertical-align: middle;">
+                        <span style="flex: 1;">开始模式（节点时间为开始时间）</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.4;">
+                        <input type="radio" name="timeMode" value="end" ${endChecked} 
+                               style="flex-shrink: 0; width: 14px; height: 14px; margin: 0; vertical-align: middle;">
+                        <span style="flex: 1;">结束模式（节点时间为结束时间）</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div>
+                        <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
+                        <button class="b3-button" id="statisticsBtn" style="margin-left:8px;">统计视图</button>
                     </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                        <div>
-                            <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
-                            <button class="b3-button" id="statisticsBtn" style="margin-left:8px;">统计视图</button>
-                        </div>
-                        <div>
-                            <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
-                            <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
-                        </div>
+                    <div>
+                        <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
+                        <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
                     </div>
                 </div>
-            `,
-            width: '500px',
+            </div>
+        `,
+        width: '500px',
+    });
+
+    setTimeout(() => {
+        const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
+        const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
+        const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
+        const statisticsBtn = dialog.element.querySelector('#statisticsBtn');
+
+        cancelBtn.addEventListener('click', () => dialog.destroy());
+
+        saveBtn.addEventListener('click', async () => {
+            const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
+            const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
+            const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
+            await this.plugin.store.setCustomTitle(title);
+            await this.plugin.store.setCustomSubtitle(subtitle);
+            await this.plugin.store.setTimeMode(timeMode);
+            this.timeMode = timeMode;
+            const titleEl = this.leftPanel.querySelector('.timeline-title-text');
+            const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
+            if (titleEl) titleEl.textContent = title || '时光笺';
+            if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
+            this.renderMiddlePanel();
+            dialog.destroy();
+            showMessage('设置已保存');
         });
 
-        setTimeout(() => {
-            const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
-            const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
-            const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
-            const statisticsBtn = dialog.element.querySelector('#statisticsBtn');
+        toggleBtn.addEventListener('click', () => {
+            this.setDisplayMode(nextMode);
+            dialog.destroy();
+            showMessage(`已切换到${nextModeText}`);
+        });
 
-            cancelBtn.addEventListener('click', () => dialog.destroy());
-
-            saveBtn.addEventListener('click', async () => {
-                const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
-                const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
-                const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
-                await this.plugin.store.setCustomTitle(title);
-                await this.plugin.store.setCustomSubtitle(subtitle);
-                await this.plugin.store.setTimeMode(timeMode);
-                this.timeMode = timeMode; // 更新当前视图模式
-                const titleEl = this.leftPanel.querySelector('.timeline-title-text');
-                const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
-                if (titleEl) titleEl.textContent = title || '时光笺';
-                if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
-                this.renderMiddlePanel(); // 重新渲染中间面板以应用新模式
-                dialog.destroy();
-                showMessage('设置已保存');
-            });
-
-            toggleBtn.addEventListener('click', () => {
-                this.setDisplayMode(nextMode);
-                dialog.destroy();
-                showMessage(`已切换到${nextModeText}`);
-            });
-
-            statisticsBtn.addEventListener('click', () => {
-                this.setDisplayMode(TimelineView.MODE_STATISTICS);
-                dialog.destroy();
-                showMessage('已切换到统计视图');
-            });
-        }, 0);
-    }
+        statisticsBtn.addEventListener('click', () => {
+            this.setDisplayMode(TimelineView.MODE_STATISTICS);
+            dialog.destroy();
+            showMessage('已切换到统计视图');
+        });
+    }, 0);
+}
 
     renderStats() {
         const s = this.stats;
