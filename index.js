@@ -200,7 +200,8 @@ class TimelineStore {
             cover: null,          // 新增：封面图片路径
             customTitle: '',
             customSubtitle: '',
-            displayMode: 'list'   // 默认列表样式
+            displayMode: 'list',   // 默认列表样式
+            timeMode: 'start'       // 新增：记录时间模式 'start' 或 'end'
         };
     }
 
@@ -209,10 +210,11 @@ class TimelineStore {
             const saved = await this.plugin.loadData(TIMELINE_STORAGE_NAME);
             if (saved) {
                 this.config.avatar = saved.avatar || null;
-                this.config.cover = saved.cover || null;          // 新增
+                this.config.cover = saved.cover || null;
                 this.config.customTitle = saved.customTitle || '';
                 this.config.customSubtitle = saved.customSubtitle || '';
                 this.config.displayMode = saved.displayMode || 'list';
+                this.config.timeMode = saved.timeMode || 'start';
             }
         } catch (e) {
             console.warn("加载配置失败", e);
@@ -232,12 +234,10 @@ class TimelineStore {
         await this.saveConfig();
     }
 
-    // 新增：获取封面
     getCover() {
         return this.config.cover;
     }
 
-    // 新增：设置封面
     async setCover(path) {
         this.config.cover = path;
         await this.saveConfig();
@@ -261,14 +261,23 @@ class TimelineStore {
         await this.saveConfig();
     }
 
-    // 获取显示模式
     getDisplayMode() {
         return this.config.displayMode;
     }
 
-    // 设置显示模式并保存
     async setDisplayMode(mode) {
         this.config.displayMode = mode;
+        await this.saveConfig();
+    }
+
+    // 新增：获取时间模式
+    getTimeMode() {
+        return this.config.timeMode;
+    }
+
+    // 新增：设置时间模式
+    async setTimeMode(mode) {
+        this.config.timeMode = mode;
         await this.saveConfig();
     }
 }
@@ -297,6 +306,14 @@ class TimelineView {
 
         // 显示模式
         this.displayMode = this.plugin.store.getDisplayMode() || TimelineView.MODE_LIST;
+        // 时间模式
+        this.timeMode = this.plugin.store.getTimeMode() || 'start';
+
+        // 生成全局排序数组（按时间升序），用于跨天查找前一条记录
+        this.globalSorted = records
+            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
+            .filter(r => r.dateObj)
+            .sort((a, b) => a.dateObj - b.dateObj);
 
         // 统计视图专用状态
         this.startDate = null; // 格式 YYYY-MM-DD
@@ -319,6 +336,7 @@ class TimelineView {
             this.plugin.eventBus.off('timeline-record-updated', this.recordUpdatedHandler);
         }
     }
+
 
     calculateStats(records) {
         const today = new Date();
@@ -486,82 +504,99 @@ class TimelineView {
         this.leftPanel.appendChild(header);
     }
 
-    // ========== 修改：设置对话框增加统计视图按钮 ==========
-showSettingsDialog() {
-    const modeOrder = [
-        TimelineView.MODE_LIST,
-        TimelineView.MODE_MOMENTS,
-        TimelineView.MODE_TIMELINE,
-        TimelineView.MODE_TIMELINE_V2
-        // 移除了 MODE_STATISTICS，使切换按钮只在四种样式间循环
-    ];
-    const currentIndex = modeOrder.indexOf(this.displayMode);
-    const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
-    const nextModeText = {
-        [TimelineView.MODE_LIST]: '列表样式',
-        [TimelineView.MODE_MOMENTS]: '朋友圈样式',
-        [TimelineView.MODE_TIMELINE]: '时间日志样式',
-        [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'
-        // 移除了统计视图的映射
-    }[nextMode];
+    // ========== 修改：设置对话框，时间模式改为两行单选 ==========
+    showSettingsDialog() {
+        const modeOrder = [
+            TimelineView.MODE_LIST,
+            TimelineView.MODE_MOMENTS,
+            TimelineView.MODE_TIMELINE,
+            TimelineView.MODE_TIMELINE_V2
+        ];
+        const currentIndex = modeOrder.indexOf(this.displayMode);
+        const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
+        const nextModeText = {
+            [TimelineView.MODE_LIST]: '列表样式',
+            [TimelineView.MODE_MOMENTS]: '朋友圈样式',
+            [TimelineView.MODE_TIMELINE]: '时间日志样式',
+            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'
+        }[nextMode];
 
-    const dialog = new Dialog({
-        title: '时光笺设置',
-        content: `
-            <div style="padding: 20px;">
-                <div class="b3-dialog__label">标题</div>
-                <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
-                <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
-                <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                    <div>
-                        <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
-                        <button class="b3-button" id="statisticsBtn" style="margin-left:8px;">统计视图</button>
+        const currentTimeMode = this.timeMode;
+        const startChecked = currentTimeMode === 'start' ? 'checked' : '';
+        const endChecked = currentTimeMode === 'end' ? 'checked' : '';
+
+        const dialog = new Dialog({
+            title: '时光笺设置',
+            content: `
+                <div style="padding: 20px;">
+                    <div class="b3-dialog__label">标题</div>
+                    <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
+                    <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
+                    <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
+                    
+                    <div class="b3-dialog__label" style="margin-top: 12px;">记录时间模式</div>
+                    <div style="margin: 8px 0; display: flex; flex-direction: column; gap: 8px;">
+                        <label>
+                            <input type="radio" name="timeMode" value="start" ${startChecked}> 开始模式（节点时间为开始时间）
+                        </label>
+                        <label>
+                            <input type="radio" name="timeMode" value="end" ${endChecked}> 结束模式（节点时间为结束时间）
+                        </label>
                     </div>
-                    <div>
-                        <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
-                        <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                        <div>
+                            <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
+                            <button class="b3-button" id="statisticsBtn" style="margin-left:8px;">统计视图</button>
+                        </div>
+                        <div>
+                            <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
+                            <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `,
-        width: '400px',
-    });
-
-    setTimeout(() => {
-        const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
-        const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
-        const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
-        const statisticsBtn = dialog.element.querySelector('#statisticsBtn');
-
-        cancelBtn.addEventListener('click', () => dialog.destroy());
-
-        saveBtn.addEventListener('click', async () => {
-            const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
-            const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
-            await this.plugin.store.setCustomTitle(title);
-            await this.plugin.store.setCustomSubtitle(subtitle);
-            const titleEl = this.leftPanel.querySelector('.timeline-title-text');
-            const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
-            if (titleEl) titleEl.textContent = title || '时光笺';
-            if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
-            dialog.destroy();
-            showMessage('设置已保存');
+            `,
+            width: '500px',
         });
 
-        toggleBtn.addEventListener('click', () => {
-            this.setDisplayMode(nextMode);
-            dialog.destroy();
-            showMessage(`已切换到${nextModeText}`);
-        });
+        setTimeout(() => {
+            const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
+            const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
+            const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
+            const statisticsBtn = dialog.element.querySelector('#statisticsBtn');
 
-        statisticsBtn.addEventListener('click', () => {
-            this.setDisplayMode(TimelineView.MODE_STATISTICS);
-            dialog.destroy();
-            showMessage('已切换到统计视图');
-        });
-    }, 0);
-}
+            cancelBtn.addEventListener('click', () => dialog.destroy());
+
+            saveBtn.addEventListener('click', async () => {
+                const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
+                const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
+                const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
+                await this.plugin.store.setCustomTitle(title);
+                await this.plugin.store.setCustomSubtitle(subtitle);
+                await this.plugin.store.setTimeMode(timeMode);
+                this.timeMode = timeMode; // 更新当前视图模式
+                const titleEl = this.leftPanel.querySelector('.timeline-title-text');
+                const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
+                if (titleEl) titleEl.textContent = title || '时光笺';
+                if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
+                this.renderMiddlePanel(); // 重新渲染中间面板以应用新模式
+                dialog.destroy();
+                showMessage('设置已保存');
+            });
+
+            toggleBtn.addEventListener('click', () => {
+                this.setDisplayMode(nextMode);
+                dialog.destroy();
+                showMessage(`已切换到${nextModeText}`);
+            });
+
+            statisticsBtn.addEventListener('click', () => {
+                this.setDisplayMode(TimelineView.MODE_STATISTICS);
+                dialog.destroy();
+                showMessage('已切换到统计视图');
+            });
+        }, 0);
+    }
 
     renderStats() {
         const s = this.stats;
@@ -705,6 +740,32 @@ showSettingsDialog() {
         }
     }
 
+    /**
+     * 获取给定记录在全局时间轴上的下一条记录（用于开始模式跨天）
+     * @param {Object} record - 当前记录
+     * @returns {Object|null} 下一条记录，如果没有则返回 null
+     */
+    _getNextRecord(record) {
+        const index = this.globalSorted.findIndex(r => r.id === record.id);
+        if (index !== -1 && index < this.globalSorted.length - 1) {
+            return this.globalSorted[index + 1];
+        }
+        return null;
+    }
+
+    /**
+     * 获取给定记录在全局时间轴上的前一条记录（用于结束模式跨天）
+     * @param {Object} record - 当前记录
+     * @returns {Object|null} 前一条记录，如果没有则返回 null
+     */
+    _getPreviousRecord(record) {
+        const index = this.globalSorted.findIndex(r => r.id === record.id);
+        if (index > 0) {
+            return this.globalSorted[index - 1];
+        }
+        return null;
+    }
+
     // ========== 获取最早记录日期 ==========
     getEarliestDate() {
         let earliest = null;
@@ -753,314 +814,313 @@ showSettingsDialog() {
     }
 
     // 计算指定筛选条件下的统计数据
-// 计算指定筛选条件下的统计数据
-computeStatistics() {
-    // 基础筛选：日期范围
-    let records = this.allRecords;
-    if (this.startDate && this.endDate) {
-        const start = new Date(this.startDate + 'T00:00:00');
-        const end = new Date(this.endDate + 'T23:59:59');
-        records = records.filter(r => {
-            const d = parseLifelogDate(r.lifelog_created);
-            return d && d >= start && d <= end;
-        });
-    }
+    computeStatistics() {
+        // 基础筛选：日期范围
+        let records = this.allRecords;
+        if (this.startDate && this.endDate) {
+            const start = new Date(this.startDate + 'T00:00:00');
+            const end = new Date(this.endDate + 'T23:59:59');
+            records = records.filter(r => {
+                const d = parseLifelogDate(r.lifelog_created);
+                return d && d >= start && d <= end;
+            });
+        }
 
-    // 类型多选筛选：如果 selectedStatTypes 非空，则只保留类型在集合中的记录
-    if (this.selectedStatTypes.size > 0) {
-        records = records.filter(r => this.selectedStatTypes.has(r.lifelog_type));
-    }
+        // 类型多选筛选：如果 selectedStatTypes 非空，则只保留类型在集合中的记录
+        if (this.selectedStatTypes.size > 0) {
+            records = records.filter(r => this.selectedStatTypes.has(r.lifelog_type));
+        }
 
-    if (records.length < 2) {
+        if (records.length < 2) {
+            return {
+                total: 0,
+                year: 0,
+                month: 0,
+                week: 0,
+                today: 0,
+                typeData: []
+            };
+        }
+
+        // 按时间升序排序，解析日期
+        const sorted = records
+            .map(r => ({
+                ...r,
+                dateObj: parseLifelogDate(r.lifelog_created)
+            }))
+            .filter(r => r.dateObj)
+            .sort((a, b) => a.dateObj - b.dateObj);
+
+        if (sorted.length < 2) return null;
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        // 本周开始（周一）
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+        monday.setHours(0,0,0,0);
+        const weekEnd = new Date(monday);
+        weekEnd.setDate(monday.getDate() + 7);
+        const todayStart = new Date(now);
+        todayStart.setHours(0,0,0,0);
+        const todayEnd = new Date(now);
+        todayEnd.setHours(23,59,59,999);
+
+        let total = 0;
+        let yearTotal = 0;
+        let monthTotal = 0;
+        let weekTotal = 0;
+        let todayTotal = 0;
+
+        // 类型时长统计
+        const typeDurations = new Map(); // type -> 分钟
+
+        for (let i = 0; i < sorted.length - 1; i++) {
+            const r = sorted[i];
+            const next = sorted[i + 1];
+            const diffMs = next.dateObj - r.dateObj;
+            const diffMinutes = diffMs / 60000;
+            if (diffMinutes <= 0) continue;
+
+            total += diffMinutes;
+
+            // 类型统计
+            const type = r.lifelog_type || '未分类';
+            typeDurations.set(type, (typeDurations.get(type) || 0) + diffMinutes);
+
+            // 按时间范围统计
+            const date = r.dateObj;
+            if (date.getFullYear() === currentYear) yearTotal += diffMinutes;
+            if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) monthTotal += diffMinutes;
+            if (date >= monday && date < weekEnd) weekTotal += diffMinutes;
+            if (date >= todayStart && date <= todayEnd) todayTotal += diffMinutes;
+        }
+
+        // 转换为数组并计算百分比
+        const typeData = Array.from(typeDurations.entries()).map(([type, minutes]) => ({
+            name: type,
+            value: minutes,
+            itemStyle: { color: getTypeColorFromCSS(type) }
+        })).sort((a, b) => b.value - a.value);
+
         return {
-            total: 0,
-            year: 0,
-            month: 0,
-            week: 0,
-            today: 0,
-            typeData: []
+            total,
+            year: yearTotal,
+            month: monthTotal,
+            week: weekTotal,
+            today: todayTotal,
+            typeData
         };
     }
 
-    // 按时间升序排序，解析日期
-    const sorted = records
-        .map(r => ({
-            ...r,
-            dateObj: parseLifelogDate(r.lifelog_created)
-        }))
-        .filter(r => r.dateObj)
-        .sort((a, b) => a.dateObj - b.dateObj);
+    // ========== 渲染统计视图（支持多选类型） ==========
+    renderStatisticsPanel() {
+        this.middlePanel.innerHTML = '';
 
-    if (sorted.length < 2) return null;
+        // 如果是第一次进入且未设置日期范围，则默认设为本周
+        if (!this.startDate || !this.endDate) {
+            const range = this.getThisWeekRange();
+            this.startDate = range.start;
+            this.endDate = range.end;
+        }
 
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth();
-    // 本周开始（周一）
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
-    monday.setHours(0,0,0,0);
-    const weekEnd = new Date(monday);
-    weekEnd.setDate(monday.getDate() + 7);
-    const todayStart = new Date(now);
-    todayStart.setHours(0,0,0,0);
-    const todayEnd = new Date(now);
-    todayEnd.setHours(23,59,59,999);
+        // 获取当前日期范围内的所有类型
+        const currentTypes = this.getTypesInDateRange();
 
-    let total = 0;
-    let yearTotal = 0;
-    let monthTotal = 0;
-    let weekTotal = 0;
-    let todayTotal = 0;
+        // 清理已选中的类型：移除不在 currentTypes 中的类型（防止残留）
+        this.selectedStatTypes = new Set(
+            Array.from(this.selectedStatTypes).filter(t => currentTypes.includes(t))
+        );
 
-    // 类型时长统计
-    const typeDurations = new Map(); // type -> 分钟
+        // 获取当前筛选条件下的统计数据
+        const stats = this.computeStatistics();
+        if (!stats) {
+            this.middlePanel.innerHTML = '<div class="timeline-empty">没有足够的记录进行统计</div>';
+            return;
+        }
 
-    for (let i = 0; i < sorted.length - 1; i++) {
-        const r = sorted[i];
-        const next = sorted[i + 1];
-        const diffMs = next.dateObj - r.dateObj;
-        const diffMinutes = diffMs / 60000;
-        if (diffMinutes <= 0) continue;
+        const container = document.createElement('div');
+        container.className = 'north-statistics-panel';
 
-        total += diffMinutes;
+        // ----- 头部：日期范围 + 重置按钮 -----
+        const headerBar = document.createElement('div');
+        headerBar.className = 'north-header-bar';
 
-        // 类型统计
-        const type = r.lifelog_type || '未分类';
-        typeDurations.set(type, (typeDurations.get(type) || 0) + diffMinutes);
-
-        // 按时间范围统计
-        const date = r.dateObj;
-        if (date.getFullYear() === currentYear) yearTotal += diffMinutes;
-        if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) monthTotal += diffMinutes;
-        if (date >= monday && date < weekEnd) weekTotal += diffMinutes;
-        if (date >= todayStart && date <= todayEnd) todayTotal += diffMinutes;
-    }
-
-    // 转换为数组并计算百分比
-    const typeData = Array.from(typeDurations.entries()).map(([type, minutes]) => ({
-        name: type,
-        value: minutes,
-        itemStyle: { color: getTypeColorFromCSS(type) }
-    })).sort((a, b) => b.value - a.value);
-
-    return {
-        total,
-        year: yearTotal,
-        month: monthTotal,
-        week: weekTotal,
-        today: todayTotal,
-        typeData
-    };
-}
-
-// ========== 渲染统计视图（支持多选类型） ==========
-renderStatisticsPanel() {
-    this.middlePanel.innerHTML = '';
-
-    // 如果是第一次进入且未设置日期范围，则默认设为本周
-    if (!this.startDate || !this.endDate) {
-        const range = this.getThisWeekRange();
-        this.startDate = range.start;
-        this.endDate = range.end;
-    }
-
-    // 获取当前日期范围内的所有类型
-    const currentTypes = this.getTypesInDateRange();
-
-    // 清理已选中的类型：移除不在 currentTypes 中的类型（防止残留）
-    this.selectedStatTypes = new Set(
-        Array.from(this.selectedStatTypes).filter(t => currentTypes.includes(t))
-    );
-
-    // 获取当前筛选条件下的统计数据
-    const stats = this.computeStatistics();
-    if (!stats) {
-        this.middlePanel.innerHTML = '<div class="timeline-empty">没有足够的记录进行统计</div>';
-        return;
-    }
-
-    const container = document.createElement('div');
-    container.className = 'north-statistics-panel';
-
-    // ----- 头部：日期范围 + 重置按钮 -----
-    const headerBar = document.createElement('div');
-    headerBar.className = 'north-header-bar';
-
-    const dateRangeDiv = document.createElement('div');
-    dateRangeDiv.className = 'north-date-range';
-    dateRangeDiv.innerHTML = `
-        <i class="far fa-calendar-alt"></i>
-        <input type="date" class="north-date-input" id="stat-start-date" value="${this.startDate || ''}">
-        <span>-</span>
-        <i class="far fa-calendar-alt"></i>
-        <input type="date" class="north-date-input" id="stat-end-date" value="${this.endDate || ''}">
-        <button class="b3-button" id="apply-date-filter" style="margin-left:8px;">应用</button>
-    `;
-
-    const resetBtn = document.createElement('button');
-    resetBtn.className = 'north-reset-btn';
-    resetBtn.innerHTML = '<i class="fas fa-undo"></i> 重置';
-
-    headerBar.appendChild(dateRangeDiv);
-    headerBar.appendChild(resetBtn);
-    container.appendChild(headerBar);
-
-    // ----- 类型筛选按钮（多选） -----
-    const filterSection = document.createElement('div');
-    filterSection.className = 'north-filter-section';
-
-    const filterRow = document.createElement('div');
-    filterRow.className = 'north-filter-row';
-
-    const filterLabel = document.createElement('span');
-    filterLabel.className = 'north-filter-label';
-    filterLabel.textContent = '类型';
-    filterRow.appendChild(filterLabel);
-
-    const btnGroup = document.createElement('div');
-    btnGroup.className = 'north-btn-group';
-
-    // 全部按钮（点击清空所有选中）
-    const allBtn = document.createElement('button');
-    allBtn.className = `north-filter-btn ${this.selectedStatTypes.size === 0 ? 'north-active' : ''}`;
-    allBtn.textContent = '全部';
-    allBtn.addEventListener('click', () => {
-        this.selectedStatTypes.clear();
-        this.renderStatisticsPanel();
-    });
-    btnGroup.appendChild(allBtn);
-
-    // 当前日期范围内的类型按钮
-    currentTypes.forEach(type => {
-        const btn = document.createElement('button');
-        const isActive = this.selectedStatTypes.has(type);
-        btn.className = `north-filter-btn ${isActive ? 'north-active' : ''}`;
-        btn.textContent = type;
-        btn.addEventListener('click', () => {
-            if (this.selectedStatTypes.has(type)) {
-                this.selectedStatTypes.delete(type);
-            } else {
-                this.selectedStatTypes.add(type);
-            }
-            this.renderStatisticsPanel();
-        });
-        btnGroup.appendChild(btn);
-    });
-
-    // 可选：添加一个“清除所有”按钮（如果不想点全部，可以加个清空）
-    const clearBtn = document.createElement('button');
-    clearBtn.className = 'north-filter-btn';
-    clearBtn.textContent = '清除';
-    clearBtn.addEventListener('click', () => {
-        this.selectedStatTypes.clear();
-        this.renderStatisticsPanel();
-    });
-    btnGroup.appendChild(clearBtn);
-
-    filterRow.appendChild(btnGroup);
-    filterSection.appendChild(filterRow);
-    container.appendChild(filterSection);
-
-    // ----- 时间统计卡片 -----
-    const timeStatsRow = document.createElement('div');
-    timeStatsRow.className = 'north-time-stats';
-
-    const cards = [
-        { label: '总时长', value: this.formatDuration(stats.total) },
-        { label: '本年', value: this.formatDuration(stats.year) },
-        { label: '本月', value: this.formatDuration(stats.month) },
-        { label: '本周', value: this.formatDuration(stats.week) },
-        { label: '今日', value: this.formatDuration(stats.today) }
-    ];
-
-    cards.forEach(card => {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'north-time-stat-item';
-        cardDiv.innerHTML = `
-            <div class="north-time-stat-label">${card.label}</div>
-            <div class="north-time-stat-value">${card.value}</div>
+        const dateRangeDiv = document.createElement('div');
+        dateRangeDiv.className = 'north-date-range';
+        dateRangeDiv.innerHTML = `
+            <i class="far fa-calendar-alt"></i>
+            <input type="date" class="north-date-input" id="stat-start-date" value="${this.startDate || ''}">
+            <span>-</span>
+            <i class="far fa-calendar-alt"></i>
+            <input type="date" class="north-date-input" id="stat-end-date" value="${this.endDate || ''}">
+            <button class="b3-button" id="apply-date-filter" style="margin-left:8px;">应用</button>
         `;
-        timeStatsRow.appendChild(cardDiv);
-    });
 
-    container.appendChild(timeStatsRow);
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'north-reset-btn';
+        resetBtn.innerHTML = '<i class="fas fa-undo"></i> 重置';
 
-    // ----- 饼图区域（仅显示选中的类型，若选中为空则显示所有） -----
-    const chartBox = document.createElement('div');
-    chartBox.className = 'north-chart-box';
+        headerBar.appendChild(dateRangeDiv);
+        headerBar.appendChild(resetBtn);
+        container.appendChild(headerBar);
 
-    const chartTitle = document.createElement('div');
-    chartTitle.className = 'north-chart-title';
-    chartTitle.textContent = '类型分布';
-    chartBox.appendChild(chartTitle);
+        // ----- 类型筛选按钮（多选） -----
+        const filterSection = document.createElement('div');
+        filterSection.className = 'north-filter-section';
 
-    // 创建饼图容器
-    const pieContainer = document.createElement('div');
-    pieContainer.className = 'north-pie-chart';
-    chartBox.appendChild(pieContainer);
+        const filterRow = document.createElement('div');
+        filterRow.className = 'north-filter-row';
 
-    // 下方图例列表
-    const legendList = document.createElement('div');
-    legendList.className = 'north-legend-list';
+        const filterLabel = document.createElement('span');
+        filterLabel.className = 'north-filter-label';
+        filterLabel.textContent = '类型';
+        filterRow.appendChild(filterLabel);
 
-    stats.typeData.forEach(item => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'north-legend-item';
-        const dot = document.createElement('div');
-        dot.className = 'north-legend-dot';
-        dot.style.backgroundColor = item.itemStyle.color;
-        legendItem.appendChild(dot);
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = item.name;
-        legendItem.appendChild(nameSpan);
-        const durationSpan = document.createElement('span');
-        durationSpan.style.marginLeft = 'auto';
-        durationSpan.style.color = 'var(--b3-theme-on-surface-light)';
-        durationSpan.textContent = this.formatDuration(item.value);
-        legendItem.appendChild(durationSpan);
-        legendList.appendChild(legendItem);
-    });
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'north-btn-group';
 
-    chartBox.appendChild(legendList);
-    container.appendChild(chartBox);
-
-    this.middlePanel.appendChild(container);
-
-    // 加载 ECharts 并渲染饼图
-    this.loadEChartsAndRenderPie(pieContainer, stats.typeData);
-
-    // 绑定事件
-    const applyBtn = container.querySelector('#apply-date-filter');
-    const resetStatBtn = container.querySelector('.north-reset-btn');
-    const startInput = container.querySelector('#stat-start-date');
-    const endInput = container.querySelector('#stat-end-date');
-
-    if (applyBtn) {
-        applyBtn.addEventListener('click', () => {
-            const start = startInput.value;
-            const end = endInput.value;
-            if (start && end) {
-                this.startDate = start;
-                this.endDate = end;
-                this.renderStatisticsPanel();
-            } else {
-                showMessage('请选择开始和结束日期');
-            }
-        });
-    }
-
-    if (resetStatBtn) {
-        resetStatBtn.addEventListener('click', () => {
-            const earliest = this.getEarliestDate();
-            const today = formatDate(new Date());
-            this.startDate = earliest;
-            this.endDate = today;
+        // 全部按钮（点击清空所有选中）
+        const allBtn = document.createElement('button');
+        allBtn.className = `north-filter-btn ${this.selectedStatTypes.size === 0 ? 'north-active' : ''}`;
+        allBtn.textContent = '全部';
+        allBtn.addEventListener('click', () => {
             this.selectedStatTypes.clear();
             this.renderStatisticsPanel();
         });
+        btnGroup.appendChild(allBtn);
+
+        // 当前日期范围内的类型按钮
+        currentTypes.forEach(type => {
+            const btn = document.createElement('button');
+            const isActive = this.selectedStatTypes.has(type);
+            btn.className = `north-filter-btn ${isActive ? 'north-active' : ''}`;
+            btn.textContent = type;
+            btn.addEventListener('click', () => {
+                if (this.selectedStatTypes.has(type)) {
+                    this.selectedStatTypes.delete(type);
+                } else {
+                    this.selectedStatTypes.add(type);
+                }
+                this.renderStatisticsPanel();
+            });
+            btnGroup.appendChild(btn);
+        });
+
+        // 可选：添加一个“清除所有”按钮（如果不想点全部，可以加个清空）
+        const clearBtn = document.createElement('button');
+        clearBtn.className = 'north-filter-btn';
+        clearBtn.textContent = '清除';
+        clearBtn.addEventListener('click', () => {
+            this.selectedStatTypes.clear();
+            this.renderStatisticsPanel();
+        });
+        btnGroup.appendChild(clearBtn);
+
+        filterRow.appendChild(btnGroup);
+        filterSection.appendChild(filterRow);
+        container.appendChild(filterSection);
+
+        // ----- 时间统计卡片 -----
+        const timeStatsRow = document.createElement('div');
+        timeStatsRow.className = 'north-time-stats';
+
+        const cards = [
+            { label: '总时长', value: this.formatDuration(stats.total) },
+            { label: '本年', value: this.formatDuration(stats.year) },
+            { label: '本月', value: this.formatDuration(stats.month) },
+            { label: '本周', value: this.formatDuration(stats.week) },
+            { label: '今日', value: this.formatDuration(stats.today) }
+        ];
+
+        cards.forEach(card => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'north-time-stat-item';
+            cardDiv.innerHTML = `
+                <div class="north-time-stat-label">${card.label}</div>
+                <div class="north-time-stat-value">${card.value}</div>
+            `;
+            timeStatsRow.appendChild(cardDiv);
+        });
+
+        container.appendChild(timeStatsRow);
+
+        // ----- 饼图区域（仅显示选中的类型，若选中为空则显示所有） -----
+        const chartBox = document.createElement('div');
+        chartBox.className = 'north-chart-box';
+
+        const chartTitle = document.createElement('div');
+        chartTitle.className = 'north-chart-title';
+        chartTitle.textContent = '类型分布';
+        chartBox.appendChild(chartTitle);
+
+        // 创建饼图容器
+        const pieContainer = document.createElement('div');
+        pieContainer.className = 'north-pie-chart';
+        chartBox.appendChild(pieContainer);
+
+        // 下方图例列表
+        const legendList = document.createElement('div');
+        legendList.className = 'north-legend-list';
+
+        stats.typeData.forEach(item => {
+            const legendItem = document.createElement('div');
+            legendItem.className = 'north-legend-item';
+            const dot = document.createElement('div');
+            dot.className = 'north-legend-dot';
+            dot.style.backgroundColor = item.itemStyle.color;
+            legendItem.appendChild(dot);
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = item.name;
+            legendItem.appendChild(nameSpan);
+            const durationSpan = document.createElement('span');
+            durationSpan.style.marginLeft = 'auto';
+            durationSpan.style.color = 'var(--b3-theme-on-surface-light)';
+            durationSpan.textContent = this.formatDuration(item.value);
+            legendItem.appendChild(durationSpan);
+            legendList.appendChild(legendItem);
+        });
+
+        chartBox.appendChild(legendList);
+        container.appendChild(chartBox);
+
+        this.middlePanel.appendChild(container);
+
+        // 加载 ECharts 并渲染饼图
+        this.loadEChartsAndRenderPie(pieContainer, stats.typeData);
+
+        // 绑定事件
+        const applyBtn = container.querySelector('#apply-date-filter');
+        const resetStatBtn = container.querySelector('.north-reset-btn');
+        const startInput = container.querySelector('#stat-start-date');
+        const endInput = container.querySelector('#stat-end-date');
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                const start = startInput.value;
+                const end = endInput.value;
+                if (start && end) {
+                    this.startDate = start;
+                    this.endDate = end;
+                    this.renderStatisticsPanel();
+                } else {
+                    showMessage('请选择开始和结束日期');
+                }
+            });
+        }
+
+        if (resetStatBtn) {
+            resetStatBtn.addEventListener('click', () => {
+                const earliest = this.getEarliestDate();
+                const today = formatDate(new Date());
+                this.startDate = earliest;
+                this.endDate = today;
+                this.selectedStatTypes.clear();
+                this.renderStatisticsPanel();
+            });
+        }
     }
-}
 
     // 加载 ECharts 并渲染饼图
     loadEChartsAndRenderPie(container, data) {
@@ -1083,115 +1143,115 @@ renderStatisticsPanel() {
         document.head.appendChild(script);
     }
 
-renderPieChart(container, data) {
-    if (!data || data.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
-        return;
-    }
-    
-    // 读取当前主题的标签颜色
-    const labelColor = getComputedStyle(document.documentElement)
-        .getPropertyValue('--b3-theme-on-surface').trim() || '#333333';
-    
-    const chart = echarts.init(container);
-    const option = {
-        tooltip: {
-            trigger: 'item',
-            formatter: '{b}: {c}分钟 ({d}%)'
-        },
-        legend: {
-            show: false
-        },
-        series: [
-            {
-                name: '类型分布',
-                type: 'pie',
-                radius: ['35%', '55%'],
-                center: ['50%', '50%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 7,
-                    borderColor: '#fff',  // 白色边框，使块与块分开
-                    borderWidth: 0
-                },
-                label: {
-                    show: true,
-                    position: 'outside',
-                    formatter: '{b}\n{d}%',
-                    fontSize: 12,
-                    color: labelColor
-                },
-                labelLine: {
-                    show: true,
-                    length: 25,
-                    length2: 20,
-                    smooth: true
-                },
-                emphasis: {
+    renderPieChart(container, data) {
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
+            return;
+        }
+        
+        // 读取当前主题的标签颜色
+        const labelColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--b3-theme-on-surface').trim() || '#333333';
+        
+        const chart = echarts.init(container);
+        const option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}分钟 ({d}%)'
+            },
+            legend: {
+                show: false
+            },
+            series: [
+                {
+                    name: '类型分布',
+                    type: 'pie',
+                    radius: ['35%', '55%'],
+                    center: ['50%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 7,
+                        borderColor: '#fff',  // 白色边框，使块与块分开
+                        borderWidth: 0
+                    },
                     label: {
                         show: true,
-                        fontSize: 16,
-                        fontWeight: 'bold',
+                        position: 'outside',
+                        formatter: '{b}\n{d}%',
+                        fontSize: 12,
                         color: labelColor
                     },
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)',
-                        borderColor: '#fff',
-                        borderWidth: 1
-                    }
-                },
-                data: data
-            }
-        ]
-    };
-    chart.setOption(option);
-    chart.resize();
-}
-
-drawPieChartFallback(container, data) {
-    if (!data || data.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
-        return;
+                    labelLine: {
+                        show: true,
+                        length: 25,
+                        length2: 20,
+                        smooth: true
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: labelColor
+                        },
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)',
+                            borderColor: '#fff',
+                            borderWidth: 1
+                        }
+                    },
+                    data: data
+                }
+            ]
+        };
+        chart.setOption(option);
+        chart.resize();
     }
-    // 获取主题文字颜色
-    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--b3-theme-on-surface').trim() || '#333';
 
-    const canvas = document.createElement('canvas');
-    canvas.width = container.clientWidth || 600;
-    canvas.height = 400;
-    container.innerHTML = '';
-    container.appendChild(canvas);
+    drawPieChartFallback(container, data) {
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
+            return;
+        }
+        // 获取主题文字颜色
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--b3-theme-on-surface').trim() || '#333';
 
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const radius = Math.min(width, height) * 0.3;
+        const canvas = document.createElement('canvas');
+        canvas.width = container.clientWidth || 600;
+        canvas.height = 400;
+        container.innerHTML = '';
+        container.appendChild(canvas);
 
-    let startAngle = -Math.PI / 2;
-    const total = data.reduce((sum, d) => sum + d.value, 0);
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(width, height) * 0.3;
 
-    data.forEach(item => {
-        const angle = (item.value / total) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle);
-        ctx.closePath();
-        ctx.fillStyle = item.itemStyle.color;
-        ctx.fill();
-        startAngle += angle;
-    });
+        let startAngle = -Math.PI / 2;
+        const total = data.reduce((sum, d) => sum + d.value, 0);
 
-    // 绘制标签（简单绘制百分比）
-    ctx.font = '12px sans-serif';
-    ctx.fillStyle = textColor;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('备用视图', centerX, centerY + radius + 20);
-}
+        data.forEach(item => {
+            const angle = (item.value / total) * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle);
+            ctx.closePath();
+            ctx.fillStyle = item.itemStyle.color;
+            ctx.fill();
+            startAngle += angle;
+        });
+
+        // 绘制标签（简单绘制百分比）
+        ctx.font = '12px sans-serif';
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('备用视图', centerX, centerY + radius + 20);
+    }
 
     // 根据显示模式分发
     renderMiddlePanel() {
@@ -1208,7 +1268,7 @@ drawPieChartFallback(container, data) {
         }
     }
 
-    // 列表样式
+    // 列表样式（已移除“开始于/结束于”前缀）
     renderListPanel() {
         this.middlePanel.innerHTML = '';
 
@@ -1265,7 +1325,7 @@ drawPieChartFallback(container, data) {
         });
     }
 
-    // 朋友圈样式
+    // 朋友圈样式（已移除前缀）
     renderMomentsPanel() {
         this.middlePanel.innerHTML = '';
 
@@ -1373,7 +1433,7 @@ drawPieChartFallback(container, data) {
 
             const metaDiv = document.createElement('div');
             metaDiv.className = 'north-moments-card-meta';
-            metaDiv.textContent = timeStr + typeStr;
+            metaDiv.textContent = `${timeStr}${typeStr}`;
 
             card.appendChild(userBar);
             card.appendChild(contentDiv);
@@ -1389,42 +1449,44 @@ drawPieChartFallback(container, data) {
         });
     }
 
-    // 时间日志样式
-    renderTimelinePanel() {
-        this.middlePanel.innerHTML = '';
+renderTimelinePanel() {
+    this.middlePanel.innerHTML = '';
 
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
-            return;
+    const recs = this.filteredRecords;
+    if (!recs.length) {
+        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
+        return;
+    }
+
+    const grouped = new Map();
+    recs.forEach(r => {
+        const dateObj = parseLifelogDate(r.lifelog_created);
+        if (!dateObj) return;
+        const dateStr = formatDate(dateObj);
+        if (!grouped.has(dateStr)) {
+            grouped.set(dateStr, []);
         }
+        grouped.get(dateStr).push({ ...r, dateObj });
+    });
 
-        const grouped = new Map();
-        recs.forEach(r => {
-            const dateObj = parseLifelogDate(r.lifelog_created);
-            if (!dateObj) return;
-            const dateStr = formatDate(dateObj);
-            if (!grouped.has(dateStr)) {
-                grouped.set(dateStr, []);
-            }
-            grouped.get(dateStr).push({ ...r, dateObj });
-        });
+    const sortedDates = Array.from(grouped.keys()).sort().reverse();
 
-        const sortedDates = Array.from(grouped.keys()).sort().reverse();
+    const timelinePanel = document.createElement('div');
+    timelinePanel.className = 'timeline-timeline-panel';
 
-        const timelinePanel = document.createElement('div');
-        timelinePanel.className = 'timeline-timeline-panel';
+    sortedDates.forEach(dateStr => {
+        const records = grouped.get(dateStr);
+        records.sort((a, b) => a.dateObj - b.dateObj);
 
-        sortedDates.forEach(dateStr => {
-            const records = grouped.get(dateStr);
-            records.sort((a, b) => a.dateObj - b.dateObj);
+        const dateHeader = document.createElement('div');
+        dateHeader.className = 'timeline-timeline-date-header';
+        const [year, month, day] = dateStr.split('-');
+        dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
+        timelinePanel.appendChild(dateHeader);
 
-            const dateHeader = document.createElement('div');
-            dateHeader.className = 'timeline-timeline-date-header';
-            const [year, month, day] = dateStr.split('-');
-            dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
-            timelinePanel.appendChild(dateHeader);
-
+        // 根据时间模式调整间隔计算
+        if (this.timeMode === 'start') {
+            // 开始模式：当前记录到下一条记录的时间差（可能跨天）
             for (let i = 0; i < records.length; i++) {
                 const rec = records[i];
                 const dateObj = rec.dateObj;
@@ -1436,73 +1498,112 @@ drawPieChartFallback(container, data) {
                 content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
 
                 let intervalText = '';
+                // 先看组内是否有下一条记录
                 if (i < records.length - 1) {
                     const nextDateObj = records[i + 1].dateObj;
                     const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
-                    if (diffMinutes >= 60) {
-                        const hours = Math.floor(diffMinutes / 60);
-                        const mins = diffMinutes % 60;
-                        if (mins === 0) {
-                            intervalText = `${hours}小时`;
-                        } else {
-                            intervalText = `${hours}小时${mins}分`;
-                        }
+                    intervalText = this.formatDuration(diffMinutes);
+                } else {
+                    // 当天最后一条：尝试获取下一条记录（可能跨天）
+                    const nextRec = this._getNextRecord(rec);
+                    if (nextRec) {
+                        const nextDateObj = nextRec.dateObj;
+                        const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
+                        intervalText = this.formatDuration(diffMinutes);
+                    }
+                    // 没有下一条则不显示
+                }
+
+                const item = this._createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj);
+                timelinePanel.appendChild(item);
+            }
+        } else {
+            // 结束模式：上一个记录到当前记录的时间差（可能跨天）
+            for (let i = 0; i < records.length; i++) {
+                const rec = records[i];
+                const dateObj = rec.dateObj;
+                const timeStr = dateObj ? 
+                    `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+                const type = rec.lifelog_type || '';
+                const typeColor = getTypeColorFromCSS(type);
+                let content = rec.content || '';
+                content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+
+                let intervalText = '';
+                if (i > 0) {
+                    const prevDateObj = records[i - 1].dateObj;
+                    const diffMinutes = Math.round((dateObj - prevDateObj) / (1000 * 60));
+                    intervalText = this.formatDuration(diffMinutes);
+                } else {
+                    // 当天第一条记录：尝试获取前一天的记录
+                    const prevRec = this._getPreviousRecord(rec);
+                    if (prevRec) {
+                        const prevDateObj = prevRec.dateObj;
+                        const diffMinutes = Math.round((dateObj - prevDateObj) / (1000 * 60));
+                        intervalText = this.formatDuration(diffMinutes);
                     } else {
-                        intervalText = `${diffMinutes}分钟`;
+                        intervalText = '开始';
                     }
                 }
 
-                const item = document.createElement('div');
-                item.className = 'timeline-timeline-item';
-                item.dataset.id = rec.id;
-
-                const timeCol = document.createElement('div');
-                timeCol.className = 'timeline-timeline-time-col';
-                const timeMain = document.createElement('div');
-                timeMain.className = 'timeline-timeline-time-main';
-                timeMain.textContent = timeStr;
-                timeCol.appendChild(timeMain);
-
-                if (intervalText) {
-                    const intervalDiv = document.createElement('div');
-                    intervalDiv.className = 'timeline-timeline-interval';
-                    intervalDiv.textContent = intervalText;
-                    timeCol.appendChild(intervalDiv);
-                }
-
-                const card = document.createElement('div');
-                card.className = 'timeline-timeline-card';
-
-                const tag = document.createElement('div');
-                tag.className = 'timeline-timeline-tag';
-                tag.textContent = type;
-                tag.style.backgroundColor = typeColor;
-                tag.style.color = '#fff';
-
-                const cardContent = document.createElement('div');
-                cardContent.className = 'timeline-timeline-card-content';
-                const desc = document.createElement('div');
-                desc.className = 'timeline-timeline-desc';
-                desc.textContent = content;
-                cardContent.appendChild(desc);
-
-                card.appendChild(tag);
-                card.appendChild(cardContent);
-
-                item.appendChild(timeCol);
-                item.appendChild(card);
-
-                item.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.showContextMenu(e, rec);
-                });
-
+                const item = this._createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj);
                 timelinePanel.appendChild(item);
             }
+        }
+    });
+
+    this.middlePanel.appendChild(timelinePanel);
+}
+
+    // 创建时间日志样式的一个条目（抽取公共方法）
+    _createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj) {
+        const item = document.createElement('div');
+        item.className = 'timeline-timeline-item';
+        item.dataset.id = rec.id;
+
+        const timeCol = document.createElement('div');
+        timeCol.className = 'timeline-timeline-time-col';
+        const timeMain = document.createElement('div');
+        timeMain.className = 'timeline-timeline-time-main';
+        timeMain.textContent = timeStr;
+        timeCol.appendChild(timeMain);
+
+        if (intervalText) {
+            const intervalDiv = document.createElement('div');
+            intervalDiv.className = 'timeline-timeline-interval';
+            intervalDiv.textContent = intervalText;
+            timeCol.appendChild(intervalDiv);
+        }
+
+        const card = document.createElement('div');
+        card.className = 'timeline-timeline-card';
+
+        const tag = document.createElement('div');
+        tag.className = 'timeline-timeline-tag';
+        tag.textContent = type;
+        tag.style.backgroundColor = typeColor;
+        tag.style.color = '#fff';
+
+        const cardContent = document.createElement('div');
+        cardContent.className = 'timeline-timeline-card-content';
+        const desc = document.createElement('div');
+        desc.className = 'timeline-timeline-desc';
+        desc.textContent = content;
+        cardContent.appendChild(desc);
+
+        card.appendChild(tag);
+        card.appendChild(cardContent);
+
+        item.appendChild(timeCol);
+        item.appendChild(card);
+
+        item.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.showContextMenu(e, rec);
         });
 
-        this.middlePanel.appendChild(timelinePanel);
+        return item;
     }
 
     // 伪农历
@@ -1560,46 +1661,42 @@ drawPieChartFallback(container, data) {
         return container;
     }
 
-    // 时间轴新样式 V2
-    renderTimelineV2Panel() {
-        if (!this.selectedDate) {
-            const today = new Date();
-            const todayStr = formatDate(today);
-            this.selectedDate = todayStr;
-            this.filteredRecords = this.allRecords.filter(r => {
-                const dateObj = parseLifelogDate(r.lifelog_created);
-                if (!dateObj) return false;
-                return formatDate(dateObj) === todayStr;
-            });
-        }
-
-        this.middlePanel.innerHTML = '';
-
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
-            return;
-        }
-
-        const sorted = [...recs]
-            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
-            .filter(r => r.dateObj)
-            .sort((a, b) => a.dateObj - b.dateObj);
-
-        const calendarEl = this.renderWeeklyCalendarV2();
-        this.middlePanel.appendChild(calendarEl);
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'timeline-v2-wrapper';
-
-        const dayGroups = new Map();
-        sorted.forEach(rec => {
-            const dateStr = formatDate(rec.dateObj);
-            if (!dayGroups.has(dateStr)) dayGroups.set(dateStr, []);
-            dayGroups.get(dateStr).push(rec);
+renderTimelineV2Panel() {
+    if (!this.selectedDate) {
+        const today = new Date();
+        const todayStr = formatDate(today);
+        this.selectedDate = todayStr;
+        this.filteredRecords = this.allRecords.filter(r => {
+            const dateObj = parseLifelogDate(r.lifelog_created);
+            if (!dateObj) return false;
+            return formatDate(dateObj) === todayStr;
         });
+    }
 
-        sorted.forEach(rec => {
+    this.middlePanel.innerHTML = '';
+
+    const recs = this.filteredRecords;
+    if (!recs.length) {
+        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
+        return;
+    }
+
+    const sorted = [...recs]
+        .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
+        .filter(r => r.dateObj)
+        .sort((a, b) => a.dateObj - b.dateObj);
+
+    const calendarEl = this.renderWeeklyCalendarV2();
+    this.middlePanel.appendChild(calendarEl);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'timeline-v2-wrapper';
+
+    // 根据时间模式构建时间范围
+    if (this.timeMode === 'start') {
+        // 开始模式：使用当前记录到下一条记录（可能跨天）
+        for (let i = 0; i < sorted.length; i++) {
+            const rec = sorted[i];
             const dateObj = rec.dateObj;
             const timeStr = dateObj ? `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
             const type = rec.lifelog_type || '';
@@ -1608,71 +1705,117 @@ drawPieChartFallback(container, data) {
             content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
 
             let timeRange = '';
-            const currentDateStr = formatDate(dateObj);
-            const dayRecords = dayGroups.get(currentDateStr) || [];
-            const currentIndex = dayRecords.findIndex(r => r.id === rec.id);
-            if (currentIndex !== -1 && currentIndex < dayRecords.length - 1) {
-                const nextRec = dayRecords[currentIndex + 1];
+            // 先看组内是否有下一条记录（即当前记录不是最后一条）
+            if (i < sorted.length - 1) {
+                const nextRec = sorted[i + 1];
                 const nextDateObj = nextRec.dateObj;
                 const endStr = `${String(nextDateObj.getHours()).padStart(2, '0')}:${String(nextDateObj.getMinutes()).padStart(2, '0')}`;
                 timeRange = `${timeStr} - ${endStr}`;
+            } else {
+                // 当天最后一条：尝试获取下一条记录（可能跨天）
+                const nextRec = this._getNextRecord(rec);
+                if (nextRec) {
+                    const nextDateObj = nextRec.dateObj;
+                    const endStr = `${String(nextDateObj.getHours()).padStart(2, '0')}:${String(nextDateObj.getMinutes()).padStart(2, '0')}`;
+                    timeRange = `${timeStr} - ${endStr}`;
+                }
+                // 没有下一条则不显示
             }
 
-            const item = document.createElement('div');
-            item.className = 'timeline-v2-item';
-            item.dataset.id = rec.id;
-
-            const timeCol = document.createElement('div');
-            timeCol.className = 'timeline-v2-time-col';
-            timeCol.textContent = timeStr;
-            item.appendChild(timeCol);
-
-            const connectorCol = document.createElement('div');
-            connectorCol.className = 'timeline-v2-connector-col';
-            const dot = document.createElement('div');
-            dot.className = 'timeline-v2-dot';
-            dot.style.borderColor = typeColor;
-            connectorCol.appendChild(dot);
-            item.appendChild(connectorCol);
-
-            const cardCol = document.createElement('div');
-            cardCol.className = 'timeline-v2-card-col';
-
-            if (timeRange) {
-                const rangeSpan = document.createElement('span');
-                rangeSpan.className = 'timeline-v2-card-time-range';
-                rangeSpan.textContent = timeRange;
-                cardCol.appendChild(rangeSpan);
-            }
-
-            const typeDiv = document.createElement('div');
-            typeDiv.className = 'timeline-v2-card-type';
-            typeDiv.textContent = type;
-            typeDiv.style.color = typeColor;
-            cardCol.appendChild(typeDiv);
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'timeline-v2-card-content';
-            contentDiv.textContent = content;
-            cardCol.appendChild(contentDiv);
-
-            const icon = document.createElement('svg');
-            icon.className = 'timeline-v2-card-icon';
-            icon.innerHTML = '<use xlink:href="#iconTime"></use>';
-            cardCol.appendChild(icon);
-
-            item.appendChild(cardCol);
-
-            item.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showContextMenu(e, rec);
-            });
-
+            const item = this._createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange);
             wrapper.appendChild(item);
+        }
+    } else {
+        // 结束模式：使用上一个记录到当前记录（可能跨天）
+        for (let i = 0; i < sorted.length; i++) {
+            const rec = sorted[i];
+            const dateObj = rec.dateObj;
+            const timeStr = dateObj ? `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+            const type = rec.lifelog_type || '';
+            const typeColor = getTypeColorFromCSS(type);
+            let content = rec.content || '';
+            content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+
+            let timeRange = '';
+            if (i > 0) {
+                const prevRec = sorted[i - 1];
+                const prevDateObj = prevRec.dateObj;
+                const startStr = `${String(prevDateObj.getHours()).padStart(2, '0')}:${String(prevDateObj.getMinutes()).padStart(2, '0')}`;
+                timeRange = `${startStr} - ${timeStr}`;
+            } else {
+                // 当天第一条记录：尝试获取前一天的记录
+                const prevRec = this._getPreviousRecord(rec);
+                if (prevRec) {
+                    const prevDateObj = prevRec.dateObj;
+                    const startStr = `${String(prevDateObj.getHours()).padStart(2, '0')}:${String(prevDateObj.getMinutes()).padStart(2, '0')}`;
+                    timeRange = `${startStr} - ${timeStr}`;
+                } else {
+                    timeRange = `开始 - ${timeStr}`;
+                }
+            }
+
+            const item = this._createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange);
+            wrapper.appendChild(item);
+        }
+    }
+
+    this.middlePanel.appendChild(wrapper);
+}
+
+    // 创建时间轴 V2 的一个条目
+    _createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange) {
+        const item = document.createElement('div');
+        item.className = 'timeline-v2-item';
+        item.dataset.id = rec.id;
+
+        const timeCol = document.createElement('div');
+        timeCol.className = 'timeline-v2-time-col';
+        timeCol.textContent = timeStr;
+        item.appendChild(timeCol);
+
+        const connectorCol = document.createElement('div');
+        connectorCol.className = 'timeline-v2-connector-col';
+        const dot = document.createElement('div');
+        dot.className = 'timeline-v2-dot';
+        dot.style.borderColor = typeColor;
+        connectorCol.appendChild(dot);
+        item.appendChild(connectorCol);
+
+        const cardCol = document.createElement('div');
+        cardCol.className = 'timeline-v2-card-col';
+
+        if (timeRange) {
+            const rangeSpan = document.createElement('span');
+            rangeSpan.className = 'timeline-v2-card-time-range';
+            rangeSpan.textContent = timeRange;
+            cardCol.appendChild(rangeSpan);
+        }
+
+        const typeDiv = document.createElement('div');
+        typeDiv.className = 'timeline-v2-card-type';
+        typeDiv.textContent = type;
+        typeDiv.style.color = typeColor;
+        cardCol.appendChild(typeDiv);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'timeline-v2-card-content';
+        contentDiv.textContent = content;
+        cardCol.appendChild(contentDiv);
+
+        const icon = document.createElement('svg');
+        icon.className = 'timeline-v2-card-icon';
+        icon.innerHTML = '<use xlink:href="#iconTime"></use>';
+        cardCol.appendChild(icon);
+
+        item.appendChild(cardCol);
+
+        item.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.showContextMenu(e, rec);
         });
 
-        this.middlePanel.appendChild(wrapper);
+        return item;
     }
 
     renderWeeklyCalendarV2() {
@@ -2043,12 +2186,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     async onload() {
 
         // 加载 Font Awesome（确保图标显示）
-if (!document.querySelector('link[href*="font-awesome"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
-    document.head.appendChild(link);
-}
+        if (!document.querySelector('link[href*="font-awesome"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+            document.head.appendChild(link);
+        }
 
         this.loadStyleDefaults();
         this.state = { menu: null, observer: null, restoreObserver: null };
@@ -2120,12 +2263,14 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
             }
         });
     }
-        addIcons(svgContent) {
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.style.display = 'none';
-            svg.innerHTML = svgContent;
-            document.body.appendChild(svg);
-        }
+
+    addIcons(svgContent) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.style.display = 'none';
+        svg.innerHTML = svgContent;
+        document.body.appendChild(svg);
+    }
+
     onLayoutReady() {
         this.addTopBar({
             icon: 'iconCamera',
@@ -2164,7 +2309,7 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
                 AND a1.value IS NOT NULL
                 AND a2.value IS NOT NULL
                 AND a3.value IS NOT NULL
-            ORDER BY a1.value || ' ' || a2.value DESC Limit -1
+            ORDER BY a1.value || ' ' || a2.value DESC Limit -1 
         `;
         const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
         if (result && result.code === 0) {
