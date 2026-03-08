@@ -2301,19 +2301,16 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             SELECT 
                 b.id,
                 b.content,
-                a1.value as lifelog_date,
-                a2.value as lifelog_time,
-                a3.value as lifelog_type
+                a1.value AS lifelog_date,
+                a2.value AS lifelog_time,
+                a3.value AS lifelog_type
             FROM blocks b
-            LEFT JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-date'
-            LEFT JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-lifelog-time'
-            LEFT JOIN attributes a3 ON b.id = a3.block_id AND a3.name = 'custom-lifelog-type'
-            WHERE 
-                b.type = 'p' 
-                AND a1.value IS NOT NULL
-                AND a2.value IS NOT NULL
-                AND a3.value IS NOT NULL
-            ORDER BY a1.value || ' ' || a2.value DESC Limit -1 
+            INNER JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-date'
+            INNER JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-lifelog-time'
+            INNER JOIN attributes a3 ON b.id = a3.block_id AND a3.name = 'custom-lifelog-type'
+            WHERE b.type = 'p'
+            ORDER BY a1.value DESC, a2.value DESC
+            LIMIT -1
         `;
         const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
         if (result && result.code === 0) {
