@@ -48,6 +48,25 @@
   <!-- 分割线 -->
   <div style="height: 1px; background: var(--b3-border-color, #eee); margin: 8px 0 12px;"></div>
 
+  <!-- v1.2.6 -->
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-error, #d23f31); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.2.6</strong>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-error-background, #f8d7da); color: var(--b3-card-error-color, #721c24); border-radius: 12px; font-weight: 500;">🚀 重大</span>
+    </div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">
+      • 修改时光笺主页面查询时间，将由查询全部修改成只查询今年<br>
+      • 修复统计视图中对结束模式时间统计问题<br>
+      • 时光笺设置新增显示样式切换按钮，默认不显示 ，点击会在左侧面板显示<br>
+      • 去除统计视图中图表，让其看上去更加简洁并在其页面中新增总记录，使用类型和记录天数，默认显示本周数据<br>  
+      • 轻饰笔记新增渐变色卡片样式点击菜单即可体验<br>
+      • 轻饰笔记新增渐手账卡片点击菜单即可体验<br>
+      • 轻饰笔记新增终端风格点击菜单即可体验<br>    
+      • 重构引述卡片样式<br>                   
+    </div>
+  </div>
+
+
   <!-- v1.2.5 -->
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
@@ -307,6 +326,6 @@
   </div>
 
   <!-- 页脚 -->
-  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.5</div>
+  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.6</div>
 
 </div>
