@@ -233,13 +233,15 @@ class TimelineStore {
     constructor(plugin) {
         this.plugin = plugin;
         this.config = {
-            avatar: null,
-            cover: null,          // 新增：封面图片路径
+            avatar: null,            // 自己头像
+            oppositeAvatar: null,    // 对方头像（新增）
+            cover: null,             // 封面图片路径
             customTitle: '',
             customSubtitle: '',
-            displayMode: 'list',   // 默认列表样式
-            timeMode: 'start',       // 新增：记录时间模式 'start' 或 'end'
-            showStyleSwitcher: false // 新增：是否显示左侧样式切换按钮，默认不显示
+            displayMode: 'list',      // 默认列表样式
+            timeMode: 'start',        // 记录时间模式 'start' 或 'end'
+            showStyleSwitcher: false , // 是否显示左侧样式切换按钮
+            wechatDirections: {}  // 新增：存储微信样式左右方向 { blockId: 'left' | 'right' }
         };
     }
 
@@ -248,12 +250,14 @@ class TimelineStore {
             const saved = await this.plugin.loadData(TIMELINE_STORAGE_NAME);
             if (saved) {
                 this.config.avatar = saved.avatar || null;
+                this.config.oppositeAvatar = saved.oppositeAvatar || null; // 新增
                 this.config.cover = saved.cover || null;
                 this.config.customTitle = saved.customTitle || '';
                 this.config.customSubtitle = saved.customSubtitle || '';
                 this.config.displayMode = saved.displayMode || 'list';
                 this.config.timeMode = saved.timeMode || 'start';
-                this.config.showStyleSwitcher = saved.showStyleSwitcher || false; // 读取配置
+                this.config.showStyleSwitcher = saved.showStyleSwitcher || false;
+                this.config.wechatDirections = saved.wechatDirections || {}; // 新增
             }
         } catch (e) {
             console.warn("加载配置失败", e);
@@ -270,6 +274,25 @@ class TimelineStore {
 
     async setAvatar(path) {
         this.config.avatar = path;
+        await this.saveConfig();
+    }
+
+    // 新增：对方头像
+    getOppositeAvatar() {
+        return this.config.oppositeAvatar;
+    }
+    // 新增：获取微信消息方向
+    getWechatDirection(blockId) {
+        return this.config.wechatDirections[blockId] || null;
+    }
+    
+    // 新增：设置微信消息方向
+    async setWechatDirection(blockId, direction) {
+        this.config.wechatDirections[blockId] = direction;
+        await this.saveConfig();
+    }
+    async setOppositeAvatar(path) {
+        this.config.oppositeAvatar = path;
         await this.saveConfig();
     }
 
@@ -309,23 +332,19 @@ class TimelineStore {
         await this.saveConfig();
     }
 
-    // 新增：获取时间模式
     getTimeMode() {
         return this.config.timeMode;
     }
 
-    // 新增：设置时间模式
     async setTimeMode(mode) {
         this.config.timeMode = mode;
         await this.saveConfig();
     }
 
-    // 新增：获取是否显示样式切换按钮
     getShowStyleSwitcher() {
         return this.config.showStyleSwitcher;
     }
 
-    // 新增：设置是否显示样式切换按钮
     async setShowStyleSwitcher(show) {
         this.config.showStyleSwitcher = show;
         await this.saveConfig();
@@ -340,6 +359,7 @@ class TimelineView {
     static MODE_TIMELINE = 'timeline';
     static MODE_TIMELINE_V2 = 'timeline_v2';
     static MODE_STATISTICS = 'statistics';
+    static MODE_WECHAT = 'wechat';  // 新增微信样式
 
     constructor(plugin, container, yearRecords) {
         this.plugin = plugin;
@@ -482,7 +502,127 @@ class TimelineView {
         this.renderTypesList();
         this.updateHighlight();
     }
+// ========== 微信样式专用右键菜单（控制左右显示，不写块属性） ==========
+showWechatContextMenu(event, record, rowElement) {
+    // 移除已存在的菜单
+    const existingMenu = document.querySelector('.wechat-context-menu');
+    if (existingMenu) existingMenu.remove();
+    
+    const currentDirection = record.direction || 'left';
+    const isLeft = currentDirection === 'left';
+    
+    const menu = document.createElement('div');
+    menu.className = 'wechat-context-menu b3-menu';
+    menu.style.position = 'fixed';
+    menu.style.left = event.clientX + 'px';
+    menu.style.top = event.clientY + 'px';
+    menu.style.zIndex = '9999';
+// 【修改】使用更美观的气泡对话框图标
+    menu.innerHTML = `
+<div class="b3-menu__items">
+    <div class="b3-menu__item" data-action="set-left" ${isLeft ? 'style="background-color:var(--b3-theme-primary-light);"' : ''}>
+        <svg class="b3-menu__icon" viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="currentColor"/>
+        </svg>
+        <span class="b3-menu__label">显示在左侧 ${isLeft ? '✓' : ''}</span>
+    </div>
+    <div class="b3-menu__item" data-action="set-right" ${!isLeft ? 'style="background-color:var(--b3-theme-primary-light);"' : ''}>
+        <svg class="b3-menu__icon" viewBox="0 0 24 24">
+            <path d="M4 2h16c1.1 0 2 .9 2 2v18l-4-4H4c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm0 14h14l2 2V4H4v12z" fill="currentColor"/>
+        </svg>
+        <span class="b3-menu__label">显示在右侧 ${!isLeft ? '✓' : ''}</span>
+    </div>
+    <div class="b3-menu__separator"></div>
+    <button class="b3-menu__item" data-action="edit">
+        <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
+        <span class="b3-menu__label">编辑</span>
+    </button>
+    <button class="b3-menu__item" data-action="open">
+        <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
+        <span class="b3-menu__label">打开文档</span>
+    </button>
+</div>
+`;
+    
+    document.body.appendChild(menu);
+    
+    // 设置左侧
+    menu.querySelector('[data-action="set-left"]').addEventListener('click', async () => {
+        // 保存到插件配置，不写块属性
+        await this.plugin.store.setWechatDirection(record.id, 'left');
+        record.direction = 'left';
+        rowElement.classList.remove('right');
+        rowElement.classList.add('left');
+        // 更新头像样式
+        this.updateWechatAvatar(rowElement, 'left');
+        menu.remove();
+        showMessage('已设置为左侧显示');
+    });
+    
+    // 设置右侧
+    menu.querySelector('[data-action="set-right"]').addEventListener('click', async () => {
+        // 保存到插件配置，不写块属性
+        await this.plugin.store.setWechatDirection(record.id, 'right');
+        record.direction = 'right';
+        rowElement.classList.remove('left');
+        rowElement.classList.add('right');
+        // 更新头像样式
+        this.updateWechatAvatar(rowElement, 'right');
+        menu.remove();
+        showMessage('已设置为右侧显示');
+    });
+    
+    // 编辑
+    menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
+        this.plugin.showEditBlockDialog(record.id, record.content);
+        menu.remove();
+    });
+    
+    // 打开文档
+    menu.querySelector('[data-action="open"]').addEventListener('click', () => {
+        this.plugin.openBlockDocument(record.id);
+        menu.remove();
+    });
+    
+    // 点击其他地方关闭菜单
+    const closeMenu = (e) => {
+        if (!menu.contains(e.target)) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+            document.removeEventListener('contextmenu', closeMenu);
+        }
+    };
+    setTimeout(() => {
+        document.addEventListener('click', closeMenu);
+        document.addEventListener('contextmenu', closeMenu);
+    }, 0);
+}
 
+// 辅助方法：更新微信消息行的头像
+updateWechatAvatar(rowElement, direction) {
+    const avatarDiv = rowElement.querySelector('.wechat-avatar');
+    if (!avatarDiv) return;
+    
+    if (direction === 'left') {
+        avatarDiv.classList.remove('wechat-avatar-self');
+        avatarDiv.classList.add('wechat-avatar-opposite');
+        const oppositeAvatarPath = this.plugin.store.getOppositeAvatar();
+        if (oppositeAvatarPath) {
+            avatarDiv.innerHTML = `<img src="${oppositeAvatarPath.startsWith('http') ? oppositeAvatarPath : '/' + oppositeAvatarPath}" onerror="this.parentElement.innerHTML='<svg><use xlink:href=\\'#iconUser\\'></use></svg>'">`;
+        } else {
+            avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+        }
+    } else {
+        avatarDiv.classList.remove('wechat-avatar-opposite');
+        avatarDiv.classList.add('wechat-avatar-self');
+        const selfAvatarPath = this.plugin.store.getAvatar();
+        if (selfAvatarPath) {
+            avatarDiv.innerHTML = `<img src="${selfAvatarPath.startsWith('http') ? selfAvatarPath : '/' + selfAvatarPath}" onerror="this.parentElement.innerHTML='<svg><use xlink:href=\\'#iconUser\\'></use></svg>'">`;
+        } else {
+            avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+        }
+    }
+}
     clearFilter() {
         this.selectedDate = null;
         this.selectedType = null;
@@ -524,7 +664,7 @@ class TimelineView {
         const avatar = document.createElement('div');
         avatar.className = 'timeline-avatar';
         avatar.setAttribute('title', '点击上传头像');
-        avatar.onclick = () => this.plugin.uploadAvatar(avatar);
+        avatar.onclick = () => this.plugin.uploadAvatar(avatar, 'self'); // 修改：指定上传自己头像
 
         const avatarPath = this.plugin.store.getAvatar();
         if (avatarPath) {
@@ -573,7 +713,8 @@ class TimelineView {
             TimelineView.MODE_LIST,
             TimelineView.MODE_MOMENTS,
             TimelineView.MODE_TIMELINE,
-            TimelineView.MODE_TIMELINE_V2
+            TimelineView.MODE_TIMELINE_V2,
+            TimelineView.MODE_WECHAT  // 新增微信样式
         ];
         const currentIndex = modeOrder.indexOf(this.displayMode);
         const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
@@ -581,7 +722,8 @@ class TimelineView {
             [TimelineView.MODE_LIST]: '列表样式',
             [TimelineView.MODE_MOMENTS]: '朋友圈样式',
             [TimelineView.MODE_TIMELINE]: '时间日志样式',
-            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式'
+            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式',
+            [TimelineView.MODE_WECHAT]: '聊天样式'   // 新增
         }[nextMode];
 
         const currentTimeMode = this.timeMode;
@@ -815,6 +957,7 @@ class TimelineView {
             { mode: TimelineView.MODE_MOMENTS, icon: 'fa-images', label: '朋友圈样式' },
             { mode: TimelineView.MODE_TIMELINE, icon: 'fa-clock', label: '时间日志样式' },
             { mode: TimelineView.MODE_TIMELINE_V2, icon: 'fa-timeline', label: '时间轴样式' },
+            { mode: TimelineView.MODE_WECHAT, icon: 'fa-bullhorn', label: '聊天样式' },  // 新增
             { mode: TimelineView.MODE_STATISTICS, icon: 'fa-chart-pie', label: '统计视图' }
         ];
 
@@ -843,19 +986,20 @@ class TimelineView {
         return `${year}年${month}月${day}日 ${hours}:${minutes}`;
     }
 
-    formatDuration(minutes) {
-        if (minutes < 60) {
-            return minutes + '分';
-        } else {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            if (mins === 0) {
-                return hours + '时';
+        formatDuration(minutes) {
+            minutes = Math.round(minutes); 
+            if (minutes < 60) {
+                return minutes + '分';
             } else {
-                return hours + '时' + mins + '分';
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                if (mins === 0) {
+                    return hours + '时';
+                } else {
+                    return hours + '时' + mins + '分';
+                }
             }
         }
-    }
 
     /**
      * 获取给定记录在全局时间轴上的下一条记录（用于开始模式跨天）
@@ -1428,6 +1572,8 @@ renderStatisticsPanel() {
             this.renderTimelineV2Panel();
         } else if (this.displayMode === TimelineView.MODE_STATISTICS) {
             this.renderStatisticsPanel();
+        } else if (this.displayMode === TimelineView.MODE_WECHAT) {   // 新增微信样式
+            this.renderWechatPanel();
         }
     }
 
@@ -1464,7 +1610,7 @@ renderStatisticsPanel() {
                 const type = rec.lifelog_type || '未分类';
                 const color = getTypeColorFromCSS(type);
                 let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
                 const item = document.createElement('div');
                 item.className = 'timeline-item';
@@ -1525,7 +1671,7 @@ renderStatisticsPanel() {
         }
         avatarSmall.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.plugin.uploadAvatar(avatarSmall);
+            this.plugin.uploadAvatar(avatarSmall, 'self'); // 修改：指定上传自己头像
         });
 
         const nick = document.createElement('span');
@@ -1561,7 +1707,7 @@ renderStatisticsPanel() {
             const timeStr = dateObj ? this.formatAbsoluteTime(dateObj) : '';
             const typeStr = rec.lifelog_type ? ` #${rec.lifelog_type}` : '';
             let content = rec.content || '';
-            content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
             const card = document.createElement('div');
             card.className = 'north-moments-card';
@@ -1658,7 +1804,7 @@ renderStatisticsPanel() {
                     const type = rec.lifelog_type || '';
                     const typeColor = getTypeColorFromCSS(type);
                     let content = rec.content || '';
-                    content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                    content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
                     let intervalText = '';
                     // 先看组内是否有下一条记录
@@ -1690,7 +1836,7 @@ renderStatisticsPanel() {
                     const type = rec.lifelog_type || '';
                     const typeColor = getTypeColorFromCSS(type);
                     let content = rec.content || '';
-                    content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                    content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
                     let intervalText = '';
                     if (i > 0) {
@@ -1865,7 +2011,7 @@ renderStatisticsPanel() {
                 const type = rec.lifelog_type || '';
                 const typeColor = getTypeColorFromCSS(type);
                 let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
                 let timeRange = '';
                 // 先看组内是否有下一条记录（即当前记录不是最后一条）
@@ -1897,7 +2043,7 @@ renderStatisticsPanel() {
                 const type = rec.lifelog_type || '';
                 const typeColor = getTypeColorFromCSS(type);
                 let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
 
                 let timeRange = '';
                 if (i > 0) {
@@ -2050,11 +2196,160 @@ renderStatisticsPanel() {
         return container;
     }
 
+    // ========== 微信聊天样式渲染（最终版） ==========
+// ========== 微信聊天样式渲染（修改版：类型固定方向） ==========
+// ========== 微信聊天样式渲染（最终版：日期倒序 + 类型固定方向 + 右键控制） ==========
+renderWechatPanel() {
+    this.middlePanel.innerHTML = '';
+    const recs = this.filteredRecords;
+    if (!recs.length) {
+        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无消息</div>';
+        return;
+    }
+    // 1. 按时间正序排序（旧到新），用于计算日期内顺序
+    const sortedAsc = [...recs]
+        .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
+        .filter(r => r.dateObj)
+        .sort((a, b) => a.dateObj - b.dateObj);
+    
+    // 2. 为每个类型分配固定方向（可被用户手动覆盖）
+    const typeDirectionMap = new Map();
+    let nextDirection = 'left'; // 下一个新类型的默认方向
+    
+    sortedAsc.forEach(rec => {
+        const type = rec.lifelog_type || '';
+        // 优先使用用户设置的方向（从插件配置读取）
+        const userDir = this.plugin.store.getWechatDirection(rec.id);
+        if (userDir) {
+            rec.direction = userDir;
+        } else {
+            // 没有用户设置则使用类型固定方向
+            if (!typeDirectionMap.has(type)) {
+                typeDirectionMap.set(type, nextDirection);
+                nextDirection = nextDirection === 'left' ? 'right' : 'left';
+            }
+            rec.direction = typeDirectionMap.get(type);
+        }
+    });
+    
+    // 3. 按日期分组（组内记录已是正序）
+    const grouped = new Map();
+    sortedAsc.forEach(rec => {
+        const ds = formatDate(rec.dateObj);
+        if (!grouped.has(ds)) grouped.set(ds, []);
+        grouped.get(ds).push(rec);
+    });
+    
+    const container = document.createElement('div');
+    container.className = 'wechat-panel';
+    
+    // 4. 【修改点】获取日期数组并倒序排序（新日期在前）
+    const sortedDates = Array.from(grouped.keys()).sort().reverse();
+    
+    // 5. 遍历日期分组（日期倒序）
+    for (const dateStr of sortedDates) {
+        const records = grouped.get(dateStr);
+        
+        // 日期分隔线
+        const divider = document.createElement('div');
+        divider.className = 'wechat-date-divider';
+        divider.innerHTML = `<span>${dateStr}</span>`;
+        container.appendChild(divider);
+        
+        // 遍历该日期内的记录（保持正序：旧消息在上，新消息在下）
+        records.forEach(rec => {
+            const dateObj = rec.dateObj;
+            const timeStr = dateObj ?
+                `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
+            const type = rec.lifelog_type || '';
+            
+            // 时间戳行
+            const timestamp = document.createElement('div');
+            timestamp.className = 'wechat-timestamp';
+            timestamp.innerHTML = `<span>${timeStr} ${type}</span>`;
+            container.appendChild(timestamp);
+            
+            // 消息行
+            const row = document.createElement('div');
+            row.className = 'wechat-message-row';
+            row.dataset.id = rec.id;
+            row.classList.add(rec.direction); // left 或 right
+            
+            // 头像逻辑
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'wechat-avatar';
+            if (rec.direction === 'left') {
+                avatarDiv.classList.add('wechat-avatar-opposite');
+                const oppositeAvatarPath = this.plugin.store.getOppositeAvatar();
+                if (oppositeAvatarPath) {
+                    const img = document.createElement('img');
+                    img.src = oppositeAvatarPath.startsWith('http') ? oppositeAvatarPath : '/' + oppositeAvatarPath;
+                    img.onerror = () => {
+                        avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                    };
+                    avatarDiv.appendChild(img);
+                } else {
+                    avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                }
+                avatarDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.plugin.uploadAvatar(avatarDiv, 'opposite');
+                });
+            } else {
+                avatarDiv.classList.add('wechat-avatar-self');
+                const selfAvatarPath = this.plugin.store.getAvatar();
+                if (selfAvatarPath) {
+                    const img = document.createElement('img');
+                    img.src = selfAvatarPath.startsWith('http') ? selfAvatarPath : '/' + selfAvatarPath;
+                    img.onerror = () => {
+                        avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                    };
+                    avatarDiv.appendChild(img);
+                } else {
+                    avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                }
+                avatarDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.plugin.uploadAvatar(avatarDiv, 'self');
+                });
+            }
+            
+            // 气泡内容
+            const bubble = document.createElement('div');
+            bubble.className = 'wechat-bubble';
+            let content = rec.content || '';
+            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
+            bubble.textContent = content;
+            
+            row.appendChild(avatarDiv);
+            row.appendChild(bubble);
+            
+            // 【修改】微信样式专用右键菜单
+            row.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showWechatContextMenu(e, rec, row);
+            });
+            
+            container.appendChild(row);
+        });
+    }
+    this.middlePanel.appendChild(container);
+}
+
     // 更新单条记录内容
     updateRecordContent(blockId, newContent) {
-        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"], .timeline-v2-item[data-id="${blockId}"]`;
+        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"], .timeline-v2-item[data-id="${blockId}"], .wechat-message-row[data-id="${blockId}"]`;
         const item = this.middlePanel.querySelector(selector);
         if (item) {
+            // 优先更新微信气泡内容
+            const wechatBubble = item.querySelector('.wechat-bubble');
+            if (wechatBubble) {
+                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
+                wechatBubble.textContent = displayContent;
+                return;
+            }
+            // 更新其他样式
             const contentDiv = item.querySelector('.timeline-v2-card-content');
             if (contentDiv) {
                 let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
@@ -2333,7 +2628,7 @@ renderStatisticsPanel() {
     // 修改 setDisplayMode：处理统计视图数据切换
     async setDisplayMode(mode) {
         if (mode === this.displayMode) return;
-        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2, TimelineView.MODE_STATISTICS].includes(mode)) {
+        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2, TimelineView.MODE_STATISTICS, TimelineView.MODE_WECHAT].includes(mode)) {
             console.warn('无效模式:', mode);
             return;
         }
@@ -2347,7 +2642,7 @@ renderStatisticsPanel() {
             this.dailyCounts = this.allDailyCountsUnfiltered; // 右侧日历使用全部数据计数
             this.globalSorted = this.globalSortedAll;         // 使用全部记录的全局排序
         } else {
-            // 切换回普通视图
+            // 切换回普通视图（包括微信样式）
             this.allRecords = this.yearRecords;
             this.dailyCounts = this.yearDailyCounts;          // 右侧日历恢复为本年数据
             this.globalSorted = this._buildGlobalSorted(this.yearRecords); // 重建本年记录的全局排序
@@ -2387,6 +2682,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
             document.head.appendChild(link);
         }
+
+        // 添加图标着色样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .north-menu-icon {
+                color: var(--b3-theme-primary);  /* 使用思源主题主色，也可自定义颜色如 #ff6b6b */
+            }
+        `;
+        document.head.appendChild(style);
 
         this.loadStyleDefaults();
         this.state = { menu: null, observer: null, restoreObserver: null };
@@ -2560,7 +2864,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
     }
 
-    uploadAvatar(avatarElement) {
+    /**
+     * 上传头像
+     * @param {HTMLElement} avatarElement - 触发上传的头像元素
+     * @param {string} role - 'self' 或 'opposite'，指定上传给谁
+     */
+    uploadAvatar(avatarElement, role) {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
@@ -2585,8 +2894,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     const originalName = file.name;
                     const newPath = succMap[originalName];
                     if (newPath) {
-                        await this.store.setAvatar(newPath);
-                        this.updateAllAvatars(newPath);
+                        if (role === 'self') {
+                            await this.store.setAvatar(newPath);
+                            this.updateAvatarsByRole('self', newPath);
+                        } else {
+                            await this.store.setOppositeAvatar(newPath);
+                            this.updateAvatarsByRole('opposite', newPath);
+                        }
                         showMessage('头像上传成功');
                     }
                 } else {
@@ -2602,6 +2916,27 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         document.body.appendChild(fileInput);
         fileInput.click();
+    }
+
+    /**
+     * 根据角色更新对应头像
+     * @param {string} role - 'self' 或 'opposite'
+     * @param {string} path - 图片路径
+     */
+    updateAvatarsByRole(role, path) {
+        const selector = role === 'self' 
+            ? '.timeline-avatar, .cover-avatar, .north-moments-card-avatar, .wechat-avatar-self'
+            : '.wechat-avatar-opposite';
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+            el.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = path.startsWith('http') ? path : '/' + path;
+            img.onerror = () => {
+                el.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+            };
+            el.appendChild(img);
+        });
     }
 
     uploadCover(coverElement) {
@@ -2650,19 +2985,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         document.body.appendChild(fileInput);
         fileInput.click();
-    }
-
-    updateAllAvatars(path) {
-        const avatarElements = document.querySelectorAll('.timeline-avatar, .cover-avatar, .moments-card-avatar');
-        avatarElements.forEach(el => {
-            el.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = path.startsWith('http') ? path : '/' + path;
-            img.onerror = () => {
-                el.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            };
-            el.appendChild(img);
-        });
     }
 
     loadStyleDefaults() {
@@ -3031,12 +3353,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     createTopMenuButton(blockId) {
-        const btn = document.createElement("button");
-        btn.id = "North-CardView-Top";
-        btn.className = "b3-menu__item";
-        btn.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconList"></use></svg>
-                         <span class="b3-menu__label">${this.getText('cardview', '卡片视图')}</span>
-                         <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
+    const btn = document.createElement("button");
+    btn.id = "North-CardView-Top";
+    btn.className = "b3-menu__item";
+    btn.innerHTML = `<svg class="b3-menu__icon north-menu-icon"><use xlink:href="#iconList"></use></svg>
+                     <span class="b3-menu__label">${this.getText('cardview', '卡片视图')}</span>
+                     <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
         
         const subMenu = document.createElement("div");
         subMenu.className = "b3-menu__submenu";
@@ -3068,37 +3390,32 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return item;
     }
 
+    // ========== 修改后的二级菜单生成方法（图标彩色） ==========
     createSecondaryGroupButton(blockId, group) {
         const btn = document.createElement("button");
         btn.className = "b3-menu__item";
-        btn.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="${group.icon}"></use></svg>
+
+        // 为二级菜单生成独特颜色
+        const iconColor = this.getColorForString(group.id, 75, 60); // 饱和75%，明度60%
+
+        btn.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="${group.icon}"></use></svg>
                          <span class="b3-menu__label">${this.getText(group.labelKey)}</span>
                          <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
         btn.appendChild(this.createTertiaryMenu(blockId, group.filter));
         return btn;
     }
 
-    createTertiaryMenu(blockId, filterFunc) {
-        const subMenu = document.createElement("div");
-        subMenu.className = "b3-menu__submenu";
-        const itemsContainer = document.createElement("div");
-        itemsContainer.className = "b3-menu__items";
-
-        this.getAllCardItems().forEach(item => {
-            if (filterFunc(item.label, item.key)) {
-                itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
-            }
-        });
-
-        subMenu.appendChild(itemsContainer);
-        return subMenu;
-    }
-
+    // ========== 修改后的三级菜单生成方法（图标彩色） ==========
     createCardItem(blockId, label, key) {
         const item = document.createElement("button");
         item.className = "b3-menu__item";
-        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSparkles"></use></svg>
+
+        // 为卡片生成独特颜色
+        const iconColor = this.getColorForString(key, 80, 60); // 饱和度稍高，更鲜艳
+
+        item.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="#iconSparkles"></use></svg>
                           <span class="b3-menu__label">${label}</span>`;
+
         item.onclick = async (e) => {
             e.stopPropagation();
 
@@ -3130,6 +3447,33 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return item;
     }
 
+    // ========== 新增：基于字符串生成彩色HSL的方法 ==========
+    getColorForString(str, saturation = 70, lightness = 60) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash % 360);
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    createTertiaryMenu(blockId, filterFunc) {
+        const subMenu = document.createElement("div");
+        subMenu.className = "b3-menu__submenu";
+        const itemsContainer = document.createElement("div");
+        itemsContainer.className = "b3-menu__items";
+
+        // 过滤并生成三级菜单项（可按需排序，此处保持原有顺序）
+        this.getAllCardItems().forEach(item => {
+            if (filterFunc(item.label, item.key)) {
+                itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
+            }
+        });
+
+        subMenu.appendChild(itemsContainer);
+        return subMenu;
+    }
+
     createSeparator() {
         const sep = document.createElement("button");
         sep.className = "b3-menu__separator";
@@ -3141,13 +3485,14 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return CARD_ITEMS.map(item => ({ key: item.key, label: item.label }));
     }
 
+    // ========== 二级菜单按字数排序（已在返回前排序） ==========
     getSecondaryGroups() {
-        return [
+        const groups = [
             {
                 id: "whisper",
                 labelKey: "whisperGroup",
                 icon: "#iconLayout",
-                filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin') 
+                filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
             },
             {
                 id: "whisperThin",
@@ -3164,20 +3509,20 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             {
                 id: "gradientCardGroup",
                 labelKey: "gradientCardGroup",
-                icon: "#iconSparkles",  // 可选用合适的图标
+                icon: "#iconSparkles",
                 filter: (label, key) => key.endsWith('GradientCard')
             },
             {
                 id: "journalCard",
                 labelKey: "journalCardGroup",
                 icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('JournalCard')  // ✅ 简洁高效！
+                filter: (label, key) => key.endsWith('JournalCard')
             },
             {
                 id: "terminalGroup",
                 labelKey: "terminalGroup",
-                icon: "#iconTerminal",  // 请根据实际图标库调整，也可用 emoji 如 "💻"
-                filter: (label, key) => key.endsWith('TerminalCard')  // 匹配以 TerminalCard 结尾的 key
+                icon: "#iconTerminal",
+                filter: (label, key) => key.endsWith('TerminalCard')
             },
             {
                 id: "noticeGroup",
@@ -3192,9 +3537,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 filter: (label, key) => key.endsWith('GradientTopCard')
             },
             {
-                id: "calloutGroup",            
+                id: "calloutGroup",
                 labelKey: "calloutGroup",
-                icon: "#iconInfo",              
+                icon: "#iconInfo",
                 filter: (label, key) => key.endsWith('CalloutCard')
             },
             {
@@ -3222,6 +3567,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 filter: (label, key) => key.endsWith('QuoteCard')
             }
         ];
+
+        // 按显示文本字数升序排序（短的在前）
+        return groups.sort((a, b) => {
+            const textA = this.getText(a.labelKey, '');
+            const textB = this.getText(b.labelKey, '');
+            return textA.length - textB.length;
+        });
     }
 
     getText(key, fallback) {
