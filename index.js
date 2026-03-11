@@ -263,7 +263,9 @@ class TimelineStore {
             displayMode: 'list',      // 默认列表样式
             timeMode: 'start',        // 记录时间模式 'start' 或 'end'
             showStyleSwitcher: false , // 是否显示左侧样式切换按钮
-            wechatDirections: {}  // 新增：存储微信样式左右方向 { blockId: 'left' | 'right' }
+            wechatDirections: {} , // 新增：存储微信样式左右方向 { blockId: 'left' | 'right' }
+            showBarChart: false,    // 是否显示柱状图（默认不显示）
+            showPieChart: false,    // 是否显示饼图（默认不显示）
         };
     }
 
@@ -280,6 +282,8 @@ class TimelineStore {
                 this.config.timeMode = saved.timeMode || 'start';
                 this.config.showStyleSwitcher = saved.showStyleSwitcher || false;
                 this.config.wechatDirections = saved.wechatDirections || {}; // 新增
+                this.config.showBarChart = saved.showBarChart !== undefined ? saved.showBarChart : false;
+                this.config.showPieChart = saved.showPieChart !== undefined ? saved.showPieChart : false;
             }
         } catch (e) {
             console.warn("加载配置失败", e);
@@ -288,6 +292,22 @@ class TimelineStore {
 
     async saveConfig() {
         await this.plugin.saveData(TIMELINE_STORAGE_NAME, this.config);
+    }
+
+    // ========== 图表显示配置 ==========
+    getShowBarChart() {
+        return this.config.showBarChart;
+    }
+    getShowPieChart() {
+        return this.config.showPieChart;
+    }
+    async setShowBarChart(show) {
+        this.config.showBarChart = show;
+        await this.saveConfig();
+    }
+    async setShowPieChart(show) {
+        this.config.showPieChart = show;
+        await this.saveConfig();
     }
 
     getAvatar() {
@@ -1041,6 +1061,23 @@ updateWechatAvatar(rowElement, direction) {
                         <label for="showStyleSwitcherCheckbox" style="margin-left: 6px;">显示样式切换按钮（左侧面板显示）</label>
                     </div>
 
+                    <!-- 图表显示控制 -->
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--b3-border-color);">
+                        <div class="b3-dialog__label">统计视图 - 图表显示</div>
+                        <div style="margin: 8px 0; display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="showBarChartCheckbox" ${this.plugin.store.getShowBarChart() ? 'checked' : ''}
+                                       style="flex-shrink: 0; width: 14px; height: 14px; margin: 0;">
+                                <span style="flex: 1;">显示类型分布（柱状图）</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="showPieChartCheckbox" ${this.plugin.store.getShowPieChart() ? 'checked' : ''}
+                                       style="flex-shrink: 0; width: 14px; height: 14px; margin: 0;">
+                                <span style="flex: 1;">显示记录占比（饼图）</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                         <div>
                             <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
@@ -1069,6 +1106,12 @@ updateWechatAvatar(rowElement, direction) {
                 const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
                 const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
                 const showSwitcher = dialog.element.querySelector('#showStyleSwitcherCheckbox').checked;
+                    // 保存图表显示配置
+                const showBarChart = dialog.element.querySelector('#showBarChartCheckbox').checked;
+                const showPieChart = dialog.element.querySelector('#showPieChartCheckbox').checked;
+
+                await this.plugin.store.setShowBarChart(showBarChart);
+                await this.plugin.store.setShowPieChart(showPieChart);
 
                 await this.plugin.store.setCustomTitle(title);
                 await this.plugin.store.setCustomSubtitle(subtitle);
@@ -1710,49 +1753,82 @@ renderStatisticsPanel() {
     }
 
 // ========== 添加图表网格（类型分布柱状图 + 记录占比饼图） ==========
-const chartsGrid = document.createElement('div');
-chartsGrid.className = 'north-stats-charts-grid';
-container.appendChild(chartsGrid); // container 是您已有的中间面板容器变量名，请根据实际情况调整
-
-// 定义两个图表卡片
-const chartDefs = [
-    { id: 'bar', title: '类型分布', icon: '🏷️', desc: '各类型记录数量', color: '#4C6EF5' },
-    { id: 'pie', title: '记录占比', icon: '📊', desc: '各类记录占比分析', color: '#FAB005' }
-];
-
-chartDefs.forEach(def => {
-    const card = document.createElement('div');
-    card.className = 'stats-chart-card';
-    card.id = `stats-chart-${def.id}`;
-    card.innerHTML = `
-        <div class="chart-header">
-            <div class="chart-title">
-                <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${this.lightenColor(def.color, 20)});">${def.icon}</div>
-                <div class="chart-text">
-                    <h4>${def.title}</h4>
-                    <p>${def.desc}</p>
+// ========== 添加图表网格（根据配置动态显示） ==========
+    const showBar = this.plugin.store.getShowBarChart();
+    const showPie = this.plugin.store.getShowPieChart();
+    
+    // 如果都不显示，直接跳过图表区域渲染
+    if (!showBar && !showPie) {
+        // 不添加 chartsGrid，保持原有布局
+    } else {
+        const chartsGrid = document.createElement('div');
+        chartsGrid.className = 'north-stats-charts-grid';
+        
+        // 动态设置列数：只显示一个时占满整行
+        if ((showBar && !showPie) || (!showBar && showPie)) {
+            chartsGrid.classList.add('single-chart-mode');
+        }
+        
+        container.appendChild(chartsGrid);
+    
+        // 定义两个图表卡片（按需渲染）
+        const chartDefs = [];
+        if (showBar) {
+            chartDefs.push({ 
+                id: 'bar', 
+                title: '类型分布', 
+                icon: '🏷️', 
+                desc: '各类型记录数量', 
+                color: '#4C6EF5' 
+            });
+        }
+        if (showPie) {
+            chartDefs.push({ 
+                id: 'pie', 
+                title: '记录占比', 
+                icon: '📊', 
+                desc: '各类记录占比分析', 
+                color: '#FAB005' 
+            });
+        }
+    
+        chartDefs.forEach(def => {
+            const card = document.createElement('div');
+            card.className = 'stats-chart-card';
+            card.id = `stats-chart-${def.id}`;
+            card.innerHTML = `
+            <div class="chart-header">
+                <div class="chart-title">
+                    <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${this.lightenColor(def.color, 20)});">${def.icon}</div>
+                    <div class="chart-text">
+                        <h4>${def.title}</h4>
+                        <p>${def.desc}</p>
+                    </div>
+                </div>
+                <div class="chart-meta">
+                    <div class="chart-value" id="chart-val-${def.id}">0</div>
+                    <div class="chart-trend" id="chart-trend-${def.id}">↗️0%</div>
                 </div>
             </div>
-            <div class="chart-meta">
-                <div class="chart-value" id="chart-val-${def.id}">0</div>
-                <div class="chart-trend" id="chart-trend-${def.id}">↗️0%</div>
-            </div>
-        </div>
-        <div class="chart-content" id="chart-content-${def.id}"></div>
-        <div class="chart-legend" id="chart-legend-${def.id}"></div>
-    `;
-    chartsGrid.appendChild(card);
-});
-
-// 计算统计数据
-// 基于统计视图筛选条件获取记录
-const statsRecords = this._getStatsFilteredRecords();
-const statsData = this._computeStatsData(statsRecords);
-this._currentStatsData = statsData;
-
-// 渲染两个图表
-this._renderBarChart(statsData.typeData);
-this._renderPieChart(statsData.typeData, statsData.total);
+            <div class="chart-content" id="chart-content-${def.id}"></div>
+            <div class="chart-legend" id="chart-legend-${def.id}"></div>
+            `;
+            chartsGrid.appendChild(card);
+        });
+    
+        // 计算统计数据
+        const statsRecords = this._getStatsFilteredRecords();
+        const statsData = this._computeStatsData(statsRecords);
+        this._currentStatsData = statsData;
+    
+        // 按需渲染图表
+        if (showBar) {
+            this._renderBarChart(statsData.typeData);
+        }
+        if (showPie) {
+            this._renderPieChart(statsData.typeData, statsData.total);
+        }
+    }
 }
 
     // 加载 ECharts 并渲染饼图

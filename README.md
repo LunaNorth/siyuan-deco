@@ -48,6 +48,16 @@
   <!-- 分割线 -->
   <div style="height: 1px; background: var(--b3-border-color, #eee); margin: 8px 0 12px;"></div>
 
+  <!-- v1.2.9 -->
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.2.9</strong>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-theme-primary-lightest, #e0e7ff); color: var(--b3-theme-primary, #5b8def); border-radius: 12px; font-weight: 500;">✨ 新功能-优化</span>
+    </div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">      
+      新增时光笺设置-统计视图-图标显示选项 ，默认是不显示图表的 ，可根据控制选择具体哪个或者都显示<br>
+      </div>
+  </div>
 
   <!-- v1.2.8 -->
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -354,6 +364,6 @@
   </div>
 
   <!-- 页脚 -->
-  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.8</div>
+  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.9</div>
 
 </div>
