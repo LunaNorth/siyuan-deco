@@ -2372,6 +2372,118 @@
     content: "🎯 重点总结";
 }
 
+/* ------------------------------顶线样式----------------------------------------------- */
+/* ======================================== 顶线样式组 (优雅顶线 - 多色版) ======================================== */
+/* 特点：顶部彩色细线，内部干净，第一行文字自动变为标题样式，适合做小结 */
+/* 使用方法：应用样式后，块内的第一行文字会自动变成带下划线的标题 */
+
+/* ========== 基础样式（所有颜色共用）========== */
+.protyle-wysiwyg [custom-deco-style^="优雅顶线"]:not([fold="1"]) {
+    padding: 14px 16px !important;
+    border: 1px solid var(--b3-theme-surface-lighter) !important;
+    border-radius: 4px !important;
+    background-color: var(--b3-theme-background) !important;
+    color: unset !important;
+    margin: 8px 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+}
+
+.protyle-wysiwyg [custom-deco-style^="优雅顶线"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: transparent !important;
+    margin: 0 0 12px 0 !important;
+    padding: 0 0 4px 0 !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    font-weight: 600 !important;
+    font-size: 0.95em !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+.protyle-wysiwyg [custom-deco-style^="优雅顶线"]:not([fold="1"])::before {
+    display: none !important;
+}
+
+.protyle-wysiwyg .li > [custom-deco-style^="优雅顶线"]:not([fold="1"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.protyle-wysiwyg .li > [custom-deco-style^="优雅顶线"]:not([fold="1"]) > [data-node-id]:first-child {
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+}
+
+#preview .protyle-wysiwyg [custom-deco-style^="优雅顶线"]:not([fold="1"]) {
+    margin-left: 10px;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+/* ========== 颜色变体（写死颜色值）========== */
+
+/* 🔵 优雅顶线·蓝 (主推 #3575f0) */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·蓝"]:not([fold="1"]) {
+    border-top: 3px solid #3575f0 !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·蓝"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #3575f0 !important;
+}
+
+/* 🔴 优雅顶线·红 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·红"]:not([fold="1"]) {
+    border-top: 3px solid #e74c3c !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·红"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #e74c3c !important;
+}
+
+/* 🟢 优雅顶线·绿 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·绿"]:not([fold="1"]) {
+    border-top: 3px solid #27ae60 !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·绿"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #27ae60 !important;
+}
+
+/* 🟠 优雅顶线·橙 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·橙"]:not([fold="1"]) {
+    border-top: 3px solid #e67e22 !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·橙"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #e67e22 !important;
+}
+
+/* 🟣 优雅顶线·紫 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·紫"]:not([fold="1"]) {
+    border-top: 3px solid #9b59b6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·紫"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #9b59b6 !important;
+}
+
+/* 🔷 优雅顶线·青 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·青"]:not([fold="1"]) {
+    border-top: 3px solid #1abc9c !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·青"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #1abc9c !important;
+}
+
+/* 🌸 优雅顶线·粉 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·粉"]:not([fold="1"]) {
+    border-top: 3px solid #ff6b9d !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·粉"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #ff6b9d !important;
+}
+
+/* ⚪ 优雅顶线·灰 */
+.protyle-wysiwyg [custom-deco-style="优雅顶线·灰"]:not([fold="1"]) {
+    border-top: 3px solid #95a5a6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="优雅顶线·灰"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #95a5a6 !important;
+}
+
 /* ========== 新特性卡片 ========== */
 .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"]) {
     background: #ffffff !important;
@@ -2674,6 +2786,151 @@
 }
 .protyle-wysiwyg [custom-deco-style="万能提示"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before {
     content: "✨ 万能提示";
+}
+
+/* ---------------------------------------------波点格子风----------------------------------------------------------------- */
+
+/* ========== 基础样式（所有波点共用）========== */
+.protyle-wysiwyg [custom-deco-style^="波点·"]:not([fold="1"]) {
+    padding: 16px 20px !important;          /* 稍微减小容器内边距 */
+    border: 2px solid !important;
+    border-radius: 16px !important;
+    background-size: 24px 24px !important;
+    box-shadow: 6px 6px 0 -2px rgba(0,0,0,0.05), 6px 6px 0 0 !important;
+    color: unset !important;
+    margin: 18px 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.protyle-wysiwyg [custom-deco-style^="波点·"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: transparent !important;
+    margin: 0 0 6px 0 !important;           /* 减小底部间距，让标题更贴近正文 */
+    padding: 0 !important;                  /* 去除底部 padding */
+    font-weight: 700 !important;
+    font-size: 0.98em !important;
+    letter-spacing: 1px !important;
+    border-bottom: none !important;         /* 确保无下划线 */
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.9) !important;
+    transition: color 0.2s ease !important;
+    line-height: 1.4 !important;            /* 调整行高，更紧凑 */
+}
+
+.protyle-wysiwyg [custom-deco-style^="波点·"]:not([fold="1"])::before {
+    display: none !important;
+}
+
+.protyle-wysiwyg .li > [custom-deco-style^="波点·"]:not([fold="1"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.protyle-wysiwyg .li > [custom-deco-style^="波点·"]:not([fold="1"]) > [data-node-id]:first-child {
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+}
+
+#preview .protyle-wysiwyg [custom-deco-style^="波点·"]:not([fold="1"]) {
+    margin-left: 10px;
+    box-sizing: border-box;
+    max-width: 100%;
+    break-inside: avoid;
+}
+
+/* ========== 颜色变体（保留优化后的配色）========== */
+
+/* 🌸 波点·粉嫩 */
+.protyle-wysiwyg [custom-deco-style="波点·粉嫩"]:not([fold="1"]) {
+    border-color: #f3c3d2 !important;
+    background-color: #fff9fb !important;
+    background-image: radial-gradient(#fad3e0 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #ffe4ec, 6px 6px 0 0 #f3c3d2 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·粉嫩"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #b84a6b !important;
+    text-shadow: 2px 2px 0 #ffe4ec !important;
+}
+
+/* 🍃 波点·薄荷 */
+.protyle-wysiwyg [custom-deco-style="波点·薄荷"]:not([fold="1"]) {
+    border-color: #a8e0cf !important;
+    background-color: #f2fcf8 !important;
+    background-image: radial-gradient(#c0f0e0 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #daf5ed, 6px 6px 0 0 #a8e0cf !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·薄荷"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #3d8a74 !important;
+    text-shadow: 2px 2px 0 #daf5ed !important;
+}
+
+/* ☀️ 波点·暖阳 */
+.protyle-wysiwyg [custom-deco-style="波点·暖阳"]:not([fold="1"]) {
+    border-color: #f7d794 !important;
+    background-color: #fffdf2 !important;
+    background-image: radial-gradient(#ffecb3 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #fff5d6, 6px 6px 0 0 #f7d794 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·暖阳"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #c48a2a !important;
+    text-shadow: 2px 2px 0 #fff5d6 !important;
+}
+
+/* 💜 波点·薰衣草 */
+.protyle-wysiwyg [custom-deco-style="波点·薰衣草"]:not([fold="1"]) {
+    border-color: #d9c2f0 !important;
+    background-color: #faf7ff !important;
+    background-image: radial-gradient(#e9d8ff 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #f0e6ff, 6px 6px 0 0 #d9c2f0 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·薰衣草"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #7a5ca8 !important;
+    text-shadow: 2px 2px 0 #f0e6ff !important;
+}
+
+/* 🩵 波点·晴空 */
+.protyle-wysiwyg [custom-deco-style="波点·晴空"]:not([fold="1"]) {
+    border-color: #a9c9f0 !important;
+    background-color: #f5faff !important;
+    background-image: radial-gradient(#c2daf5 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #e1efff, 6px 6px 0 0 #a9c9f0 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·晴空"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #4a7ba8 !important;
+    text-shadow: 2px 2px 0 #e1efff !important;
+}
+
+/* 🧡 波点·珊瑚橙 */
+.protyle-wysiwyg [custom-deco-style="波点·珊瑚橙"]:not([fold="1"]) {
+    border-color: #f9a68b !important;
+    background-color: #fff7f2 !important;
+    background-image: radial-gradient(#ffd9cc 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #ffe5dc, 6px 6px 0 0 #f9a68b !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·珊瑚橙"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #d07e5a !important;
+    text-shadow: 2px 2px 0 #ffe5dc !important;
+}
+
+/* 🍵 波点·抹茶 */
+.protyle-wysiwyg [custom-deco-style="波点·抹茶"]:not([fold="1"]) {
+    border-color: #b8d9a6 !important;
+    background-color: #f6faf2 !important;
+    background-image: radial-gradient(#d4e8c2 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #e3f0d8, 6px 6px 0 0 #b8d9a6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·抹茶"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #6a8e5a !important;
+    text-shadow: 2px 2px 0 #e3f0d8 !important;
+}
+
+/* 🫐 波点·浆果 */
+.protyle-wysiwyg [custom-deco-style="波点·浆果"]:not([fold="1"]) {
+    border-color: #c79bb9 !important;
+    background-color: #fcf5fa !important;
+    background-image: radial-gradient(#ebcde2 2px, transparent 2px) !important;
+    box-shadow: 6px 6px 0 -2px #f7e4f0, 6px 6px 0 0 #c79bb9 !important;
+}
+.protyle-wysiwyg [custom-deco-style="波点·浆果"]:not([fold="1"]) > [data-node-id]:first-child {
+    color: #986a86 !important;
+    text-shadow: 2px 2px 0 #f7e4f0 !important;
 }
 
 /* ----------------------------------------------引述卡片------------------------------------------------------------ */
@@ -5457,5 +5714,290 @@
     .wechat-date-divider::before,
     .wechat-date-divider::after {
         width: 25%;
+    }
+}
+
+/* ---------------统计视图-统计面板------------ */
+/* ========== 统计图表样式（适配思源主题） ========== */
+.stats-chart-card {
+    background: var(--b3-theme-surface);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--b3-border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stats-chart-card:hover {
+    transform: none; /* 去除浮动效果 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* 保持原阴影 */
+    border-color: var(--b3-border-color);
+}
+.chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--b3-border-color);
+}
+.chart-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.chart-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    background: var(--b3-theme-primary); /* 使用主题主色 */
+}
+.chart-text h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--b3-theme-on-background);
+}
+.chart-text p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--b3-theme-on-surface-light);
+    opacity: 0.8;
+}
+.chart-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.chart-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--b3-theme-on-background);
+}
+.chart-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.trend-neutral {
+    background: var(--b3-theme-surface-light);
+    color: var(--b3-theme-on-surface);
+}
+.chart-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 200px;
+}
+/* 柱状图 */
+.bar-chart-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.bar-chart-bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 4px 12px 4px;
+}
+.bar-chart-bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--bar-color), var(--bar-color-light));
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bar-chart-bar:hover {
+    transform: scaleY(1.05); /* 保留条状放大效果，但卡片本身不上浮 */
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+}
+.bar-chart-value {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bar-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+.bar-chart-bar:hover .bar-chart-value {
+    opacity: 1;
+}
+.bar-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+.bar-chart-label {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: var(--b3-theme-on-surface);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* 饼图 */
+.pie-chart-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.pie-chart-svg {
+    width: 220px;
+    height: 220px;
+    transform: rotate(-90deg);
+}
+.pie-chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    background: var(--b3-theme-surface);
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.center-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--b3-theme-on-background);
+}
+.center-label {
+    font-size: 12px;
+    color: var(--b3-theme-on-surface-light);
+    margin-top: 2px;
+}
+/* 图例 */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--b3-border-color);
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--b3-theme-on-surface);
+    padding: 4px 8px;
+    background: var(--b3-theme-surface-light);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.legend-item:hover {
+    background: var(--b3-theme-surface-hover);
+    transform: translateY(-1px);
+}
+.legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+/* 空状态 */
+.chart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: var(--b3-theme-on-surface-light);
+    text-align: center;
+}
+.chart-empty::before {
+    content: '📊';
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+.chart-empty p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--b3-theme-on-surface-light);
+}
+/* 工具提示 */
+.chart-tooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: var(--b3-toolbar-background);
+    color: var(--b3-toolbar-color);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    margin-top: -8px;
+}
+.chart-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--b3-toolbar-background);
+}
+/* 网格布局 */
+.north-stats-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 24px;
+}
+@media (max-width: 768px) {
+    .north-stats-charts-grid {
+        grid-template-columns: 1fr;
     }
 }

@@ -135,14 +135,34 @@ const CARD_ITEMS = [
     { key: 'heartBeatTerminalCard',   label: '心跳',       icon: '💓' },
 
     // 👇 手账卡片组 - key 统一以 JournalCard 结尾，方便 endsWith 过滤 👇
-{ key: 'moodTodayJournalCard', label: '今日小幸运', icon: '🌸' },
-{ key: 'memoNoteJournalCard', label: '备忘便签', icon: '📝' },
-{ key: 'inspirationJournalCard', label: '灵感闪现', icon: '💡' },
-{ key: 'gratitudeJournalCard', label: '感恩日记', icon: '🌱' },
-{ key: 'littleThoughtsJournalCard', label: '微小心事', icon: '💭' },
-{ key: 'goodnightJournalCard', label: '晚安寄语', icon: '🌙' },
-{ key: 'tomorrowPlanJournalCard', label: '明日计划', icon: '📅' },
-{ key: 'happyFragmentsJournalCard', label: '幸福碎片', icon: '🍓' },
+    { key: 'moodTodayJournalCard', label: '今日小幸运', icon: '🌸' },
+    { key: 'memoNoteJournalCard', label: '备忘便签', icon: '📝' },
+    { key: 'inspirationJournalCard', label: '灵感闪现', icon: '💡' },
+    { key: 'gratitudeJournalCard', label: '感恩日记', icon: '🌱' },
+    { key: 'littleThoughtsJournalCard', label: '微小心事', icon: '💭' },
+    { key: 'goodnightJournalCard', label: '晚安寄语', icon: '🌙' },
+    { key: 'tomorrowPlanJournalCard', label: '明日计划', icon: '📅' },
+    { key: 'happyFragmentsJournalCard', label: '幸福碎片', icon: '🍓' },
+
+    // 顶线样式组 - 多种颜色可选
+    { key: 'topLineBlueCard', label: '优雅顶线·蓝', icon: '🔝' },
+    { key: 'topLineRedCard', label: '优雅顶线·红', icon: '🔝' },
+    { key: 'topLineGreenCard', label: '优雅顶线·绿', icon: '🔝' },
+    { key: 'topLineOrangeCard', label: '优雅顶线·橙', icon: '🔝' },
+    { key: 'topLinePurpleCard', label: '优雅顶线·紫', icon: '🔝' },
+    { key: 'topLineCyanCard', label: '优雅顶线·青', icon: '🔝' },
+    { key: 'topLinePinkCard', label: '优雅顶线·粉', icon: '🔝' },
+    { key: 'topLineGrayCard', label: '优雅顶线·灰', icon: '🔝' },
+
+    // 波点格子风组 - 8 款可爱波点样式
+    { key: 'polkaPinkCard', label: '波点·粉嫩', icon: '🌸' },
+    { key: 'polkaMintCard', label: '波点·薄荷', icon: '🍃' },
+    { key: 'polkaSunshineCard', label: '波点·暖阳', icon: '☀️' },
+    { key: 'polkaLavenderCard', label: '波点·薰衣草', icon: '💜' },
+    { key: 'polkaSkyCard', label: '波点·晴空', icon: '🩵' },
+    { key: 'polkaCoralCard', label: '波点·珊瑚橙', icon: '🧡' },
+    { key: 'polkaMatchaCard', label: '波点·抹茶', icon: '🍵' },
+    { key: 'polkaBerryCard', label: '波点·浆果', icon: '🫐' },
 ];
 
 
@@ -155,6 +175,8 @@ const TEXT = {
     gradientCardGroup: '渐变色卡片',
     terminalGroup: '终端风格',   // 新增
     journalCardGroup: '手账卡片',  // 新增
+    topLineGroup: '顶线样式',  // 新增这一行
+    polkaGroup: '波点格子风',  
     noticeGroup: '通知卡片',
     gradientTopGroup: '彩色顶部',
     excerptGroup: '引述卡片',  
@@ -502,6 +524,264 @@ class TimelineView {
         this.renderTypesList();
         this.updateHighlight();
     }
+
+_computeStatsData(records) {
+    const typeMap = new Map(); // type -> count
+    let total = records.length;
+
+    records.forEach(rec => {
+        const dateObj = parseLifelogDate(rec.lifelog_created);
+        if (!dateObj) return;
+        const type = rec.lifelog_type || '未分类';
+        typeMap.set(type, (typeMap.get(type) || 0) + 1);
+    });
+
+    const typeData = [];
+    for (const [name, count] of typeMap.entries()) {
+        typeData.push({
+            name,
+            count,
+            color: getTypeColorFromCSS(name) // 使用已有的 getTypeColorFromCSS
+        });
+    }
+    typeData.sort((a, b) => b.count - a.count); // 按数量降序
+
+    return { typeData, total };
+}
+lightenColor(color, percent) {
+    // 输入 #RRGGBB，返回变亮后的 rgb 字符串
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const lighten = (c) => Math.min(255, c + (255 - c) * (percent / 100));
+    return `rgb(${lighten(r)}, ${lighten(g)}, ${lighten(b)})`;
+}
+_renderBarChart(typeData) {
+    const container = document.getElementById('chart-content-bar');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!typeData.length) {
+        container.innerHTML = '<div class="chart-empty"><p>暂无数据</p></div>';
+        return;
+    }
+
+    const maxValue = Math.max(...typeData.map(d => d.count));
+    const total = typeData.reduce((sum, d) => sum + d.count, 0);
+    const displayTypes = typeData.slice(0, 8); // 最多显示8种
+
+    const chartDiv = document.createElement('div');
+    chartDiv.className = 'bar-chart-container';
+
+    const barsDiv = document.createElement('div');
+    barsDiv.className = 'bar-chart-bars';
+    displayTypes.forEach(item => {
+        const height = maxValue > 0 ? (item.count / maxValue * 100) : 0;
+        const bar = document.createElement('div');
+        bar.className = 'bar-chart-bar';
+        bar.style.setProperty('--bar-color', item.color);
+        bar.style.setProperty('--bar-color-light', this.lightenColor(item.color, 30));
+        bar.style.height = height + '%';
+        bar.dataset.type = item.name;
+        bar.dataset.count = item.count;
+
+        const valueSpan = document.createElement('div');
+        valueSpan.className = 'bar-chart-value';
+        valueSpan.textContent = item.count;
+        bar.appendChild(valueSpan);
+        barsDiv.appendChild(bar);
+    });
+
+    const labelsDiv = document.createElement('div');
+    labelsDiv.className = 'bar-chart-labels';
+    displayTypes.forEach(item => {
+        const label = document.createElement('div');
+        label.className = 'bar-chart-label';
+        label.textContent = item.name;
+        labelsDiv.appendChild(label);
+    });
+
+    chartDiv.appendChild(barsDiv);
+    chartDiv.appendChild(labelsDiv);
+    container.appendChild(chartDiv);
+
+    // 更新卡片头信息
+    const card = container.closest('.stats-chart-card');
+    if (card) {
+        const valEl = card.querySelector('.chart-value');
+        if (valEl) valEl.textContent = total;
+        const trendEl = card.querySelector('.chart-trend');
+        if (trendEl) {
+            trendEl.innerHTML = `<span>📊</span><span>${typeData.length}类</span>`;
+            trendEl.className = 'chart-trend trend-neutral';
+        }
+    }
+
+    // 图例
+    const legend = document.getElementById('chart-legend-bar');
+    if (legend) {
+        legend.innerHTML = displayTypes.map(item => `
+            <div class="legend-item" data-type="${item.name}">
+                <div class="legend-color" style="background: ${item.color};"></div>
+                <span>${item.name}: ${item.count}</span>
+            </div>
+        `).join('');
+    }
+
+    this._setupBarChartHover();
+}
+_renderPieChart(typeData, total) {
+    const container = document.getElementById('chart-content-pie');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!typeData.length) {
+        container.innerHTML = '<div class="chart-empty"><p>暂无数据</p></div>';
+        return;
+    }
+
+    // 合并少量类型，最多显示5种 + “其他”
+    let mainTypes = typeData.slice(0, 5);
+    const otherCount = typeData.slice(5).reduce((sum, t) => sum + t.count, 0);
+    if (otherCount > 0) {
+        mainTypes.push({ name: '其他', count: otherCount, color: '#6C757D' });
+    }
+
+    const chartDiv = document.createElement('div');
+    chartDiv.className = 'pie-chart-container';
+    let startAngle = 0;
+    const slices = mainTypes.map(item => {
+        const angle = (item.count / total) * 360;
+        const endAngle = startAngle + angle;
+        const startRad = (startAngle - 90) * Math.PI / 180;
+        const endRad = (endAngle - 90) * Math.PI / 180;
+        const x1 = 50 + 40 * Math.cos(startRad);
+        const y1 = 50 + 40 * Math.sin(startRad);
+        const x2 = 50 + 40 * Math.cos(endRad);
+        const y2 = 50 + 40 * Math.sin(endRad);
+        const largeArc = angle > 180 ? 1 : 0;
+        const path = `M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`;
+        const sliceHtml = `<path d="${path}" fill="${item.color}" stroke="white" stroke-width="1.5" data-type="${item.name}" data-count="${item.count}" data-percent="${((item.count/total)*100).toFixed(1)}"/>`;
+        startAngle = endAngle;
+        return sliceHtml;
+    }).join('');
+
+    chartDiv.innerHTML = `
+        <svg class="pie-chart-svg" viewBox="0 0 100 100">${slices}</svg>
+        <div class="pie-chart-center">
+            <div class="center-value">${total}</div>
+            <div class="center-label">总记录</div>
+        </div>
+    `;
+    container.appendChild(chartDiv);
+
+    const card = container.closest('.stats-chart-card');
+    if (card) {
+        const valEl = card.querySelector('.chart-value');
+        if (valEl) valEl.textContent = total;
+        const trendEl = card.querySelector('.chart-trend');
+        if (trendEl) {
+            trendEl.innerHTML = `<span>📊</span><span>${typeData.length}类</span>`;
+            trendEl.className = 'chart-trend trend-neutral';
+        }
+    }
+
+    const legend = document.getElementById('chart-legend-pie');
+    if (legend) {
+        legend.innerHTML = mainTypes.map(item => `
+            <div class="legend-item" data-type="${item.name}">
+                <div class="legend-color" style="background: ${item.color};"></div>
+                <span>${item.name}: ${item.count}</span>
+            </div>
+        `).join('');
+    }
+
+    this._setupPieChartHover();
+}
+_setupBarChartHover() {
+    const bars = document.querySelectorAll('.bar-chart-bar');
+    const tooltip = this._getTooltip();
+    bars.forEach(bar => {
+        bar.addEventListener('mouseenter', e => {
+            const type = bar.dataset.type;
+            const count = bar.dataset.count;
+            const color = getTypeColorFromCSS(type);
+            tooltip.innerHTML = `<div style="font-weight:700;color:${color}">${type}</div><div style="font-size:11px;">${count} 条记录</div>`;
+            tooltip.style.opacity = '1';
+        });
+        bar.addEventListener('mousemove', e => {
+            tooltip.style.left = e.clientX + 'px';
+            tooltip.style.top = (e.clientY - 40) + 'px';
+        });
+        bar.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+        });
+    });
+}
+
+_setupPieChartHover() {
+    const slices = document.querySelectorAll('.pie-chart-svg path');
+    const centerValue = document.querySelector('.center-value');
+    const centerLabel = document.querySelector('.center-label');
+    const tooltip = this._getTooltip();
+    slices.forEach(slice => {
+        slice.addEventListener('mouseenter', e => {
+            const type = slice.dataset.type;
+            const count = slice.dataset.count;
+            const percent = slice.dataset.percent;
+            const color = type === '其他' ? '#6C757D' : getTypeColorFromCSS(type);
+            tooltip.innerHTML = `<div style="font-weight:700;color:${color}">${type}</div><div style="font-size:11px;">${count} 条记录 (${percent}%)</div>`;
+            tooltip.style.opacity = '1';
+            if (centerValue && centerLabel) {
+                centerValue.textContent = count;
+                centerValue.style.color = color;
+                centerLabel.textContent = type;
+            }
+        });
+        slice.addEventListener('mousemove', e => {
+            tooltip.style.left = e.clientX + 'px';
+            tooltip.style.top = (e.clientY - 40) + 'px';
+        });
+        slice.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            if (centerValue && centerLabel) {
+                centerValue.textContent = this._currentStatsData?.total || 0;
+                centerValue.style.color = '';
+                centerLabel.textContent = '总记录';
+            }
+        });
+    });
+}
+
+_getTooltip() {
+    let tooltip = document.querySelector('.chart-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.className = 'chart-tooltip';
+        document.body.appendChild(tooltip);
+    }
+    return tooltip;
+}
+
+/**
+ * 获取符合当前统计视图筛选条件（日期范围 + 类型选择）的记录
+ */
+_getStatsFilteredRecords() {
+    let records = this.allRecords; // 统计视图使用的是全部数据（已加载到 this.allRecordsUnfiltered）
+    const start = this.startDate ? new Date(this.startDate + 'T00:00:00') : null;
+    const end = this.endDate ? new Date(this.endDate + 'T23:59:59') : null;
+    const selectedTypes = this.selectedStatTypes; // Set
+
+    return records.filter(r => {
+        const dateObj = parseLifelogDate(r.lifelog_created);
+        if (!dateObj) return false;
+        if (start && dateObj < start) return false;
+        if (end && dateObj > end) return false;
+        if (selectedTypes.size > 0 && !selectedTypes.has(r.lifelog_type)) return false;
+        return true;
+    });
+}
 // ========== 微信样式专用右键菜单（控制左右显示，不写块属性） ==========
 showWechatContextMenu(event, record, rowElement) {
     // 移除已存在的菜单
@@ -1228,6 +1508,7 @@ renderStatisticsPanel() {
     if (this.selectedStatTypes.size > 0) {
         filteredRecords = filteredRecords.filter(r => this.selectedStatTypes.has(r.lifelog_type));
     }
+    
     const totalRecords = filteredRecords.length;                          // 总记录数
     const usedTypesCount = new Set(filteredRecords.map(r => r.lifelog_type).filter(Boolean)).size;  // 使用类型数
     const daysCount = new Set(filteredRecords.map(r => {
@@ -1427,6 +1708,51 @@ renderStatisticsPanel() {
             this.renderStatisticsPanel();
         });
     }
+
+// ========== 添加图表网格（类型分布柱状图 + 记录占比饼图） ==========
+const chartsGrid = document.createElement('div');
+chartsGrid.className = 'north-stats-charts-grid';
+container.appendChild(chartsGrid); // container 是您已有的中间面板容器变量名，请根据实际情况调整
+
+// 定义两个图表卡片
+const chartDefs = [
+    { id: 'bar', title: '类型分布', icon: '🏷️', desc: '各类型记录数量', color: '#4C6EF5' },
+    { id: 'pie', title: '记录占比', icon: '📊', desc: '各类记录占比分析', color: '#FAB005' }
+];
+
+chartDefs.forEach(def => {
+    const card = document.createElement('div');
+    card.className = 'stats-chart-card';
+    card.id = `stats-chart-${def.id}`;
+    card.innerHTML = `
+        <div class="chart-header">
+            <div class="chart-title">
+                <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${this.lightenColor(def.color, 20)});">${def.icon}</div>
+                <div class="chart-text">
+                    <h4>${def.title}</h4>
+                    <p>${def.desc}</p>
+                </div>
+            </div>
+            <div class="chart-meta">
+                <div class="chart-value" id="chart-val-${def.id}">0</div>
+                <div class="chart-trend" id="chart-trend-${def.id}">↗️0%</div>
+            </div>
+        </div>
+        <div class="chart-content" id="chart-content-${def.id}"></div>
+        <div class="chart-legend" id="chart-legend-${def.id}"></div>
+    `;
+    chartsGrid.appendChild(card);
+});
+
+// 计算统计数据
+// 基于统计视图筛选条件获取记录
+const statsRecords = this._getStatsFilteredRecords();
+const statsData = this._computeStatsData(statsRecords);
+this._currentStatsData = statsData;
+
+// 渲染两个图表
+this._renderBarChart(statsData.typeData);
+this._renderPieChart(statsData.typeData, statsData.total);
 }
 
     // 加载 ECharts 并渲染饼图
@@ -3424,7 +3750,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
             const attrs = { "custom-deco-style": label };
 
-            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard')) {
+            if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
+            && !key.startsWith('polka')) {
                 const defaults = this.styleDefaults[label];
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
@@ -3511,6 +3838,18 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 labelKey: "gradientCardGroup",
                 icon: "#iconSparkles",
                 filter: (label, key) => key.endsWith('GradientCard')
+            },
+            {
+                id: "topLineStyle",
+                labelKey: "topLineGroup",
+                icon: "#iconQuote",
+                filter: (label, key) => key.startsWith('topLine')  // 筛选所有顶线样式
+            },
+            {
+                id: "polkaStyle",
+                labelKey: "polkaGroup",
+                icon: "#iconSparkles",  // 使用闪亮图标
+                filter: (label, key) => key.startsWith('polka')  // 筛选所有波点样式
             },
             {
                 id: "journalCard",
