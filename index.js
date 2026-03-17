@@ -430,6 +430,7 @@ class TimelineView {
         // 基于本年数据的统计和日计数（左侧面板用）
         this.yearDailyCounts = this.calculateDailyCounts(yearRecords);
         this.yearStats = this.calculateStats(yearRecords);
+        this.destroy = this.destroy.bind(this); // 添加这一行
         
         // 基于当前显示数据的日计数（右侧日历用）
         this.dailyCounts = this.yearDailyCounts;
@@ -464,11 +465,18 @@ class TimelineView {
         this.render();
     }
 
-    destroy() {
-        if (this.recordUpdatedHandler) {
-            this.plugin.eventBus.off('timeline-record-updated', this.recordUpdatedHandler);
-        }
+destroy() {
+    if (this.recordUpdatedHandler && this.plugin?.eventBus) {
+        this.plugin.eventBus.off('timeline-record-updated', this.recordUpdatedHandler);
     }
+    
+    // 清理引用，避免内存泄漏
+    this.plugin = null;
+    this.container = null;
+    this.allRecords = null;
+    this.filteredRecords = null;
+    this.recordUpdatedHandler = null;
+}
 
     // 异步加载全部数据（用于统计视图）
     async loadAllRecords() {
@@ -3408,12 +3416,21 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 this.refreshHandler = () => this.loadDataAndRender();
                 this.plugin.eventBus.on('timeline-refresh', this.refreshHandler);
             },
-            beforeDestroy() {
-                this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
-                if (this.view) {
-                    this.view.destroy();
-                }
-            }
+beforeDestroy() {
+    // 防止 this 为 undefined
+    if (!this) return;
+    
+    // 安全卸载事件监听
+    if (this.plugin?.eventBus && this.refreshHandler) {
+        this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
+    }
+    
+    // 安全销毁视图
+    if (this.view?.destroy) {
+        this.view.destroy();
+        this.view = null;
+    }
+}
         });
 
         // ========== 移动端 Dock 添加 ==========
@@ -3442,11 +3459,17 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                         dock.view = new TimelineView(this, container, data);
                     });
                 },
-                destroy: (dock) => {
-                    if (dock.view) {
-                        dock.view.destroy();
-                    }
-                }
+// ✅ 修复后：增加 dock 和 dock.view 的双重检查
+destroy: (dock) => {
+    // 防止 dock 为 undefined/null
+    if (!dock) return;
+    
+    // 安全销毁视图
+    if (dock.view?.destroy) {
+        dock.view.destroy();
+        dock.view = null;
+    }
+}
             });
         }
     }
@@ -4382,15 +4405,21 @@ if (key === 'diaryChatWhisperCard') {
         dialogElement.querySelector('#cancelEdit').addEventListener('click', () => dialog.destroy());
     }
 
-    onunload() {
-        this.state.observer?.disconnect();
-        this._restoreObserver?.disconnect();
-        if (this._interval) clearInterval(this._interval);
-        if (this._boundHandleTitleClick) {
-            document.removeEventListener('click', this._boundHandleTitleClick);
-        }
-        this.attrsCache.clear();
+onunload() {
+    this.state.observer?.disconnect();
+    this._restoreObserver?.disconnect();
+    if (this._interval) clearInterval(this._interval);
+    if (this._boundHandleTitleClick) {
+        document.removeEventListener('click', this._boundHandleTitleClick);
     }
+    this.attrsCache.clear();
+    
+    // ✅ 补充：清理可能存在的 TimelineView 实例
+    if (this.timelineView) {
+        this.timelineView.destroy();
+        this.timelineView = null;
+    }
+}
 
     uninstall() { this.onunload(); }
 };
