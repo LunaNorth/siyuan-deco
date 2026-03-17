@@ -266,6 +266,7 @@ class TimelineStore {
             wechatDirections: {} , // 新增：存储微信样式左右方向 { blockId: 'left' | 'right' }
             showBarChart: false,    // 是否显示柱状图（默认不显示）
             showPieChart: false,    // 是否显示饼图（默认不显示）
+            showDiaryInMoments: false, // 新增：是否在朋友圈样式中展示碎碎念
         };
     }
 
@@ -284,6 +285,7 @@ class TimelineStore {
                 this.config.wechatDirections = saved.wechatDirections || {}; // 新增
                 this.config.showBarChart = saved.showBarChart !== undefined ? saved.showBarChart : false;
                 this.config.showPieChart = saved.showPieChart !== undefined ? saved.showPieChart : false;
+                this.config.showDiaryInMoments = saved.showDiaryInMoments !== undefined ? saved.showDiaryInMoments : false; // 新增
             }
         } catch (e) {
             console.warn("加载配置失败", e);
@@ -391,6 +393,16 @@ class TimelineStore {
         this.config.showStyleSwitcher = show;
         await this.saveConfig();
     }
+
+    // ========== 新增：朋友圈展示碎碎念配置 ==========
+    getShowDiaryInMoments() {
+        return this.config.showDiaryInMoments;
+    }
+
+    async setShowDiaryInMoments(show) {
+        this.config.showDiaryInMoments = show;
+        await this.saveConfig();
+    }
 }
 
 // ---------- 时间线视图类 ----------
@@ -412,7 +424,9 @@ class TimelineView {
         this.filteredRecords = yearRecords;             // 当前筛选后的数据
         this.selectedDate = null;
         this.selectedType = null;
-        
+        this.chineseNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', 
+                           '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', 
+                           '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
         // 基于本年数据的统计和日计数（左侧面板用）
         this.yearDailyCounts = this.calculateDailyCounts(yearRecords);
         this.yearStats = this.calculateStats(yearRecords);
@@ -435,6 +449,9 @@ class TimelineView {
         this.startDate = null; // 格式 YYYY-MM-DD
         this.endDate = null;   // 格式 YYYY-MM-DD
         this.selectedStatTypes = new Set(); // 空 Set 表示全部类型
+
+        // 碎碎念数据缓存
+        this.diaryRecords = null;
 
         // 监听记录更新事件
         this.recordUpdatedHandler = (data) => {
@@ -934,27 +951,51 @@ updateWechatAvatar(rowElement, direction) {
     render() {
         this.container.innerHTML = '';
 
-        const left = document.createElement('div');
-        left.className = 'timeline-left-panel';
-        const middle = document.createElement('div');
-        middle.className = 'timeline-middle-panel';
-        const right = document.createElement('div');
-        right.className = 'timeline-right-panel';
+        if (!this.plugin.isMobile) {
+            // 桌面版：三栏布局
+            const left = document.createElement('div');
+            left.className = 'timeline-left-panel';
+            const middle = document.createElement('div');
+            middle.className = 'timeline-middle-panel';
+            const right = document.createElement('div');
+            right.className = 'timeline-right-panel';
 
-        this.container.appendChild(left);
-        this.container.appendChild(middle);
-        this.container.appendChild(right);
+            this.container.appendChild(left);
+            this.container.appendChild(middle);
+            this.container.appendChild(right);
 
-        this.leftPanel = left;
-        this.middlePanel = middle;
-        this.rightPanel = right;
+            this.leftPanel = left;
+            this.middlePanel = middle;
+            this.rightPanel = right;
 
-        this.renderHeader();
-        this.renderContributionGraph();
-        this.renderStats();
-        this.renderStyleSwitcher(); // 新增：渲染样式切换按钮
-        this.renderMiddlePanel();
-        this.renderCalendarAndTypes();
+            this.renderHeader();
+            this.renderContributionGraph();
+            this.renderStats();
+            this.renderStyleSwitcher(); // 新增：渲染样式切换按钮
+            this.renderMiddlePanel();
+            this.renderCalendarAndTypes();
+        } else {
+            // 移动版：简化布局，只显示中间面板
+            const middle = document.createElement('div');
+            middle.className = 'timeline-middle-panel timeline-middle-panel--mobile';
+            this.container.appendChild(middle);
+            this.middlePanel = middle;
+
+            // 添加简易头部
+            const header = document.createElement('div');
+            header.className = 'timeline-mobile-header';
+            const title = document.createElement('span');
+            title.textContent = this.plugin.store.getCustomTitle() || '时光笺';
+            const refreshBtn = document.createElement('button');
+            refreshBtn.className = 'b3-button b3-button--text';
+            refreshBtn.innerHTML = '<svg><use xlink:href="#iconRefresh"></use></svg>';
+            refreshBtn.onclick = () => this.refresh();
+            header.appendChild(title);
+            header.appendChild(refreshBtn);
+            this.middlePanel.appendChild(header);
+
+            this.renderMiddlePanel();
+        }
     }
 
     renderHeader() {
@@ -1031,6 +1072,8 @@ updateWechatAvatar(rowElement, direction) {
         const endChecked = currentTimeMode === 'end' ? 'checked' : '';
 
         const showSwitcherChecked = this.plugin.store.getShowStyleSwitcher() ? 'checked' : '';
+        // 新增：碎碎念展示配置
+        const showDiaryChecked = this.plugin.store.getShowDiaryInMoments() ? 'checked' : '';
 
         const dialog = new Dialog({
             title: '时光笺设置',
@@ -1059,6 +1102,12 @@ updateWechatAvatar(rowElement, direction) {
                     <div style="margin-top: 16px; display: flex; align-items: center;">
                         <input type="checkbox" id="showStyleSwitcherCheckbox" ${showSwitcherChecked}>
                         <label for="showStyleSwitcherCheckbox" style="margin-left: 6px;">显示样式切换按钮（左侧面板显示）</label>
+                    </div>
+
+                    <!-- 新增：朋友圈展示碎碎念复选框 -->
+                    <div style="margin-top: 16px; display: flex; align-items: center;">
+                        <input type="checkbox" id="showDiaryInMomentsCheckbox" ${showDiaryChecked}>
+                        <label for="showDiaryInMomentsCheckbox" style="margin-left: 6px;">在朋友圈样式中展示“碎碎念”卡片（勾选后替代普通记录）</label>
                     </div>
 
                     <!-- 图表显示控制 -->
@@ -1106,12 +1155,13 @@ updateWechatAvatar(rowElement, direction) {
                 const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
                 const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
                 const showSwitcher = dialog.element.querySelector('#showStyleSwitcherCheckbox').checked;
-                    // 保存图表显示配置
+                const showDiary = dialog.element.querySelector('#showDiaryInMomentsCheckbox').checked; // 新增
                 const showBarChart = dialog.element.querySelector('#showBarChartCheckbox').checked;
                 const showPieChart = dialog.element.querySelector('#showPieChartCheckbox').checked;
 
                 await this.plugin.store.setShowBarChart(showBarChart);
                 await this.plugin.store.setShowPieChart(showPieChart);
+                await this.plugin.store.setShowDiaryInMoments(showDiary); // 新增
 
                 await this.plugin.store.setCustomTitle(title);
                 await this.plugin.store.setCustomSubtitle(subtitle);
@@ -1309,20 +1359,37 @@ updateWechatAvatar(rowElement, direction) {
         return `${year}年${month}月${day}日 ${hours}:${minutes}`;
     }
 
-        formatDuration(minutes) {
-            minutes = Math.round(minutes); 
-            if (minutes < 60) {
-                return minutes + '分';
+    // 新增：格式化时间为 YYYY-MM-DD HH:MM（用于碎碎念）
+    formatAbsoluteTimeYYYYMMDD(date) {
+        if (!date) return '';
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    // 新增：格式化时间戳（created 字段）为 YYYY-MM-DD HH:MM
+    formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        return this.formatAbsoluteTimeYYYYMMDD(date);
+    }
+
+    formatDuration(minutes) {
+        minutes = Math.round(minutes); 
+        if (minutes < 60) {
+            return minutes + '分';
+        } else {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (mins === 0) {
+                return hours + '时';
             } else {
-                const hours = Math.floor(minutes / 60);
-                const mins = minutes % 60;
-                if (mins === 0) {
-                    return hours + '时';
-                } else {
-                    return hours + '时' + mins + '分';
-                }
+                return hours + '时' + mins + '分';
             }
         }
+    }
 
     /**
      * 获取给定记录在全局时间轴上的下一条记录（用于开始模式跨天）
@@ -2036,8 +2103,28 @@ renderStatisticsPanel() {
         });
     }
 
-    // 朋友圈样式（已移除前缀）
-    renderMomentsPanel() {
+    // 朋友圈样式（已移除前缀）—— 重构为根据配置决定渲染哪种
+    async renderMomentsPanel() {
+        const showDiary = this.plugin.store.getShowDiaryInMoments();
+        if (showDiary) {
+            // 懒加载碎碎念数据
+            if (!this.diaryRecords) {
+                this.middlePanel.innerHTML = '<div class="timeline-loading">加载碎碎念...</div>';
+                this.diaryRecords = await this.plugin.queryDiaryRecords();
+                // 重新调用自身以渲染
+                this.renderMomentsPanel();
+                return;
+            }
+            // 使用碎碎念数据渲染
+            this._renderDiaryMoments();
+        } else {
+            // 原有普通记录渲染逻辑
+            this._renderNormalMoments();
+        }
+    }
+
+    // 原有朋友圈渲染逻辑（普通记录）
+    _renderNormalMoments() {
         this.middlePanel.innerHTML = '';
 
         const coverDiv = document.createElement('div');
@@ -2157,6 +2244,150 @@ renderStatisticsPanel() {
             });
 
             this.middlePanel.appendChild(card);
+        });
+    }
+
+    // 新增：碎碎念朋友圈渲染
+    _renderDiaryMoments() {
+        this.middlePanel.innerHTML = '';
+
+        const coverDiv = document.createElement('div');
+        coverDiv.className = 'north-moments-cover';  
+        coverDiv.setAttribute('title', '点击上传封面');
+
+        const coverPath = this.plugin.store.getCover();
+        if (coverPath) {
+            coverDiv.style.backgroundImage = `url('${coverPath.startsWith('http') ? coverPath : '/' + coverPath}')`;
+            coverDiv.style.backgroundSize = 'cover';
+            coverDiv.style.backgroundPosition = 'center';
+        } else {
+            coverDiv.style.backgroundColor = '#e9ecef';
+        }
+
+        coverDiv.addEventListener('click', () => this.plugin.uploadCover(coverDiv));
+
+        const userInfo = document.createElement('div');
+        userInfo.className = 'north-cover-user-info';
+
+        const avatarSmall = document.createElement('div');
+        avatarSmall.className = 'north-cover-avatar';
+        const avatarPath = this.plugin.store.getAvatar();
+        if (avatarPath) {
+            const img = document.createElement('img');
+            img.src = avatarPath.startsWith('http') ? avatarPath : '/' + avatarPath;
+            img.onerror = () => {
+                avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+            };
+            avatarSmall.appendChild(img);
+        } else {
+            avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+        }
+        avatarSmall.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.plugin.uploadAvatar(avatarSmall, 'self');
+        });
+
+        const nick = document.createElement('span');
+        nick.className = 'north-cover-nickname';
+        nick.textContent = this.plugin.store.getCustomTitle() || '时光笺';
+
+        userInfo.appendChild(avatarSmall);
+        userInfo.appendChild(nick);
+        coverDiv.appendChild(userInfo);
+
+        this.middlePanel.appendChild(coverDiv);
+
+        const recs = this.diaryRecords;
+        if (!recs || recs.length === 0) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'timeline-empty';
+            emptyDiv.textContent = '暂无碎碎念';
+            this.middlePanel.appendChild(emptyDiv);
+            return;
+        }
+
+        // 按日期分组，每组内按时间正序（早到晚）
+        const grouped = new Map();
+        recs.forEach(rec => {
+            let dateStr = '';
+            let fullTimeStr = '';
+            if (rec.deco_date) {
+                // 格式 YYYY-MM-DD HH:MM
+                const parts = rec.deco_date.split(' ');
+                dateStr = parts[0]; // YYYY-MM-DD
+                fullTimeStr = rec.deco_date;
+            } else {
+                // 回退到创建时间
+                const d = new Date(rec.created);
+                dateStr = formatDate(d);
+                fullTimeStr = this.formatTimestamp(rec.created);
+            }
+            if (!grouped.has(dateStr)) {
+                grouped.set(dateStr, []);
+            }
+            grouped.get(dateStr).push({ ...rec, displayTime: fullTimeStr });
+        });
+
+        // 日期倒序（新的在前）
+        const sortedDates = Array.from(grouped.keys()).sort().reverse();
+
+        const userAvatar = this.plugin.store.getAvatar();
+        const userNickname = this.plugin.store.getCustomTitle() || '时光笺';
+
+        sortedDates.forEach(dateStr => {
+            const records = grouped.get(dateStr);
+
+            records.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'north-moments-card';
+                card.dataset.id = rec.id;
+
+                const userBar = document.createElement('div');
+                userBar.className = 'north-moments-userbar';
+
+                const cardAvatar = document.createElement('div');
+                cardAvatar.className = 'north-moments-card-avatar';
+                if (userAvatar) {
+                    const img = document.createElement('img');
+                    img.src = userAvatar.startsWith('http') ? userAvatar : '/' + userAvatar;
+                    img.onerror = () => {
+                        cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                    };
+                    cardAvatar.appendChild(img);
+                } else {
+                    cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
+                }
+
+                const cardNick = document.createElement('span');
+                cardNick.className = 'north-moments-card-nickname';
+                cardNick.textContent = userNickname;
+
+                userBar.appendChild(cardAvatar);
+                userBar.appendChild(cardNick);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'north-moments-card-content';
+                let content = rec.content || '';
+                // 可选：如果内容开头有时间前缀，可以去掉，但碎碎念可能没有，所以保留原样
+                contentDiv.textContent = content;
+
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'north-moments-card-meta';
+                // 只显示时间，不显示类型
+                metaDiv.textContent = rec.displayTime;
+
+                card.appendChild(userBar);
+                card.appendChild(contentDiv);
+                card.appendChild(metaDiv);
+
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showContextMenu(e, rec);
+                });
+
+                this.middlePanel.appendChild(card);
+            });
         });
     }
 
@@ -2318,12 +2549,34 @@ renderStatisticsPanel() {
     }
 
     // 伪农历
-    getPseudoLunar(day) {
-        const chineseNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
-        let lunarDay = day + 9;
-        if (lunarDay > 30) lunarDay = lunarDay - 30;
-        return chineseNumbers[lunarDay] || '廿二';
+// 获取农历日（中文数字，如“廿九”）
+getPseudoLunar(date) {
+    if (!date) return '';
+    try {
+        // 使用 Intl 获取农历日期（只取日）
+        const formatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
+        const parts = formatter.formatToParts(date);
+        for (const part of parts) {
+            if (part.type === 'day') {
+                const dayValue = part.value;
+                // 如果返回的是数字字符串（如 "29"），则转换为中文数字
+                if (/^\d+$/.test(dayValue)) {
+                    const dayNum = parseInt(dayValue, 10);
+                    return this.chineseNumbers[dayNum] || dayValue;
+                }
+                // 如果返回的是中文（如 "廿九"），直接返回
+                return dayValue;
+            }
+        }
+        // 如果 parts 中没有 day，回退到公历日
+        throw new Error('未找到农历日');
+    } catch (e) {
+        console.warn('农历获取失败，使用公历日', e);
+        // 回退：使用公历日转换为中文数字
+        const day = date.getDate();
+        return this.chineseNumbers[day] || day.toString();
     }
+}
 
     // 渲染一周日历
     renderWeeklyCalendar() {
@@ -2346,7 +2599,7 @@ renderStatisticsPanel() {
             const dateStr = formatDate(date);
             const isActive = (this.selectedDate === dateStr);
 
-            const lunar = this.getPseudoLunar(day);
+            const lunar = this.getPseudoLunar(date);
 
             const dayItem = document.createElement('div');
             dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
@@ -2558,7 +2811,7 @@ renderStatisticsPanel() {
                 isActive = (dateStr === todayStr);
             }
 
-            const lunar = this.getPseudoLunar(day);
+            const lunar = this.getPseudoLunar(date);
 
             const dayItem = document.createElement('div');
             dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
@@ -2598,9 +2851,7 @@ renderStatisticsPanel() {
         return container;
     }
 
-    // ========== 微信聊天样式渲染（最终版） ==========
-// ========== 微信聊天样式渲染（修改版：类型固定方向） ==========
-// ========== 微信聊天样式渲染（最终版：日期倒序 + 类型固定方向 + 右键控制） ==========
+// ========== 微信聊天样式渲染（日期倒序 + 类型固定方向 + 右键控制） ==========
 renderWechatPanel() {
     this.middlePanel.innerHTML = '';
     const recs = this.filteredRecords;
@@ -3164,6 +3415,40 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 }
             }
         });
+
+        // ========== 移动端 Dock 添加 ==========
+        if (this.isMobile) {
+            this.addDock({
+                config: {
+                    position: "LeftBottom",
+                    size: { width: 200, height: 0 },
+                    icon: "iconCamera",
+                    title: "时光笺",
+                    hotkey: "⌥⌘W",
+                },
+                data: {},
+                type: "timeline_dock",
+                init: (dock) => {
+                    dock.element.innerHTML = `
+                        <div class="toolbar toolbar--border toolbar--dark">
+                            <svg class="toolbar__icon"><use xlink:href="#iconCamera"></use></svg>
+                            <div class="toolbar__text">时光笺</div>
+                        </div>
+                        <div class="fn__flex-1 timeline-dock-container"></div>
+                    `;
+                    const container = dock.element.querySelector('.timeline-dock-container');
+                    // 异步加载数据并渲染视图
+                    this.queryAllRecords().then(data => {
+                        dock.view = new TimelineView(this, container, data);
+                    });
+                },
+                destroy: (dock) => {
+                    if (dock.view) {
+                        dock.view.destroy();
+                    }
+                }
+            });
+        }
     }
 
     addIcons(svgContent) {
@@ -3174,12 +3459,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     onLayoutReady() {
-        this.addTopBar({
-            icon: 'iconCamera',
-            title: '时光笺',
-            position: 'right',
-            callback: () => this.openTimelineTab()
-        });
+        // 非移动端才添加顶部栏图标
+        if (!this.isMobile) {
+            this.addTopBar({
+                icon: 'iconCamera',
+                title: '时光笺',
+                position: 'right',
+                callback: () => this.openTimelineTab()
+            });
+        }
     }
 
     openTimelineTab() {
@@ -3248,6 +3536,27 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 ...record,
                 lifelog_created: `${record.lifelog_date} ${record.lifelog_time}`,
             }));
+        }
+        return [];
+    }
+
+    // 新增：查询所有碎碎念记录（custom-deco-style = '碎碎念'）
+    async queryDiaryRecords() {
+        const sql = `
+            SELECT 
+                b.id,
+                b.content,
+                a2.value AS deco_date,
+                b.created
+            FROM blocks b
+            INNER JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-deco-style' AND a1.value = '碎碎念'
+            LEFT JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-deco-card-date'
+            WHERE b.type = 'p'
+            ORDER BY COALESCE(a2.value, b.created) DESC
+        `;
+        const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
+        if (result && result.code === 0) {
+            return result.data;
         }
         return [];
     }
@@ -3837,13 +4146,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 }
             }
 
-            if (key === 'diaryChatWhisperCard') {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                attrs["custom-deco-card-date"] = `${year}-${month}-${day}`;
-            }
+if (key === 'diaryChatWhisperCard') {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    attrs["custom-deco-card-date"] = `${year}-${month}-${day} ${hours}:${minutes}`;
+}
 
             await this.setAttrs(blockId, attrs);
         };

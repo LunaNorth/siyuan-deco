@@ -48,6 +48,21 @@
   <!-- 分割线 -->
   <div style="height: 1px; background: var(--b3-border-color, #eee); margin: 8px 0 12px;"></div>
 
+
+  <!-- v1.3.0 -->
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-error, #d23f31); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.3.0</strong>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-error-background, #f8d7da); color: var(--b3-card-error-color, #721c24); border-radius: 12px; font-weight: 500;">🚀 重大</span>
+    </div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;">
+      • 修复移动端点击无反应问题<br>
+      • 适配移动端-展示内容部分<br>
+      • 朋友圈样式对碎碎念样式做展示-通过时光笺设置可进行控制是否展示<br>
+      • 修复时间轴样式下农历显示不准确问题<br>      
+    </div>
+  </div>
+
   <!-- v1.2.9 -->
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-primary, #5b8def); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
@@ -364,6 +379,6 @@
   </div>
 
   <!-- 页脚 -->
-  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.2.9</div>
+  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.3.0</div>
 
 </div>
