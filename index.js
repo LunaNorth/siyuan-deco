@@ -3447,10 +3447,6 @@ beforeDestroy() {
                 type: "timeline_dock",
                 init: (dock) => {
                     dock.element.innerHTML = `
-                        <div class="toolbar toolbar--border toolbar--dark">
-                            <svg class="toolbar__icon"><use xlink:href="#iconCamera"></use></svg>
-                            <div class="toolbar__text">时光笺</div>
-                        </div>
                         <div class="fn__flex-1 timeline-dock-container"></div>
                     `;
                     const container = dock.element.querySelector('.timeline-dock-container');

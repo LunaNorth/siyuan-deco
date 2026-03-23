@@ -6066,9 +6066,9 @@
 
 
     /* 顶部时光笺隐藏 */
-    .toolbar--dark {
+    /* .toolbar--dark {
         display: none;
-    }
+    } */
 
     /* 背景色问题 ，不清楚是不是这样子解决的 */
 /* .fn__flex-1 {
