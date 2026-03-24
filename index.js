@@ -413,7 +413,8 @@ class TimelineView {
     static MODE_TIMELINE = 'timeline';
     static MODE_TIMELINE_V2 = 'timeline_v2';
     static MODE_STATISTICS = 'statistics';
-    static MODE_WECHAT = 'wechat';  // 新增微信样式
+    static MODE_WECHAT = 'wechat';  // 微信样式
+    static MODE_SCHEDULE = 'schedule';  // 新增：日程视图
 
     constructor(plugin, container, yearRecords) {
         this.plugin = plugin;
@@ -1063,7 +1064,8 @@ updateWechatAvatar(rowElement, direction) {
             TimelineView.MODE_MOMENTS,
             TimelineView.MODE_TIMELINE,
             TimelineView.MODE_TIMELINE_V2,
-            TimelineView.MODE_WECHAT  // 新增微信样式
+            TimelineView.MODE_WECHAT,
+            TimelineView.MODE_SCHEDULE  // 新增日程视图
         ];
         const currentIndex = modeOrder.indexOf(this.displayMode);
         const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
@@ -1072,7 +1074,8 @@ updateWechatAvatar(rowElement, direction) {
             [TimelineView.MODE_MOMENTS]: '朋友圈样式',
             [TimelineView.MODE_TIMELINE]: '时间日志样式',
             [TimelineView.MODE_TIMELINE_V2]: '时间轴样式',
-            [TimelineView.MODE_WECHAT]: '聊天样式'   // 新增
+            [TimelineView.MODE_WECHAT]: '聊天样式',
+            [TimelineView.MODE_SCHEDULE]: '日程视图'   // 新增
         }[nextMode];
 
         const currentTimeMode = this.timeMode;
@@ -1321,7 +1324,7 @@ updateWechatAvatar(rowElement, direction) {
         this.leftPanel.appendChild(graph);
     }
 
-    // ========== 渲染样式切换按钮 ==========
+    // ========== 渲染样式切换按钮（分两行：原样式一行，日程视图单独一行） ==========
     renderStyleSwitcher() {
         // 如果已存在则移除
         const existing = this.leftPanel.querySelector('.timeline-style-switcher');
@@ -1333,16 +1336,20 @@ updateWechatAvatar(rowElement, direction) {
         const switcher = document.createElement('div');
         switcher.className = 'timeline-style-switcher';
 
-        const modes = [
+        // 第一行：原有样式（不包括日程视图）
+        const firstRow = document.createElement('div');
+        firstRow.className = 'timeline-style-row';
+
+        const modesFirstRow = [
             { mode: TimelineView.MODE_LIST, icon: 'fa-list', label: '列表样式' },
             { mode: TimelineView.MODE_MOMENTS, icon: 'fa-images', label: '朋友圈样式' },
             { mode: TimelineView.MODE_TIMELINE, icon: 'fa-clock', label: '时间日志样式' },
             { mode: TimelineView.MODE_TIMELINE_V2, icon: 'fa-timeline', label: '时间轴样式' },
-            { mode: TimelineView.MODE_WECHAT, icon: 'fa-bullhorn', label: '聊天样式' },  // 新增
+            { mode: TimelineView.MODE_WECHAT, icon: 'fa-bullhorn', label: '聊天样式' },
             { mode: TimelineView.MODE_STATISTICS, icon: 'fa-chart-pie', label: '统计视图' }
         ];
 
-        modes.forEach(item => {
+        modesFirstRow.forEach(item => {
             const btn = document.createElement('button');
             btn.className = `timeline-style-btn ${this.displayMode === item.mode ? 'active' : ''}`;
             btn.setAttribute('title', item.label);
@@ -1350,9 +1357,24 @@ updateWechatAvatar(rowElement, direction) {
             btn.addEventListener('click', () => {
                 this.setDisplayMode(item.mode);
             });
-            switcher.appendChild(btn);
+            firstRow.appendChild(btn);
         });
 
+        // 第二行：日程视图单独一行
+        const secondRow = document.createElement('div');
+        secondRow.className = 'timeline-style-row timeline-style-row-schedule';
+
+        const scheduleBtn = document.createElement('button');
+        scheduleBtn.className = `timeline-style-btn ${this.displayMode === TimelineView.MODE_SCHEDULE ? 'active' : ''}`;
+        scheduleBtn.setAttribute('title', '日程视图');
+        scheduleBtn.innerHTML = `<i class="fas fa-calendar-alt"></i>`;
+        scheduleBtn.addEventListener('click', () => {
+            this.setDisplayMode(TimelineView.MODE_SCHEDULE);
+        });
+        secondRow.appendChild(scheduleBtn);
+
+        switcher.appendChild(firstRow);
+        switcher.appendChild(secondRow);
         this.leftPanel.appendChild(switcher);
     }
 
@@ -1827,7 +1849,6 @@ renderStatisticsPanel() {
         });
     }
 
-// ========== 添加图表网格（类型分布柱状图 + 记录占比饼图） ==========
 // ========== 添加图表网格（根据配置动态显示） ==========
     const showBar = this.plugin.store.getShowBarChart();
     const showPie = this.plugin.store.getShowPieChart();
@@ -2049,8 +2070,10 @@ renderStatisticsPanel() {
             this.renderTimelineV2Panel();
         } else if (this.displayMode === TimelineView.MODE_STATISTICS) {
             this.renderStatisticsPanel();
-        } else if (this.displayMode === TimelineView.MODE_WECHAT) {   // 新增微信样式
+        } else if (this.displayMode === TimelineView.MODE_WECHAT) {   // 微信样式
             this.renderWechatPanel();
+        } else if (this.displayMode === TimelineView.MODE_SCHEDULE) {  // 新增日程视图
+            this.renderSchedulePanel();
         }
     }
 
@@ -2998,6 +3021,147 @@ renderWechatPanel() {
     this.middlePanel.appendChild(container);
 }
 
+    // ========== 新增日程视图 ==========
+    renderSchedulePanel() {
+        this.middlePanel.innerHTML = '';
+
+        const recs = this.filteredRecords;
+        if (!recs.length) {
+            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无日程</div>';
+            return;
+        }
+
+        // 1. 按日期分组，组内按时间排序
+        const grouped = new Map();
+        recs.forEach(r => {
+            const dateObj = parseLifelogDate(r.lifelog_created);
+            if (!dateObj) return;
+            const dateStr = formatDate(dateObj);
+            if (!grouped.has(dateStr)) grouped.set(dateStr, []);
+            grouped.get(dateStr).push({ ...r, dateObj });
+        });
+
+        // 2. 日期倒序（最新在上）
+        const sortedDates = Array.from(grouped.keys()).sort().reverse();
+
+        const container = document.createElement('div');
+        container.className = 'timeline-schedule-panel';
+
+        for (const dateStr of sortedDates) {
+            const records = grouped.get(dateStr);
+            records.sort((a, b) => a.dateObj - b.dateObj);
+
+            // 左侧日期信息
+            const dateObj = parseLifelogDate(records[0].lifelog_created);
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            const weekday = weekdays[dateObj.getDay()];
+            const isToday = (dateStr === formatDate(new Date()));
+
+            const dayGroup = document.createElement('div');
+            dayGroup.className = 'day-group';
+
+            const dateCol = document.createElement('div');
+            dateCol.className = 'date-col';
+            dateCol.innerHTML = `
+                <div class="date-full ${isToday ? 'active' : 'normal'}">${formatDate(dateObj)}</div>
+                <div class="date-week">${weekday}</div>
+            `;
+
+            const timelineCol = document.createElement('div');
+            timelineCol.className = 'timeline-col';
+
+            // 3. 遍历记录生成时间轴行
+            for (let i = 0; i < records.length; i++) {
+                const rec = records[i];
+                const type = rec.lifelog_type || '未分类';
+                const typeColor = getTypeColorFromCSS(type);
+
+                // 计算时间段和左侧时间
+                let leftTime = '';
+                let timeRange = '';
+
+                if (this.timeMode === 'start') {
+                    // 开始模式：当前记录 -> 下一条记录
+                    leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
+                    let endObj = null;
+                    if (i < records.length - 1) {
+                        endObj = records[i + 1].dateObj;
+                    } else {
+                        const nextRec = this._getNextRecord(rec);
+                        if (nextRec) endObj = nextRec.dateObj;
+                    }
+                    if (endObj) {
+                        const endStr = `${String(endObj.getHours()).padStart(2,'0')}:${String(endObj.getMinutes()).padStart(2,'0')}`;
+                        timeRange = `${leftTime} - ${endStr}`;
+                    } else {
+                        timeRange = `${leftTime} 开始`;
+                    }
+                } else {
+                    // 结束模式：上一条记录 -> 当前记录
+                    leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
+                    let startObj = null;
+                    if (i > 0) {
+                        startObj = records[i - 1].dateObj;
+                    } else {
+                        const prevRec = this._getPreviousRecord(rec);
+                        if (prevRec) startObj = prevRec.dateObj;
+                    }
+                    if (startObj) {
+                        const startStr = `${String(startObj.getHours()).padStart(2,'0')}:${String(startObj.getMinutes()).padStart(2,'0')}`;
+                        timeRange = `${startStr} - ${leftTime}`;
+                    } else {
+                        timeRange = `开始 - ${leftTime}`;
+                    }
+                }
+
+                // 卡片内容（去除时间前缀）
+                let content = rec.content || '';
+                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
+
+                // 卡片标题（内容摘要）
+                const cardTitle = content.length > 80 ? content.slice(0, 80) + '…' : content;
+
+                // 卡片背景色（浅色版本）
+                const bgColor = this.lightenColor(typeColor, 85);
+                const borderColor = typeColor;
+
+                const row = document.createElement('div');
+                row.className = 'row';
+
+                row.innerHTML = `
+                    <div class="time-text">${this.escapeHtml(leftTime)}</div>
+                    <div class="axis-area"><div class="dot"></div></div>
+                    <div class="card" style="background-color: ${bgColor}; border-left-color: ${borderColor};">
+                        <div class="card-time" style="color: ${borderColor};">${this.escapeHtml(timeRange)}</div>
+                        <div class="card-title">${this.escapeHtml(cardTitle)}</div>
+                    </div>
+                `;
+
+                // 绑定右键菜单
+                row.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.showContextMenu(e, rec);
+                });
+
+                timelineCol.appendChild(row);
+            }
+
+            dayGroup.appendChild(dateCol);
+            dayGroup.appendChild(timelineCol);
+            container.appendChild(dayGroup);
+        }
+
+        this.middlePanel.appendChild(container);
+    }
+
+    // 辅助方法：转义HTML
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     // 更新单条记录内容
     updateRecordContent(blockId, newContent) {
         const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"], .timeline-v2-item[data-id="${blockId}"], .wechat-message-row[data-id="${blockId}"]`;
@@ -3289,7 +3453,7 @@ renderWechatPanel() {
     // 修改 setDisplayMode：处理统计视图数据切换
     async setDisplayMode(mode) {
         if (mode === this.displayMode) return;
-        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2, TimelineView.MODE_STATISTICS, TimelineView.MODE_WECHAT].includes(mode)) {
+        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2, TimelineView.MODE_STATISTICS, TimelineView.MODE_WECHAT, TimelineView.MODE_SCHEDULE].includes(mode)) {
             console.warn('无效模式:', mode);
             return;
         }
@@ -3303,7 +3467,7 @@ renderWechatPanel() {
             this.dailyCounts = this.allDailyCountsUnfiltered; // 右侧日历使用全部数据计数
             this.globalSorted = this.globalSortedAll;         // 使用全部记录的全局排序
         } else {
-            // 切换回普通视图（包括微信样式）
+            // 切换回普通视图（包括微信样式、日程视图）
             this.allRecords = this.yearRecords;
             this.dailyCounts = this.yearDailyCounts;          // 右侧日历恢复为本年数据
             this.globalSorted = this._buildGlobalSorted(this.yearRecords); // 重建本年记录的全局排序

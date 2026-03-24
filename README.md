@@ -49,6 +49,18 @@
   <div style="height: 1px; background: var(--b3-border-color, #eee); margin: 8px 0 12px;"></div>
 
 
+  <!-- v1.3.3 -->
+  <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-secondary, #f39c12); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--b3-theme-on-background, #222);">v1.3.3</strong>
+      <span style="font-size: 11px; padding: 3px 8px; background: var(--b3-card-warning-background, #fff3cd); color: var(--b3-card-warning-color, #856404); border-radius: 12px; font-weight: 500;">✨ 新增样式</span>
+    </div>
+    <div style="font-size: 14px; color: var(--b3-theme-on-surface, #5f6368); line-height: 1.5;"> 
+    新增日程视图样式欢迎体验
+  </div>
+</div>
+
+
   <!-- v1.3.2 -->
   <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--b3-theme-surface, #f0f0f0); border-radius: 8px; border-left: 4px solid var(--b3-theme-success, #2ecc71); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
@@ -401,6 +413,6 @@
   </div>
 
   <!-- 页脚 -->
-  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.3.2</div>
+  <div style="text-align: center; margin: 2em 0 1em; color: var(--b3-theme-on-surface-light); font-size: 12px; width: 100%;">Made with 💙 · 轻饰笔记 v1.3.3</div>
 
 </div>
