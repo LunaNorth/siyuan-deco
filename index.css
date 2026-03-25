@@ -6352,7 +6352,7 @@
     font-size: 14px;
     color: var(--b3-theme-on-surface-light);
     margin-top: 4px;
-    margin-left:25px;
+    margin-left:8px;
 }
 
 .timeline-schedule-panel .timeline-col {
@@ -6446,6 +6446,12 @@
     .timeline-schedule-panel .card-title {
         font-size: 13px;
     }
+    .timeline-schedule-panel .row {
+        margin-left: -35px;
+    }
+    .timeline-schedule-panel .axis-area {
+        margin-left: -15px;
+    }
 }
 
 /* 左侧样式切换器容器 */
@@ -6504,4 +6510,245 @@
     background-color: var(--b3-theme-primary-light);
     color: var(--b3-theme-primary);
     font-weight: 500;
+}
+
+
+/* ========== 周视图样式 ========== */
+.week-view {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--b3-theme-background);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    color: var(--b3-theme-on-background);
+}
+
+.week-view .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--b3-theme-surface);
+    border-bottom: 1px solid var(--b3-border-color);
+    flex-shrink: 0;
+    min-height: 45px;
+}
+
+.week-view .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--b3-theme-on-background);
+}
+
+.week-view .calendar-icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.week-view .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.week-view .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border: 1px solid var(--b3-border-color);
+    background: var(--b3-theme-surface);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--b3-theme-on-background);
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 32px;
+}
+
+.week-view .btn:hover {
+    border-color: var(--b3-theme-primary);
+    color: var(--b3-theme-primary);
+}
+
+.week-view .btn-icon {
+    width: 32px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.week-view .calendar-header {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    background: var(--b3-theme-surface);
+    border-bottom: 1px solid var(--b3-border-color);
+    flex-shrink: 0;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.week-view .calendar-header::-webkit-scrollbar {
+    display: none;
+}
+
+.week-view .week-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--b3-theme-on-surface-light);
+    font-weight: normal;
+    border-right: 1px solid var(--b3-border-color);
+    padding: 16px 0;
+}
+
+.week-view .day-header {
+    text-align: center;
+    padding: 12px 0;
+    border-right: 1px solid var(--b3-border-color);
+}
+
+.week-view .day-header:last-child {
+    border-right: none;
+}
+
+.week-view .day-name {
+    font-size: 13px;
+    color: var(--b3-theme-on-surface-light);
+    margin-bottom: 4px;
+}
+
+.week-view .date-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--b3-theme-on-background);
+    font-weight: 500;
+}
+
+.week-view .date-number.active {
+    background-color: var(--b3-theme-primary);
+    color: white;
+}
+
+.week-view .calendar-scrollable {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: var(--b3-theme-surface);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.week-view .calendar-scrollable::-webkit-scrollbar {
+    display: none;
+}
+
+.week-view .calendar-body {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    background: var(--b3-theme-surface);
+    height: 2160px; /* 24 * 90 */
+}
+
+.week-view .time-column {
+    border-right: 1px solid var(--b3-border-color);
+    background: var(--b3-theme-surface-light);
+    padding-top: 12px;
+}
+
+.week-view .time-slot {
+    height: 90px;
+    position: relative;
+    color: var(--b3-theme-on-surface-light);
+    font-size: 12px;
+    text-align: right;
+    padding-right: 12px;
+}
+
+.week-view .time-slot span {
+    display: block;
+    transform: translateY(-50%);
+}
+
+.week-view .day-column {
+    border-right: 1px solid var(--b3-border-color);
+    position: relative;
+    background: var(--b3-theme-surface);
+}
+
+.week-view .day-column:last-child {
+    border-right: none;
+}
+
+.week-view .hour-line {
+    height: 90px;
+    border-bottom: 1px solid var(--b3-border-color);
+    position: relative;
+}
+
+.week-view .event {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    /* border-radius: 6px; */
+    padding: 4px 8px;
+    overflow: hidden;          /* 防止内容溢出 */
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    box-sizing: border-box;    /* 确保 padding 不改变整体高度 */
+    /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05); */
+    /* 可选：增加圆角 */
+    border-radius: 6px;
+}
+
+.week-view .event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.week-view .event-title {
+    font-size: 12px;
+    /* color: rgba(0, 0, 0, 0.75); */
+    color: var(--b3-theme-on-surface);
+    margin-bottom: 2px;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: normal;       /* 强制单行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 1px;
+}
+
+.week-view .event-time {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+    white-space: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 右键菜单 */
+.week-context-menu {
+    background: var(--b3-menu-background);
+    border: 1px solid var(--b3-menu-border);
+    border-radius: 4px;
+    box-shadow: var(--b3-menu-shadow);
+    min-width: 120px;
+    z-index: 9999;
 }

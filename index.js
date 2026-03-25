@@ -62,7 +62,6 @@ const CARD_ITEMS = [
     { key: 'ideaGradientTopCard', label: '创意灵感', icon: '💡' },
     { key: 'universalGradientTopCard', label: '万能提示', icon: '✨' },
 
-
     // 语录卡片组（ExcerptCard）
     { key: 'quoteExcerptCard', label: '摘录卡片', icon: '❝' },
     { key: 'famousExcerptCard', label: '名言卡片', icon: '💬' },
@@ -94,7 +93,6 @@ const CARD_ITEMS = [
     // 图片相关设置组（ImageCard）
     { key: 'nineGridImageCard', label: '九宫格排列', icon: '🖼️' },
 
-
     // Callout样式组（CalloutCard）
     { key: 'foldedExampleCalloutCard', label: 'Callout-折叠示例', icon: '📌' },
     { key: 'abstractCalloutCard',       label: 'Callout-抽象',     icon: '✨' },
@@ -111,7 +109,6 @@ const CARD_ITEMS = [
     { key: 'exampleCalloutCard',    label: 'Callout-示例',   icon: '📋' },
     { key: 'todoCalloutCard',       label: 'Callout-待办',   icon: '✅' },
     { key: 'ideaCalloutCard',       label: 'Callout-想法',   icon: '💡' },
-
 
     // 渐变色卡片组（GradientCard）
     { key: 'lifeFragmentGradientCard', label: '生活碎片', icon: '🎈' },
@@ -248,6 +245,16 @@ function getTypeColorFromCSS(type) {
 
     colorCache.set(type, color);
     return color;
+}
+
+function lightenColor(color, percent) {
+    // 输入 #RRGGBB，返回变亮后的 rgb 字符串
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const lighten = (c) => Math.min(255, c + (255 - c) * (percent / 100));
+    return `rgb(${lighten(r)}, ${lighten(g)}, ${lighten(b)})`;
 }
 
 // ---------- 数据存储 ----------
@@ -415,6 +422,7 @@ class TimelineView {
     static MODE_STATISTICS = 'statistics';
     static MODE_WECHAT = 'wechat';  // 微信样式
     static MODE_SCHEDULE = 'schedule';  // 新增：日程视图
+    static MODE_WEEK = 'week'; // 新增：周视图（但实际由独立标签页实现）
 
     constructor(plugin, container, yearRecords) {
         this.plugin = plugin;
@@ -594,15 +602,6 @@ _computeStatsData(records) {
 
     return { typeData, total };
 }
-lightenColor(color, percent) {
-    // 输入 #RRGGBB，返回变亮后的 rgb 字符串
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    const lighten = (c) => Math.min(255, c + (255 - c) * (percent / 100));
-    return `rgb(${lighten(r)}, ${lighten(g)}, ${lighten(b)})`;
-}
 _renderBarChart(typeData) {
     const container = document.getElementById('chart-content-bar');
     if (!container) return;
@@ -627,7 +626,7 @@ _renderBarChart(typeData) {
         const bar = document.createElement('div');
         bar.className = 'bar-chart-bar';
         bar.style.setProperty('--bar-color', item.color);
-        bar.style.setProperty('--bar-color-light', this.lightenColor(item.color, 30));
+        bar.style.setProperty('--bar-color-light', lightenColor(item.color, 30));
         bar.style.height = height + '%';
         bar.dataset.type = item.name;
         bar.dataset.count = item.count;
@@ -997,7 +996,9 @@ updateWechatAvatar(rowElement, direction) {
             title.textContent = this.plugin.store.getCustomTitle() || '时光笺';
             const refreshBtn = document.createElement('button');
             refreshBtn.className = 'b3-button b3-button--text';
-            refreshBtn.innerHTML = '<svg><use xlink:href="#iconRefresh"></use></svg>';
+            // 移动端刷新图标
+            const refreshIconPath = `/plugins/${this.plugin.name}/icons/刷新.svg`;
+            refreshBtn.innerHTML = `<img src="${refreshIconPath}" class="timeline-mobile-icon" style="width: 20px; height: 20px;" />`;
             refreshBtn.onclick = () => this.refresh();
             header.appendChild(title);
             header.appendChild(refreshBtn);
@@ -1039,13 +1040,15 @@ updateWechatAvatar(rowElement, direction) {
         const refreshBtn = document.createElement('button');
         refreshBtn.className = 'b3-tooltips b3-tooltips__sw timeline-btn';
         refreshBtn.setAttribute('aria-label', '刷新');
-        refreshBtn.innerHTML = `<svg><use xlink:href="#iconRefresh"></use></svg>`;
+        const refreshIconPath = `/plugins/${this.plugin.name}/icons/刷新.svg`;
+        refreshBtn.innerHTML = `<img src="${refreshIconPath}" class="timeline-btn-icon" style="width: 20px; height: 20px;" />`;
         refreshBtn.onclick = () => this.refresh();
 
         const moreBtn = document.createElement('button');
         moreBtn.className = 'b3-tooltips b3-tooltips__sw timeline-btn';
         moreBtn.setAttribute('aria-label', '更多');
-        moreBtn.innerHTML = `<svg><use xlink:href="#iconMore"></use></svg>`;
+        const moreIconPath = `/plugins/${this.plugin.name}/icons/更多.svg`;
+        moreBtn.innerHTML = `<img src="${moreIconPath}" class="timeline-btn-icon" style="width: 20px; height: 20px;" />`;
         moreBtn.onclick = () => this.showSettingsDialog();
 
         actions.appendChild(refreshBtn);
@@ -1324,59 +1327,74 @@ updateWechatAvatar(rowElement, direction) {
         this.leftPanel.appendChild(graph);
     }
 
-    // ========== 渲染样式切换按钮（分两行：原样式一行，日程视图单独一行） ==========
-    renderStyleSwitcher() {
-        // 如果已存在则移除
-        const existing = this.leftPanel.querySelector('.timeline-style-switcher');
-        if (existing) existing.remove();
+    // ========== 渲染样式切换按钮（分两行：原样式一行，日程视图单独一行，再加周视图单独一行） ==========
+renderStyleSwitcher() {
+    // 如果已存在则移除
+    const existing = this.leftPanel.querySelector('.timeline-style-switcher');
+    if (existing) existing.remove();
 
-        // 如果配置为不显示，直接返回
-        if (!this.plugin.store.getShowStyleSwitcher()) return;
+    // 如果配置为不显示，直接返回
+    if (!this.plugin.store.getShowStyleSwitcher()) return;
 
-        const switcher = document.createElement('div');
-        switcher.className = 'timeline-style-switcher';
+    const switcher = document.createElement('div');
+    switcher.className = 'timeline-style-switcher';
 
-        // 第一行：原有样式（不包括日程视图）
-        const firstRow = document.createElement('div');
-        firstRow.className = 'timeline-style-row';
+    // 定义图标文件名映射
+    const iconFileMap = {
+        [TimelineView.MODE_LIST]: '001.svg',
+        [TimelineView.MODE_MOMENTS]: '002.svg',
+        [TimelineView.MODE_TIMELINE]: '003.svg',
+        [TimelineView.MODE_TIMELINE_V2]: '004.svg',
+        [TimelineView.MODE_WECHAT]: '005.svg',
+        [TimelineView.MODE_STATISTICS]: '006.svg',
+        [TimelineView.MODE_SCHEDULE]: '007.svg',
+        [TimelineView.MODE_WEEK]: '008.svg'  
+    };
 
-        const modesFirstRow = [
-            { mode: TimelineView.MODE_LIST, icon: 'fa-list', label: '列表样式' },
-            { mode: TimelineView.MODE_MOMENTS, icon: 'fa-images', label: '朋友圈样式' },
-            { mode: TimelineView.MODE_TIMELINE, icon: 'fa-clock', label: '时间日志样式' },
-            { mode: TimelineView.MODE_TIMELINE_V2, icon: 'fa-timeline', label: '时间轴样式' },
-            { mode: TimelineView.MODE_WECHAT, icon: 'fa-bullhorn', label: '聊天样式' },
-            { mode: TimelineView.MODE_STATISTICS, icon: 'fa-chart-pie', label: '统计视图' }
-        ];
+    // 所有按钮的顺序（共8个）
+    const allButtons = [
+        { mode: TimelineView.MODE_LIST, label: '列表样式' },
+        { mode: TimelineView.MODE_MOMENTS, label: '朋友圈样式' },
+        { mode: TimelineView.MODE_TIMELINE, label: '时间日志样式' },
+        { mode: TimelineView.MODE_TIMELINE_V2, label: '时间轴样式' },
+        { mode: TimelineView.MODE_WECHAT, label: '聊天样式' },
+        { mode: TimelineView.MODE_STATISTICS, label: '统计视图' },
+        { mode: TimelineView.MODE_SCHEDULE, label: '日程视图' },
+        { mode: TimelineView.MODE_WEEK, label: '周视图' }
+    ];
 
-        modesFirstRow.forEach(item => {
-            const btn = document.createElement('button');
-            btn.className = `timeline-style-btn ${this.displayMode === item.mode ? 'active' : ''}`;
-            btn.setAttribute('title', item.label);
-            btn.innerHTML = `<i class="fas ${item.icon}"></i>`;
-            btn.addEventListener('click', () => {
-                this.setDisplayMode(item.mode);
-            });
-            firstRow.appendChild(btn);
+    const pluginName = this.plugin.name;
+
+    // 分成两组，每组4个
+    const row1 = allButtons.slice(0, 4);
+    const row2 = allButtons.slice(4, 8);
+
+    // 创建一行按钮
+    const createRow = (buttons) => {
+        const row = document.createElement('div');
+        row.className = 'timeline-style-row';
+        buttons.forEach(btn => {
+            const buttonEl = document.createElement('button');
+            buttonEl.className = `timeline-style-btn ${this.displayMode === btn.mode ? 'active' : ''}`;
+            buttonEl.setAttribute('title', btn.label);
+            const iconUrl = `/plugins/${pluginName}/icons/${iconFileMap[btn.mode]}`;
+            buttonEl.innerHTML = `<img src="${iconUrl}" class="timeline-style-icon" style="width: 20px; height: 20px;" />`;
+            
+            // 周视图特殊处理：点击打开新标签页，不调用 setDisplayMode
+            if (btn.mode === TimelineView.MODE_WEEK) {
+                buttonEl.addEventListener('click', () => this.plugin.openWeekTab());
+            } else {
+                buttonEl.addEventListener('click', () => this.setDisplayMode(btn.mode));
+            }
+            row.appendChild(buttonEl);
         });
+        return row;
+    };
 
-        // 第二行：日程视图单独一行
-        const secondRow = document.createElement('div');
-        secondRow.className = 'timeline-style-row timeline-style-row-schedule';
-
-        const scheduleBtn = document.createElement('button');
-        scheduleBtn.className = `timeline-style-btn ${this.displayMode === TimelineView.MODE_SCHEDULE ? 'active' : ''}`;
-        scheduleBtn.setAttribute('title', '日程视图');
-        scheduleBtn.innerHTML = `<i class="fas fa-calendar-alt"></i>`;
-        scheduleBtn.addEventListener('click', () => {
-            this.setDisplayMode(TimelineView.MODE_SCHEDULE);
-        });
-        secondRow.appendChild(scheduleBtn);
-
-        switcher.appendChild(firstRow);
-        switcher.appendChild(secondRow);
-        this.leftPanel.appendChild(switcher);
-    }
+    switcher.appendChild(createRow(row1));
+    switcher.appendChild(createRow(row2));
+    this.leftPanel.appendChild(switcher);
+}
 
     // ========== 辅助函数 ==========
     formatAbsoluteTime(date) {
@@ -1613,12 +1631,14 @@ updateWechatAvatar(rowElement, direction) {
 renderStatisticsPanel() {
     this.middlePanel.innerHTML = '';
 
-    // 如果是第一次进入且未设置日期范围，则默认设为本周
-    if (!this.startDate || !this.endDate) {
-        const range = this.getThisWeekRange();
-        this.startDate = range.start;
-        this.endDate = range.end;
-    }
+// 如果是第一次进入且未设置日期范围，则默认设为当前月份
+if (!this.startDate || !this.endDate) {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    this.startDate = formatDate(firstDay);
+    this.endDate = formatDate(lastDay);
+}
 
     // 获取当前日期范围内的所有类型
     const currentTypes = this.getTypesInDateRange();
@@ -1665,11 +1685,12 @@ renderStatisticsPanel() {
 
     const dateRangeDiv = document.createElement('div');
     dateRangeDiv.className = 'north-date-range';
+    const calendarIconPath = `/plugins/${this.plugin.name}/icons/日历.svg`;
     dateRangeDiv.innerHTML = `
-        <i class="far fa-calendar-alt"></i>
+        <img src="${calendarIconPath}" class="calendar-icon" style="width: 16px; height: 16px;" />
         <input type="date" class="north-date-input" id="stat-start-date" value="${this.startDate || ''}">
         <span>-</span>
-        <i class="far fa-calendar-alt"></i>
+        <img src="${calendarIconPath}" class="calendar-icon" style="width: 16px; height: 16px;" />
         <input type="date" class="north-date-input" id="stat-end-date" value="${this.endDate || ''}">
         <button class="b3-button" id="apply-date-filter" style="margin-left:8px;">应用</button>
     `;
@@ -1895,7 +1916,7 @@ renderStatisticsPanel() {
             card.innerHTML = `
             <div class="chart-header">
                 <div class="chart-title">
-                    <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${this.lightenColor(def.color, 20)});">${def.icon}</div>
+                    <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${lightenColor(def.color, 20)});">${def.icon}</div>
                     <div class="chart-text">
                         <h4>${def.title}</h4>
                         <p>${def.desc}</p>
@@ -3022,138 +3043,143 @@ renderWechatPanel() {
 }
 
     // ========== 新增日程视图 ==========
-    renderSchedulePanel() {
-        this.middlePanel.innerHTML = '';
+renderSchedulePanel() {
+    this.middlePanel.innerHTML = '';
 
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无日程</div>';
-            return;
-        }
+    const recs = this.filteredRecords;
+    if (!recs.length) {
+        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无日程</div>';
+        return;
+    }
 
-        // 1. 按日期分组，组内按时间排序
-        const grouped = new Map();
-        recs.forEach(r => {
-            const dateObj = parseLifelogDate(r.lifelog_created);
-            if (!dateObj) return;
-            const dateStr = formatDate(dateObj);
-            if (!grouped.has(dateStr)) grouped.set(dateStr, []);
-            grouped.get(dateStr).push({ ...r, dateObj });
-        });
+    // 1. 按日期分组，组内按时间排序
+    const grouped = new Map();
+    recs.forEach(r => {
+        const dateObj = parseLifelogDate(r.lifelog_created);
+        if (!dateObj) return;
+        const dateStr = formatDate(dateObj);
+        if (!grouped.has(dateStr)) grouped.set(dateStr, []);
+        grouped.get(dateStr).push({ ...r, dateObj });
+    });
 
-        // 2. 日期倒序（最新在上）
-        const sortedDates = Array.from(grouped.keys()).sort().reverse();
+    // 2. 日期倒序（最新在上）
+    const sortedDates = Array.from(grouped.keys()).sort().reverse();
 
-        const container = document.createElement('div');
-        container.className = 'timeline-schedule-panel';
+    const container = document.createElement('div');
+    container.className = 'timeline-schedule-panel';
 
-        for (const dateStr of sortedDates) {
-            const records = grouped.get(dateStr);
-            records.sort((a, b) => a.dateObj - b.dateObj);
+    for (const dateStr of sortedDates) {
+        const records = grouped.get(dateStr);
+        records.sort((a, b) => a.dateObj - b.dateObj);
 
-            // 左侧日期信息
-            const dateObj = parseLifelogDate(records[0].lifelog_created);
-            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-            const weekday = weekdays[dateObj.getDay()];
-            const isToday = (dateStr === formatDate(new Date()));
+        // 左侧日期信息
+        const dateObj = parseLifelogDate(records[0].lifelog_created);
+        const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        const weekday = weekdays[dateObj.getDay()];
+        const isToday = (dateStr === formatDate(new Date()));
 
-            const dayGroup = document.createElement('div');
-            dayGroup.className = 'day-group';
+        // 提取月份和日，格式化为 MM-DD
+        const month = dateObj.getMonth() + 1;
+        const day = dateObj.getDate();
+        const monthDay = `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-            const dateCol = document.createElement('div');
-            dateCol.className = 'date-col';
-            dateCol.innerHTML = `
-                <div class="date-full ${isToday ? 'active' : 'normal'}">${formatDate(dateObj)}</div>
-                <div class="date-week">${weekday}</div>
-            `;
+        const dayGroup = document.createElement('div');
+        dayGroup.className = 'day-group';
 
-            const timelineCol = document.createElement('div');
-            timelineCol.className = 'timeline-col';
+        const dateCol = document.createElement('div');
+        dateCol.className = 'date-col';
+        dateCol.innerHTML = `
+            <div class="date-full ${isToday ? 'active' : 'normal'}">${monthDay}</div>
+            <div class="date-week">${weekday}</div>
+        `;
 
-            // 3. 遍历记录生成时间轴行
-            for (let i = 0; i < records.length; i++) {
-                const rec = records[i];
-                const type = rec.lifelog_type || '未分类';
-                const typeColor = getTypeColorFromCSS(type);
+        const timelineCol = document.createElement('div');
+        timelineCol.className = 'timeline-col';
 
-                // 计算时间段和左侧时间
-                let leftTime = '';
-                let timeRange = '';
+        // 3. 遍历记录生成时间轴行
+        for (let i = 0; i < records.length; i++) {
+            const rec = records[i];
+            const type = rec.lifelog_type || '未分类';
+            const typeColor = getTypeColorFromCSS(type);
 
-                if (this.timeMode === 'start') {
-                    // 开始模式：当前记录 -> 下一条记录
-                    leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
-                    let endObj = null;
-                    if (i < records.length - 1) {
-                        endObj = records[i + 1].dateObj;
-                    } else {
-                        const nextRec = this._getNextRecord(rec);
-                        if (nextRec) endObj = nextRec.dateObj;
-                    }
-                    if (endObj) {
-                        const endStr = `${String(endObj.getHours()).padStart(2,'0')}:${String(endObj.getMinutes()).padStart(2,'0')}`;
-                        timeRange = `${leftTime} - ${endStr}`;
-                    } else {
-                        timeRange = `${leftTime} 开始`;
-                    }
+            // 计算时间段和左侧时间
+            let leftTime = '';
+            let timeRange = '';
+
+            if (this.timeMode === 'start') {
+                // 开始模式：当前记录 -> 下一条记录
+                leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
+                let endObj = null;
+                if (i < records.length - 1) {
+                    endObj = records[i + 1].dateObj;
                 } else {
-                    // 结束模式：上一条记录 -> 当前记录
-                    leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
-                    let startObj = null;
-                    if (i > 0) {
-                        startObj = records[i - 1].dateObj;
-                    } else {
-                        const prevRec = this._getPreviousRecord(rec);
-                        if (prevRec) startObj = prevRec.dateObj;
-                    }
-                    if (startObj) {
-                        const startStr = `${String(startObj.getHours()).padStart(2,'0')}:${String(startObj.getMinutes()).padStart(2,'0')}`;
-                        timeRange = `${startStr} - ${leftTime}`;
-                    } else {
-                        timeRange = `开始 - ${leftTime}`;
-                    }
+                    const nextRec = this._getNextRecord(rec);
+                    if (nextRec) endObj = nextRec.dateObj;
                 }
-
-                // 卡片内容（去除时间前缀）
-                let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                // 卡片标题（内容摘要）
-                const cardTitle = content.length > 80 ? content.slice(0, 80) + '…' : content;
-
-                // 卡片背景色（浅色版本）
-                const bgColor = this.lightenColor(typeColor, 85);
-                const borderColor = typeColor;
-
-                const row = document.createElement('div');
-                row.className = 'row';
-
-                row.innerHTML = `
-                    <div class="time-text">${this.escapeHtml(leftTime)}</div>
-                    <div class="axis-area"><div class="dot"></div></div>
-                    <div class="card" style="background-color: ${bgColor}; border-left-color: ${borderColor};">
-                        <div class="card-time" style="color: ${borderColor};">${this.escapeHtml(timeRange)}</div>
-                        <div class="card-title">${this.escapeHtml(cardTitle)}</div>
-                    </div>
-                `;
-
-                // 绑定右键菜单
-                row.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.showContextMenu(e, rec);
-                });
-
-                timelineCol.appendChild(row);
+                if (endObj) {
+                    const endStr = `${String(endObj.getHours()).padStart(2,'0')}:${String(endObj.getMinutes()).padStart(2,'0')}`;
+                    timeRange = `${leftTime} - ${endStr}`;
+                } else {
+                    timeRange = `${leftTime} 开始`;
+                }
+            } else {
+                // 结束模式：上一条记录 -> 当前记录
+                leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
+                let startObj = null;
+                if (i > 0) {
+                    startObj = records[i - 1].dateObj;
+                } else {
+                    const prevRec = this._getPreviousRecord(rec);
+                    if (prevRec) startObj = prevRec.dateObj;
+                }
+                if (startObj) {
+                    const startStr = `${String(startObj.getHours()).padStart(2,'0')}:${String(startObj.getMinutes()).padStart(2,'0')}`;
+                    timeRange = `${startStr} - ${leftTime}`;
+                } else {
+                    timeRange = `开始 - ${leftTime}`;
+                }
             }
 
-            dayGroup.appendChild(dateCol);
-            dayGroup.appendChild(timelineCol);
-            container.appendChild(dayGroup);
+            // 卡片内容（去除时间前缀）
+            let content = rec.content || '';
+            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
+
+            // 卡片标题（内容摘要）
+            const cardTitle = content.length > 80 ? content.slice(0, 80) + '…' : content;
+
+            // 卡片背景色（浅色版本）
+            const bgColor = lightenColor(typeColor, 85);
+            const borderColor = typeColor;
+
+            const row = document.createElement('div');
+            row.className = 'row';
+
+            row.innerHTML = `
+                <div class="time-text">${this.escapeHtml(leftTime)}</div>
+                <div class="axis-area"><div class="dot"></div></div>
+                <div class="card" style="background-color: ${bgColor}; border-left-color: ${borderColor};">
+                    <div class="card-time" style="color: ${borderColor};">${this.escapeHtml(timeRange)}</div>
+                    <div class="card-title">${this.escapeHtml(cardTitle)}</div>
+                </div>
+            `;
+
+            // 绑定右键菜单
+            row.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showContextMenu(e, rec);
+            });
+
+            timelineCol.appendChild(row);
         }
 
-        this.middlePanel.appendChild(container);
+        dayGroup.appendChild(dateCol);
+        dayGroup.appendChild(timelineCol);
+        container.appendChild(dayGroup);
     }
+
+    this.middlePanel.appendChild(container);
+}
 
     // 辅助方法：转义HTML
     escapeHtml(text) {
@@ -3493,21 +3519,444 @@ renderWechatPanel() {
     }
 }
 
+// ========== 周视图类 ==========
+// ========== 周视图类 ==========
+class WeekView {
+    constructor(plugin, container, initialDate = new Date()) {
+        this.plugin = plugin;
+        this.container = container;
+        this.currentDate = initialDate;          // 当前周的任意日期
+        this.allRecords = null;                  // 所有记录
+        this.globalSorted = null;                // 全局排序后的记录（带 dateObj）
+        this.timeMode = this.plugin.store.getTimeMode() || 'start'; // 获取时间模式
+        this.hourHeight = 90;                    // 每小时像素高度
+        this.loadDataAndRender();
+    }
+
+    async loadDataAndRender() {
+        this.allRecords = await this.plugin.queryAllRecordsUnfiltered();
+        this.globalSorted = this.allRecords
+            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
+            .filter(r => r.dateObj)
+            .sort((a, b) => a.dateObj - b.dateObj);
+        this.render();
+    }
+
+render() {
+    this.container.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'week-view';
+    wrapper.innerHTML = `
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <img src="/plugins/${this.plugin.name}/icons/日历.svg" class="calendar-icon" style="width: 25px; height: 25px;" />
+                <span class="month-label"></span>
+                <button class="btn refresh-week-btn" title="刷新">
+                    <img src="/plugins/${this.plugin.name}/icons/刷新.svg" style="width: 15px; height: 15px;" />
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn btn-icon prev-week">‹</button>
+                <button class="btn today-btn">今天</button>
+                <button class="btn btn-icon next-week">›</button>
+            </div>
+        </div>
+        <div class="calendar-header"></div>
+        <div class="calendar-scrollable">
+            <div class="calendar-body"></div>
+        </div>
+    `;
+    this.container.appendChild(wrapper);
+
+    // 绑定事件
+    wrapper.querySelector('.prev-week').addEventListener('click', () => this.changeWeek(-1));
+    wrapper.querySelector('.next-week').addEventListener('click', () => this.changeWeek(1));
+    wrapper.querySelector('.today-btn').addEventListener('click', () => this.goToday());
+    wrapper.querySelector('.refresh-week-btn').addEventListener('click', () => this.refresh());
+
+    this.renderCalendar();
+}
+
+    getMonday(date) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = (day === 0 ? 6 : day - 1);
+        d.setDate(d.getDate() - diff);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+
+    getSunday(monday) {
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        sunday.setHours(23, 59, 59, 999);
+        return sunday;
+    }
+
+    // 核心修改：生成按天分段的事件片段
+    getEventsOfWeek(monday, sunday) {
+        const weekRecords = this.globalSorted.filter(r => r.dateObj >= monday && r.dateObj <= sunday);
+        const rawEvents = [];
+
+        // 根据时间模式生成原始起止时间（可能跨多天）
+        if (this.timeMode === 'start') {
+            for (let i = 0; i < weekRecords.length; i++) {
+                const rec = weekRecords[i];
+                let endTime;
+                if (i + 1 < weekRecords.length) {
+                    endTime = weekRecords[i + 1].dateObj;
+                } else {
+                    endTime = new Date(rec.dateObj.getTime() + 60 * 60000);
+                    if (endTime > sunday) endTime = sunday;
+                }
+                rawEvents.push({
+                    id: rec.id,
+                    title: rec.content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim(),
+                    start: rec.dateObj,
+                    end: endTime,
+                    type: rec.lifelog_type || '未分类',
+                    color: getTypeColorFromCSS(rec.lifelog_type || '未分类')
+                });
+            }
+        } else {
+            for (let i = 0; i < weekRecords.length; i++) {
+                const rec = weekRecords[i];
+                let startTime;
+                if (i > 0) {
+                    startTime = weekRecords[i - 1].dateObj;
+                } else {
+                    startTime = new Date(rec.dateObj);
+                    startTime.setHours(0, 0, 0, 0);
+                }
+                rawEvents.push({
+                    id: rec.id,
+                    title: rec.content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim(),
+                    start: startTime,
+                    end: rec.dateObj,
+                    type: rec.lifelog_type || '未分类',
+                    color: getTypeColorFromCSS(rec.lifelog_type || '未分类')
+                });
+            }
+        }
+
+        // 将每个原始事件按天拆分成片段
+        const allSegments = [];
+        for (const ev of rawEvents) {
+            let curStart = new Date(ev.start);
+            const end = ev.end;
+            while (curStart < end) {
+                const dayEnd = new Date(curStart);
+                dayEnd.setHours(23, 59, 59, 999);
+                const segmentEnd = end < dayEnd ? end : dayEnd;
+                allSegments.push({
+                    id: ev.id,
+                    title: ev.title,
+                    start: ev.start,      // 原始开始时间（用于显示）
+                    end: ev.end,          // 原始结束时间（用于显示）
+                    segmentStart: new Date(curStart),
+                    segmentEnd: new Date(segmentEnd),
+                    type: ev.type,
+                    color: ev.color
+                });
+                // 移到下一天 00:00
+                const nextDay = new Date(curStart);
+                nextDay.setDate(curStart.getDate() + 1);
+                nextDay.setHours(0, 0, 0, 0);
+                curStart = nextDay;
+            }
+        }
+
+        // 按天分组
+        const days = {};
+        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(monday);
+            date.setDate(monday.getDate() + i);
+            const dateStr = formatDate(date);
+            days[dateStr] = {
+                dateObj: date,
+                weekday: weekDays[date.getDay()],
+                events: []
+            };
+        }
+
+        allSegments.forEach(seg => {
+            const segDateStr = formatDate(seg.segmentStart);
+            if (days[segDateStr]) {
+                days[segDateStr].events.push(seg);
+            }
+        });
+
+        return days;
+    }
+
+renderCalendar() {
+    const monday = this.getMonday(this.currentDate);
+    const sunday = this.getSunday(monday);
+    const days = this.getEventsOfWeek(monday, sunday);
+
+    const firstDay = days[formatDate(monday)].dateObj;
+    const monthLabel = `${firstDay.getMonth() + 1}月`;
+    this.container.querySelector('.month-label').textContent = monthLabel;
+
+    const header = this.container.querySelector('.calendar-header');
+    header.innerHTML = '';
+    const weekLabel = document.createElement('div');
+    weekLabel.className = 'week-label';
+    const weekNumber = this.getWeekNumber(monday);
+    weekLabel.textContent = `${weekNumber}周`;
+    header.appendChild(weekLabel);
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        const dayName = days[formatDate(date)].weekday;
+        const dateNumber = date.getDate();
+        const isToday = formatDate(date) === formatDate(new Date());
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        dayHeader.innerHTML = `
+            <div class="day-name">${dayName}</div>
+            <div class="date-number ${isToday ? 'active' : ''}">${dateNumber}</div>
+        `;
+        header.appendChild(dayHeader);
+    }
+
+    const body = this.container.querySelector('.calendar-body');
+    body.innerHTML = '';
+
+    const timeCol = document.createElement('div');
+    timeCol.className = 'time-column';
+    for (let hour = 0; hour < 24; hour++) {
+        const hourLabel = `${hour.toString().padStart(2, '0')}:00`;
+        const slot = document.createElement('div');
+        slot.className = 'time-slot';
+        slot.innerHTML = `<span>${hourLabel}</span>`;
+        timeCol.appendChild(slot);
+    }
+    body.appendChild(timeCol);
+
+    const pixelPerHour = this.hourHeight;
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + i);
+        const dateStr = formatDate(date);
+        const dayData = days[dateStr];
+        const dayCol = document.createElement('div');
+        dayCol.className = 'day-column';
+
+        for (let hour = 0; hour < 24; hour++) {
+            const line = document.createElement('div');
+            line.className = 'hour-line';
+            dayCol.appendChild(line);
+        }
+
+        // 对事件按开始时间排序，避免重叠
+        const sortedEvents = [...dayData.events].sort((a, b) => a.segmentStart - b.segmentStart);
+        
+        sortedEvents.forEach(seg => {
+            const startHour = seg.segmentStart.getHours();
+            const startMinute = seg.segmentStart.getMinutes();
+            const endHour = seg.segmentEnd.getHours();
+            const endMinute = seg.segmentEnd.getMinutes();
+            
+            // 计算原始高度（像素）
+            const startMinutes = startHour * 60 + startMinute;
+            const endMinutes = endHour * 60 + endMinute;
+            const rawHeight = (endMinutes - startMinutes) * (pixelPerHour / 60);
+            
+            if (rawHeight <= 0) return;
+            
+            // 间隔值（上下各1px，总共2px间隔，只影响高度，不改变顶部位置）
+            const gap = 7;
+            const heightPx = Math.max(4, rawHeight - gap);
+            const topPx = startMinutes * (pixelPerHour / 60);
+            
+            const card = document.createElement('div');
+            card.className = 'event';
+            const bgColor = this.getEventBackgroundColor(seg.color);
+            card.style.backgroundColor = bgColor;
+            card.style.top = `${topPx}px`;
+            card.style.height = `${heightPx}px`;
+            
+            // 显示原始跨天时间范围
+            const startStr = `${seg.start.getHours().toString().padStart(2, '0')}:${seg.start.getMinutes().toString().padStart(2, '0')}`;
+            const endStr = `${seg.end.getHours().toString().padStart(2, '0')}:${seg.end.getMinutes().toString().padStart(2, '0')}`;
+            const timeText = `${startStr} - ${endStr}`;
+            
+            card.innerHTML = `
+                <div class="event-title">${this.escapeHtml(seg.title.substring(0, 40))}</div>
+                <div class="event-time">${timeText}</div>
+            `;
+            
+            card.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showEventContextMenu(e, seg.id);
+            });
+            
+            dayCol.appendChild(card);
+        });
+
+        body.appendChild(dayCol);
+    }
+
+    // 滚动到 00:00（顶部）
+    this.scrollToHour(0);
+}
+
+    getEventBackgroundColor(color) {
+        let r, g, b;
+        const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (rgbMatch) {
+            r = parseInt(rgbMatch[1]);
+            g = parseInt(rgbMatch[2]);
+            b = parseInt(rgbMatch[3]);
+            return `rgba(${r}, ${g}, ${b}, 0.4)`;
+        }
+        if (color.startsWith('hsl')) {
+            return this.hslToRgba(color, 0.4);
+        }
+        const hexMatch = color.match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i);
+        if (hexMatch) {
+            const hex = hexMatch[1];
+            if (hex.length === 3) {
+                r = parseInt(hex[0] + hex[0], 16);
+                g = parseInt(hex[1] + hex[1], 16);
+                b = parseInt(hex[2] + hex[2], 16);
+            } else {
+                r = parseInt(hex.substring(0, 2), 16);
+                g = parseInt(hex.substring(2, 4), 16);
+                b = parseInt(hex.substring(4, 6), 16);
+            }
+            return `rgba(${r}, ${g}, ${b}, 0.4)`;
+        }
+        console.warn('周视图无法解析颜色:', color);
+        return 'rgba(200, 200, 255, 0.4)';
+    }
+
+    hslToRgba(hsl, alpha) {
+        const match = hsl.match(/hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/);
+        if (!match) return `rgba(200, 200, 255, ${alpha})`;
+        let h = parseFloat(match[1]) / 360;
+        let s = parseFloat(match[2]) / 100;
+        let l = parseFloat(match[3]) / 100;
+        let r, g, b;
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+        return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${alpha})`;
+    }
+
+    showEventContextMenu(event, blockId) {
+        const existingMenu = document.querySelector('.week-context-menu');
+        if (existingMenu) existingMenu.remove();
+
+        const menu = document.createElement('div');
+        menu.className = 'week-context-menu b3-menu';
+        menu.style.position = 'fixed';
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        menu.style.zIndex = '9999';
+        menu.innerHTML = `
+            <div class="b3-menu__items">
+                <button class="b3-menu__item" data-action="edit">
+                    <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
+                    <span class="b3-menu__label">编辑</span>
+                </button>
+                <button class="b3-menu__item" data-action="open">
+                    <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
+                    <span class="b3-menu__label">打开文档</span>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(menu);
+
+        menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
+            const record = this.allRecords.find(r => r.id === blockId);
+            if (record) {
+                this.plugin.showEditBlockDialog(blockId, record.content);
+            }
+            menu.remove();
+        });
+        menu.querySelector('[data-action="open"]').addEventListener('click', () => {
+            this.plugin.openBlockDocument(blockId);
+            menu.remove();
+        });
+
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('contextmenu', closeMenu);
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener('click', closeMenu);
+            document.addEventListener('contextmenu', closeMenu);
+        }, 0);
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    scrollToHour(hour) {
+        const scrollable = this.container.querySelector('.calendar-scrollable');
+        if (scrollable) {
+            scrollable.scrollTop = hour * this.hourHeight;
+        }
+    }
+
+    changeWeek(delta) {
+        const newMonday = this.getMonday(this.currentDate);
+        newMonday.setDate(newMonday.getDate() + delta * 7);
+        this.currentDate = newMonday;
+        this.renderCalendar();
+    }
+
+    goToday() {
+        this.currentDate = new Date();
+        this.renderCalendar();
+    }
+
+    async refresh() {
+        this.timeMode = this.plugin.store.getTimeMode();
+        await this.loadDataAndRender();
+    }
+
+    getWeekNumber(date) {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+        const year = d.getFullYear();
+        const week = Math.floor((d.getTime() - new Date(year, 0, 4).getTime()) / 86400000 / 7) + 1;
+        return week;
+    }
+}
+
 // ========== 主插件类 ==========
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     styleDefaults = null;
     attrsCache = new Map();
 
     async onload() {
-
-        // 加载 Font Awesome（确保图标显示）
-        if (!document.querySelector('link[href*="font-awesome"]')) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
-            document.head.appendChild(link);
-        }
-
         // 添加图标着色样式
         const style = document.createElement('style');
         style.textContent = `
@@ -3529,32 +3978,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         this.store = new TimelineStore(this);
         await this.store.loadConfig();
-
-        // 添加图标
-        this.addIcons(`<symbol id="iconUser" viewBox="0 0 24 24">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconRefresh" viewBox="0 0 24 24">
-            <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconMore" viewBox="0 0 24 24">
-            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconTimeline" viewBox="0 0 24 24">
-            <path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm0 16h12v2H6v-2zm-2-4h16v2H4v-2zm0-8h16v2H4V6z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconTrashcan" viewBox="0 0 24 24">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconEdit" viewBox="0 0 24 24">
-            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconFile" viewBox="0 0 24 24">
-            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/>
-        </symbol>`);
-        this.addIcons(`<symbol id="iconTime" viewBox="0 0 24 24">
-            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.1.8-1.2-4.5-2.7V7z" fill="currentColor"/>
-        </symbol>`);
 
         // 注册时间线标签页
         const plugin = this;
@@ -3580,21 +4003,36 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 this.refreshHandler = () => this.loadDataAndRender();
                 this.plugin.eventBus.on('timeline-refresh', this.refreshHandler);
             },
-beforeDestroy() {
-    // 防止 this 为 undefined
-    if (!this) return;
-    
-    // 安全卸载事件监听
-    if (this.plugin?.eventBus && this.refreshHandler) {
-        this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
-    }
-    
-    // 安全销毁视图
-    if (this.view?.destroy) {
-        this.view.destroy();
-        this.view = null;
-    }
-}
+            beforeDestroy() {
+                if (!this) return;
+                if (this.plugin?.eventBus && this.refreshHandler) {
+                    this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
+                }
+                if (this.view?.destroy) {
+                    this.view.destroy();
+                    this.view = null;
+                }
+            }
+        });
+
+        // 注册周视图标签页
+        const WEEK_TAB_TYPE = 'week-view-tab';
+        this.addTab({
+            type: WEEK_TAB_TYPE,
+            init() {
+                this.plugin = plugin;
+                this.element.classList.add('week-view-container');
+                this.container = document.createElement('div');
+                this.container.style.height = '100%';
+                this.container.style.overflow = 'auto';
+                this.element.appendChild(this.container);
+                this.weekView = new WeekView(this.plugin, this.container);
+            },
+            beforeDestroy() {
+                if (this.weekView) {
+                    this.weekView = null;
+                }
+            }
         });
 
         // ========== 移动端 Dock 添加 ==========
@@ -3619,17 +4057,13 @@ beforeDestroy() {
                         dock.view = new TimelineView(this, container, data);
                     });
                 },
-// ✅ 修复后：增加 dock 和 dock.view 的双重检查
-destroy: (dock) => {
-    // 防止 dock 为 undefined/null
-    if (!dock) return;
-    
-    // 安全销毁视图
-    if (dock.view?.destroy) {
-        dock.view.destroy();
-        dock.view = null;
-    }
-}
+                destroy: (dock) => {
+                    if (!dock) return;
+                    if (dock.view?.destroy) {
+                        dock.view.destroy();
+                        dock.view = null;
+                    }
+                }
             });
         }
     }
@@ -3665,6 +4099,18 @@ destroy: (dock) => {
         });
     }
 
+    openWeekTab() {
+        openTab({
+            app: this.app,
+            custom: {
+                icon: "iconCamera",
+                title: "周视图",
+                data: {},
+                id: this.name + "week-view-tab"
+            }
+        });
+    }
+
     // 查询本年数据（用于普通视图）
     async queryAllRecords() {
         const sql = `
@@ -3696,7 +4142,7 @@ destroy: (dock) => {
         return [];
     }
 
-    // 查询全部数据（用于统计视图）
+    // 查询全部数据（用于统计视图和周视图）
     async queryAllRecordsUnfiltered() {
         const sql = `
             SELECT 
