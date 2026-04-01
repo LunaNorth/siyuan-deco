@@ -1337,7 +1337,7 @@ renderStyleSwitcher() {
     if (!this.plugin.store.getShowStyleSwitcher()) return;
 
     const switcher = document.createElement('div');
-    switcher.className = 'timeline-style-switcher';
+    switcher.className = 'north timeline-style-switcher';
 
     // 定义图标文件名映射
     const iconFileMap = {
@@ -1372,10 +1372,10 @@ renderStyleSwitcher() {
     // 创建一行按钮
     const createRow = (buttons) => {
         const row = document.createElement('div');
-        row.className = 'timeline-style-row';
+        row.className = 'north timeline-style-row';
         buttons.forEach(btn => {
             const buttonEl = document.createElement('button');
-            buttonEl.className = `timeline-style-btn ${this.displayMode === btn.mode ? 'active' : ''}`;
+            buttonEl.className = `north timeline-style-btn ${this.displayMode === btn.mode ? 'active' : ''}`;
             buttonEl.setAttribute('title', btn.label);
             const iconUrl = `/plugins/${pluginName}/icons/${iconFileMap[btn.mode]}`;
             buttonEl.innerHTML = `<img src="${iconUrl}" class="timeline-style-icon" style="width: 20px; height: 20px;" />`;
@@ -3066,7 +3066,7 @@ renderSchedulePanel() {
     const sortedDates = Array.from(grouped.keys()).sort().reverse();
 
     const container = document.createElement('div');
-    container.className = 'timeline-schedule-panel';
+    container.className = 'north timeline-schedule-panel';
 
     for (const dateStr of sortedDates) {
         const records = grouped.get(dateStr);
@@ -3545,7 +3545,7 @@ class WeekView {
 render() {
     this.container.innerHTML = '';
     const wrapper = document.createElement('div');
-    wrapper.className = 'week-view';
+    wrapper.className = 'north week-view';
     wrapper.innerHTML = `
         <div class="toolbar">
             <div class="toolbar-left">
@@ -3866,7 +3866,7 @@ renderCalendar() {
         if (existingMenu) existingMenu.remove();
 
         const menu = document.createElement('div');
-        menu.className = 'week-context-menu b3-menu';
+        menu.className = 'north week-context-menu b3-menu';
         menu.style.position = 'fixed';
         menu.style.left = event.clientX + 'px';
         menu.style.top = event.clientY + 'px';
