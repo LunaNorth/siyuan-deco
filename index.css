@@ -1,4 +1,4 @@
-/* 灰调引述 */
+﻿/* 灰调引述 */
 .protyle-wysiwyg [custom-deco-style="灰调引述"]:not([fold="1"]) {
     padding: 10px 10px;
     border-left: 4px solid #6b7280 !important;
@@ -91,8 +91,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -114,7 +114,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #d96c6c !important;
     white-space: nowrap;
@@ -134,8 +134,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -157,7 +157,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #c97628 !important;
     white-space: nowrap;
@@ -177,8 +177,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -200,7 +200,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #b88633 !important;
     white-space: nowrap;
@@ -220,8 +220,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -243,7 +243,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #3d854d !important;
     white-space: nowrap;
@@ -263,8 +263,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -286,7 +286,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #1f8a8a !important;
     white-space: nowrap;
@@ -306,8 +306,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -329,7 +329,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #794f9c !important;
     white-space: nowrap;
@@ -349,8 +349,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -372,7 +372,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #3366aa !important;
     white-space: nowrap;
@@ -392,8 +392,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
     line-height: 1.6 !important;
@@ -415,7 +415,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #bc5880 !important;
     white-space: nowrap;
@@ -446,8 +446,8 @@
     padding: 45px 20px 20px 20px !important;  
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 14px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #cfd8dc !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
     line-height: 1.6 !important;
@@ -467,7 +467,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 14px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -548,10 +548,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(172, 224, 249, 0.4) !important; */
     color: #455a64 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -560,7 +560,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #5c6bc0 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -577,10 +577,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(255, 206, 215, 0.4) !important; */
     color: #5d4037 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -589,7 +589,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #d84315 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -606,10 +606,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(244, 143, 177, 0.4) !important; */
     color: #880e4f !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -618,7 +618,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #c2185b !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -635,10 +635,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(144, 202, 249, 0.4) !important; */
     color: #5d4037 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -647,7 +647,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #1565c0 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -664,10 +664,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(129, 212, 250, 0.4) !important; */
     color: #01579b !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -676,7 +676,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #0277bd !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -693,10 +693,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(255, 204, 128, 0.4) !important; */
     color: #bf360c !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -705,7 +705,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #e65100 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -722,10 +722,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(178, 223, 219, 0.4) !important; */
     color: #004d40 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -734,7 +734,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #00695c !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -751,10 +751,10 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     /* box-shadow: 0 5px 15px rgba(225, 190, 231, 0.4) !important; */
     color: #4a148c !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
     position: relative !important;
 }
@@ -763,7 +763,7 @@
     display: block !important;
     margin-bottom: 12px !important;
     color: #7b1fa2 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -783,8 +783,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #4a216f !important;
     box-shadow: 2px 2px 8px rgba(126, 34, 206, 0.08) !important;
     line-height: 1.6 !important;
@@ -795,7 +795,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #8b5cf6 !important;
     white-space: nowrap;
@@ -816,8 +816,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #064e3b !important;
     box-shadow: 2px 2px 8px rgba(34, 197, 94, 0.08) !important;
     line-height: 1.6 !important;
@@ -828,7 +828,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #10b981 !important;
     white-space: nowrap;
@@ -849,8 +849,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #7f1d1d !important;
     box-shadow: 2px 2px 8px rgba(239, 68, 68, 0.08) !important;
     line-height: 1.6 !important;
@@ -861,7 +861,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #ef4444 !important;
     white-space: nowrap;
@@ -882,8 +882,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #1e3a8a !important;
     box-shadow: 2px 2px 8px rgba(59, 130, 246, 0.08) !important;
     line-height: 1.6 !important;
@@ -894,7 +894,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #3b82f6 !important;
     white-space: nowrap;
@@ -915,8 +915,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #713f12 !important;
     box-shadow: 2px 2px 8px rgba(234, 179, 8, 0.08) !important;
     line-height: 1.6 !important;
@@ -927,7 +927,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #f59e0b !important;
     white-space: nowrap;
@@ -948,8 +948,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #3f3f46 !important;
     box-shadow: 2px 2px 8px rgba(107, 114, 128, 0.08) !important;
     line-height: 1.6 !important;
@@ -960,7 +960,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #6b7280 !important;
     white-space: nowrap;
@@ -981,8 +981,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #083344 !important;
     box-shadow: 2px 2px 8px rgba(6, 182, 212, 0.08) !important;
     line-height: 1.6 !important;
@@ -993,7 +993,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #06b6d4 !important;
     white-space: nowrap;
@@ -1014,8 +1014,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #4c1d95 !important;
     box-shadow: 2px 2px 8px rgba(139, 92, 246, 0.08) !important;
     line-height: 1.6 !important;
@@ -1026,7 +1026,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #a78bfa !important;
     white-space: nowrap;
@@ -1047,8 +1047,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #664d03 !important;
     box-shadow: 2px 2px 8px rgba(251, 191, 36, 0.1) !important;
     line-height: 1.6 !important;
@@ -1059,7 +1059,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #fbbf24 !important;
     white-space: nowrap;
@@ -1080,8 +1080,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #0369a1 !important;
     box-shadow: 2px 2px 8px rgba(37, 99, 235, 0.08) !important;
     line-height: 1.6 !important;
@@ -1092,7 +1092,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #2563eb !important;
     white-space: nowrap;
@@ -1113,8 +1113,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #831843 !important;
     box-shadow: 2px 2px 8px rgba(236, 72, 153, 0.08) !important;
     line-height: 1.6 !important;
@@ -1125,7 +1125,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #ec4899 !important;
     white-space: nowrap;
@@ -1146,8 +1146,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: 'Consolas', 'Monaco', monospace !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #065f46 !important;
     box-shadow: 2px 2px 8px rgba(5, 150, 105, 0.08) !important;
     line-height: 1.6 !important;
@@ -1158,7 +1158,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #059669 !important;
     white-space: nowrap;
@@ -1179,8 +1179,8 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: inherit !important;
-    font-size: 16px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #7c2d12 !important;
     box-shadow: 2px 2px 8px rgba(245, 158, 11, 0.08) !important;
     line-height: 1.6 !important;
@@ -1191,7 +1191,7 @@
     position: absolute !important;
     top: 12px !important;
     left: 20px !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     color: #f59e0b !important;
     white-space: nowrap;
@@ -1997,12 +1997,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="系统通知"]:not([fold="1"])::before {
@@ -2014,7 +2014,7 @@
     background: #eff6ff !important;
     padding: 14px 20px !important;
     color: #1e40af !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2035,12 +2035,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="成功通知"]:not([fold="1"])::before {
@@ -2052,7 +2052,7 @@
     background: #f0fdf4 !important;
     padding: 14px 20px !important;
     color: #166534 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2073,12 +2073,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="警告通知"]:not([fold="1"])::before {
@@ -2090,7 +2090,7 @@
     background: #fffbeb !important;
     padding: 14px 20px !important;
     color: #854d0e !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2111,12 +2111,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="错误通知"]:not([fold="1"])::before {
@@ -2128,7 +2128,7 @@
     background: #fef2f2 !important;
     padding: 14px 20px !important;
     color: #991b1b !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2149,12 +2149,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="信息通知"]:not([fold="1"])::before {
@@ -2166,7 +2166,7 @@
     background: #e0f2fe !important;
     padding: 14px 20px !important;
     color: #0369a1 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2187,12 +2187,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="疑问通知"]:not([fold="1"])::before {
@@ -2204,7 +2204,7 @@
     background: #f3e8ff !important;
     padding: 14px 20px !important;
     color: #6b21a8 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2225,12 +2225,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="重要通知"]:not([fold="1"])::before {
@@ -2242,7 +2242,7 @@
     background: #fff1f0 !important;
     padding: 14px 20px !important;
     color: #b91c1c !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2263,12 +2263,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="提醒通知"]:not([fold="1"])::before {
@@ -2280,7 +2280,7 @@
     background: #fef9c3 !important;
     padding: 14px 20px !important;
     color: #854d0e !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2301,12 +2301,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="邮件通知"]:not([fold="1"])::before {
@@ -2318,7 +2318,7 @@
     background: #f1f5f9 !important;
     padding: 14px 20px !important;
     color: #334155 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600 !important;
     display: flex !important;
     align-items: center !important;
@@ -2340,12 +2340,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #374151 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="重点总结"]:not([fold="1"])::before {
@@ -2357,7 +2357,7 @@
     background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2394,7 +2394,7 @@
     padding: 0 0 4px 0 !important;
     border-bottom: 1px solid rgba(0,0,0,0.05) !important;
     font-weight: 600 !important;
-    font-size: 0.95em !important;
+    font-size: var(--b3-font-size-editor);
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
 }
@@ -2490,12 +2490,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"])::before {
@@ -2507,7 +2507,7 @@
     background: linear-gradient(90deg, #8b5cf6, #3b82f6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2528,12 +2528,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="成长笔记"]:not([fold="1"])::before {
@@ -2545,7 +2545,7 @@
     background: linear-gradient(90deg, #10b981, #34d399) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2566,12 +2566,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"])::before {
@@ -2583,7 +2583,7 @@
     background: linear-gradient(90deg, #f97316, #f43f5e) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2604,12 +2604,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="技术要点"]:not([fold="1"])::before {
@@ -2621,7 +2621,7 @@
     background: linear-gradient(90deg, #0ea5e9, #06b6d4) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2642,12 +2642,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="今日心情"]:not([fold="1"])::before {
@@ -2659,7 +2659,7 @@
     background: linear-gradient(90deg, #ec4899, #f472b6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2680,12 +2680,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="专业建议"]:not([fold="1"])::before {
@@ -2697,7 +2697,7 @@
     background: linear-gradient(90deg, #1e1e1e, #333) !important;
     padding: 12px 20px !important;
     color: #ffd700 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2718,12 +2718,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="创意灵感"]:not([fold="1"])::before {
@@ -2735,7 +2735,7 @@
     background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
     padding: 12px 20px !important;
     color: #1c1917 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2756,12 +2756,12 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: inherit !important;
+    font-family: var(--b3-font-family-protyle);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
     color: #333333 !important;
-    font-size: 15px !important;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6 !important;
 }
 .protyle-wysiwyg [custom-deco-style="万能提示"]:not([fold="1"])::before {
@@ -2773,7 +2773,7 @@
     background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     display: flex !important;
     align-items: center !important;
@@ -2807,7 +2807,7 @@
     margin: 0 0 6px 0 !important;           /* 减小底部间距，让标题更贴近正文 */
     padding: 0 !important;                  /* 去除底部 padding */
     font-weight: 700 !important;
-    font-size: 0.98em !important;
+    font-size: var(--b3-font-size-editor);
     letter-spacing: 1px !important;
     border-bottom: none !important;         /* 确保无下划线 */
     text-shadow: 2px 2px 0 rgba(255,255,255,0.9) !important;
@@ -2941,8 +2941,8 @@
     margin: 2px 0px !important;
     background: #f8fdfa !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #166534 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -2955,7 +2955,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #15803d !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -2970,8 +2970,8 @@
     margin: 2px 0px !important;
     background: #eff6ff !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #1e3a8a !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -2984,7 +2984,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #1e40af !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -2999,8 +2999,8 @@
     margin: 2px 0px !important;
     background: #fff7ed !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #9a3412 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3013,7 +3013,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #c2410c !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3028,8 +3028,8 @@
     margin: 2px 0px !important;
     background: #faf5ff !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #581c87 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3042,7 +3042,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #6b21a8 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3057,8 +3057,8 @@
     margin: 2px 0px !important;
     background: #fdf2f8 !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #831843 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3071,7 +3071,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #9d174d !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3086,8 +3086,8 @@
     margin: 2px 0px !important;
     background: #fffbeb !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #92400e !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3100,7 +3100,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #b45309 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3115,8 +3115,8 @@
     margin: 2px 0px !important;
     background: #f3f4f6 !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #1f2937 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3129,7 +3129,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #4b5563 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3144,8 +3144,8 @@
     margin: 2px 0px !important;
     background: #fef3c7 !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #854d0e !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3158,7 +3158,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #b45309 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3173,8 +3173,8 @@
     margin: 2px 0px !important;
     background: #f3e8ff !important;
     border-radius: 4px !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #581c87 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     position: relative !important;
@@ -3187,7 +3187,7 @@
     gap: 10px !important;
     margin-bottom: 12px !important;
     color: #6b21a8 !important;
-    font-size: 16px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold !important;
     line-height: 1.4 !important;
 }
@@ -3211,8 +3211,8 @@
     margin-right: auto !important;
     word-break: break-word !important;
     line-height: 1.6 !important;
-    font-size: 15px !important;
-    font-family: inherit !important;
+    font-size: var(--b3-font-size-editor);
+    font-family: var(--b3-font-family-protyle);
     position: relative !important;
 }
 /* 隐藏默认标题栏 */
@@ -3234,8 +3234,8 @@
     margin-right: 0 !important;
     word-break: break-word !important;
     line-height: 1.6 !important;
-    font-size: 15px !important;
-    font-family: inherit !important;
+    font-size: var(--b3-font-size-editor);
+    font-family: var(--b3-font-family-protyle);
     position: relative !important;
 }
 /* 隐藏默认标题栏 */
@@ -3250,8 +3250,8 @@
     border-radius: 8px !important;
     overflow: hidden !important;
     margin: 15px 0 !important;
-    font-family: inherit !important;
-    font-size: 15px !important;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: #333333 !important;
     box-shadow: none !important;
     border: 1px solid #e5e7eb !important;
@@ -3267,7 +3267,7 @@
     top: 16px !important;
     left: 20px !important;
     color: #10b981 !important;
-    font-size: 14px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 500 !important;
     white-space: nowrap;
     overflow: hidden;
@@ -3284,7 +3284,7 @@
     left: 20px !important;
     right: 20px !important;
     color: #9ca3af !important;
-    font-size: 13px !important;
+    font-size: var(--b3-font-size-editor);
     border-top: 1px solid #f3f4f6 !important;
     padding-top: 12px !important;
     text-align: right !important;
@@ -3362,7 +3362,7 @@
     width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     color: #fff;
-    font-size: 40cqw;
+    font-size: var(--b3-font-size-editor);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -3431,7 +3431,7 @@
     
     /* 清除阴影、继承系统字体 */
     box-shadow: none !important;
-    font-family: inherit;
+    font-family: var(--b3-font-family-protyle);
     line-height: 1.55;
 }
 
@@ -3454,7 +3454,7 @@
     /* 排版：独占一行、字重/字号/行高完全匹配 */
     display: block;
     font-weight: 600; /* 匹配图片的标题加粗程度 */
-    font-size: 1em;   /* 和原图标题字号一致 */
+    font-size: var(--b3-font-size-editor);   /* 和原图标题字号一致 */
     margin-bottom: 6px; /* 标题和正文间距更贴近原图 */
     line-height: 1.4;
     
@@ -3468,7 +3468,7 @@
 /* 正文文字样式：匹配图片的正文效果 */
 .protyle-wysiwyg [custom-deco-style^="Callout-"]:not([fold="1"]) > div {
     color: #1f2937 !important; /* 正文深灰色，和原图一致 */
-    font-size: 0.95em;         /* 正文字号略小于标题 */
+    font-size: var(--b3-font-size-editor);         /* 正文字号略小于标题 */
     line-height: 1.5;          /* 正文行高匹配原图 */
 }
 
@@ -4414,13 +4414,13 @@
 }
 
 .timeline-title {
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
 }
 
 .timeline-subtitle {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 
@@ -4478,7 +4478,7 @@
 }
 
 .stat-value {
-    font-size: 17px !important;
+    font-size: var(--b3-font-size-editor);
     font-weight: 500;
     color: var(--b3-theme-on-background);
     line-height: 1.3;
@@ -4486,7 +4486,7 @@
 }
 
 .stat-label {
-    font-size: 10px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -4501,7 +4501,7 @@
 }
 
 .contribution-title {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
     margin-bottom: 8px;
@@ -4544,7 +4544,7 @@
 
 /* 中栏时间线 */
 .timeline-date-header {
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin: 20px 0 10px;
     font-weight: 500;
@@ -4578,12 +4578,12 @@
 }
 
 .timeline-time {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 
 .timeline-type {
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     padding: 2px 8px;
     border-radius: 12px;
     color: var(--b3-theme-on-primary);
@@ -4592,7 +4592,7 @@
 }
 
 .timeline-content {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.5;
     color: var(--b3-theme-on-background);
     word-break: break-word;
@@ -4610,12 +4610,12 @@
     width: 28px;
     height: 28px;
     padding: 0;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     border-radius: 4px;
 }
 
 .calendar-nav-title {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
 }
@@ -4629,7 +4629,7 @@
 
 .calendar-weekday {
     text-align: center;
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 500;
     color: var(--b3-theme-on-surface-light);
     padding: 4px 0;
@@ -4646,7 +4646,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     background: var(--b3-theme-surface);
     border-radius: 2px;
     cursor: pointer;
@@ -4697,7 +4697,7 @@
 }
 
 .timeline-types-title {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
     margin-bottom: 12px;
@@ -4736,12 +4736,12 @@
 
 .type-name {
     flex: 1;
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
 }
 
 .type-count {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 
@@ -4758,7 +4758,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 4px;
-    font-size: 10px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 
@@ -4787,7 +4787,7 @@
     padding: 8px;
     text-align: center;
     color: var(--b3-theme-on-surface-light);
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
 }
 
 .timeline-context-menu {
@@ -4847,7 +4847,7 @@
 /* 名字在右边 */
 .north-cover-nickname {
     color: white;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 500;
     max-width: 120px;
     white-space: nowrap;
@@ -4934,14 +4934,14 @@
 }
 
 .north-moments-card-nickname {
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
     margin-top: -16px;
 }
 
 .north-moments-card-content {
-    font-size: 15px;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6;
     color: var(--b3-theme-on-background);
     margin-bottom: 8px;
@@ -4951,7 +4951,7 @@
 }
 
 .north-moments-card-meta {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-left: 53px;
 }
@@ -5025,7 +5025,7 @@
 
 .timeline-timeline-time {
     width: 70px;
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     text-align: right;
     padding-right: 16px;
@@ -5057,7 +5057,7 @@
 }
 
 .timeline-timeline-text {
-    font-size: 15px;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.6;
     color: var(--b3-theme-on-background);
     word-break: break-word;
@@ -5065,7 +5065,7 @@
 }
 
 .timeline-timeline-type {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 
@@ -5089,7 +5089,7 @@
 
 /* 日期标题 */
 .timeline-timeline-date-header {
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-primary);
     margin: 20px 0 15px 0;
@@ -5114,7 +5114,7 @@
 }
 
 .timeline-timeline-time-main {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 400;
     color: var(--b3-theme-on-surface);
     line-height: 1.2;
@@ -5139,7 +5139,7 @@
     top: 0;
     right: 0;
     padding: 4px 12px;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: #fff;
     border-radius: 0 8px 0 8px;
     font-weight: 500;
@@ -5152,7 +5152,7 @@
 }
 
 .timeline-timeline-desc {
-    font-size: 15px;
+    font-size: var(--b3-font-size-editor);
     /* color: var(--b3-theme-on-surface); */
     color: var(--b3-theme-on-background);
     line-height: 1.5;
@@ -5171,7 +5171,7 @@
 
 /* 时间间隔小字 */
 .timeline-timeline-interval {
-    font-size: 10px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-top: 2px;
     line-height: 1.2;
@@ -5197,7 +5197,7 @@
 }
 
 .timeline-v2-calendar-day .day-name {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-bottom: 8px;
 }
@@ -5214,14 +5214,14 @@
 }
 
 .timeline-v2-calendar-day .day-num {
-    font-size: 18px;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold;
     line-height: 1.2;
     color: var(--b3-theme-on-background);
 }
 
 .timeline-v2-calendar-day .day-lunar {
-    font-size: 10px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-top: 2px;
 }
@@ -5233,12 +5233,12 @@
 
 .timeline-v2-calendar-day.active .day-num {
     color: white;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
 }
 
 .timeline-v2-calendar-day.active .day-lunar {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 9px;
+    font-size: var(--b3-font-size-editor);
 }
 
 .timeline-v2-wrapper {
@@ -5259,7 +5259,7 @@
     text-align: right;
     padding-right: 3px;
     color: var(--b3-theme-on-surface-light);
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     flex-shrink: 0;
     padding-top: 15px;
 }
@@ -5310,14 +5310,14 @@
 }
 
 .timeline-v2-card-time-range {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-bottom: 5px;
     display: block;
 }
 
 .timeline-v2-card-type {
-    font-size: 15px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 500;
     margin-bottom: 4px;
     word-break: break-word;
@@ -5326,7 +5326,7 @@
 }
 
 .timeline-v2-card-content {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     /* color: var(--b3-theme-on-surface-light); */
     color: var(--b3-theme-on-background);
     word-break: break-word;
@@ -5336,7 +5336,7 @@
 
 
 .timeline-v2-card-title {
-    font-size: 18px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
     margin-bottom: 5px;
@@ -5345,7 +5345,7 @@
 }
 
 .timeline-v2-card-desc {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     word-break: break-word;
 }
@@ -5469,13 +5469,13 @@
 }
 
 .north-time-stat-label {
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-bottom: 10px;
 }
 
 .north-time-stat-value {
-    font-size: 18px;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold;
     color: var(--b3-theme-on-surface);
 }
@@ -5485,7 +5485,7 @@
 }
 
 .north-chart-title {
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: bold;
     margin-bottom: 20px;
     padding-bottom: 10px;
@@ -5511,7 +5511,7 @@
     padding: 8px 12px;
     /* background: var(--b3-theme-surface-light); */
     border-radius: 6px;
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     border: 1px solid var(--b3-border-color);
 }
 
@@ -5540,7 +5540,7 @@
     padding: 6px 2px;
     cursor: pointer;
     color: var(--b3-theme-on-surface);
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 400;
     text-align: center;
     transition: all 0.2s;
@@ -5595,7 +5595,7 @@
     background-color: var(--b3-theme-surface);
     color: #999;
     padding: 0 10px;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     position: relative;
     z-index: 1;
 }
@@ -5610,7 +5610,7 @@
     color: #fff;
     padding: 3px 8px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
 }
 
 .wechat-message-row {
@@ -5628,7 +5628,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: var(--b3-font-size-editor);
     overflow: hidden;
     cursor: pointer;
 }
@@ -5649,7 +5649,7 @@
     max-width: 70%;
     padding: 10px 14px;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.5;
     position: relative;
     word-wrap: break-word;
@@ -5703,13 +5703,13 @@
 @media (max-width: 375px) {
     .wechat-bubble {
         max-width: 75%;
-        font-size: 15px;
+        font-size: var(--b3-font-size-editor);
         padding: 8px 12px;
     }
     .wechat-avatar {
         width: 36px;
         height: 36px;
-        font-size: 20px;
+        font-size: var(--b3-font-size-editor);
     }
     .wechat-date-divider::before,
     .wechat-date-divider::after {
@@ -5756,19 +5756,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--b3-font-size-editor);
     color: white;
     background: var(--b3-theme-primary); /* 使用主题主色 */
 }
 .chart-text h4 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 700;
     color: var(--b3-theme-on-background);
 }
 .chart-text p {
     margin: 4px 0 0;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     opacity: 0.8;
 }
@@ -5778,7 +5778,7 @@
     gap: 12px;
 }
 .chart-value {
-    font-size: 24px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 700;
     color: var(--b3-theme-on-background);
 }
@@ -5788,7 +5788,7 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
 }
 .trend-neutral {
@@ -5844,7 +5844,7 @@
     color: white;
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 700;
     white-space: nowrap;
     opacity: 0;
@@ -5862,7 +5862,7 @@
 .bar-chart-label {
     flex: 1;
     text-align: center;
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface);
     font-weight: 600;
     white-space: nowrap;
@@ -5899,12 +5899,12 @@
     flex-direction: column;
 }
 .center-value {
-    font-size: 24px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 700;
     color: var(--b3-theme-on-background);
 }
 .center-label {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-top: 2px;
 }
@@ -5921,7 +5921,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface);
     padding: 4px 8px;
     background: var(--b3-theme-surface-light);
@@ -5951,13 +5951,13 @@
 }
 .chart-empty::before {
     content: '📊';
-    font-size: 32px;
+    font-size: var(--b3-font-size-editor);
     margin-bottom: 12px;
     opacity: 0.5;
 }
 .chart-empty p {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
 }
 /* 工具提示 */
@@ -5967,7 +5967,7 @@
     background: var(--b3-toolbar-background);
     color: var(--b3-toolbar-color);
     border-radius: 8px;
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     pointer-events: none;
     z-index: 100;
@@ -6124,7 +6124,7 @@
 
     .north-moments-card-nickname {
         margin-top: 0;
-        font-size: 16px;
+        font-size: var(--b3-font-size-editor);
         white-space: normal; /* 允许昵称换行 */
         word-break: break-word;
     }
@@ -6139,7 +6139,7 @@
 
     .timeline-timeline-time-main {
         margin-top: 12px;
-        font-size: 14px;
+        font-size: var(--b3-font-size-editor);
     }
 
     /* 微信气泡宽度计算，确保不超出屏幕 */
@@ -6168,7 +6168,7 @@
 
     .north-date-input {
         width: 45%; /* 稍微调整，让两个日期框并排 */
-        font-size: 14px;
+        font-size: var(--b3-font-size-editor);
         padding: 8px 6px;
     }
 
@@ -6186,7 +6186,7 @@
     .north-filter-btn {
         flex: 1 1 auto;
         padding: 10px 8px;
-        font-size: 14px;
+        font-size: var(--b3-font-size-editor);
         white-space: normal; /* 允许按钮文字换行 */
     }
 
@@ -6207,11 +6207,11 @@
     }
 
     .center-value {
-        font-size: 18px;
+        font-size: var(--b3-font-size-editor);
     }
 
     .center-label {
-        font-size: 10px;
+        font-size: var(--b3-font-size-editor);
     }
 
     /* 时间轴V2日历：确保每个日期块宽度均等 */
@@ -6226,7 +6226,7 @@
     }
 
     .timeline-v2-calendar-day .day-name {
-        font-size: 12px;
+        font-size: var(--b3-font-size-editor);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -6238,7 +6238,7 @@
     }
 
     .timeline-v2-calendar-day .day-num {
-        font-size: 15px;
+        font-size: var(--b3-font-size-editor);
     }
 
     /* 通用文字换行 */
@@ -6264,7 +6264,7 @@
     }
 
     .north-cover-nickname {
-        font-size: 16px;
+        font-size: var(--b3-font-size-editor);
         max-width: 120px;
     }
 
@@ -6274,11 +6274,11 @@
     }
 
     .timeline-v2-calendar-day .day-num {
-        font-size: 14px;
+        font-size: var(--b3-font-size-editor);
     }
 
     .wechat-bubble {
-        font-size: 15px;
+        font-size: var(--b3-font-size-editor);
         padding: 8px 12px;
         max-width: calc(100% - 50px);
     }
@@ -6290,7 +6290,7 @@
 
     .north-filter-btn {
         padding: 8px 6px;
-        font-size: 13px;
+        font-size: var(--b3-font-size-editor);
     }
 }
 
@@ -6318,7 +6318,7 @@
 }
 
 .north.timeline-schedule-panel .date-full {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     line-height: 1.3;
     margin-bottom: 4px;
@@ -6335,7 +6335,7 @@
 }
 
 .north.timeline-schedule-panel .date-num {
-    font-size: 28px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 700;
     line-height: 1;
 }
@@ -6349,7 +6349,7 @@
 }
 
 .north.timeline-schedule-panel .date-week {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-top: 4px;
     margin-left:8px;
@@ -6370,7 +6370,7 @@
     text-align: right;
     padding-right: 20px;
     color: var(--b3-theme-on-surface-light);
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     line-height: 38px;
 }
 
@@ -6412,13 +6412,13 @@
 }
 
 .north.timeline-schedule-panel .card-time {
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     margin-bottom: 6px;
     font-weight: 500;
 }
 
 .north.timeline-schedule-panel .card-title {
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
     line-height: 1.4;
     word-break: break-word;
@@ -6432,7 +6432,7 @@
     .north.timeline-schedule-panel .time-text {
         width: 48px;
         padding-right: 12px;
-        font-size: 12px;
+        font-size: var(--b3-font-size-editor);
     }
     .north.timeline-schedule-panel .axis-area {
         width: 28px;
@@ -6441,10 +6441,10 @@
         padding: 10px 12px;
     }
     .north.timeline-schedule-panel .card-time {
-        font-size: 11px;
+        font-size: var(--b3-font-size-editor);
     }
     .north.timeline-schedule-panel .card-title {
-        font-size: 13px;
+        font-size: var(--b3-font-size-editor);
     }
     .north.timeline-schedule-panel .row {
         margin-left: -35px;
@@ -6486,7 +6486,7 @@
     border-radius: 4px;
     cursor: pointer;
     color: var(--b3-theme-on-surface);
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 400;
     text-align: center;
     transition: all 0.2s;
@@ -6497,7 +6497,7 @@
 }
 
 .north.timeline-style-btn i {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
 }
 
 /* 按钮悬浮效果 */
@@ -6519,8 +6519,8 @@
     display: flex;
     flex-direction: column;
     background: var(--b3-theme-background);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-    font-size: 14px;
+    font-family: var(--b3-font-family-protyle);
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
 }
 
@@ -6539,7 +6539,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 18px;
+    font-size: var(--b3-font-size-editor);
     font-weight: 600;
     color: var(--b3-theme-on-background);
 }
@@ -6564,7 +6564,7 @@
     border: 1px solid var(--b3-border-color);
     background: var(--b3-theme-surface);
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
     cursor: pointer;
     transition: all 0.2s;
@@ -6579,7 +6579,7 @@
 .north.week-view .btn-icon {
     width: 32px;
     padding: 0;
-    font-size: 16px;
+    font-size: var(--b3-font-size-editor);
 }
 
 .north.week-view .calendar-header {
@@ -6601,7 +6601,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     font-weight: normal;
     border-right: 1px solid var(--b3-border-color);
@@ -6619,7 +6619,7 @@
 }
 
 .north.week-view .day-name {
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-surface-light);
     margin-bottom: 4px;
 }
@@ -6631,7 +6631,7 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    font-size: 14px;
+    font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
     font-weight: 500;
 }
@@ -6671,7 +6671,7 @@
     height: 90px;
     position: relative;
     color: var(--b3-theme-on-surface-light);
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     text-align: right;
     padding-right: 12px;
 }
@@ -6706,7 +6706,7 @@
     overflow: hidden;          /* 防止内容溢出 */
     display: flex;
     flex-direction: column;
-    font-size: 13px;
+    font-size: var(--b3-font-size-editor);
     line-height: 1.4;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
@@ -6723,7 +6723,7 @@
 }
 
 .north.week-view .event-title {
-    font-size: 12px;
+    font-size: var(--b3-font-size-editor);
     /* color: rgba(0, 0, 0, 0.75); */
     color: var(--b3-theme-on-surface);
     margin-bottom: 2px;
@@ -6736,7 +6736,7 @@
 }
 
 .north.week-view .event-time {
-    font-size: 11px;
+    font-size: var(--b3-font-size-editor);
     color: rgba(0, 0, 0, 0.45);
     white-space: inherit;
     overflow: hidden;

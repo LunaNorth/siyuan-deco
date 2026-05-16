@@ -4368,13 +4368,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         const newAttrs = {};
         for (const [key, value] of Object.entries(currentAttrs)) {
-            if (!key.startsWith('custom-deco-')) {
-                newAttrs[key] = value;
+            if (key.startsWith('custom-deco-')) {
+                newAttrs[key] = '';
             }
         }
 
         try {
-            const resetResult = await this.callSiyuanAPI('/api/attr/resetBlockAttrs', {
+            const resetResult = await this.callSiyuanAPI('/api/attr/setBlockAttrs', {
                 id: blockId,
                 attrs: newAttrs
             });
