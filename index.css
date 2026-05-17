@@ -91,7 +91,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -134,7 +134,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -177,7 +177,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -220,7 +220,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -263,7 +263,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -306,7 +306,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -349,7 +349,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -392,7 +392,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #666 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
@@ -446,7 +446,7 @@
     padding: 45px 20px 20px 20px !important;  
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #cfd8dc !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
@@ -548,7 +548,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(172, 224, 249, 0.4) !important; */
     color: #455a64 !important;
     font-size: var(--b3-font-size-editor);
@@ -577,7 +577,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(255, 206, 215, 0.4) !important; */
     color: #5d4037 !important;
     font-size: var(--b3-font-size-editor);
@@ -606,7 +606,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(244, 143, 177, 0.4) !important; */
     color: #880e4f !important;
     font-size: var(--b3-font-size-editor);
@@ -635,7 +635,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(144, 202, 249, 0.4) !important; */
     color: #5d4037 !important;
     font-size: var(--b3-font-size-editor);
@@ -664,7 +664,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(129, 212, 250, 0.4) !important; */
     color: #01579b !important;
     font-size: var(--b3-font-size-editor);
@@ -693,7 +693,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(255, 204, 128, 0.4) !important; */
     color: #bf360c !important;
     font-size: var(--b3-font-size-editor);
@@ -722,7 +722,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(178, 223, 219, 0.4) !important; */
     color: #004d40 !important;
     font-size: var(--b3-font-size-editor);
@@ -751,7 +751,7 @@
     border-radius: 12px !important;
     padding: 20px !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     /* box-shadow: 0 5px 15px rgba(225, 190, 231, 0.4) !important; */
     color: #4a148c !important;
     font-size: var(--b3-font-size-editor);
@@ -783,7 +783,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #4a216f !important;
     box-shadow: 2px 2px 8px rgba(126, 34, 206, 0.08) !important;
@@ -816,7 +816,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #064e3b !important;
     box-shadow: 2px 2px 8px rgba(34, 197, 94, 0.08) !important;
@@ -849,7 +849,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #7f1d1d !important;
     box-shadow: 2px 2px 8px rgba(239, 68, 68, 0.08) !important;
@@ -882,7 +882,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #1e3a8a !important;
     box-shadow: 2px 2px 8px rgba(59, 130, 246, 0.08) !important;
@@ -915,7 +915,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #713f12 !important;
     box-shadow: 2px 2px 8px rgba(234, 179, 8, 0.08) !important;
@@ -948,7 +948,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #3f3f46 !important;
     box-shadow: 2px 2px 8px rgba(107, 114, 128, 0.08) !important;
@@ -981,7 +981,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #083344 !important;
     box-shadow: 2px 2px 8px rgba(6, 182, 212, 0.08) !important;
@@ -1014,7 +1014,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #4c1d95 !important;
     box-shadow: 2px 2px 8px rgba(139, 92, 246, 0.08) !important;
@@ -1047,7 +1047,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #664d03 !important;
     box-shadow: 2px 2px 8px rgba(251, 191, 36, 0.1) !important;
@@ -1080,7 +1080,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #0369a1 !important;
     box-shadow: 2px 2px 8px rgba(37, 99, 235, 0.08) !important;
@@ -1113,7 +1113,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #831843 !important;
     box-shadow: 2px 2px 8px rgba(236, 72, 153, 0.08) !important;
@@ -1146,7 +1146,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #065f46 !important;
     box-shadow: 2px 2px 8px rgba(5, 150, 105, 0.08) !important;
@@ -1179,7 +1179,7 @@
     padding: 45px 20px 20px 20px !important;
     position: relative !important;
     margin: 2px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #7c2d12 !important;
     box-shadow: 2px 2px 8px rgba(245, 158, 11, 0.08) !important;
@@ -1997,7 +1997,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2035,7 +2035,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2073,7 +2073,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2111,7 +2111,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2149,7 +2149,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2187,7 +2187,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2225,7 +2225,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2263,7 +2263,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2301,7 +2301,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 66px 20px 20px 20px !important;
     position: relative !important;
@@ -2340,7 +2340,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2490,7 +2490,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2528,7 +2528,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2566,7 +2566,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2604,7 +2604,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2642,7 +2642,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2680,7 +2680,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2718,7 +2718,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2756,7 +2756,7 @@
     border-radius: 12px !important;
     overflow: hidden !important;
     margin: 2px 0px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     padding: 60px 20px 20px 20px !important;
     position: relative !important;
@@ -2941,7 +2941,7 @@
     margin: 2px 0px !important;
     background: #f8fdfa !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #166534 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -2970,7 +2970,7 @@
     margin: 2px 0px !important;
     background: #eff6ff !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #1e3a8a !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -2999,7 +2999,7 @@
     margin: 2px 0px !important;
     background: #fff7ed !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #9a3412 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3028,7 +3028,7 @@
     margin: 2px 0px !important;
     background: #faf5ff !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #581c87 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3057,7 +3057,7 @@
     margin: 2px 0px !important;
     background: #fdf2f8 !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #831843 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3086,7 +3086,7 @@
     margin: 2px 0px !important;
     background: #fffbeb !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #92400e !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3115,7 +3115,7 @@
     margin: 2px 0px !important;
     background: #f3f4f6 !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #1f2937 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3144,7 +3144,7 @@
     margin: 2px 0px !important;
     background: #fef3c7 !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #854d0e !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3173,7 +3173,7 @@
     margin: 2px 0px !important;
     background: #f3e8ff !important;
     border-radius: 4px !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #581c87 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
@@ -3212,7 +3212,7 @@
     word-break: break-word !important;
     line-height: 1.6 !important;
     font-size: var(--b3-font-size-editor);
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     position: relative !important;
 }
 /* 隐藏默认标题栏 */
@@ -3235,7 +3235,7 @@
     word-break: break-word !important;
     line-height: 1.6 !important;
     font-size: var(--b3-font-size-editor);
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     position: relative !important;
 }
 /* 隐藏默认标题栏 */
@@ -3250,7 +3250,7 @@
     border-radius: 8px !important;
     overflow: hidden !important;
     margin: 15px 0 !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: #333333 !important;
     box-shadow: none !important;
@@ -3431,7 +3431,7 @@
     
     /* 清除阴影、继承系统字体 */
     box-shadow: none !important;
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     line-height: 1.55;
 }
 
@@ -6519,7 +6519,7 @@
     display: flex;
     flex-direction: column;
     background: var(--b3-theme-background);
-    font-family: var(--b3-font-family-protyle);
+    font-family: inherit;
     font-size: var(--b3-font-size-editor);
     color: var(--b3-theme-on-background);
 }
