@@ -4488,6 +4488,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const cardKey = this.getCardKeyByLabel(style);
 
         if (cardKey && cardKey.endsWith('QuoteCard')) return;
+        if (cardKey && cardKey.startsWith('topLine')) return;
         if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryChatWhisperCard') return;
         if (!cardBlock.hasAttribute('custom-deco-card-title') && !cardKey.includes('WhisperCard')) return;
 
