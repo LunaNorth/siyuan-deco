@@ -1,6 +1,11 @@
 "use strict";
 const siyuan = require("siyuan");
-const { showMessage, Dialog, openTab, getFrontend } = siyuan;
+const { showMessage, Dialog } = siyuan;
+
+// 思源笔记内置图标名（用于自定义分组的图标选择）。源串为无分隔拼接，按 icon 前缀正则切分得到数组。
+const SIYUAN_ICON_NAMES = (
+    "iconBrainiconPictureInPictureiconPlugZapiconSquareAsteriskiconSquarePlusiconSquareStopiconSendiconLayoutGridiconListFilterPlusiconFolderClockiconTriangleAlerticonCirclePlayiconCircleStopiconListTreeiconPaintBucketiconLanguageiconPanelLefticonPanelBottomiconPanelRighticonPanelLeftDashediconPanelBottomDashediconPanelRightDashediconSelectAlliconUploadAssetsiconDownloadAssetsiconKeepContenticonFullWidthiconTurnIntoiconGlobeiconPublishiconDocxiconSearchAsseticonAddDociconExpandLeveliconWidthiconAlignSettingsiconFoldUnFoldiconJumpToiconEnterBackiconEntericonRecentDocsiconOutlineiconCallouticonIncludeiconGroupsiconCameraiconGalleryiconBoardiconTerminaliconSoftWrapiconLinkiconLinkOfficonImgDowniconArrowDowniconUnpiniconPiniconOpeniconKeyiconClockiconAttriconPasteiconCopyiconPhoneiconEmailiconDragiconCalendariconNumbericonIndeterminateCheckiconPluginiconUsersiconZoomIniconZoomOuticonFeedbackiconCloseRoundiconLayouticonFullscreenExiticonFullscreeniconScrollHoriziconScrollVerticonSparklesiconDatabaseiconBIUiconKeyboardHideiconWorkspaceiconCloudiconCloudOfficonCloudErroriconCloudSucciconLiandiiconRiffCardiconEyeofficonEyeiconReplaceiconRtliconLtriconBackiconForwardiconLayoutBottomiconLayoutRighticonReficonFiltericonDarkiconLighticonModeiconHistoryiconCleariconFormaticonQuiticonDockiconHideDockiconInboxiconGithubiconGitHubIiconHTML5iconStariconSpreadEveniconSpreadOddiconScrollWrappediconSelectTexticonHandiconSiYuaniconCuticonAddiconUncheckiconDoticonUnderlineiconAiconMiconNiconYuqueiconGlobalGraphiconGraphiconLeftTopiconLeftBottomiconRightTopiconRightBottomiconBottomLefticonBottomRighticonMoveiconBazaariconKeymapiconFonticonVIPiconSupericonSelecticonSQLiconSupiconSubiconMarkiconEditiconPDFiconVideoiconSplitLRiconSplitTBiconFocusiconSorticonDownloadiconUploadiconExacticonRegexiconMenuiconLefticonRighticonDowniconUpiconTagsiconTagiconImageiconRefreshiconUnlockiconLockiconAccounticonMarkdowniconListItemiconBookmarksiconBookmarkiconH1iconH2iconH3iconH4iconH5iconH6iconHeadingsiconMathiconCloseiconRestoreiconFilesiconFilesRooticonNewNoteBookiconMaxiconMiniconSettingsiconFoldericonSearchiconFileiconHearticonParagraphiconMpiconQuoteiconAftericonBeforeiconInsertLefticonInsertRighticonDeleteColumniconDeleteRowiconLineiconCodeiconInlineCodeiconBothiconThemeiconOpenWindowiconPauseiconPreviewiconInfoiconHelpiconStrikeiconContracticonExpandiconRecordiconBoldiconBugiconPlayiconCheckiconTrashcaniconMoreiconEmojiiconAlignCentericonAlignJustifyiconAlignLefticonAlignRighticonItaliciconOutdenticonIndenticonOrderedListiconListiconTableiconRedoiconUndoiconZhihu"
+).match(/icon[A-Z][A-Za-z0-9]*?(?=icon[A-Z]|$)/g);
 
 // ========== 卡片定义 ==========
 const CARD_ITEMS = [
@@ -180,10 +185,77 @@ const TEXT = {
     calloutGroup: 'Callout样式',
     imageGroup: '图片相关设置',
     chatWhisperGroup: '轻言轻语',       
-    quoteGroup: '引述块样式',  
-    
-    
-    removeStyle: '移除样式',   // 新增  
+    quoteGroup: '引述块样式',
+
+    // 一级分类（块类型，最外层）
+    blockQuote: '引述块',
+    blockNormal: '普通块',
+    blockImage: '图片相关',
+
+    // 二级分类（块内细分类）
+    categoryQuote: '引述类',
+    categoryNormalCard: '普通卡片',
+    categoryTimeline: '时间轴',
+    categoryLineDecor: '线条装饰',
+    categoryChatBubble: '对话气泡',
+    categoryImage: '图片设置',
+
+    // 自定义块样式
+    blockCustom: '自定义',
+    customManage: '自定义块样式',
+    customName: '名称',
+    customBaseStyle: '基础样式',
+    customAdd: '新增自定义样式',
+    customSave: '保存',
+    customEdit: '编辑',
+    customDelete: '删除',
+    customEmpty: '暂无自定义样式，点击下方“新增”创建',
+    customApplied: '已套用自定义样式：',
+    customSaved: '已保存自定义样式：',
+    customDeleted: '已删除自定义样式',
+    customNeedName: '请填写名称',
+
+    // 自定义分组（用户自建，数据沿用 customFolders）
+    addFolder: '新建分组',
+    folderName: '分组名称',
+    folderNamePlaceholder: '如：工作、日记',
+    needFolderName: '请填写分组名称',
+    folderCreated: '已新建分组：',
+    folderLabel: '归属分组',
+    noFolder: '不归入分组',
+    unsorted: '未分类',
+    confirmCreate: '创建',
+    confirm: '确定',
+    renameGroup: '重命名分组',
+    groupRenamed: '已重命名分组',
+    groupDeleted: '已删除分组，样式已移至未分类',
+    customGroup: '分组',
+    groupIcon: '分组图标',
+    clickPickIcon: '点击选择图标',
+    searchIcon: '搜索图标...',
+    changeIcon: '更换图标',
+    setIconTitle: '设置图标',
+    textTab: '文字',
+    builtinTab: '内置图标',
+    searchContent: '搜索...',
+    noIcon: '无',
+    loadingEmojis: '正在加载表情…',
+    loadFailed: '加载失败',
+    enterTextOrEmoji: '输入文字或 Emoji：',
+    textPlaceholder: '如：🎯、★、自定义',
+    resetToHash: '重置为 #',
+    noMatch: '无匹配结果',
+    applyHint: '请在文档块的右键菜单中使用「自定义」来套用此样式',
+
+    // 预览 / 选择
+    preview: '预览',
+    choose: '选择',
+    blockOther: '其他',
+    customNamePlaceholder: '如：我的日报模板',
+    iconPlaceholder: '例如 ✨',
+    titlePlaceholder: '卡片标题',
+
+    removeStyle: '移除样式',   // 新增
       
     editCardTitle: '编辑卡片',
     cardType: '类型',
@@ -193,3767 +265,99 @@ const TEXT = {
     confirm: '确定',
 };
 
-// ========== 时间线插件整合 ==========
-const TIMELINE_TAB_TYPE = "timeline-tab";
-const TIMELINE_STORAGE_NAME = "config.json";
+// 卡片样式作用的三个自定义属性（多处复用，集中定义）
+const DECO_ATTRS = ["custom-deco-style", "custom-deco-card-icon", "custom-deco-card-title"];
 
-// ---------- 工具函数 ----------
-function parseLifelogDate(dateStr) {
-    if (!dateStr) return null;
-    const [datePart, timePart] = dateStr.split(' ');
-    if (!datePart) return null;
-    const [year, month, day] = datePart.split('/').map(Number);
-    if (!year || !month || !day) return null;
-    const [hour, minute, second] = timePart ? timePart.split(':').map(Number) : [0, 0, 0];
-    return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+// ========== 时间轴样式（数据驱动生成，运行时注入 <style>，替代 index.css 中近千行重复静态样式） ==========
+// 10 个颜色，每个仅由 浅色 / 暗色边框 / 暗色文字 三个值参数化；
+// 粗时间轴: 边框 5px、圆点 0.8em；细时间轴: 边框 3px、圆点 0.5em。
+// 注：粗·灰 的 first-child 原始样式缺少 border-radius: 0，这里保留该历史差异以保证渲染完全一致。
+const TIMELINE_COLORS = [
+    { name: "红", light: "#f43f5e", darkBorder: "#b91c1c", darkText: "#fca5a5" },
+    { name: "橙", light: "#f97316", darkBorder: "#c2410c", darkText: "#fdba74" },
+    { name: "黄", light: "#eab308", darkBorder: "#b45309", darkText: "#fde047" },
+    { name: "绿", light: "#22c55e", darkBorder: "#166534", darkText: "#86efac" },
+    { name: "青", light: "#06b6d4", darkBorder: "#0b7285", darkText: "#5eead4" },
+    { name: "蓝", light: "#3b82f6", darkBorder: "#1e40af", darkText: "#93c5fd" },
+    { name: "紫", light: "#a855f7", darkBorder: "#6b21a8", darkText: "#d8b4fe" },
+    { name: "粉", light: "#ec4899", darkBorder: "#9d174d", darkText: "#f9a8d4" },
+    { name: "黑", light: "#1e293b", darkBorder: "#1e293b", darkText: "#9ca3af" },
+    { name: "灰", light: "#6b7280", darkBorder: "#4b5563", darkText: "#d1d5db" },
+];
+
+function generateTimelineCSS() {
+    const blocks = [];
+    const genLight = (color, { suffix, width, dot, offset, omitFirstRadius }) => {
+        const sel = `时间轴·${color.name}${suffix}`;
+        const s = (extra) => `.protyle-wysiwyg [custom-deco-style="${sel}"]:not([fold="1"])${extra}`;
+        const sibling = `[custom-deco-style="${sel}"]:not([fold="1"])`;
+        const firstChild = omitFirstRadius
+            ? `    color: ${color.light};\n    font-weight: bold;\n    position: relative;`
+            : `    border-radius: 0;\n    color: ${color.light};\n    font-weight: bold;\n    position: relative;`;
+        return (
+`.protyle-wysiwyg [custom-deco-style="${sel}"]:not([fold="1"]) {
+    padding: 0px 6px;
+    border-left: ${width}px solid ${color.light};
+    border-radius: 0;
+    background-color: transparent;
+    color: unset;
+    overflow: visible;
+    margin: 2px 0;
+    position: relative;
 }
-
-function formatDate(date = new Date()) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+${s("")} + ${sibling} {
+    margin-top: -2px;
 }
-
-// ---------- 颜色获取（从 CSS 变量）----------
-const colorCache = new Map();
-
-function getTypeColorFromCSS(type) {
-    if (colorCache.has(type)) {
-        return colorCache.get(type);
-    }
-
-    const temp = document.createElement('div');
-    temp.setAttribute('data-type', 'NodeParagraph');
-    temp.setAttribute('custom-lifelog-type', type);
-    temp.style.display = 'none';
-    document.body.appendChild(temp);
-
-    const styles = getComputedStyle(temp);
-    let color = styles.getPropertyValue('--en-lifelog-border-color').trim();
-
-    document.body.removeChild(temp);
-
-    if (!color) {
-        let hash = 0;
-        for (let i = 0; i < type.length; i++) {
-            hash = type.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const hue = Math.abs(hash % 360);
-        color = `hsl(${hue}, 70%, 60%)`;
-    }
-
-    colorCache.set(type, color);
-    return color;
+${s(" > ")}[data-node-id]:first-child {
+${firstChild}
 }
-
-function lightenColor(color, percent) {
-    // 输入 #RRGGBB，返回变亮后的 rgb 字符串
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    const lighten = (c) => Math.min(255, c + (255 - c) * (percent / 100));
-    return `rgb(${lighten(r)}, ${lighten(g)}, ${lighten(b)})`;
+${s(" > ")}[data-node-id]:first-child [contenteditable][spellcheck] {
+    text-indent: calc(1em - 16px);
 }
-
-// ---------- 数据存储 ----------
-class TimelineStore {
-    constructor(plugin) {
-        this.plugin = plugin;
-        this.config = {
-            avatar: null,            // 自己头像
-            oppositeAvatar: null,    // 对方头像（新增）
-            cover: null,             // 封面图片路径
-            customTitle: '',
-            customSubtitle: '',
-            displayMode: 'list',      // 默认列表样式
-            timeMode: 'start',        // 记录时间模式 'start' 或 'end'
-            showStyleSwitcher: false , // 是否显示左侧样式切换按钮
-            wechatDirections: {} , // 新增：存储微信样式左右方向 { blockId: 'left' | 'right' }
-            showBarChart: false,    // 是否显示柱状图（默认不显示）
-            showPieChart: false,    // 是否显示饼图（默认不显示）
-            showDiaryInMoments: false, // 新增：是否在朋友圈样式中展示碎碎念
-        };
-    }
-
-    async loadConfig() {
-        try {
-            const saved = await this.plugin.loadData(TIMELINE_STORAGE_NAME);
-            if (saved) {
-                this.config.avatar = saved.avatar || null;
-                this.config.oppositeAvatar = saved.oppositeAvatar || null; // 新增
-                this.config.cover = saved.cover || null;
-                this.config.customTitle = saved.customTitle || '';
-                this.config.customSubtitle = saved.customSubtitle || '';
-                this.config.displayMode = saved.displayMode || 'list';
-                this.config.timeMode = saved.timeMode || 'start';
-                this.config.showStyleSwitcher = saved.showStyleSwitcher || false;
-                this.config.wechatDirections = saved.wechatDirections || {}; // 新增
-                this.config.showBarChart = saved.showBarChart !== undefined ? saved.showBarChart : false;
-                this.config.showPieChart = saved.showPieChart !== undefined ? saved.showPieChart : false;
-                this.config.showDiaryInMoments = saved.showDiaryInMoments !== undefined ? saved.showDiaryInMoments : false; // 新增
-            }
-        } catch (e) {
-            console.warn("加载配置失败", e);
-        }
-    }
-
-    async saveConfig() {
-        await this.plugin.saveData(TIMELINE_STORAGE_NAME, this.config);
-    }
-
-    // ========== 图表显示配置 ==========
-    getShowBarChart() {
-        return this.config.showBarChart;
-    }
-    getShowPieChart() {
-        return this.config.showPieChart;
-    }
-    async setShowBarChart(show) {
-        this.config.showBarChart = show;
-        await this.saveConfig();
-    }
-    async setShowPieChart(show) {
-        this.config.showPieChart = show;
-        await this.saveConfig();
-    }
-
-    getAvatar() {
-        return this.config.avatar;
-    }
-
-    async setAvatar(path) {
-        this.config.avatar = path;
-        await this.saveConfig();
-    }
-
-    // 新增：对方头像
-    getOppositeAvatar() {
-        return this.config.oppositeAvatar;
-    }
-    // 新增：获取微信消息方向
-    getWechatDirection(blockId) {
-        return this.config.wechatDirections[blockId] || null;
-    }
-    
-    // 新增：设置微信消息方向
-    async setWechatDirection(blockId, direction) {
-        this.config.wechatDirections[blockId] = direction;
-        await this.saveConfig();
-    }
-    async setOppositeAvatar(path) {
-        this.config.oppositeAvatar = path;
-        await this.saveConfig();
-    }
-
-    getCover() {
-        return this.config.cover;
-    }
-
-    async setCover(path) {
-        this.config.cover = path;
-        await this.saveConfig();
-    }
-
-    getCustomTitle() {
-        return this.config.customTitle;
-    }
-
-    getCustomSubtitle() {
-        return this.config.customSubtitle;
-    }
-
-    async setCustomTitle(title) {
-        this.config.customTitle = title;
-        await this.saveConfig();
-    }
-
-    async setCustomSubtitle(subtitle) {
-        this.config.customSubtitle = subtitle;
-        await this.saveConfig();
-    }
-
-    getDisplayMode() {
-        return this.config.displayMode;
-    }
-
-    async setDisplayMode(mode) {
-        this.config.displayMode = mode;
-        await this.saveConfig();
-    }
-
-    getTimeMode() {
-        return this.config.timeMode;
-    }
-
-    async setTimeMode(mode) {
-        this.config.timeMode = mode;
-        await this.saveConfig();
-    }
-
-    getShowStyleSwitcher() {
-        return this.config.showStyleSwitcher;
-    }
-
-    async setShowStyleSwitcher(show) {
-        this.config.showStyleSwitcher = show;
-        await this.saveConfig();
-    }
-
-    // ========== 新增：朋友圈展示碎碎念配置 ==========
-    getShowDiaryInMoments() {
-        return this.config.showDiaryInMoments;
-    }
-
-    async setShowDiaryInMoments(show) {
-        this.config.showDiaryInMoments = show;
-        await this.saveConfig();
-    }
+${s(" > ")}[data-node-id]:first-child::before {
+    content: "";
+    position: absolute;
+    width: ${dot}em;
+    height: ${dot}em;
+    top: 45%;
+    transform: translateY(-45%);
+    left: calc(-8px - ${offset}em);
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2em ${color.light};
 }
-
-// ---------- 时间线视图类 ----------
-class TimelineView {
-    // 模式常量
-    static MODE_LIST = 'list';
-    static MODE_MOMENTS = 'moments';
-    static MODE_TIMELINE = 'timeline';
-    static MODE_TIMELINE_V2 = 'timeline_v2';
-    static MODE_STATISTICS = 'statistics';
-    static MODE_WECHAT = 'wechat';  // 微信样式
-    static MODE_SCHEDULE = 'schedule';  // 新增：日程视图
-    static MODE_WEEK = 'week'; // 新增：周视图（但实际由独立标签页实现）
-
-    constructor(plugin, container, yearRecords) {
-        this.plugin = plugin;
-        this.container = container;
-        this.yearRecords = yearRecords;               // 本年数据，用于左侧面板
-        this.allRecords = yearRecords;                 // 当前显示的数据（默认本年）
-        this.allRecordsUnfiltered = null;               // 全部数据（统计视图时加载）
-        this.filteredRecords = yearRecords;             // 当前筛选后的数据
-        this.selectedDate = null;
-        this.selectedType = null;
-        this.chineseNumbers = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', 
-                           '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', 
-                           '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
-        // 基于本年数据的统计和日计数（左侧面板用）
-        this.yearDailyCounts = this.calculateDailyCounts(yearRecords);
-        this.yearStats = this.calculateStats(yearRecords);
-        this.destroy = this.destroy.bind(this); // 添加这一行
-        
-        // 基于当前显示数据的日计数（右侧日历用）
-        this.dailyCounts = this.yearDailyCounts;
-
-        this.calendarYear = new Date().getFullYear();
-        this.calendarMonth = new Date().getMonth();
-
-        // 显示模式
-        this.displayMode = this.plugin.store.getDisplayMode() || TimelineView.MODE_LIST;
-        // 时间模式
-        this.timeMode = this.plugin.store.getTimeMode() || 'start';
-
-        // 生成全局排序数组（按时间升序），用于跨天查找前一条记录
-        this.globalSorted = this._buildGlobalSorted(yearRecords);
-
-        // 统计视图专用状态
-        this.startDate = null; // 格式 YYYY-MM-DD
-        this.endDate = null;   // 格式 YYYY-MM-DD
-        this.selectedStatTypes = new Set(); // 空 Set 表示全部类型
-
-        // 碎碎念数据缓存
-        this.diaryRecords = null;
-
-        // 监听记录更新事件
-        this.recordUpdatedHandler = (data) => {
-            if (data.id) {
-                this.updateRecordContent(data.id, data.content);
-            }
-        };
-        this.plugin.eventBus.on('timeline-record-updated', this.recordUpdatedHandler);
-
-        this.render();
-    }
-
-destroy() {
-    if (this.recordUpdatedHandler && this.plugin?.eventBus) {
-        this.plugin.eventBus.off('timeline-record-updated', this.recordUpdatedHandler);
-    }
-    
-    // 清理引用，避免内存泄漏
-    this.plugin = null;
-    this.container = null;
-    this.allRecords = null;
-    this.filteredRecords = null;
-    this.recordUpdatedHandler = null;
-}
-
-    // 异步加载全部数据（用于统计视图）
-    async loadAllRecords() {
-        if (this.allRecordsUnfiltered) return;
-        const all = await this.plugin.queryAllRecordsUnfiltered();
-        this.allRecordsUnfiltered = all;
-        this.allDailyCountsUnfiltered = this.calculateDailyCounts(all);
-        this.globalSortedAll = this._buildGlobalSorted(all); // 新增
-    }
-
-    calculateStats(records) {
-        const today = new Date();
-        const todayStr = formatDate(today);
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
-
-        let total = records.length;
-        let todayCount = 0;
-        let monthCount = 0;
-        const dateSet = new Set();
-        const dateCountMap = new Map();
-
-        records.forEach(r => {
-            const date = parseLifelogDate(r.lifelog_created);
-            if (!date) return;
-            const dateStr = formatDate(date);
-            dateSet.add(dateStr);
-            dateCountMap.set(dateStr, (dateCountMap.get(dateStr) || 0) + 1);
-            if (dateStr === todayStr) todayCount++;
-            if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) monthCount++;
-        });
-
-        let streak = 0;
-        let check = new Date(today);
-        while (true) {
-            const ds = formatDate(check);
-            if (dateSet.has(ds)) {
-                streak++;
-                check.setDate(check.getDate() - 1);
-            } else break;
-        }
-
-        let maxDate = null;
-        let maxCount = 0;
-        for (const [d, c] of dateCountMap) {
-            if (c > maxCount) {
-                maxCount = c;
-                maxDate = d;
-            }
-        }
-        const mostActive = maxDate ? maxDate.slice(5) : '—';
-
-        const usedTypes = new Set(records.map(r => r.lifelog_type).filter(Boolean));
-        return {
-            total,
-            today: todayCount,
-            month: monthCount,
-            streak,
-            mostActive,
-            usedTypeCount: usedTypes.size
-        };
-    }
-
-    calculateDailyCounts(records) {
-        const map = new Map();
-        records.forEach(r => {
-            const date = parseLifelogDate(r.lifelog_created);
-            if (date) {
-                const ds = formatDate(date);
-                map.set(ds, (map.get(ds) || 0) + 1);
-            }
-        });
-        return map;
-    }
-
-    setFilter(date, type) {
-        if (date !== undefined) this.selectedDate = date;
-        if (type !== undefined) this.selectedType = type;
-
-        this.filteredRecords = this.allRecords.filter(r => {
-            const dateObj = parseLifelogDate(r.lifelog_created);
-            if (!dateObj) return false;
-            const ds = formatDate(dateObj);
-            if (this.selectedDate && ds !== this.selectedDate) return false;
-            if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
-            return true;
-        });
-
-        this.renderMiddlePanel();
-        this.renderTypesList();
-        this.updateHighlight();
-    }
-
-_computeStatsData(records) {
-    const typeMap = new Map(); // type -> count
-    let total = records.length;
-
-    records.forEach(rec => {
-        const dateObj = parseLifelogDate(rec.lifelog_created);
-        if (!dateObj) return;
-        const type = rec.lifelog_type || '未分类';
-        typeMap.set(type, (typeMap.get(type) || 0) + 1);
-    });
-
-    const typeData = [];
-    for (const [name, count] of typeMap.entries()) {
-        typeData.push({
-            name,
-            count,
-            color: getTypeColorFromCSS(name) // 使用已有的 getTypeColorFromCSS
-        });
-    }
-    typeData.sort((a, b) => b.count - a.count); // 按数量降序
-
-    return { typeData, total };
-}
-_renderBarChart(typeData) {
-    const container = document.getElementById('chart-content-bar');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (!typeData.length) {
-        container.innerHTML = '<div class="chart-empty"><p>暂无数据</p></div>';
-        return;
-    }
-
-    const maxValue = Math.max(...typeData.map(d => d.count));
-    const total = typeData.reduce((sum, d) => sum + d.count, 0);
-    const displayTypes = typeData.slice(0, 8); // 最多显示8种
-
-    const chartDiv = document.createElement('div');
-    chartDiv.className = 'bar-chart-container';
-
-    const barsDiv = document.createElement('div');
-    barsDiv.className = 'bar-chart-bars';
-    displayTypes.forEach(item => {
-        const height = maxValue > 0 ? (item.count / maxValue * 100) : 0;
-        const bar = document.createElement('div');
-        bar.className = 'bar-chart-bar';
-        bar.style.setProperty('--bar-color', item.color);
-        bar.style.setProperty('--bar-color-light', lightenColor(item.color, 30));
-        bar.style.height = height + '%';
-        bar.dataset.type = item.name;
-        bar.dataset.count = item.count;
-
-        const valueSpan = document.createElement('div');
-        valueSpan.className = 'bar-chart-value';
-        valueSpan.textContent = item.count;
-        bar.appendChild(valueSpan);
-        barsDiv.appendChild(bar);
-    });
-
-    const labelsDiv = document.createElement('div');
-    labelsDiv.className = 'bar-chart-labels';
-    displayTypes.forEach(item => {
-        const label = document.createElement('div');
-        label.className = 'bar-chart-label';
-        label.textContent = item.name;
-        labelsDiv.appendChild(label);
-    });
-
-    chartDiv.appendChild(barsDiv);
-    chartDiv.appendChild(labelsDiv);
-    container.appendChild(chartDiv);
-
-    // 更新卡片头信息
-    const card = container.closest('.stats-chart-card');
-    if (card) {
-        const valEl = card.querySelector('.chart-value');
-        if (valEl) valEl.textContent = total;
-        const trendEl = card.querySelector('.chart-trend');
-        if (trendEl) {
-            trendEl.innerHTML = `<span>📊</span><span>${typeData.length}类</span>`;
-            trendEl.className = 'chart-trend trend-neutral';
-        }
-    }
-
-    // 图例
-    const legend = document.getElementById('chart-legend-bar');
-    if (legend) {
-        legend.innerHTML = displayTypes.map(item => `
-            <div class="legend-item" data-type="${item.name}">
-                <div class="legend-color" style="background: ${item.color};"></div>
-                <span>${item.name}: ${item.count}</span>
-            </div>
-        `).join('');
-    }
-
-    this._setupBarChartHover();
-}
-_renderPieChart(typeData, total) {
-    const container = document.getElementById('chart-content-pie');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (!typeData.length) {
-        container.innerHTML = '<div class="chart-empty"><p>暂无数据</p></div>';
-        return;
-    }
-
-    // 合并少量类型，最多显示5种 + “其他”
-    let mainTypes = typeData.slice(0, 5);
-    const otherCount = typeData.slice(5).reduce((sum, t) => sum + t.count, 0);
-    if (otherCount > 0) {
-        mainTypes.push({ name: '其他', count: otherCount, color: '#6C757D' });
-    }
-
-    const chartDiv = document.createElement('div');
-    chartDiv.className = 'pie-chart-container';
-    let startAngle = 0;
-    const slices = mainTypes.map(item => {
-        const angle = (item.count / total) * 360;
-        const endAngle = startAngle + angle;
-        const startRad = (startAngle - 90) * Math.PI / 180;
-        const endRad = (endAngle - 90) * Math.PI / 180;
-        const x1 = 50 + 40 * Math.cos(startRad);
-        const y1 = 50 + 40 * Math.sin(startRad);
-        const x2 = 50 + 40 * Math.cos(endRad);
-        const y2 = 50 + 40 * Math.sin(endRad);
-        const largeArc = angle > 180 ? 1 : 0;
-        const path = `M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`;
-        const sliceHtml = `<path d="${path}" fill="${item.color}" stroke="white" stroke-width="1.5" data-type="${item.name}" data-count="${item.count}" data-percent="${((item.count/total)*100).toFixed(1)}"/>`;
-        startAngle = endAngle;
-        return sliceHtml;
-    }).join('');
-
-    chartDiv.innerHTML = `
-        <svg class="pie-chart-svg" viewBox="0 0 100 100">${slices}</svg>
-        <div class="pie-chart-center">
-            <div class="center-value">${total}</div>
-            <div class="center-label">总记录</div>
-        </div>
-    `;
-    container.appendChild(chartDiv);
-
-    const card = container.closest('.stats-chart-card');
-    if (card) {
-        const valEl = card.querySelector('.chart-value');
-        if (valEl) valEl.textContent = total;
-        const trendEl = card.querySelector('.chart-trend');
-        if (trendEl) {
-            trendEl.innerHTML = `<span>📊</span><span>${typeData.length}类</span>`;
-            trendEl.className = 'chart-trend trend-neutral';
-        }
-    }
-
-    const legend = document.getElementById('chart-legend-pie');
-    if (legend) {
-        legend.innerHTML = mainTypes.map(item => `
-            <div class="legend-item" data-type="${item.name}">
-                <div class="legend-color" style="background: ${item.color};"></div>
-                <span>${item.name}: ${item.count}</span>
-            </div>
-        `).join('');
-    }
-
-    this._setupPieChartHover();
-}
-_setupBarChartHover() {
-    const bars = document.querySelectorAll('.bar-chart-bar');
-    const tooltip = this._getTooltip();
-    bars.forEach(bar => {
-        bar.addEventListener('mouseenter', e => {
-            const type = bar.dataset.type;
-            const count = bar.dataset.count;
-            const color = getTypeColorFromCSS(type);
-            tooltip.innerHTML = `<div style="font-weight:700;color:${color}">${type}</div><div style="font-size:11px;">${count} 条记录</div>`;
-            tooltip.style.opacity = '1';
-        });
-        bar.addEventListener('mousemove', e => {
-            tooltip.style.left = e.clientX + 'px';
-            tooltip.style.top = (e.clientY - 40) + 'px';
-        });
-        bar.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
-        });
-    });
-}
-
-_setupPieChartHover() {
-    const slices = document.querySelectorAll('.pie-chart-svg path');
-    const centerValue = document.querySelector('.center-value');
-    const centerLabel = document.querySelector('.center-label');
-    const tooltip = this._getTooltip();
-    slices.forEach(slice => {
-        slice.addEventListener('mouseenter', e => {
-            const type = slice.dataset.type;
-            const count = slice.dataset.count;
-            const percent = slice.dataset.percent;
-            const color = type === '其他' ? '#6C757D' : getTypeColorFromCSS(type);
-            tooltip.innerHTML = `<div style="font-weight:700;color:${color}">${type}</div><div style="font-size:11px;">${count} 条记录 (${percent}%)</div>`;
-            tooltip.style.opacity = '1';
-            if (centerValue && centerLabel) {
-                centerValue.textContent = count;
-                centerValue.style.color = color;
-                centerLabel.textContent = type;
-            }
-        });
-        slice.addEventListener('mousemove', e => {
-            tooltip.style.left = e.clientX + 'px';
-            tooltip.style.top = (e.clientY - 40) + 'px';
-        });
-        slice.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
-            if (centerValue && centerLabel) {
-                centerValue.textContent = this._currentStatsData?.total || 0;
-                centerValue.style.color = '';
-                centerLabel.textContent = '总记录';
-            }
-        });
-    });
-}
-
-_getTooltip() {
-    let tooltip = document.querySelector('.chart-tooltip');
-    if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.className = 'chart-tooltip';
-        document.body.appendChild(tooltip);
-    }
-    return tooltip;
-}
-
-/**
- * 获取符合当前统计视图筛选条件（日期范围 + 类型选择）的记录
- */
-_getStatsFilteredRecords() {
-    let records = this.allRecords; // 统计视图使用的是全部数据（已加载到 this.allRecordsUnfiltered）
-    const start = this.startDate ? new Date(this.startDate + 'T00:00:00') : null;
-    const end = this.endDate ? new Date(this.endDate + 'T23:59:59') : null;
-    const selectedTypes = this.selectedStatTypes; // Set
-
-    return records.filter(r => {
-        const dateObj = parseLifelogDate(r.lifelog_created);
-        if (!dateObj) return false;
-        if (start && dateObj < start) return false;
-        if (end && dateObj > end) return false;
-        if (selectedTypes.size > 0 && !selectedTypes.has(r.lifelog_type)) return false;
-        return true;
-    });
-}
-// ========== 微信样式专用右键菜单（控制左右显示，不写块属性） ==========
-showWechatContextMenu(event, record, rowElement) {
-    // 移除已存在的菜单
-    const existingMenu = document.querySelector('.wechat-context-menu');
-    if (existingMenu) existingMenu.remove();
-    
-    const currentDirection = record.direction || 'left';
-    const isLeft = currentDirection === 'left';
-    
-    const menu = document.createElement('div');
-    menu.className = 'wechat-context-menu b3-menu';
-    menu.style.position = 'fixed';
-    menu.style.left = event.clientX + 'px';
-    menu.style.top = event.clientY + 'px';
-    menu.style.zIndex = '9999';
-// 【修改】使用更美观的气泡对话框图标
-    menu.innerHTML = `
-<div class="b3-menu__items">
-    <div class="b3-menu__item" data-action="set-left" ${isLeft ? 'style="background-color:var(--b3-theme-primary-light);"' : ''}>
-        <svg class="b3-menu__icon" viewBox="0 0 24 24">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="currentColor"/>
-        </svg>
-        <span class="b3-menu__label">显示在左侧 ${isLeft ? '✓' : ''}</span>
-    </div>
-    <div class="b3-menu__item" data-action="set-right" ${!isLeft ? 'style="background-color:var(--b3-theme-primary-light);"' : ''}>
-        <svg class="b3-menu__icon" viewBox="0 0 24 24">
-            <path d="M4 2h16c1.1 0 2 .9 2 2v18l-4-4H4c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm0 14h14l2 2V4H4v12z" fill="currentColor"/>
-        </svg>
-        <span class="b3-menu__label">显示在右侧 ${!isLeft ? '✓' : ''}</span>
-    </div>
-    <div class="b3-menu__separator"></div>
-    <button class="b3-menu__item" data-action="edit">
-        <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
-        <span class="b3-menu__label">编辑</span>
-    </button>
-    <button class="b3-menu__item" data-action="open">
-        <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
-        <span class="b3-menu__label">打开文档</span>
-    </button>
-</div>
-`;
-    
-    document.body.appendChild(menu);
-    
-    // 设置左侧
-    menu.querySelector('[data-action="set-left"]').addEventListener('click', async () => {
-        // 保存到插件配置，不写块属性
-        await this.plugin.store.setWechatDirection(record.id, 'left');
-        record.direction = 'left';
-        rowElement.classList.remove('right');
-        rowElement.classList.add('left');
-        // 更新头像样式
-        this.updateWechatAvatar(rowElement, 'left');
-        menu.remove();
-        showMessage('已设置为左侧显示');
-    });
-    
-    // 设置右侧
-    menu.querySelector('[data-action="set-right"]').addEventListener('click', async () => {
-        // 保存到插件配置，不写块属性
-        await this.plugin.store.setWechatDirection(record.id, 'right');
-        record.direction = 'right';
-        rowElement.classList.remove('left');
-        rowElement.classList.add('right');
-        // 更新头像样式
-        this.updateWechatAvatar(rowElement, 'right');
-        menu.remove();
-        showMessage('已设置为右侧显示');
-    });
-    
-    // 编辑
-    menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
-        this.plugin.showEditBlockDialog(record.id, record.content);
-        menu.remove();
-    });
-    
-    // 打开文档
-    menu.querySelector('[data-action="open"]').addEventListener('click', () => {
-        this.plugin.openBlockDocument(record.id);
-        menu.remove();
-    });
-    
-    // 点击其他地方关闭菜单
-    const closeMenu = (e) => {
-        if (!menu.contains(e.target)) {
-            menu.remove();
-            document.removeEventListener('click', closeMenu);
-            document.removeEventListener('contextmenu', closeMenu);
-        }
+${s("")}::before {
+    display: none;
+}`
+        );
     };
-    setTimeout(() => {
-        document.addEventListener('click', closeMenu);
-        document.addEventListener('contextmenu', closeMenu);
-    }, 0);
+    const genDark = (color, suffix) => {
+        const sel = `时间轴·${color.name}${suffix}`;
+        const base = `:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="${sel}"]:not([fold="1"])`;
+        return (
+`${base} {
+    border-left-color: ${color.darkBorder} !important;
 }
-
-// 辅助方法：更新微信消息行的头像
-updateWechatAvatar(rowElement, direction) {
-    const avatarDiv = rowElement.querySelector('.wechat-avatar');
-    if (!avatarDiv) return;
-    
-    if (direction === 'left') {
-        avatarDiv.classList.remove('wechat-avatar-self');
-        avatarDiv.classList.add('wechat-avatar-opposite');
-        const oppositeAvatarPath = this.plugin.store.getOppositeAvatar();
-        if (oppositeAvatarPath) {
-            avatarDiv.innerHTML = `<img src="${oppositeAvatarPath.startsWith('http') ? oppositeAvatarPath : '/' + oppositeAvatarPath}" onerror="this.parentElement.innerHTML='<svg><use xlink:href=\\'#iconUser\\'></use></svg>'">`;
-        } else {
-            avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-        }
-    } else {
-        avatarDiv.classList.remove('wechat-avatar-opposite');
-        avatarDiv.classList.add('wechat-avatar-self');
-        const selfAvatarPath = this.plugin.store.getAvatar();
-        if (selfAvatarPath) {
-            avatarDiv.innerHTML = `<img src="${selfAvatarPath.startsWith('http') ? selfAvatarPath : '/' + selfAvatarPath}" onerror="this.parentElement.innerHTML='<svg><use xlink:href=\\'#iconUser\\'></use></svg>'">`;
-        } else {
-            avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-        }
-    }
+${base} > [data-node-id]:first-child {
+    color: ${color.darkText} !important;
 }
-    clearFilter() {
-        this.selectedDate = null;
-        this.selectedType = null;
-        this.filteredRecords = this.allRecords;
-        this.renderMiddlePanel();
-        this.updateHighlight();
-    }
-
-    render() {
-        this.container.innerHTML = '';
-
-        if (!this.plugin.isMobile) {
-            // 桌面版：三栏布局
-            const left = document.createElement('div');
-            left.className = 'timeline-left-panel';
-            const middle = document.createElement('div');
-            middle.className = 'timeline-middle-panel';
-            const right = document.createElement('div');
-            right.className = 'timeline-right-panel';
-
-            this.container.appendChild(left);
-            this.container.appendChild(middle);
-            this.container.appendChild(right);
-
-            this.leftPanel = left;
-            this.middlePanel = middle;
-            this.rightPanel = right;
-
-            this.renderHeader();
-            this.renderContributionGraph();
-            this.renderStats();
-            this.renderStyleSwitcher(); // 新增：渲染样式切换按钮
-            this.renderMiddlePanel();
-            this.renderCalendarAndTypes();
-        } else {
-            // 移动版：简化布局，只显示中间面板
-            const middle = document.createElement('div');
-            middle.className = 'timeline-middle-panel timeline-middle-panel--mobile';
-            this.container.appendChild(middle);
-            this.middlePanel = middle;
-
-            // 添加简易头部
-            const header = document.createElement('div');
-            header.className = 'timeline-mobile-header';
-            const title = document.createElement('span');
-            title.textContent = this.plugin.store.getCustomTitle() || '时光笺';
-            const refreshBtn = document.createElement('button');
-            refreshBtn.className = 'b3-button b3-button--text';
-            // 移动端刷新图标
-            const refreshIconPath = `/plugins/${this.plugin.name}/icons/刷新.svg`;
-            refreshBtn.innerHTML = `<img src="${refreshIconPath}" class="timeline-mobile-icon" style="width: 20px; height: 20px;" />`;
-            refreshBtn.onclick = () => this.refresh();
-            header.appendChild(title);
-            header.appendChild(refreshBtn);
-            this.middlePanel.appendChild(header);
-
-            this.renderMiddlePanel();
-        }
-    }
-
-    renderHeader() {
-        const header = document.createElement('div');
-        header.className = 'timeline-header';
-
-        const avatar = document.createElement('div');
-        avatar.className = 'timeline-avatar';
-        avatar.setAttribute('title', '点击上传头像');
-        avatar.onclick = () => this.plugin.uploadAvatar(avatar, 'self'); // 修改：指定上传自己头像
-
-        const avatarPath = this.plugin.store.getAvatar();
-        if (avatarPath) {
-            const img = document.createElement('img');
-            img.src = avatarPath.startsWith('http') ? avatarPath : '/' + avatarPath;
-            img.onerror = () => {
-                avatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            };
-            avatar.appendChild(img);
-        } else {
-            avatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-        }
-
-        const text = document.createElement('div');
-        text.className = 'timeline-header-text';
-        const title = this.plugin.store.getCustomTitle() || '时光笺';
-        const subtitle = this.plugin.store.getCustomSubtitle() || '今日更新';
-        text.innerHTML = `<div class="timeline-title"><span class="timeline-title-text">${title}</span></div><div class="timeline-subtitle"><span class="timeline-subtitle-text">${subtitle}</span></div>`;
-
-        const actions = document.createElement('div');
-        actions.className = 'timeline-actions';
-        const refreshBtn = document.createElement('button');
-        refreshBtn.className = 'b3-tooltips b3-tooltips__sw timeline-btn';
-        refreshBtn.setAttribute('aria-label', '刷新');
-        const refreshIconPath = `/plugins/${this.plugin.name}/icons/刷新.svg`;
-        refreshBtn.innerHTML = `<img src="${refreshIconPath}" class="timeline-btn-icon" style="width: 20px; height: 20px;" />`;
-        refreshBtn.onclick = () => this.refresh();
-
-        const moreBtn = document.createElement('button');
-        moreBtn.className = 'b3-tooltips b3-tooltips__sw timeline-btn';
-        moreBtn.setAttribute('aria-label', '更多');
-        const moreIconPath = `/plugins/${this.plugin.name}/icons/更多.svg`;
-        moreBtn.innerHTML = `<img src="${moreIconPath}" class="timeline-btn-icon" style="width: 20px; height: 20px;" />`;
-        moreBtn.onclick = () => this.showSettingsDialog();
-
-        actions.appendChild(refreshBtn);
-        actions.appendChild(moreBtn);
-
-        header.appendChild(avatar);
-        header.appendChild(text);
-        header.appendChild(actions);
-        this.leftPanel.appendChild(header);
-    }
-
-    // ========== 设置对话框 ==========
-    showSettingsDialog() {
-        const modeOrder = [
-            TimelineView.MODE_LIST,
-            TimelineView.MODE_MOMENTS,
-            TimelineView.MODE_TIMELINE,
-            TimelineView.MODE_TIMELINE_V2,
-            TimelineView.MODE_WECHAT,
-            TimelineView.MODE_SCHEDULE  // 新增日程视图
-        ];
-        const currentIndex = modeOrder.indexOf(this.displayMode);
-        const nextMode = modeOrder[(currentIndex + 1) % modeOrder.length];
-        const nextModeText = {
-            [TimelineView.MODE_LIST]: '列表样式',
-            [TimelineView.MODE_MOMENTS]: '朋友圈样式',
-            [TimelineView.MODE_TIMELINE]: '时间日志样式',
-            [TimelineView.MODE_TIMELINE_V2]: '时间轴样式',
-            [TimelineView.MODE_WECHAT]: '聊天样式',
-            [TimelineView.MODE_SCHEDULE]: '日程视图'   // 新增
-        }[nextMode];
-
-        const currentTimeMode = this.timeMode;
-        const startChecked = currentTimeMode === 'start' ? 'checked' : '';
-        const endChecked = currentTimeMode === 'end' ? 'checked' : '';
-
-        const showSwitcherChecked = this.plugin.store.getShowStyleSwitcher() ? 'checked' : '';
-        // 新增：碎碎念展示配置
-        const showDiaryChecked = this.plugin.store.getShowDiaryInMoments() ? 'checked' : '';
-
-        const dialog = new Dialog({
-            title: '时光笺设置',
-            content: `
-                <div style="padding: 20px;">
-                    <div class="b3-dialog__label">标题</div>
-                    <input class="b3-text-field" id="titleInput" value="${this.plugin.store.getCustomTitle() || ''}" placeholder="默认：时光笺">
-                    <div class="b3-dialog__label" style="margin-top: 12px;">副标题</div>
-                    <input class="b3-text-field" id="subtitleInput" value="${this.plugin.store.getCustomSubtitle() || ''}" placeholder="默认：今日更新">
-                    
-                    <div class="b3-dialog__label" style="margin-top: 12px;">记录时间模式</div>
-                    <div style="margin: 8px 0 16px 0; display: flex; flex-direction: column; gap: 8px;">
-                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.4;">
-                            <input type="radio" name="timeMode" value="start" ${startChecked} 
-                                   style="flex-shrink: 0; width: 14px; height: 14px; margin: 0; vertical-align: middle;">
-                            <span style="flex: 1;">开始模式（节点时间为开始时间）</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.4;">
-                            <input type="radio" name="timeMode" value="end" ${endChecked} 
-                                   style="flex-shrink: 0; width: 14px; height: 14px; margin: 0; vertical-align: middle;">
-                            <span style="flex: 1;">结束模式（节点时间为结束时间）</span>
-                        </label>
-                    </div>
-
-                    <!-- 新增：显示样式切换按钮的复选框 -->
-                    <div style="margin-top: 16px; display: flex; align-items: center;">
-                        <input type="checkbox" id="showStyleSwitcherCheckbox" ${showSwitcherChecked}>
-                        <label for="showStyleSwitcherCheckbox" style="margin-left: 6px;">显示样式切换按钮（左侧面板显示）</label>
-                    </div>
-
-                    <!-- 新增：朋友圈展示碎碎念复选框 -->
-                    <div style="margin-top: 16px; display: flex; align-items: center;">
-                        <input type="checkbox" id="showDiaryInMomentsCheckbox" ${showDiaryChecked}>
-                        <label for="showDiaryInMomentsCheckbox" style="margin-left: 6px;">在朋友圈样式中展示“碎碎念”卡片（勾选后替代普通记录）</label>
-                    </div>
-
-                    <!-- 图表显示控制 -->
-                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--b3-border-color);">
-                        <div class="b3-dialog__label">统计视图 - 图表显示</div>
-                        <div style="margin: 8px 0; display: flex; flex-direction: column; gap: 8px;">
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                                <input type="checkbox" id="showBarChartCheckbox" ${this.plugin.store.getShowBarChart() ? 'checked' : ''}
-                                       style="flex-shrink: 0; width: 14px; height: 14px; margin: 0;">
-                                <span style="flex: 1;">显示类型分布（柱状图）</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                                <input type="checkbox" id="showPieChartCheckbox" ${this.plugin.store.getShowPieChart() ? 'checked' : ''}
-                                       style="flex-shrink: 0; width: 14px; height: 14px; margin: 0;">
-                                <span style="flex: 1;">显示记录占比（饼图）</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                        <div>
-                            <button class="b3-button" id="toggleStyleBtn">切换到${nextModeText}</button>
-                            <button class="b3-button" id="statisticsBtn" style="margin-left:8px;">统计视图</button>
-                        </div>
-                        <div>
-                            <button class="b3-button b3-button--cancel" id="cancelSettingsBtn">取消</button>
-                            <button class="b3-button b3-button--outline" id="saveSettingsBtn">保存</button>
-                        </div>
-                    </div>
-                </div>
-            `,
-            width: '500px',
-        });
-
-        setTimeout(() => {
-            const cancelBtn = dialog.element.querySelector('#cancelSettingsBtn');
-            const saveBtn = dialog.element.querySelector('#saveSettingsBtn');
-            const toggleBtn = dialog.element.querySelector('#toggleStyleBtn');
-            const statisticsBtn = dialog.element.querySelector('#statisticsBtn');
-
-            cancelBtn.addEventListener('click', () => dialog.destroy());
-
-            saveBtn.addEventListener('click', async () => {
-                const title = (dialog.element.querySelector('#titleInput')?.value || '').trim();
-                const subtitle = (dialog.element.querySelector('#subtitleInput')?.value || '').trim();
-                const timeMode = dialog.element.querySelector('input[name="timeMode"]:checked')?.value || 'start';
-                const showSwitcher = dialog.element.querySelector('#showStyleSwitcherCheckbox').checked;
-                const showDiary = dialog.element.querySelector('#showDiaryInMomentsCheckbox').checked; // 新增
-                const showBarChart = dialog.element.querySelector('#showBarChartCheckbox').checked;
-                const showPieChart = dialog.element.querySelector('#showPieChartCheckbox').checked;
-
-                await this.plugin.store.setShowBarChart(showBarChart);
-                await this.plugin.store.setShowPieChart(showPieChart);
-                await this.plugin.store.setShowDiaryInMoments(showDiary); // 新增
-
-                await this.plugin.store.setCustomTitle(title);
-                await this.plugin.store.setCustomSubtitle(subtitle);
-                await this.plugin.store.setTimeMode(timeMode);
-                await this.plugin.store.setShowStyleSwitcher(showSwitcher);
-
-                this.timeMode = timeMode;
-                const titleEl = this.leftPanel.querySelector('.timeline-title-text');
-                const subtitleEl = this.leftPanel.querySelector('.timeline-subtitle-text');
-                if (titleEl) titleEl.textContent = title || '时光笺';
-                if (subtitleEl) subtitleEl.textContent = subtitle || '今日更新';
-
-                // 重新渲染样式切换按钮（根据新配置显示或隐藏）
-                this.renderStyleSwitcher();
-
-                this.renderMiddlePanel();
-                dialog.destroy();
-                showMessage('设置已保存');
-            });
-
-            toggleBtn.addEventListener('click', () => {
-                this.setDisplayMode(nextMode);
-                dialog.destroy();
-                showMessage(`已切换到${nextModeText}`);
-            });
-
-            statisticsBtn.addEventListener('click', () => {
-                this.setDisplayMode(TimelineView.MODE_STATISTICS);
-                dialog.destroy();
-                showMessage('已切换到统计视图');
-            });
-        }, 0);
-    }
-
-    renderStats() {
-        const s = this.yearStats; // 始终使用本年统计
-        const grid = document.createElement('div');
-        grid.className = 'stats-grid';
-
-        const items = [
-            { label: '本年', value: s.total },      // 原“总记录”改为“本年”
-            { label: '本月', value: s.month },
-            { label: '今日', value: s.today },
-            { label: '连续', value: s.streak },
-            { label: '最活跃', value: s.mostActive },
-            { label: '使用类型', value: s.usedTypeCount }
-        ];
-
-        items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'stat-card';
-            card.innerHTML = `
-                <div class="stat-value">${item.value}</div>
-                <div class="stat-label">${item.label}</div>
-            `;
-            grid.appendChild(card);
-        });
-
-        this.leftPanel.appendChild(grid);
-    }
-
-    renderContributionGraph() {
-        const graph = document.createElement('div');
-        graph.className = 'timeline-contribution';
-
-        const today = new Date();
-        const currentDay = today.getDay();
-        let mondayOfThisWeek = new Date(today);
-        const diff = currentDay === 0 ? 6 : currentDay - 1;
-        mondayOfThisWeek.setDate(today.getDate() - diff);
-        mondayOfThisWeek.setHours(0, 0, 0, 0);
-
-        const startMonday = new Date(mondayOfThisWeek);
-        startMonday.setDate(mondayOfThisWeek.getDate() - 11 * 7);
-
-        const weekMondays = [];
-        const dates = [];
-        for (let col = 0; col < 12; col++) {
-            const weekMonday = new Date(startMonday);
-            weekMonday.setDate(startMonday.getDate() + col * 7);
-            weekMondays.push(weekMonday);
-            for (let row = 0; row < 7; row++) {
-                const date = new Date(weekMonday);
-                date.setDate(weekMonday.getDate() + row);
-                const ds = formatDate(date);
-                const cnt = this.yearDailyCounts.get(ds) || 0;   // 使用本年数据
-                dates.push({ date: ds, cnt, fullDate: date });
-            }
-        }
-
-        const counts = dates.map(d => d.cnt);
-        const maxCount = counts.length ? Math.max(...counts) : 0;
-
-        const level = (cnt) => {
-            if (cnt === 0) return 0;
-            if (maxCount === 0) return 0;
-            const r = cnt / maxCount;
-            if (r <= 0.25) return 1;
-            if (r <= 0.5) return 2;
-            if (r <= 0.75) return 3;
-            return 4;
-        };
-
-        const grid = document.createElement('div');
-        grid.className = 'contribution-grid';
-
-        for (let row = 0; row < 7; row++) {
-            for (let col = 0; col < 12; col++) {
-                const idx = col * 7 + row;
-                const { date, cnt } = dates[idx];
-                const lv = level(cnt);
-                const cell = document.createElement('div');
-                cell.className = `contribution-cell level-${lv}`;
-                if (this.selectedDate === date) {
-                    cell.classList.add('selected');
-                }
-                cell.title = `${date}: ${cnt}条记录`;
-                cell.dataset.date = date;
-                cell.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (this.selectedDate === date) {
-                        this.setFilter(null, undefined);
-                    } else {
-                        this.setFilter(date, undefined);
-                    }
-                });
-                grid.appendChild(cell);
-            }
-        }
-        graph.appendChild(grid);
-
-        const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-        const monthAxis = document.createElement('div');
-        monthAxis.className = 'contribution-month-axis';
-
-        for (let group = 0; group < 3; group++) {
-            const firstColIndex = group * 4;
-            const weekMonday = weekMondays[firstColIndex];
-            const monthIndex = weekMonday.getMonth();
-            const label = monthNames[monthIndex];
-            
-            const span = document.createElement('span');
-            span.className = 'month-axis-label';
-            span.textContent = label;
-            monthAxis.appendChild(span);
-        }
-
-        graph.appendChild(monthAxis);
-        this.leftPanel.appendChild(graph);
-    }
-
-    // ========== 渲染样式切换按钮（分两行：原样式一行，日程视图单独一行，再加周视图单独一行） ==========
-renderStyleSwitcher() {
-    // 如果已存在则移除
-    const existing = this.leftPanel.querySelector('.timeline-style-switcher');
-    if (existing) existing.remove();
-
-    // 如果配置为不显示，直接返回
-    if (!this.plugin.store.getShowStyleSwitcher()) return;
-
-    const switcher = document.createElement('div');
-    switcher.className = 'north timeline-style-switcher';
-
-    // 定义图标文件名映射
-    const iconFileMap = {
-        [TimelineView.MODE_LIST]: '001.svg',
-        [TimelineView.MODE_MOMENTS]: '002.svg',
-        [TimelineView.MODE_TIMELINE]: '003.svg',
-        [TimelineView.MODE_TIMELINE_V2]: '004.svg',
-        [TimelineView.MODE_WECHAT]: '005.svg',
-        [TimelineView.MODE_STATISTICS]: '006.svg',
-        [TimelineView.MODE_SCHEDULE]: '007.svg',
-        [TimelineView.MODE_WEEK]: '008.svg'  
+${base} > [data-node-id]:first-child::before {
+    background-color: #2d2d2d !important;
+    box-shadow: 0 0 0 0.2em ${color.darkBorder} !important;
+}`
+        );
     };
-
-    // 所有按钮的顺序（共8个）
-    const allButtons = [
-        { mode: TimelineView.MODE_LIST, label: '列表样式' },
-        { mode: TimelineView.MODE_MOMENTS, label: '朋友圈样式' },
-        { mode: TimelineView.MODE_TIMELINE, label: '时间日志样式' },
-        { mode: TimelineView.MODE_TIMELINE_V2, label: '时间轴样式' },
-        { mode: TimelineView.MODE_WECHAT, label: '聊天样式' },
-        { mode: TimelineView.MODE_STATISTICS, label: '统计视图' },
-        { mode: TimelineView.MODE_SCHEDULE, label: '日程视图' },
-        { mode: TimelineView.MODE_WEEK, label: '周视图' }
-    ];
-
-    const pluginName = this.plugin.name;
-
-    // 分成两组，每组4个
-    const row1 = allButtons.slice(0, 4);
-    const row2 = allButtons.slice(4, 8);
-
-    // 创建一行按钮
-    const createRow = (buttons) => {
-        const row = document.createElement('div');
-        row.className = 'north timeline-style-row';
-        buttons.forEach(btn => {
-            const buttonEl = document.createElement('button');
-            buttonEl.className = `north timeline-style-btn ${this.displayMode === btn.mode ? 'active' : ''}`;
-            buttonEl.setAttribute('title', btn.label);
-            const iconUrl = `/plugins/${pluginName}/icons/${iconFileMap[btn.mode]}`;
-            buttonEl.innerHTML = `<img src="${iconUrl}" class="timeline-style-icon" style="width: 20px; height: 20px;" />`;
-            
-            // 周视图特殊处理：点击打开新标签页，不调用 setDisplayMode
-            if (btn.mode === TimelineView.MODE_WEEK) {
-                buttonEl.addEventListener('click', () => this.plugin.openWeekTab());
-            } else {
-                buttonEl.addEventListener('click', () => this.setDisplayMode(btn.mode));
-            }
-            row.appendChild(buttonEl);
-        });
-        return row;
-    };
-
-    switcher.appendChild(createRow(row1));
-    switcher.appendChild(createRow(row2));
-    this.leftPanel.appendChild(switcher);
-}
-
-    // ========== 辅助函数 ==========
-    formatAbsoluteTime(date) {
-        if (!date) return '';
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}年${month}月${day}日 ${hours}:${minutes}`;
-    }
-
-    // 新增：格式化时间为 YYYY-MM-DD HH:MM（用于碎碎念）
-    formatAbsoluteTimeYYYYMMDD(date) {
-        if (!date) return '';
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
-    }
-
-    // 新增：格式化时间戳（created 字段）为 YYYY-MM-DD HH:MM
-    formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
-        return this.formatAbsoluteTimeYYYYMMDD(date);
-    }
-
-    formatDuration(minutes) {
-        minutes = Math.round(minutes); 
-        if (minutes < 60) {
-            return minutes + '分';
-        } else {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            if (mins === 0) {
-                return hours + '时';
-            } else {
-                return hours + '时' + mins + '分';
-            }
-        }
-    }
-
-    /**
-     * 获取给定记录在全局时间轴上的下一条记录（用于开始模式跨天）
-     * @param {Object} record - 当前记录
-     * @returns {Object|null} 下一条记录，如果没有则返回 null
-     */
-    _getNextRecord(record) {
-        const index = this.globalSorted.findIndex(r => r.id === record.id);
-        if (index !== -1 && index < this.globalSorted.length - 1) {
-            return this.globalSorted[index + 1];
-        }
-        return null;
-    }
-
-    /**
-     * 获取给定记录在全局时间轴上的前一条记录（用于结束模式跨天）
-     * @param {Object} record - 当前记录
-     * @returns {Object|null} 前一条记录，如果没有则返回 null
-     */
-    _getPreviousRecord(record) {
-        const index = this.globalSorted.findIndex(r => r.id === record.id);
-        if (index > 0) {
-            return this.globalSorted[index - 1];
-        }
-        return null;
-    }
-
-    // ========== 获取最早记录日期 ==========
-    getEarliestDate() {
-        let earliest = null;
-        for (const r of this.allRecords) {
-            const d = parseLifelogDate(r.lifelog_created);
-            if (d && (!earliest || d < earliest)) {
-                earliest = d;
-            }
-        }
-        return earliest ? formatDate(earliest) : formatDate(new Date());
-    }
-
-    // 新增：从指定记录集获取最早日期
-    getEarliestDateFromRecords(records) {
-        let earliest = null;
-        for (const r of records) {
-            const d = parseLifelogDate(r.lifelog_created);
-            if (d && (!earliest || d < earliest)) {
-                earliest = d;
-            }
-        }
-        return earliest ? formatDate(earliest) : formatDate(new Date());
-    }
-
-    // ========== 获取本周的周一和周日 ==========
-    getThisWeekRange() {
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0=周日, 1=周一, ..., 6=周六
-        const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
-        const monday = new Date(today);
-        monday.setDate(today.getDate() - diffToMonday);
-        monday.setHours(0, 0, 0, 0);
-        const sunday = new Date(monday);
-        sunday.setDate(monday.getDate() + 6);
-        return {
-            start: formatDate(monday),
-            end: formatDate(sunday)
-        };
-    }
-
-    // ========== 构建全局排序数组 ==========
-    _buildGlobalSorted(records) {
-        return records
-            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
-            .filter(r => r.dateObj)
-            .sort((a, b) => a.dateObj - b.dateObj);
-    }
-
-    // ========== 统计数据处理 ==========
-    // 获取当前日期范围内的所有类型（用于类型按钮）
-    getTypesInDateRange() {
-        let records = this.allRecords;
-        if (this.startDate && this.endDate) {
-            const start = new Date(this.startDate + 'T00:00:00');
-            const end = new Date(this.endDate + 'T23:59:59');
-            records = records.filter(r => {
-                const d = parseLifelogDate(r.lifelog_created);
-                return d && d >= start && d <= end;
-            });
-        }
-        const types = new Set();
-        records.forEach(r => {
-            if (r.lifelog_type) types.add(r.lifelog_type);
-        });
-        return Array.from(types).sort();
-    }
-
-    // 计算指定筛选条件下的统计数据
-    computeStatistics() {
-        // 如果没有全局排序数据或记录数少于2，则返回空
-        if (!this.globalSorted || this.globalSorted.length < 2) {
-            return {
-                total: 0,
-                year: 0,
-                month: 0,
-                week: 0,
-                today: 0,
-                typeData: []
-            };
-        }
-
-        // 获取筛选条件
-        const start = this.startDate ? new Date(this.startDate + 'T00:00:00') : null;
-        const end = this.endDate ? new Date(this.endDate + 'T23:59:59') : null;
-        const selectedTypes = this.selectedStatTypes; // Set
-
-        // 判断记录是否在筛选范围内
-        const isRecordInRange = (record) => {
-            const dateObj = record.dateObj;
-            if (!dateObj) return false;
-            if (start && dateObj < start) return false;
-            if (end && dateObj > end) return false;
-            if (selectedTypes.size > 0 && !selectedTypes.has(record.lifelog_type)) return false;
-            return true;
-        };
-
-        const isStartMode = this.timeMode === 'start';
-
-        let total = 0;
-        let yearTotal = 0;
-        let monthTotal = 0;
-        let weekTotal = 0;
-        let todayTotal = 0;
-        const typeDurations = new Map(); // type -> 分钟
-
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth();
-        // 本周开始（周一）
-        const monday = new Date(now);
-        monday.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
-        monday.setHours(0, 0, 0, 0);
-        const weekEnd = new Date(monday);
-        weekEnd.setDate(monday.getDate() + 7);
-        const todayStart = new Date(now);
-        todayStart.setHours(0, 0, 0, 0);
-        const todayEnd = new Date(now);
-        todayEnd.setHours(23, 59, 59, 999);
-
-        // 遍历全局排序的相邻记录对
-        for (let i = 0; i < this.globalSorted.length - 1; i++) {
-            const r1 = this.globalSorted[i];
-            const r2 = this.globalSorted[i + 1];
-            const diffMs = r2.dateObj - r1.dateObj;
-            const diffMinutes = diffMs / 60000;
-            if (diffMinutes <= 0) continue;
-
-            // 确定该时间间隔应归属于哪条记录
-            const targetRecord = isStartMode ? r1 : r2;
-            // 检查目标记录是否在筛选范围内
-            if (!isRecordInRange(targetRecord)) continue;
-
-            total += diffMinutes;
-
-            const type = targetRecord.lifelog_type || '未分类';
-            typeDurations.set(type, (typeDurations.get(type) || 0) + diffMinutes);
-
-            // 按时间范围统计（基于归属记录的时间）
-            const date = targetRecord.dateObj;
-            if (date.getFullYear() === currentYear) yearTotal += diffMinutes;
-            if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) monthTotal += diffMinutes;
-            if (date >= monday && date < weekEnd) weekTotal += diffMinutes;
-            if (date >= todayStart && date <= todayEnd) todayTotal += diffMinutes;
-        }
-
-        // 转换为数组
-        const typeData = Array.from(typeDurations.entries()).map(([type, minutes]) => ({
-            name: type,
-            value: minutes,
-            itemStyle: { color: getTypeColorFromCSS(type) }
-        })).sort((a, b) => b.value - a.value);
-
-        return {
-            total,
-            year: yearTotal,
-            month: monthTotal,
-            week: weekTotal,
-            today: todayTotal,
-            typeData
-        };
-    }
-
-    // ========== 渲染统计视图（支持多选类型） ==========
-renderStatisticsPanel() {
-    this.middlePanel.innerHTML = '';
-
-// 如果是第一次进入且未设置日期范围，则默认设为当前月份
-if (!this.startDate || !this.endDate) {
-    const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    this.startDate = formatDate(firstDay);
-    this.endDate = formatDate(lastDay);
-}
-
-    // 获取当前日期范围内的所有类型
-    const currentTypes = this.getTypesInDateRange();
-
-    // 清理已选中的类型：移除不在 currentTypes 中的类型（防止残留）
-    this.selectedStatTypes = new Set(
-        Array.from(this.selectedStatTypes).filter(t => currentTypes.includes(t))
-    );
-
-    // 获取当前筛选条件下的统计数据（时长分布）
-    const stats = this.computeStatistics();
-    if (!stats) {
-        this.middlePanel.innerHTML = '<div class="timeline-empty">没有足够的记录进行统计</div>';
-        return;
-    }
-
-    // ---------- 根据当前筛选条件计算记录数、类型数、天数 ----------
-    let filteredRecords = this.allRecords;
-    if (this.startDate && this.endDate) {
-        const start = new Date(this.startDate + 'T00:00:00');
-        const end = new Date(this.endDate + 'T23:59:59');
-        filteredRecords = filteredRecords.filter(r => {
-            const d = parseLifelogDate(r.lifelog_created);
-            return d && d >= start && d <= end;
-        });
-    }
-    if (this.selectedStatTypes.size > 0) {
-        filteredRecords = filteredRecords.filter(r => this.selectedStatTypes.has(r.lifelog_type));
-    }
-    
-    const totalRecords = filteredRecords.length;                          // 总记录数
-    const usedTypesCount = new Set(filteredRecords.map(r => r.lifelog_type).filter(Boolean)).size;  // 使用类型数
-    const daysCount = new Set(filteredRecords.map(r => {
-        const d = parseLifelogDate(r.lifelog_created);
-        return d ? formatDate(d) : null;
-    }).filter(Boolean)).size;                                              // 记录天数
-
-    const container = document.createElement('div');
-    container.className = 'north-statistics-panel';
-
-    // ----- 头部：日期范围 + 重置按钮 -----
-    const headerBar = document.createElement('div');
-    headerBar.className = 'north-header-bar';
-
-    const dateRangeDiv = document.createElement('div');
-    dateRangeDiv.className = 'north-date-range';
-    const calendarIconPath = `/plugins/${this.plugin.name}/icons/日历.svg`;
-    dateRangeDiv.innerHTML = `
-        <img src="${calendarIconPath}" class="calendar-icon" style="width: 16px; height: 16px;" />
-        <input type="date" class="north-date-input" id="stat-start-date" value="${this.startDate || ''}">
-        <span>-</span>
-        <img src="${calendarIconPath}" class="calendar-icon" style="width: 16px; height: 16px;" />
-        <input type="date" class="north-date-input" id="stat-end-date" value="${this.endDate || ''}">
-        <button class="b3-button" id="apply-date-filter" style="margin-left:8px;">应用</button>
-    `;
-
-    const resetBtn = document.createElement('button');
-    resetBtn.className = 'north-reset-btn';
-    resetBtn.innerHTML = '<i class="fas fa-undo"></i> 重置';
-
-    headerBar.appendChild(dateRangeDiv);
-    headerBar.appendChild(resetBtn);
-    container.appendChild(headerBar);
-
-    // ----- 类型筛选按钮（多选） -----
-    const filterSection = document.createElement('div');
-    filterSection.className = 'north-filter-section';
-
-    const filterRow = document.createElement('div');
-    filterRow.className = 'north-filter-row';
-
-    const filterLabel = document.createElement('span');
-    filterLabel.className = 'north-filter-label';
-    filterLabel.textContent = '类型';
-    filterRow.appendChild(filterLabel);
-
-    const btnGroup = document.createElement('div');
-    btnGroup.className = 'north-btn-group';
-
-    const allBtn = document.createElement('button');
-    allBtn.className = `north-filter-btn ${this.selectedStatTypes.size === 0 ? 'north-active' : ''}`;
-    allBtn.textContent = '全部';
-    allBtn.addEventListener('click', () => {
-        this.selectedStatTypes.clear();
-        this.renderStatisticsPanel();
-    });
-    btnGroup.appendChild(allBtn);
-
-    currentTypes.forEach(type => {
-        const btn = document.createElement('button');
-        const isActive = this.selectedStatTypes.has(type);
-        btn.className = `north-filter-btn ${isActive ? 'north-active' : ''}`;
-        btn.textContent = type;
-        btn.addEventListener('click', () => {
-            if (this.selectedStatTypes.has(type)) {
-                this.selectedStatTypes.delete(type);
-            } else {
-                this.selectedStatTypes.add(type);
-            }
-            this.renderStatisticsPanel();
-        });
-        btnGroup.appendChild(btn);
-    });
-
-    const clearBtn = document.createElement('button');
-    clearBtn.className = 'north-filter-btn';
-    clearBtn.textContent = '清除';
-    clearBtn.addEventListener('click', () => {
-        this.selectedStatTypes.clear();
-        this.renderStatisticsPanel();
-    });
-    btnGroup.appendChild(clearBtn);
-
-    filterRow.appendChild(btnGroup);
-    filterSection.appendChild(filterRow);
-    container.appendChild(filterSection);
-
-    // ----- 时间统计卡片（原有时长统计） -----
-    const timeStatsRow = document.createElement('div');
-    timeStatsRow.className = 'north-time-stats';
-    const cards = [
-        { label: '总时长', value: this.formatDuration(stats.total) },
-        { label: '本年', value: this.formatDuration(stats.year) },
-        { label: '本月', value: this.formatDuration(stats.month) },
-        { label: '本周', value: this.formatDuration(stats.week) },
-        { label: '今日', value: this.formatDuration(stats.today) }
-    ];
-    cards.forEach(card => {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'north-time-stat-item';
-        cardDiv.innerHTML = `
-            <div class="north-time-stat-label">${card.label}</div>
-            <div class="north-time-stat-value">${card.value}</div>
-        `;
-        timeStatsRow.appendChild(cardDiv);
-    });
-    container.appendChild(timeStatsRow);
-
-    // ----- 新增统计卡片：总记录、使用类型、记录天数 -----
-    const additionalStatsRow = document.createElement('div');
-    additionalStatsRow.className = 'north-time-stats';  // 复用样式，与上方保持一致
-    additionalStatsRow.style.marginTop = '15px';        // 与上方稍作间隔
-
-    const extraItems = [
-        { label: '总记录', value: totalRecords },
-        { label: '使用类型', value: usedTypesCount },
-        { label: '记录天数', value: daysCount }
-    ];
-    extraItems.forEach(item => {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'north-time-stat-item';
-        cardDiv.innerHTML = `
-            <div class="north-time-stat-label">${item.label}</div>
-            <div class="north-time-stat-value">${item.value}</div>
-        `;
-        additionalStatsRow.appendChild(cardDiv);
-    });
-    container.appendChild(additionalStatsRow);
-
-    // ----- 类型分布图例（原饼图位置，现只保留图例） -----
-    const chartBox = document.createElement('div');
-    chartBox.className = 'north-chart-box';
-
-    const chartTitle = document.createElement('div');
-    chartTitle.className = 'north-chart-title';
-    chartTitle.textContent = '类型分布';
-    chartBox.appendChild(chartTitle);
-
-    // 图例列表（保留）
-    const legendList = document.createElement('div');
-    legendList.className = 'north-legend-list';
-
-    stats.typeData.forEach(item => {
-        const legendItem = document.createElement('div');
-        legendItem.className = 'north-legend-item';
-        const dot = document.createElement('div');
-        dot.className = 'north-legend-dot';
-        dot.style.backgroundColor = item.itemStyle.color;
-        legendItem.appendChild(dot);
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = item.name;
-        legendItem.appendChild(nameSpan);
-        const durationSpan = document.createElement('span');
-        durationSpan.style.marginLeft = 'auto';
-        durationSpan.style.color = 'var(--b3-theme-on-surface-light)';
-        durationSpan.textContent = this.formatDuration(item.value);
-        legendItem.appendChild(durationSpan);
-        legendList.appendChild(legendItem);
-    });
-
-    chartBox.appendChild(legendList);
-    container.appendChild(chartBox);
-
-    this.middlePanel.appendChild(container);
-
-    // 绑定日期范围事件
-    const applyBtn = container.querySelector('#apply-date-filter');
-    const resetStatBtn = container.querySelector('.north-reset-btn');
-    const startInput = container.querySelector('#stat-start-date');
-    const endInput = container.querySelector('#stat-end-date');
-
-    if (applyBtn) {
-        applyBtn.addEventListener('click', () => {
-            const start = startInput.value;
-            const end = endInput.value;
-            if (start && end) {
-                this.startDate = start;
-                this.endDate = end;
-                this.renderStatisticsPanel();
-            } else {
-                showMessage('请选择开始和结束日期');
-            }
-        });
-    }
-
-    if (resetStatBtn) {
-        resetStatBtn.addEventListener('click', async () => {
-            if (!this.allRecordsUnfiltered) {
-                await this.loadAllRecords();
-                this.allRecords = this.allRecordsUnfiltered;
-                this.dailyCounts = this.allDailyCountsUnfiltered;
-            }
-            const earliest = this.getEarliestDateFromRecords(this.allRecordsUnfiltered);
-            const today = formatDate(new Date());
-            this.startDate = earliest;
-            this.endDate = today;
-            this.selectedStatTypes.clear();
-            this.renderStatisticsPanel();
-        });
-    }
-
-// ========== 添加图表网格（根据配置动态显示） ==========
-    const showBar = this.plugin.store.getShowBarChart();
-    const showPie = this.plugin.store.getShowPieChart();
-    
-    // 如果都不显示，直接跳过图表区域渲染
-    if (!showBar && !showPie) {
-        // 不添加 chartsGrid，保持原有布局
-    } else {
-        const chartsGrid = document.createElement('div');
-        chartsGrid.className = 'north-stats-charts-grid';
-        
-        // 动态设置列数：只显示一个时占满整行
-        if ((showBar && !showPie) || (!showBar && showPie)) {
-            chartsGrid.classList.add('single-chart-mode');
-        }
-        
-        container.appendChild(chartsGrid);
-    
-        // 定义两个图表卡片（按需渲染）
-        const chartDefs = [];
-        if (showBar) {
-            chartDefs.push({ 
-                id: 'bar', 
-                title: '类型分布', 
-                icon: '🏷️', 
-                desc: '各类型记录数量', 
-                color: '#4C6EF5' 
-            });
-        }
-        if (showPie) {
-            chartDefs.push({ 
-                id: 'pie', 
-                title: '记录占比', 
-                icon: '📊', 
-                desc: '各类记录占比分析', 
-                color: '#FAB005' 
-            });
-        }
-    
-        chartDefs.forEach(def => {
-            const card = document.createElement('div');
-            card.className = 'stats-chart-card';
-            card.id = `stats-chart-${def.id}`;
-            card.innerHTML = `
-            <div class="chart-header">
-                <div class="chart-title">
-                    <div class="chart-icon" style="background: linear-gradient(135deg, ${def.color}, ${lightenColor(def.color, 20)});">${def.icon}</div>
-                    <div class="chart-text">
-                        <h4>${def.title}</h4>
-                        <p>${def.desc}</p>
-                    </div>
-                </div>
-                <div class="chart-meta">
-                    <div class="chart-value" id="chart-val-${def.id}">0</div>
-                    <div class="chart-trend" id="chart-trend-${def.id}">↗️0%</div>
-                </div>
-            </div>
-            <div class="chart-content" id="chart-content-${def.id}"></div>
-            <div class="chart-legend" id="chart-legend-${def.id}"></div>
-            `;
-            chartsGrid.appendChild(card);
-        });
-    
-        // 计算统计数据
-        const statsRecords = this._getStatsFilteredRecords();
-        const statsData = this._computeStatsData(statsRecords);
-        this._currentStatsData = statsData;
-    
-        // 按需渲染图表
-        if (showBar) {
-            this._renderBarChart(statsData.typeData);
-        }
-        if (showPie) {
-            this._renderPieChart(statsData.typeData, statsData.total);
-        }
-    }
-}
-
-    // 加载 ECharts 并渲染饼图
-    loadEChartsAndRenderPie(container, data) {
-        if (window.echarts) {
-            this.renderPieChart(container, data);
-            return;
-        }
-
-        // 动态加载 ECharts
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js';
-        script.onload = () => {
-            this.renderPieChart(container, data);
-        };
-        script.onerror = () => {
-            console.error('ECharts 加载失败，使用 Canvas 备用绘制');
-            // 降级方案：使用 Canvas 绘制简单饼图
-            this.drawPieChartFallback(container, data);
-        };
-        document.head.appendChild(script);
-    }
-
-    renderPieChart(container, data) {
-        if (!data || data.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
-            return;
-        }
-        
-        // 读取当前主题的标签颜色
-        const labelColor = getComputedStyle(document.documentElement)
-            .getPropertyValue('--b3-theme-on-surface').trim() || '#333333';
-        
-        const chart = echarts.init(container);
-        const option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: '{b}: {c}分钟 ({d}%)'
-            },
-            legend: {
-                show: false
-            },
-            series: [
-                {
-                    name: '类型分布',
-                    type: 'pie',
-                    radius: ['35%', '55%'],
-                    center: ['50%', '50%'],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                        borderRadius: 7,
-                        borderColor: '#fff',  // 白色边框，使块与块分开
-                        borderWidth: 0
-                    },
-                    label: {
-                        show: true,
-                        position: 'outside',
-                        formatter: '{b}\n{d}%',
-                        fontSize: 12,
-                        color: labelColor
-                    },
-                    labelLine: {
-                        show: true,
-                        length: 25,
-                        length2: 20,
-                        smooth: true
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: labelColor
-                        },
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)',
-                            borderColor: '#fff',
-                            borderWidth: 1
-                        }
-                    },
-                    data: data
-                }
-            ]
-        };
-        chart.setOption(option);
-        chart.resize();
-    }
-
-    drawPieChartFallback(container, data) {
-        if (!data || data.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--b3-theme-on-surface-light);">暂无数据</div>';
-            return;
-        }
-        // 获取主题文字颜色
-        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--b3-theme-on-surface').trim() || '#333';
-
-        const canvas = document.createElement('canvas');
-        canvas.width = container.clientWidth || 600;
-        canvas.height = 400;
-        container.innerHTML = '';
-        container.appendChild(canvas);
-
-        const ctx = canvas.getContext('2d');
-        const width = canvas.width;
-        const height = canvas.height;
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const radius = Math.min(width, height) * 0.3;
-
-        let startAngle = -Math.PI / 2;
-        const total = data.reduce((sum, d) => sum + d.value, 0);
-
-        data.forEach(item => {
-            const angle = (item.value / total) * 2 * Math.PI;
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle);
-            ctx.closePath();
-            ctx.fillStyle = item.itemStyle.color;
-            ctx.fill();
-            startAngle += angle;
-        });
-
-        // 绘制标签（简单绘制百分比）
-        ctx.font = '12px sans-serif';
-        ctx.fillStyle = textColor;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('备用视图', centerX, centerY + radius + 20);
-    }
-
-    // 根据显示模式分发
-    renderMiddlePanel() {
-        if (this.displayMode === TimelineView.MODE_LIST) {
-            this.renderListPanel();
-        } else if (this.displayMode === TimelineView.MODE_MOMENTS) {
-            this.renderMomentsPanel();
-        } else if (this.displayMode === TimelineView.MODE_TIMELINE) {
-            this.renderTimelinePanel();
-        } else if (this.displayMode === TimelineView.MODE_TIMELINE_V2) {
-            this.renderTimelineV2Panel();
-        } else if (this.displayMode === TimelineView.MODE_STATISTICS) {
-            this.renderStatisticsPanel();
-        } else if (this.displayMode === TimelineView.MODE_WECHAT) {   // 微信样式
-            this.renderWechatPanel();
-        } else if (this.displayMode === TimelineView.MODE_SCHEDULE) {  // 新增日程视图
-            this.renderSchedulePanel();
-        }
-    }
-
-    // 列表样式（已移除“开始于/结束于”前缀）
-    renderListPanel() {
-        this.middlePanel.innerHTML = '';
-
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
-            return;
-        }
-
-        const grouped = new Map();
-        recs.forEach(r => {
-            const d = parseLifelogDate(r.lifelog_created);
-            if (!d) return;
-            const ds = formatDate(d);
-            if (!grouped.has(ds)) grouped.set(ds, []);
-            grouped.get(ds).push(r);
-        });
-
-        const sorted = Array.from(grouped.keys()).sort().reverse();
-
-        sorted.forEach(date => {
-            const header = document.createElement('div');
-            header.className = 'timeline-date-header';
-            header.textContent = date;
-            this.middlePanel.appendChild(header);
-
-            grouped.get(date).forEach(rec => {
-                const dateObj = parseLifelogDate(rec.lifelog_created);
-                const time = dateObj ? `${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}` : '';
-                const type = rec.lifelog_type || '未分类';
-                const color = getTypeColorFromCSS(type);
-                let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-                item.dataset.id = rec.id;
-                item.innerHTML = `
-                    <div class="timeline-item-header">
-                        <span class="timeline-time">${time}</span>
-                        <span class="timeline-type" style="background-color:${color}">${type}</span>
-                    </div>
-                    <div class="timeline-content">${content}</div>
-                `;
-
-                item.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.showContextMenu(e, rec);
-                });
-
-                this.middlePanel.appendChild(item);
-            });
-        });
-    }
-
-    // 朋友圈样式（已移除前缀）—— 重构为根据配置决定渲染哪种
-    async renderMomentsPanel() {
-        const showDiary = this.plugin.store.getShowDiaryInMoments();
-        if (showDiary) {
-            // 懒加载碎碎念数据
-            if (!this.diaryRecords) {
-                this.middlePanel.innerHTML = '<div class="timeline-loading">加载碎碎念...</div>';
-                this.diaryRecords = await this.plugin.queryDiaryRecords();
-                // 重新调用自身以渲染
-                this.renderMomentsPanel();
-                return;
-            }
-            // 使用碎碎念数据渲染
-            this._renderDiaryMoments();
-        } else {
-            // 原有普通记录渲染逻辑
-            this._renderNormalMoments();
-        }
-    }
-
-    // 原有朋友圈渲染逻辑（普通记录）
-    _renderNormalMoments() {
-        this.middlePanel.innerHTML = '';
-
-        const coverDiv = document.createElement('div');
-        coverDiv.className = 'north-moments-cover';  
-        coverDiv.setAttribute('title', '点击上传封面');
-
-        const coverPath = this.plugin.store.getCover();
-        if (coverPath) {
-            coverDiv.style.backgroundImage = `url('${coverPath.startsWith('http') ? coverPath : '/' + coverPath}')`;
-            coverDiv.style.backgroundSize = 'cover';
-            coverDiv.style.backgroundPosition = 'center';
-        } else {
-            coverDiv.style.backgroundColor = '#e9ecef';
-        }
-
-        coverDiv.addEventListener('click', () => this.plugin.uploadCover(coverDiv));
-
-        const userInfo = document.createElement('div');
-        userInfo.className = 'north-cover-user-info';
-
-        const avatarSmall = document.createElement('div');
-        avatarSmall.className = 'north-cover-avatar';
-        const avatarPath = this.plugin.store.getAvatar();
-        if (avatarPath) {
-            const img = document.createElement('img');
-            img.src = avatarPath.startsWith('http') ? avatarPath : '/' + avatarPath;
-            img.onerror = () => {
-                avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            };
-            avatarSmall.appendChild(img);
-        } else {
-            avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-        }
-        avatarSmall.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.plugin.uploadAvatar(avatarSmall, 'self'); // 修改：指定上传自己头像
-        });
-
-        const nick = document.createElement('span');
-        nick.className = 'north-cover-nickname';
-        nick.textContent = this.plugin.store.getCustomTitle() || '时光笺';
-
-        userInfo.appendChild(avatarSmall);
-        userInfo.appendChild(nick);
-        coverDiv.appendChild(userInfo);
-
-        this.middlePanel.appendChild(coverDiv);
-
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'timeline-empty';
-            emptyDiv.textContent = '暂无动态';
-            this.middlePanel.appendChild(emptyDiv);
-            return;
-        }
-
-        const sorted = [...recs].sort((a, b) => {
-            const da = parseLifelogDate(a.lifelog_created);
-            const db = parseLifelogDate(b.lifelog_created);
-            return db - da;
-        });
-
-        const userAvatar = this.plugin.store.getAvatar();
-        const userNickname = this.plugin.store.getCustomTitle() || '时光笺';
-
-        sorted.forEach(rec => {
-            const dateObj = parseLifelogDate(rec.lifelog_created);
-            const timeStr = dateObj ? this.formatAbsoluteTime(dateObj) : '';
-            const typeStr = rec.lifelog_type ? ` #${rec.lifelog_type}` : '';
-            let content = rec.content || '';
-            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-            const card = document.createElement('div');
-            card.className = 'north-moments-card';
-            card.dataset.id = rec.id;
-
-            const userBar = document.createElement('div');
-            userBar.className = 'north-moments-userbar';
-
-            const cardAvatar = document.createElement('div');
-            cardAvatar.className = 'north-moments-card-avatar';
-            if (userAvatar) {
-                const img = document.createElement('img');
-                img.src = userAvatar.startsWith('http') ? userAvatar : '/' + userAvatar;
-                img.onerror = () => {
-                    cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                };
-                cardAvatar.appendChild(img);
-            } else {
-                cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            }
-
-            const cardNick = document.createElement('span');
-            cardNick.className = 'north-moments-card-nickname';
-            cardNick.textContent = userNickname;
-
-            userBar.appendChild(cardAvatar);
-            userBar.appendChild(cardNick);
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'north-moments-card-content';
-            contentDiv.textContent = content;
-
-            const metaDiv = document.createElement('div');
-            metaDiv.className = 'north-moments-card-meta';
-            metaDiv.textContent = `${timeStr}${typeStr}`;
-
-            card.appendChild(userBar);
-            card.appendChild(contentDiv);
-            card.appendChild(metaDiv);
-
-            card.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showContextMenu(e, rec);
-            });
-
-            this.middlePanel.appendChild(card);
-        });
-    }
-
-    // 新增：碎碎念朋友圈渲染
-    _renderDiaryMoments() {
-        this.middlePanel.innerHTML = '';
-
-        const coverDiv = document.createElement('div');
-        coverDiv.className = 'north-moments-cover';  
-        coverDiv.setAttribute('title', '点击上传封面');
-
-        const coverPath = this.plugin.store.getCover();
-        if (coverPath) {
-            coverDiv.style.backgroundImage = `url('${coverPath.startsWith('http') ? coverPath : '/' + coverPath}')`;
-            coverDiv.style.backgroundSize = 'cover';
-            coverDiv.style.backgroundPosition = 'center';
-        } else {
-            coverDiv.style.backgroundColor = '#e9ecef';
-        }
-
-        coverDiv.addEventListener('click', () => this.plugin.uploadCover(coverDiv));
-
-        const userInfo = document.createElement('div');
-        userInfo.className = 'north-cover-user-info';
-
-        const avatarSmall = document.createElement('div');
-        avatarSmall.className = 'north-cover-avatar';
-        const avatarPath = this.plugin.store.getAvatar();
-        if (avatarPath) {
-            const img = document.createElement('img');
-            img.src = avatarPath.startsWith('http') ? avatarPath : '/' + avatarPath;
-            img.onerror = () => {
-                avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            };
-            avatarSmall.appendChild(img);
-        } else {
-            avatarSmall.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-        }
-        avatarSmall.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.plugin.uploadAvatar(avatarSmall, 'self');
-        });
-
-        const nick = document.createElement('span');
-        nick.className = 'north-cover-nickname';
-        nick.textContent = this.plugin.store.getCustomTitle() || '时光笺';
-
-        userInfo.appendChild(avatarSmall);
-        userInfo.appendChild(nick);
-        coverDiv.appendChild(userInfo);
-
-        this.middlePanel.appendChild(coverDiv);
-
-        const recs = this.diaryRecords;
-        if (!recs || recs.length === 0) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'timeline-empty';
-            emptyDiv.textContent = '暂无碎碎念';
-            this.middlePanel.appendChild(emptyDiv);
-            return;
-        }
-
-        // 按日期分组，每组内按时间正序（早到晚）
-        const grouped = new Map();
-        recs.forEach(rec => {
-            let dateStr = '';
-            let fullTimeStr = '';
-            if (rec.deco_date) {
-                // 格式 YYYY-MM-DD HH:MM
-                const parts = rec.deco_date.split(' ');
-                dateStr = parts[0]; // YYYY-MM-DD
-                fullTimeStr = rec.deco_date;
-            } else {
-                // 回退到创建时间
-                const d = new Date(rec.created);
-                dateStr = formatDate(d);
-                fullTimeStr = this.formatTimestamp(rec.created);
-            }
-            if (!grouped.has(dateStr)) {
-                grouped.set(dateStr, []);
-            }
-            grouped.get(dateStr).push({ ...rec, displayTime: fullTimeStr });
-        });
-
-        // 日期倒序（新的在前）
-        const sortedDates = Array.from(grouped.keys()).sort().reverse();
-
-        const userAvatar = this.plugin.store.getAvatar();
-        const userNickname = this.plugin.store.getCustomTitle() || '时光笺';
-
-        sortedDates.forEach(dateStr => {
-            const records = grouped.get(dateStr);
-
-            records.forEach(rec => {
-                const card = document.createElement('div');
-                card.className = 'north-moments-card';
-                card.dataset.id = rec.id;
-
-                const userBar = document.createElement('div');
-                userBar.className = 'north-moments-userbar';
-
-                const cardAvatar = document.createElement('div');
-                cardAvatar.className = 'north-moments-card-avatar';
-                if (userAvatar) {
-                    const img = document.createElement('img');
-                    img.src = userAvatar.startsWith('http') ? userAvatar : '/' + userAvatar;
-                    img.onerror = () => {
-                        cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                    };
-                    cardAvatar.appendChild(img);
-                } else {
-                    cardAvatar.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                }
-
-                const cardNick = document.createElement('span');
-                cardNick.className = 'north-moments-card-nickname';
-                cardNick.textContent = userNickname;
-
-                userBar.appendChild(cardAvatar);
-                userBar.appendChild(cardNick);
-
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'north-moments-card-content';
-                let content = rec.content || '';
-                // 可选：如果内容开头有时间前缀，可以去掉，但碎碎念可能没有，所以保留原样
-                contentDiv.textContent = content;
-
-                const metaDiv = document.createElement('div');
-                metaDiv.className = 'north-moments-card-meta';
-                // 只显示时间，不显示类型
-                metaDiv.textContent = rec.displayTime;
-
-                card.appendChild(userBar);
-                card.appendChild(contentDiv);
-                card.appendChild(metaDiv);
-
-                card.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.showContextMenu(e, rec);
-                });
-
-                this.middlePanel.appendChild(card);
-            });
-        });
-    }
-
-    renderTimelinePanel() {
-        this.middlePanel.innerHTML = '';
-
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
-            return;
-        }
-
-        const grouped = new Map();
-        recs.forEach(r => {
-            const dateObj = parseLifelogDate(r.lifelog_created);
-            if (!dateObj) return;
-            const dateStr = formatDate(dateObj);
-            if (!grouped.has(dateStr)) {
-                grouped.set(dateStr, []);
-            }
-            grouped.get(dateStr).push({ ...r, dateObj });
-        });
-
-        const sortedDates = Array.from(grouped.keys()).sort().reverse();
-
-        const timelinePanel = document.createElement('div');
-        timelinePanel.className = 'timeline-timeline-panel';
-
-        sortedDates.forEach(dateStr => {
-            const records = grouped.get(dateStr);
-            records.sort((a, b) => a.dateObj - b.dateObj);
-
-            const dateHeader = document.createElement('div');
-            dateHeader.className = 'timeline-timeline-date-header';
-            const [year, month, day] = dateStr.split('-');
-            dateHeader.textContent = `${year}年${parseInt(month)}月${parseInt(day)}日`;
-            timelinePanel.appendChild(dateHeader);
-
-            // 根据时间模式调整间隔计算
-            if (this.timeMode === 'start') {
-                // 开始模式：当前记录到下一条记录的时间差（可能跨天）
-                for (let i = 0; i < records.length; i++) {
-                    const rec = records[i];
-                    const dateObj = rec.dateObj;
-                    const timeStr = dateObj ? 
-                        `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-                    const type = rec.lifelog_type || '';
-                    const typeColor = getTypeColorFromCSS(type);
-                    let content = rec.content || '';
-                    content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                    let intervalText = '';
-                    // 先看组内是否有下一条记录
-                    if (i < records.length - 1) {
-                        const nextDateObj = records[i + 1].dateObj;
-                        const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
-                        intervalText = this.formatDuration(diffMinutes);
-                    } else {
-                        // 当天最后一条：尝试获取下一条记录（可能跨天）
-                        const nextRec = this._getNextRecord(rec);
-                        if (nextRec) {
-                            const nextDateObj = nextRec.dateObj;
-                            const diffMinutes = Math.round((nextDateObj - dateObj) / (1000 * 60));
-                            intervalText = this.formatDuration(diffMinutes);
-                        }
-                        // 没有下一条则不显示
-                    }
-
-                    const item = this._createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj);
-                    timelinePanel.appendChild(item);
-                }
-            } else {
-                // 结束模式：上一个记录到当前记录的时间差（可能跨天）
-                for (let i = 0; i < records.length; i++) {
-                    const rec = records[i];
-                    const dateObj = rec.dateObj;
-                    const timeStr = dateObj ? 
-                        `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-                    const type = rec.lifelog_type || '';
-                    const typeColor = getTypeColorFromCSS(type);
-                    let content = rec.content || '';
-                    content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                    let intervalText = '';
-                    if (i > 0) {
-                        const prevDateObj = records[i - 1].dateObj;
-                        const diffMinutes = Math.round((dateObj - prevDateObj) / (1000 * 60));
-                        intervalText = this.formatDuration(diffMinutes);
-                    } else {
-                        // 当天第一条记录：尝试获取前一天的记录
-                        const prevRec = this._getPreviousRecord(rec);
-                        if (prevRec) {
-                            const prevDateObj = prevRec.dateObj;
-                            const diffMinutes = Math.round((dateObj - prevDateObj) / (1000 * 60));
-                            intervalText = this.formatDuration(diffMinutes);
-                        } else {
-                            intervalText = '开始';
-                        }
-                    }
-
-                    const item = this._createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj);
-                    timelinePanel.appendChild(item);
-                }
-            }
-        });
-
-        this.middlePanel.appendChild(timelinePanel);
-    }
-
-    // 创建时间日志样式的一个条目（抽取公共方法）
-    _createTimelineItem(rec, timeStr, type, typeColor, content, intervalText, dateObj) {
-        const item = document.createElement('div');
-        item.className = 'timeline-timeline-item';
-        item.dataset.id = rec.id;
-
-        const timeCol = document.createElement('div');
-        timeCol.className = 'timeline-timeline-time-col';
-        const timeMain = document.createElement('div');
-        timeMain.className = 'timeline-timeline-time-main';
-        timeMain.textContent = timeStr;
-        timeCol.appendChild(timeMain);
-
-        if (intervalText) {
-            const intervalDiv = document.createElement('div');
-            intervalDiv.className = 'timeline-timeline-interval';
-            intervalDiv.textContent = intervalText;
-            timeCol.appendChild(intervalDiv);
-        }
-
-        const card = document.createElement('div');
-        card.className = 'timeline-timeline-card';
-
-        const tag = document.createElement('div');
-        tag.className = 'timeline-timeline-tag';
-        tag.textContent = type;
-        tag.style.backgroundColor = typeColor;
-        tag.style.color = '#fff';
-
-        const cardContent = document.createElement('div');
-        cardContent.className = 'timeline-timeline-card-content';
-        const desc = document.createElement('div');
-        desc.className = 'timeline-timeline-desc';
-        desc.textContent = content;
-        cardContent.appendChild(desc);
-
-        card.appendChild(tag);
-        card.appendChild(cardContent);
-
-        item.appendChild(timeCol);
-        item.appendChild(card);
-
-        item.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.showContextMenu(e, rec);
-        });
-
-        return item;
-    }
-
-    // 伪农历
-// 获取农历日（中文数字，如“廿九”）
-getPseudoLunar(date) {
-    if (!date) return '';
-    try {
-        // 使用 Intl 获取农历日期（只取日）
-        const formatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { day: 'numeric' });
-        const parts = formatter.formatToParts(date);
-        for (const part of parts) {
-            if (part.type === 'day') {
-                const dayValue = part.value;
-                // 如果返回的是数字字符串（如 "29"），则转换为中文数字
-                if (/^\d+$/.test(dayValue)) {
-                    const dayNum = parseInt(dayValue, 10);
-                    return this.chineseNumbers[dayNum] || dayValue;
-                }
-                // 如果返回的是中文（如 "廿九"），直接返回
-                return dayValue;
-            }
-        }
-        // 如果 parts 中没有 day，回退到公历日
-        throw new Error('未找到农历日');
-    } catch (e) {
-        console.warn('农历获取失败，使用公历日', e);
-        // 回退：使用公历日转换为中文数字
-        const day = date.getDate();
-        return this.chineseNumbers[day] || day.toString();
-    }
-}
-
-    // 渲染一周日历
-    renderWeeklyCalendar() {
-        const container = document.createElement('div');
-        container.className = 'timeline-v2-calendar';
-
-        let baseDate = this.selectedDate ? new Date(this.selectedDate + 'T00:00:00') : new Date();
-        const dayOfWeek = baseDate.getDay();
-        const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
-        const monday = new Date(baseDate);
-        monday.setDate(baseDate.getDate() - diffToMonday);
-        monday.setHours(0, 0, 0, 0);
-
-        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(monday);
-            date.setDate(monday.getDate() + i);
-            const day = date.getDate();
-            const dateStr = formatDate(date);
-            const isActive = (this.selectedDate === dateStr);
-
-            const lunar = this.getPseudoLunar(date);
-
-            const dayItem = document.createElement('div');
-            dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
-            dayItem.dataset.date = dateStr;
-            dayItem.innerHTML = `
-                <div class="day-name">${weekdays[i]}</div>
-                <div class="date-group">
-                    <span class="day-num">${day}</span>
-                    <span class="day-lunar">${lunar}</span>
-                </div>
-            `;
-            dayItem.addEventListener('click', () => {
-                if (this.selectedDate === dateStr) {
-                    this.setFilter(null, undefined);
-                } else {
-                    this.setFilter(dateStr, undefined);
-                }
-            });
-
-            container.appendChild(dayItem);
-        }
-
-        return container;
-    }
-
-    renderTimelineV2Panel() {
-        if (!this.selectedDate) {
-            const today = new Date();
-            const todayStr = formatDate(today);
-            this.selectedDate = todayStr;
-            this.filteredRecords = this.allRecords.filter(r => {
-                const dateObj = parseLifelogDate(r.lifelog_created);
-                if (!dateObj) return false;
-                return formatDate(dateObj) === todayStr;
-            });
-        }
-
-        this.middlePanel.innerHTML = '';
-
-        const recs = this.filteredRecords;
-        if (!recs.length) {
-            this.middlePanel.innerHTML = '<div class="timeline-empty">暂无记录</div>';
-            return;
-        }
-
-        const sorted = [...recs]
-            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
-            .filter(r => r.dateObj)
-            .sort((a, b) => a.dateObj - b.dateObj);
-
-        const calendarEl = this.renderWeeklyCalendarV2();
-        this.middlePanel.appendChild(calendarEl);
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'timeline-v2-wrapper';
-
-        // 根据时间模式构建时间范围
-        if (this.timeMode === 'start') {
-            // 开始模式：使用当前记录到下一条记录（可能跨天）
-            for (let i = 0; i < sorted.length; i++) {
-                const rec = sorted[i];
-                const dateObj = rec.dateObj;
-                const timeStr = dateObj ? `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-                const type = rec.lifelog_type || '';
-                const typeColor = getTypeColorFromCSS(type);
-                let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                let timeRange = '';
-                // 先看组内是否有下一条记录（即当前记录不是最后一条）
-                if (i < sorted.length - 1) {
-                    const nextRec = sorted[i + 1];
-                    const nextDateObj = nextRec.dateObj;
-                    const endStr = `${String(nextDateObj.getHours()).padStart(2, '0')}:${String(nextDateObj.getMinutes()).padStart(2, '0')}`;
-                    timeRange = `${timeStr} - ${endStr}`;
-                } else {
-                    // 当天最后一条：尝试获取下一条记录（可能跨天）
-                    const nextRec = this._getNextRecord(rec);
-                    if (nextRec) {
-                        const nextDateObj = nextRec.dateObj;
-                        const endStr = `${String(nextDateObj.getHours()).padStart(2, '0')}:${String(nextDateObj.getMinutes()).padStart(2, '0')}`;
-                        timeRange = `${timeStr} - ${endStr}`;
-                    }
-                    // 没有下一条则不显示
-                }
-
-                const item = this._createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange);
-                wrapper.appendChild(item);
-            }
-        } else {
-            // 结束模式：使用上一个记录到当前记录（可能跨天）
-            for (let i = 0; i < sorted.length; i++) {
-                const rec = sorted[i];
-                const dateObj = rec.dateObj;
-                const timeStr = dateObj ? `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-                const type = rec.lifelog_type || '';
-                const typeColor = getTypeColorFromCSS(type);
-                let content = rec.content || '';
-                content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-                let timeRange = '';
-                if (i > 0) {
-                    const prevRec = sorted[i - 1];
-                    const prevDateObj = prevRec.dateObj;
-                    const startStr = `${String(prevDateObj.getHours()).padStart(2, '0')}:${String(prevDateObj.getMinutes()).padStart(2, '0')}`;
-                    timeRange = `${startStr} - ${timeStr}`;
-                } else {
-                    // 当天第一条记录：尝试获取前一天的记录
-                    const prevRec = this._getPreviousRecord(rec);
-                    if (prevRec) {
-                        const prevDateObj = prevRec.dateObj;
-                        const startStr = `${String(prevDateObj.getHours()).padStart(2, '0')}:${String(prevDateObj.getMinutes()).padStart(2, '0')}`;
-                        timeRange = `${startStr} - ${timeStr}`;
-                    } else {
-                        timeRange = `开始 - ${timeStr}`;
-                    }
-                }
-
-                const item = this._createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange);
-                wrapper.appendChild(item);
-            }
-        }
-
-        this.middlePanel.appendChild(wrapper);
-    }
-
-    // 创建时间轴 V2 的一个条目
-    _createTimelineV2Item(rec, timeStr, type, typeColor, content, timeRange) {
-        const item = document.createElement('div');
-        item.className = 'timeline-v2-item';
-        item.dataset.id = rec.id;
-
-        const timeCol = document.createElement('div');
-        timeCol.className = 'timeline-v2-time-col';
-        timeCol.textContent = timeStr;
-        item.appendChild(timeCol);
-
-        const connectorCol = document.createElement('div');
-        connectorCol.className = 'timeline-v2-connector-col';
-        const dot = document.createElement('div');
-        dot.className = 'timeline-v2-dot';
-        dot.style.borderColor = typeColor;
-        connectorCol.appendChild(dot);
-        item.appendChild(connectorCol);
-
-        const cardCol = document.createElement('div');
-        cardCol.className = 'timeline-v2-card-col';
-
-        if (timeRange) {
-            const rangeSpan = document.createElement('span');
-            rangeSpan.className = 'timeline-v2-card-time-range';
-            rangeSpan.textContent = timeRange;
-            cardCol.appendChild(rangeSpan);
-        }
-
-        const typeDiv = document.createElement('div');
-        typeDiv.className = 'timeline-v2-card-type';
-        typeDiv.textContent = type;
-        typeDiv.style.color = typeColor;
-        cardCol.appendChild(typeDiv);
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'timeline-v2-card-content';
-        contentDiv.textContent = content;
-        cardCol.appendChild(contentDiv);
-
-        const icon = document.createElement('svg');
-        icon.className = 'timeline-v2-card-icon';
-        icon.innerHTML = '<use xlink:href="#iconTime"></use>';
-        cardCol.appendChild(icon);
-
-        item.appendChild(cardCol);
-
-        item.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.showContextMenu(e, rec);
-        });
-
-        return item;
-    }
-
-    renderWeeklyCalendarV2() {
-        const container = document.createElement('div');
-        container.className = 'timeline-v2-calendar';
-
-        const today = new Date();
-        const todayStr = formatDate(today);
-        const baseDate = this.selectedDate ? new Date(this.selectedDate + 'T00:00:00') : today;
-
-        const dayOfWeek = baseDate.getDay();
-        const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
-        const monday = new Date(baseDate);
-        monday.setDate(baseDate.getDate() - diffToMonday);
-        monday.setHours(0, 0, 0, 0);
-
-        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(monday);
-            date.setDate(monday.getDate() + i);
-            const day = date.getDate();
-            const dateStr = formatDate(date);
-
-            let isActive = false;
-            if (this.selectedDate) {
-                isActive = (this.selectedDate === dateStr);
-            } else {
-                isActive = (dateStr === todayStr);
-            }
-
-            const lunar = this.getPseudoLunar(date);
-
-            const dayItem = document.createElement('div');
-            dayItem.className = `timeline-v2-calendar-day ${isActive ? 'active' : ''}`;
-            dayItem.dataset.date = dateStr;
-
-            const dayName = document.createElement('span');
-            dayName.className = 'day-name';
-            dayName.textContent = weekdays[i];
-            dayItem.appendChild(dayName);
-
-            const dateGroup = document.createElement('div');
-            dateGroup.className = 'date-group';
-
-            const dayNum = document.createElement('span');
-            dayNum.className = 'day-num';
-            dayNum.textContent = day;
-            dateGroup.appendChild(dayNum);
-
-            const dayLunar = document.createElement('span');
-            dayLunar.className = 'day-lunar';
-            dayLunar.textContent = lunar;
-            dateGroup.appendChild(dayLunar);
-
-            dayItem.appendChild(dateGroup);
-
-            dayItem.addEventListener('click', () => {
-                if (this.selectedDate === dateStr) {
-                    this.setFilter(null, undefined);
-                } else {
-                    this.setFilter(dateStr, undefined);
-                }
-            });
-
-            container.appendChild(dayItem);
-        }
-
-        return container;
-    }
-
-// ========== 微信聊天样式渲染（日期倒序 + 类型固定方向 + 右键控制） ==========
-renderWechatPanel() {
-    this.middlePanel.innerHTML = '';
-    const recs = this.filteredRecords;
-    if (!recs.length) {
-        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无消息</div>';
-        return;
-    }
-    // 1. 按时间正序排序（旧到新），用于计算日期内顺序
-    const sortedAsc = [...recs]
-        .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
-        .filter(r => r.dateObj)
-        .sort((a, b) => a.dateObj - b.dateObj);
-    
-    // 2. 为每个类型分配固定方向（可被用户手动覆盖）
-    const typeDirectionMap = new Map();
-    let nextDirection = 'left'; // 下一个新类型的默认方向
-    
-    sortedAsc.forEach(rec => {
-        const type = rec.lifelog_type || '';
-        // 优先使用用户设置的方向（从插件配置读取）
-        const userDir = this.plugin.store.getWechatDirection(rec.id);
-        if (userDir) {
-            rec.direction = userDir;
-        } else {
-            // 没有用户设置则使用类型固定方向
-            if (!typeDirectionMap.has(type)) {
-                typeDirectionMap.set(type, nextDirection);
-                nextDirection = nextDirection === 'left' ? 'right' : 'left';
-            }
-            rec.direction = typeDirectionMap.get(type);
-        }
-    });
-    
-    // 3. 按日期分组（组内记录已是正序）
-    const grouped = new Map();
-    sortedAsc.forEach(rec => {
-        const ds = formatDate(rec.dateObj);
-        if (!grouped.has(ds)) grouped.set(ds, []);
-        grouped.get(ds).push(rec);
-    });
-    
-    const container = document.createElement('div');
-    container.className = 'wechat-panel';
-    
-    // 4. 【修改点】获取日期数组并倒序排序（新日期在前）
-    const sortedDates = Array.from(grouped.keys()).sort().reverse();
-    
-    // 5. 遍历日期分组（日期倒序）
-    for (const dateStr of sortedDates) {
-        const records = grouped.get(dateStr);
-        
-        // 日期分隔线
-        const divider = document.createElement('div');
-        divider.className = 'wechat-date-divider';
-        divider.innerHTML = `<span>${dateStr}</span>`;
-        container.appendChild(divider);
-        
-        // 遍历该日期内的记录（保持正序：旧消息在上，新消息在下）
-        records.forEach(rec => {
-            const dateObj = rec.dateObj;
-            const timeStr = dateObj ?
-                `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}` : '';
-            const type = rec.lifelog_type || '';
-            
-            // 时间戳行
-            const timestamp = document.createElement('div');
-            timestamp.className = 'wechat-timestamp';
-            timestamp.innerHTML = `<span>${timeStr} ${type}</span>`;
-            container.appendChild(timestamp);
-            
-            // 消息行
-            const row = document.createElement('div');
-            row.className = 'wechat-message-row';
-            row.dataset.id = rec.id;
-            row.classList.add(rec.direction); // left 或 right
-            
-            // 头像逻辑
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'wechat-avatar';
-            if (rec.direction === 'left') {
-                avatarDiv.classList.add('wechat-avatar-opposite');
-                const oppositeAvatarPath = this.plugin.store.getOppositeAvatar();
-                if (oppositeAvatarPath) {
-                    const img = document.createElement('img');
-                    img.src = oppositeAvatarPath.startsWith('http') ? oppositeAvatarPath : '/' + oppositeAvatarPath;
-                    img.onerror = () => {
-                        avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                    };
-                    avatarDiv.appendChild(img);
-                } else {
-                    avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                }
-                avatarDiv.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.plugin.uploadAvatar(avatarDiv, 'opposite');
-                });
-            } else {
-                avatarDiv.classList.add('wechat-avatar-self');
-                const selfAvatarPath = this.plugin.store.getAvatar();
-                if (selfAvatarPath) {
-                    const img = document.createElement('img');
-                    img.src = selfAvatarPath.startsWith('http') ? selfAvatarPath : '/' + selfAvatarPath;
-                    img.onerror = () => {
-                        avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                    };
-                    avatarDiv.appendChild(img);
-                } else {
-                    avatarDiv.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-                }
-                avatarDiv.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.plugin.uploadAvatar(avatarDiv, 'self');
-                });
-            }
-            
-            // 气泡内容
-            const bubble = document.createElement('div');
-            bubble.className = 'wechat-bubble';
-            let content = rec.content || '';
-            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-            bubble.textContent = content;
-            
-            row.appendChild(avatarDiv);
-            row.appendChild(bubble);
-            
-            // 【修改】微信样式专用右键菜单
-            row.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showWechatContextMenu(e, rec, row);
-            });
-            
-            container.appendChild(row);
-        });
-    }
-    this.middlePanel.appendChild(container);
-}
-
-    // ========== 新增日程视图 ==========
-renderSchedulePanel() {
-    this.middlePanel.innerHTML = '';
-
-    const recs = this.filteredRecords;
-    if (!recs.length) {
-        this.middlePanel.innerHTML = '<div class="timeline-empty">暂无日程</div>';
-        return;
-    }
-
-    // 1. 按日期分组，组内按时间排序
-    const grouped = new Map();
-    recs.forEach(r => {
-        const dateObj = parseLifelogDate(r.lifelog_created);
-        if (!dateObj) return;
-        const dateStr = formatDate(dateObj);
-        if (!grouped.has(dateStr)) grouped.set(dateStr, []);
-        grouped.get(dateStr).push({ ...r, dateObj });
-    });
-
-    // 2. 日期倒序（最新在上）
-    const sortedDates = Array.from(grouped.keys()).sort().reverse();
-
-    const container = document.createElement('div');
-    container.className = 'north timeline-schedule-panel';
-
-    for (const dateStr of sortedDates) {
-        const records = grouped.get(dateStr);
-        records.sort((a, b) => a.dateObj - b.dateObj);
-
-        // 左侧日期信息
-        const dateObj = parseLifelogDate(records[0].lifelog_created);
-        const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-        const weekday = weekdays[dateObj.getDay()];
-        const isToday = (dateStr === formatDate(new Date()));
-
-        // 提取月份和日，格式化为 MM-DD
-        const month = dateObj.getMonth() + 1;
-        const day = dateObj.getDate();
-        const monthDay = `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-        const dayGroup = document.createElement('div');
-        dayGroup.className = 'day-group';
-
-        const dateCol = document.createElement('div');
-        dateCol.className = 'date-col';
-        dateCol.innerHTML = `
-            <div class="date-full ${isToday ? 'active' : 'normal'}">${monthDay}</div>
-            <div class="date-week">${weekday}</div>
-        `;
-
-        const timelineCol = document.createElement('div');
-        timelineCol.className = 'timeline-col';
-
-        // 3. 遍历记录生成时间轴行
-        for (let i = 0; i < records.length; i++) {
-            const rec = records[i];
-            const type = rec.lifelog_type || '未分类';
-            const typeColor = getTypeColorFromCSS(type);
-
-            // 计算时间段和左侧时间
-            let leftTime = '';
-            let timeRange = '';
-
-            if (this.timeMode === 'start') {
-                // 开始模式：当前记录 -> 下一条记录
-                leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
-                let endObj = null;
-                if (i < records.length - 1) {
-                    endObj = records[i + 1].dateObj;
-                } else {
-                    const nextRec = this._getNextRecord(rec);
-                    if (nextRec) endObj = nextRec.dateObj;
-                }
-                if (endObj) {
-                    const endStr = `${String(endObj.getHours()).padStart(2,'0')}:${String(endObj.getMinutes()).padStart(2,'0')}`;
-                    timeRange = `${leftTime} - ${endStr}`;
-                } else {
-                    timeRange = `${leftTime} 开始`;
-                }
-            } else {
-                // 结束模式：上一条记录 -> 当前记录
-                leftTime = `${String(rec.dateObj.getHours()).padStart(2,'0')}:${String(rec.dateObj.getMinutes()).padStart(2,'0')}`;
-                let startObj = null;
-                if (i > 0) {
-                    startObj = records[i - 1].dateObj;
-                } else {
-                    const prevRec = this._getPreviousRecord(rec);
-                    if (prevRec) startObj = prevRec.dateObj;
-                }
-                if (startObj) {
-                    const startStr = `${String(startObj.getHours()).padStart(2,'0')}:${String(startObj.getMinutes()).padStart(2,'0')}`;
-                    timeRange = `${startStr} - ${leftTime}`;
-                } else {
-                    timeRange = `开始 - ${leftTime}`;
-                }
-            }
-
-            // 卡片内容（去除时间前缀）
-            let content = rec.content || '';
-            content = content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim();
-
-            // 卡片标题（内容摘要）
-            const cardTitle = content.length > 80 ? content.slice(0, 80) + '…' : content;
-
-            // 卡片背景色（浅色版本）
-            const bgColor = lightenColor(typeColor, 85);
-            const borderColor = typeColor;
-
-            const row = document.createElement('div');
-            row.className = 'row';
-
-            row.innerHTML = `
-                <div class="time-text">${this.escapeHtml(leftTime)}</div>
-                <div class="axis-area"><div class="dot"></div></div>
-                <div class="card" style="background-color: ${bgColor}; border-left-color: ${borderColor};">
-                    <div class="card-time" style="color: ${borderColor};">${this.escapeHtml(timeRange)}</div>
-                    <div class="card-title">${this.escapeHtml(cardTitle)}</div>
-                </div>
-            `;
-
-            // 绑定右键菜单
-            row.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showContextMenu(e, rec);
-            });
-
-            timelineCol.appendChild(row);
-        }
-
-        dayGroup.appendChild(dateCol);
-        dayGroup.appendChild(timelineCol);
-        container.appendChild(dayGroup);
-    }
-
-    this.middlePanel.appendChild(container);
-}
-
-    // 辅助方法：转义HTML
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // 更新单条记录内容
-    updateRecordContent(blockId, newContent) {
-        const selector = `.timeline-item[data-id="${blockId}"], .north-moments-card[data-id="${blockId}"], .timeline-timeline-item[data-id="${blockId}"], .timeline-v2-item[data-id="${blockId}"], .wechat-message-row[data-id="${blockId}"]`;
-        const item = this.middlePanel.querySelector(selector);
-        if (item) {
-            // 优先更新微信气泡内容
-            const wechatBubble = item.querySelector('.wechat-bubble');
-            if (wechatBubble) {
-                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-                wechatBubble.textContent = displayContent;
-                return;
-            }
-            // 更新其他样式
-            const contentDiv = item.querySelector('.timeline-v2-card-content');
-            if (contentDiv) {
-                let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-                contentDiv.textContent = displayContent;
-            } else {
-                const fallbackDiv = item.querySelector('.timeline-content, .north-moments-card-content, .timeline-timeline-text');
-                if (fallbackDiv) {
-                    let displayContent = newContent.replace(/^\d{1,2}:\d{2}\s+[^：]+：/, '').trim();
-                    fallbackDiv.textContent = displayContent;
-                }
-            }
-        }
-    }
-
-    // 右键菜单
-    showContextMenu(event, record) {
-        const existingMenu = document.querySelector('.timeline-context-menu');
-        if (existingMenu) existingMenu.remove();
-
-        const menu = document.createElement('div');
-        menu.className = 'timeline-context-menu b3-menu';
-        menu.style.position = 'fixed';
-        menu.style.left = event.clientX + 'px';
-        menu.style.top = event.clientY + 'px';
-        menu.style.zIndex = '9999';
-        menu.innerHTML = `
-            <div class="b3-menu__items">
-                <button class="b3-menu__item" data-action="edit">
-                    <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
-                    <span class="b3-menu__label">编辑</span>
-                </button>
-                <button class="b3-menu__item" data-action="open">
-                    <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
-                    <span class="b3-menu__label">打开文档</span>
-                </button>
-            </div>
-        `;
-
-        document.body.appendChild(menu);
-
-        menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
-            this.plugin.showEditBlockDialog(record.id, record.content);
-            menu.remove();
-        });
-        menu.querySelector('[data-action="open"]').addEventListener('click', () => {
-            this.plugin.openBlockDocument(record.id);
-            menu.remove();
-        });
-
-        const closeMenu = (e) => {
-            if (!menu.contains(e.target)) {
-                menu.remove();
-                document.removeEventListener('click', closeMenu);
-                document.removeEventListener('contextmenu', closeMenu);
-            }
-        };
-        setTimeout(() => {
-            document.addEventListener('click', closeMenu);
-            document.addEventListener('contextmenu', closeMenu);
-        }, 0);
-    }
-
-    renderCalendarAndTypes() {
-        this.rightPanel.innerHTML = '';
-
-        const cal = document.createElement('div');
-        cal.className = 'timeline-calendar';
-        this.renderCalendar(cal);
-        this.rightPanel.appendChild(cal);
-
-        const types = document.createElement('div');
-        types.className = 'timeline-types';
-        const typeTitle = document.createElement('div');
-        typeTitle.className = 'timeline-types-title';
-        typeTitle.textContent = '记录类型';
-        types.appendChild(typeTitle);
-
-        const list = document.createElement('div');
-        list.className = 'timeline-types-list';
-        types.appendChild(list);
-
-        this.rightPanel.appendChild(types);
-        this.typesContainer = list;
-        this.renderTypesList();
-    }
-
-    renderTypesList() {
-        if (!this.typesContainer) return;
-        const list = this.typesContainer;
-        list.innerHTML = '';
-
-        const typeCounts = new Map();
-        this.filteredRecords.forEach(r => {
-            if (r.lifelog_type) {
-                typeCounts.set(r.lifelog_type, (typeCounts.get(r.lifelog_type) || 0) + 1);
-            }
-        });
-
-        for (const [type, cnt] of typeCounts) {
-            const color = getTypeColorFromCSS(type);
-            const item = document.createElement('div');
-            item.className = 'timeline-type-item';
-            item.dataset.type = type;
-            item.innerHTML = `
-                <span class="type-dot" style="background-color:${color}"></span>
-                <span class="type-name">${type}</span>
-                <span class="type-count">${cnt}</span>
-            `;
-            item.addEventListener('click', () => {
-                if (this.selectedType === type) {
-                    this.setFilter(undefined, null);
-                } else {
-                    this.setFilter(undefined, type);
-                }
-            });
-            list.appendChild(item);
-        }
-
-        if (typeCounts.size === 0) {
-            const empty = document.createElement('div');
-            empty.className = 'timeline-type-empty';
-            empty.textContent = '无记录类型';
-            list.appendChild(empty);
-        }
-    }
-
-    renderCalendar(container) {
-        const nav = document.createElement('div');
-        nav.className = 'calendar-nav';
-        const prev = document.createElement('button');
-        prev.className = 'b3-button b3-button--outline calendar-nav-btn';
-        prev.innerHTML = '‹';
-        prev.onclick = () => {
-            if (this.calendarMonth === 0) {
-                this.calendarMonth = 11;
-                this.calendarYear -= 1;
-            } else {
-                this.calendarMonth -= 1;
-            }
-            this.renderCalendar(container);
-        };
-        const next = document.createElement('button');
-        next.className = 'b3-button b3-button--outline calendar-nav-btn';
-        next.innerHTML = '›';
-        next.onclick = () => {
-            if (this.calendarMonth === 11) {
-                this.calendarMonth = 0;
-                this.calendarYear += 1;
-            } else {
-                this.calendarMonth += 1;
-            }
-            this.renderCalendar(container);
-        };
-        const title = document.createElement('span');
-        title.className = 'calendar-nav-title';
-        title.textContent = `${this.calendarYear}年${this.calendarMonth + 1}月`;
-
-        nav.appendChild(prev);
-        nav.appendChild(title);
-        nav.appendChild(next);
-        container.innerHTML = '';
-        container.appendChild(nav);
-
-        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
-        const wd = document.createElement('div');
-        wd.className = 'calendar-weekdays';
-        weekdays.forEach(d => {
-            const cell = document.createElement('div');
-            cell.className = 'calendar-weekday';
-            cell.textContent = d;
-            wd.appendChild(cell);
-        });
-        container.appendChild(wd);
-
-        const grid = document.createElement('div');
-        grid.className = 'calendar-grid';
-
-        const firstDayOfMonth = new Date(this.calendarYear, this.calendarMonth, 1);
-        const lastDayOfMonth = new Date(this.calendarYear, this.calendarMonth + 1, 0);
-
-        let startDow = firstDayOfMonth.getDay();
-        if (startDow === 0) startDow = 7;
-
-        const prevMonthDays = startDow - 1;
-        const daysInMonth = lastDayOfMonth.getDate();
-        const totalCells = 42;
-        const nextMonthDays = totalCells - prevMonthDays - daysInMonth;
-
-        let prevYear = this.calendarYear;
-        let prevMonth = this.calendarMonth - 1;
-        if (prevMonth < 0) {
-            prevMonth = 11;
-            prevYear -= 1;
-        }
-        const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
-
-        let nextYear = this.calendarYear;
-        let nextMonth = this.calendarMonth + 1;
-        if (nextMonth > 11) {
-            nextMonth = 0;
-            nextYear += 1;
-        }
-
-        for (let i = 0; i < totalCells; i++) {
-            let dateObj, dateStr, isCurrentMonth = false;
-
-            if (i < prevMonthDays) {
-                const day = prevMonthLastDay - (prevMonthDays - 1 - i);
-                dateObj = new Date(prevYear, prevMonth, day);
-            } else if (i < prevMonthDays + daysInMonth) {
-                const day = i - prevMonthDays + 1;
-                dateObj = new Date(this.calendarYear, this.calendarMonth, day);
-                isCurrentMonth = true;
-            } else {
-                const day = i - (prevMonthDays + daysInMonth) + 1;
-                dateObj = new Date(nextYear, nextMonth, day);
-            }
-
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            dateStr = `${year}-${month}-${day}`;
-
-            const hasRecord = this.dailyCounts.has(dateStr); // 使用当前的 dailyCounts（可能为全部或本年）
-
-            const cell = document.createElement('div');
-            cell.className = 'calendar-cell';
-            if (!isCurrentMonth) {
-                cell.classList.add('other-month');
-            }
-            if (hasRecord) {
-                cell.classList.add('has-record');
-            }
-            cell.textContent = dateObj.getDate();
-            cell.dataset.date = dateStr;
-            cell.addEventListener('click', () => {
-                if (this.selectedDate === dateStr) {
-                    this.setFilter(null, undefined);
-                } else {
-                    this.setFilter(dateStr, undefined);
-                }
-            });
-
-            grid.appendChild(cell);
-        }
-
-        container.appendChild(grid);
-    }
-
-    updateHighlight() {
-        this.rightPanel.querySelectorAll('.calendar-cell').forEach(c => c.classList.remove('selected'));
-        this.rightPanel.querySelectorAll('.timeline-type-item').forEach(i => i.classList.remove('selected'));
-
-        if (this.selectedDate) {
-            this.rightPanel.querySelectorAll('.calendar-cell').forEach(c => {
-                if (c.dataset.date === this.selectedDate) c.classList.add('selected');
-            });
-        }
-        if (this.selectedType) {
-            this.rightPanel.querySelectorAll('.timeline-type-item').forEach(i => {
-                if (i.dataset.type === this.selectedType) i.classList.add('selected');
-            });
-        }
-
-        this.leftPanel.innerHTML = '';
-        this.renderHeader();
-        this.renderContributionGraph();
-        this.renderStats();
-        this.renderStyleSwitcher(); // 重新渲染样式切换按钮
-    }
-
-    async refresh() {
-        this.plugin.eventBus.emit('timeline-refresh');
-    }
-
-    // 修改 setDisplayMode：处理统计视图数据切换
-    async setDisplayMode(mode) {
-        if (mode === this.displayMode) return;
-        if (![TimelineView.MODE_LIST, TimelineView.MODE_MOMENTS, TimelineView.MODE_TIMELINE, TimelineView.MODE_TIMELINE_V2, TimelineView.MODE_STATISTICS, TimelineView.MODE_WECHAT, TimelineView.MODE_SCHEDULE].includes(mode)) {
-            console.warn('无效模式:', mode);
-            return;
-        }
-
-        // 切换到统计视图
-        if (mode === TimelineView.MODE_STATISTICS) {
-            if (!this.allRecordsUnfiltered) {
-                await this.loadAllRecords();
-            }
-            this.allRecords = this.allRecordsUnfiltered;
-            this.dailyCounts = this.allDailyCountsUnfiltered; // 右侧日历使用全部数据计数
-            this.globalSorted = this.globalSortedAll;         // 使用全部记录的全局排序
-        } else {
-            // 切换回普通视图（包括微信样式、日程视图）
-            this.allRecords = this.yearRecords;
-            this.dailyCounts = this.yearDailyCounts;          // 右侧日历恢复为本年数据
-            this.globalSorted = this._buildGlobalSorted(this.yearRecords); // 重建本年记录的全局排序
-        }
-
-        // 重新计算 filteredRecords（基于新的 allRecords 和当前筛选条件）
-        this.filteredRecords = this.allRecords.filter(r => {
-            const dateObj = parseLifelogDate(r.lifelog_created);
-            if (!dateObj) return false;
-            const ds = formatDate(dateObj);
-            if (this.selectedDate && ds !== this.selectedDate) return false;
-            if (this.selectedType && r.lifelog_type !== this.selectedType) return false;
-            return true;
-        });
-
-        this.displayMode = mode;
-        await this.plugin.store.setDisplayMode(mode);
-
-        // 重新渲染中间面板和右侧面板（日历和类型列表）
-        this.renderMiddlePanel();
-        this.renderCalendarAndTypes();
-        this.renderStyleSwitcher(); // 更新左侧按钮高亮
-    }
-}
-
-// ========== 周视图类 ==========
-// ========== 周视图类 ==========
-class WeekView {
-    constructor(plugin, container, initialDate = new Date()) {
-        this.plugin = plugin;
-        this.container = container;
-        this.currentDate = initialDate;          // 当前周的任意日期
-        this.allRecords = null;                  // 所有记录
-        this.globalSorted = null;                // 全局排序后的记录（带 dateObj）
-        this.timeMode = this.plugin.store.getTimeMode() || 'start'; // 获取时间模式
-        this.hourHeight = 90;                    // 每小时像素高度
-        this.loadDataAndRender();
-    }
-
-    async loadDataAndRender() {
-        this.allRecords = await this.plugin.queryAllRecordsUnfiltered();
-        this.globalSorted = this.allRecords
-            .map(r => ({ ...r, dateObj: parseLifelogDate(r.lifelog_created) }))
-            .filter(r => r.dateObj)
-            .sort((a, b) => a.dateObj - b.dateObj);
-        this.render();
-    }
-
-render() {
-    this.container.innerHTML = '';
-    const wrapper = document.createElement('div');
-    wrapper.className = 'north week-view';
-    wrapper.innerHTML = `
-        <div class="toolbar">
-            <div class="toolbar-left">
-                <img src="/plugins/${this.plugin.name}/icons/日历.svg" class="calendar-icon" style="width: 25px; height: 25px;" />
-                <span class="month-label"></span>
-                <button class="btn refresh-week-btn" title="刷新">
-                    <img src="/plugins/${this.plugin.name}/icons/刷新.svg" style="width: 15px; height: 15px;" />
-                </button>
-            </div>
-            <div class="toolbar-right">
-                <button class="btn btn-icon prev-week">‹</button>
-                <button class="btn today-btn">今天</button>
-                <button class="btn btn-icon next-week">›</button>
-            </div>
-        </div>
-        <div class="calendar-header"></div>
-        <div class="calendar-scrollable">
-            <div class="calendar-body"></div>
-        </div>
-    `;
-    this.container.appendChild(wrapper);
-
-    // 绑定事件
-    wrapper.querySelector('.prev-week').addEventListener('click', () => this.changeWeek(-1));
-    wrapper.querySelector('.next-week').addEventListener('click', () => this.changeWeek(1));
-    wrapper.querySelector('.today-btn').addEventListener('click', () => this.goToday());
-    wrapper.querySelector('.refresh-week-btn').addEventListener('click', () => this.refresh());
-
-    this.renderCalendar();
-}
-
-    getMonday(date) {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = (day === 0 ? 6 : day - 1);
-        d.setDate(d.getDate() - diff);
-        d.setHours(0, 0, 0, 0);
-        return d;
-    }
-
-    getSunday(monday) {
-        const sunday = new Date(monday);
-        sunday.setDate(monday.getDate() + 6);
-        sunday.setHours(23, 59, 59, 999);
-        return sunday;
-    }
-
-    // 核心修改：生成按天分段的事件片段
-    getEventsOfWeek(monday, sunday) {
-        const weekRecords = this.globalSorted.filter(r => r.dateObj >= monday && r.dateObj <= sunday);
-        const rawEvents = [];
-
-        // 根据时间模式生成原始起止时间（可能跨多天）
-        if (this.timeMode === 'start') {
-            for (let i = 0; i < weekRecords.length; i++) {
-                const rec = weekRecords[i];
-                let endTime;
-                if (i + 1 < weekRecords.length) {
-                    endTime = weekRecords[i + 1].dateObj;
-                } else {
-                    endTime = new Date(rec.dateObj.getTime() + 60 * 60000);
-                    if (endTime > sunday) endTime = sunday;
-                }
-                rawEvents.push({
-                    id: rec.id,
-                    title: rec.content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim(),
-                    start: rec.dateObj,
-                    end: endTime,
-                    type: rec.lifelog_type || '未分类',
-                    color: getTypeColorFromCSS(rec.lifelog_type || '未分类')
-                });
-            }
-        } else {
-            for (let i = 0; i < weekRecords.length; i++) {
-                const rec = weekRecords[i];
-                let startTime;
-                if (i > 0) {
-                    startTime = weekRecords[i - 1].dateObj;
-                } else {
-                    startTime = new Date(rec.dateObj);
-                    startTime.setHours(0, 0, 0, 0);
-                }
-                rawEvents.push({
-                    id: rec.id,
-                    title: rec.content.replace(/^\d{1,2}:\d{2}(:\d{2})?\s+[^：]+：/, '').trim(),
-                    start: startTime,
-                    end: rec.dateObj,
-                    type: rec.lifelog_type || '未分类',
-                    color: getTypeColorFromCSS(rec.lifelog_type || '未分类')
-                });
-            }
-        }
-
-        // 将每个原始事件按天拆分成片段
-        const allSegments = [];
-        for (const ev of rawEvents) {
-            let curStart = new Date(ev.start);
-            const end = ev.end;
-            while (curStart < end) {
-                const dayEnd = new Date(curStart);
-                dayEnd.setHours(23, 59, 59, 999);
-                const segmentEnd = end < dayEnd ? end : dayEnd;
-                allSegments.push({
-                    id: ev.id,
-                    title: ev.title,
-                    start: ev.start,      // 原始开始时间（用于显示）
-                    end: ev.end,          // 原始结束时间（用于显示）
-                    segmentStart: new Date(curStart),
-                    segmentEnd: new Date(segmentEnd),
-                    type: ev.type,
-                    color: ev.color
-                });
-                // 移到下一天 00:00
-                const nextDay = new Date(curStart);
-                nextDay.setDate(curStart.getDate() + 1);
-                nextDay.setHours(0, 0, 0, 0);
-                curStart = nextDay;
-            }
-        }
-
-        // 按天分组
-        const days = {};
-        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(monday);
-            date.setDate(monday.getDate() + i);
-            const dateStr = formatDate(date);
-            days[dateStr] = {
-                dateObj: date,
-                weekday: weekDays[date.getDay()],
-                events: []
-            };
-        }
-
-        allSegments.forEach(seg => {
-            const segDateStr = formatDate(seg.segmentStart);
-            if (days[segDateStr]) {
-                days[segDateStr].events.push(seg);
-            }
-        });
-
-        return days;
-    }
-
-renderCalendar() {
-    const monday = this.getMonday(this.currentDate);
-    const sunday = this.getSunday(monday);
-    const days = this.getEventsOfWeek(monday, sunday);
-
-    const firstDay = days[formatDate(monday)].dateObj;
-    const monthLabel = `${firstDay.getMonth() + 1}月`;
-    this.container.querySelector('.month-label').textContent = monthLabel;
-
-    const header = this.container.querySelector('.calendar-header');
-    header.innerHTML = '';
-    const weekLabel = document.createElement('div');
-    weekLabel.className = 'week-label';
-    const weekNumber = this.getWeekNumber(monday);
-    weekLabel.textContent = `${weekNumber}周`;
-    header.appendChild(weekLabel);
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + i);
-        const dayName = days[formatDate(date)].weekday;
-        const dateNumber = date.getDate();
-        const isToday = formatDate(date) === formatDate(new Date());
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-header';
-        dayHeader.innerHTML = `
-            <div class="day-name">${dayName}</div>
-            <div class="date-number ${isToday ? 'active' : ''}">${dateNumber}</div>
-        `;
-        header.appendChild(dayHeader);
-    }
-
-    const body = this.container.querySelector('.calendar-body');
-    body.innerHTML = '';
-
-    const timeCol = document.createElement('div');
-    timeCol.className = 'time-column';
-    for (let hour = 0; hour < 24; hour++) {
-        const hourLabel = `${hour.toString().padStart(2, '0')}:00`;
-        const slot = document.createElement('div');
-        slot.className = 'time-slot';
-        slot.innerHTML = `<span>${hourLabel}</span>`;
-        timeCol.appendChild(slot);
-    }
-    body.appendChild(timeCol);
-
-    const pixelPerHour = this.hourHeight;
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + i);
-        const dateStr = formatDate(date);
-        const dayData = days[dateStr];
-        const dayCol = document.createElement('div');
-        dayCol.className = 'day-column';
-
-        for (let hour = 0; hour < 24; hour++) {
-            const line = document.createElement('div');
-            line.className = 'hour-line';
-            dayCol.appendChild(line);
-        }
-
-        // 对事件按开始时间排序，避免重叠
-        const sortedEvents = [...dayData.events].sort((a, b) => a.segmentStart - b.segmentStart);
-        
-        sortedEvents.forEach(seg => {
-            const startHour = seg.segmentStart.getHours();
-            const startMinute = seg.segmentStart.getMinutes();
-            const endHour = seg.segmentEnd.getHours();
-            const endMinute = seg.segmentEnd.getMinutes();
-            
-            // 计算原始高度（像素）
-            const startMinutes = startHour * 60 + startMinute;
-            const endMinutes = endHour * 60 + endMinute;
-            const rawHeight = (endMinutes - startMinutes) * (pixelPerHour / 60);
-            
-            if (rawHeight <= 0) return;
-            
-            // 间隔值（上下各1px，总共2px间隔，只影响高度，不改变顶部位置）
-            const gap = 7;
-            const heightPx = Math.max(4, rawHeight - gap);
-            const topPx = startMinutes * (pixelPerHour / 60);
-            
-            const card = document.createElement('div');
-            card.className = 'event';
-            const bgColor = this.getEventBackgroundColor(seg.color);
-            card.style.backgroundColor = bgColor;
-            card.style.top = `${topPx}px`;
-            card.style.height = `${heightPx}px`;
-            
-            // 显示原始跨天时间范围
-            const startStr = `${seg.start.getHours().toString().padStart(2, '0')}:${seg.start.getMinutes().toString().padStart(2, '0')}`;
-            const endStr = `${seg.end.getHours().toString().padStart(2, '0')}:${seg.end.getMinutes().toString().padStart(2, '0')}`;
-            const timeText = `${startStr} - ${endStr}`;
-            
-            card.innerHTML = `
-                <div class="event-title">${this.escapeHtml(seg.title.substring(0, 40))}</div>
-                <div class="event-time">${timeText}</div>
-            `;
-            
-            card.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showEventContextMenu(e, seg.id);
-            });
-            
-            dayCol.appendChild(card);
-        });
-
-        body.appendChild(dayCol);
-    }
-
-    // 滚动到 00:00（顶部）
-    this.scrollToHour(0);
-}
-
-    getEventBackgroundColor(color) {
-        let r, g, b;
-        const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-        if (rgbMatch) {
-            r = parseInt(rgbMatch[1]);
-            g = parseInt(rgbMatch[2]);
-            b = parseInt(rgbMatch[3]);
-            return `rgba(${r}, ${g}, ${b}, 0.4)`;
-        }
-        if (color.startsWith('hsl')) {
-            return this.hslToRgba(color, 0.4);
-        }
-        const hexMatch = color.match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i);
-        if (hexMatch) {
-            const hex = hexMatch[1];
-            if (hex.length === 3) {
-                r = parseInt(hex[0] + hex[0], 16);
-                g = parseInt(hex[1] + hex[1], 16);
-                b = parseInt(hex[2] + hex[2], 16);
-            } else {
-                r = parseInt(hex.substring(0, 2), 16);
-                g = parseInt(hex.substring(2, 4), 16);
-                b = parseInt(hex.substring(4, 6), 16);
-            }
-            return `rgba(${r}, ${g}, ${b}, 0.4)`;
-        }
-        console.warn('周视图无法解析颜色:', color);
-        return 'rgba(200, 200, 255, 0.4)';
-    }
-
-    hslToRgba(hsl, alpha) {
-        const match = hsl.match(/hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/);
-        if (!match) return `rgba(200, 200, 255, ${alpha})`;
-        let h = parseFloat(match[1]) / 360;
-        let s = parseFloat(match[2]) / 100;
-        let l = parseFloat(match[3]) / 100;
-        let r, g, b;
-        if (s === 0) {
-            r = g = b = l;
-        } else {
-            const hue2rgb = (p, q, t) => {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1/6) return p + (q - p) * 6 * t;
-                if (t < 1/2) return q;
-                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                return p;
-            };
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-        return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${alpha})`;
-    }
-
-    showEventContextMenu(event, blockId) {
-        const existingMenu = document.querySelector('.week-context-menu');
-        if (existingMenu) existingMenu.remove();
-
-        const menu = document.createElement('div');
-        menu.className = 'north week-context-menu b3-menu';
-        menu.style.position = 'fixed';
-        menu.style.left = event.clientX + 'px';
-        menu.style.top = event.clientY + 'px';
-        menu.style.zIndex = '9999';
-        menu.innerHTML = `
-            <div class="b3-menu__items">
-                <button class="b3-menu__item" data-action="edit">
-                    <svg class="b3-menu__icon"><use xlink:href="#iconEdit"></use></svg>
-                    <span class="b3-menu__label">编辑</span>
-                </button>
-                <button class="b3-menu__item" data-action="open">
-                    <svg class="b3-menu__icon"><use xlink:href="#iconFile"></use></svg>
-                    <span class="b3-menu__label">打开文档</span>
-                </button>
-            </div>
-        `;
-
-        document.body.appendChild(menu);
-
-        menu.querySelector('[data-action="edit"]').addEventListener('click', () => {
-            const record = this.allRecords.find(r => r.id === blockId);
-            if (record) {
-                this.plugin.showEditBlockDialog(blockId, record.content);
-            }
-            menu.remove();
-        });
-        menu.querySelector('[data-action="open"]').addEventListener('click', () => {
-            this.plugin.openBlockDocument(blockId);
-            menu.remove();
-        });
-
-        const closeMenu = (e) => {
-            if (!menu.contains(e.target)) {
-                menu.remove();
-                document.removeEventListener('click', closeMenu);
-                document.removeEventListener('contextmenu', closeMenu);
-            }
-        };
-        setTimeout(() => {
-            document.addEventListener('click', closeMenu);
-            document.addEventListener('contextmenu', closeMenu);
-        }, 0);
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    scrollToHour(hour) {
-        const scrollable = this.container.querySelector('.calendar-scrollable');
-        if (scrollable) {
-            scrollable.scrollTop = hour * this.hourHeight;
-        }
-    }
-
-    changeWeek(delta) {
-        const newMonday = this.getMonday(this.currentDate);
-        newMonday.setDate(newMonday.getDate() + delta * 7);
-        this.currentDate = newMonday;
-        this.renderCalendar();
-    }
-
-    goToday() {
-        this.currentDate = new Date();
-        this.renderCalendar();
-    }
-
-    async refresh() {
-        this.timeMode = this.plugin.store.getTimeMode();
-        await this.loadDataAndRender();
-    }
-
-    getWeekNumber(date) {
-        const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
-        const year = d.getFullYear();
-        const week = Math.floor((d.getTime() - new Date(year, 0, 4).getTime()) / 86400000 / 7) + 1;
-        return week;
-    }
+    for (const c of TIMELINE_COLORS) blocks.push(genLight(c, { suffix: "", width: 5, dot: 0.8, offset: 0.4, omitFirstRadius: c.name === "灰" }));
+    for (const c of TIMELINE_COLORS) blocks.push(genLight(c, { suffix: "细", width: 3, dot: 0.5, offset: 0.2, omitFirstRadius: false }));
+    for (const c of TIMELINE_COLORS) blocks.push(genDark(c, ""));
+    for (const c of TIMELINE_COLORS) blocks.push(genDark(c, "细"));
+    return blocks.join("\n\n");
 }
 
 // ========== 主插件类 ==========
 module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     styleDefaults = null;
+    customStyles = [];
     attrsCache = new Map();
 
     async onload() {
@@ -3966,106 +370,44 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         `;
         document.head.appendChild(style);
 
+        // 注入数据驱动生成的时间轴样式（替代 index.css 中近千行重复静态样式）
+        const timelineStyle = document.createElement('style');
+        timelineStyle.id = 'siyuan-deco-timeline';
+        timelineStyle.textContent = generateTimelineCSS();
+        document.head.appendChild(timelineStyle);
+        this._timelineStyle = timelineStyle;
+
         this.loadStyleDefaults();
+
+        // 加载用户自定义块样式（持久化于插件数据）
+        try {
+            this.customStyles = await this.loadData('customStyles') || [];
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 读取自定义样式失败', e);
+            this.customStyles = [];
+        }
+
+        // 加载用户自定义文件夹
+        try {
+            this.customFolders = await this.loadData('customFolders') || [];
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 读取文件夹失败', e);
+            this.customFolders = [];
+        }
+
+        // 顶栏按钮：打开自定义块样式管理器
+        this.addTopBar({
+            icon: 'iconStar',
+            title: this.getText('customManage', '自定义块样式'),
+            position: 'right',
+            callback: () => this.openSetting()
+        });
+
         this.state = { menu: null, observer: null, restoreObserver: null };
         this.waitForMenu();
         this.addTitleClickListener();
         this.startAttributeRestoreObserver();
 
-        // ===== 时间线插件初始化 =====
-        const frontend = getFrontend?.() || '';
-        this.isMobile = frontend === 'mobile' || frontend === 'browser-mobile';
-
-        this.store = new TimelineStore(this);
-        await this.store.loadConfig();
-
-        // 注册时间线标签页
-        const plugin = this;
-        this.addTab({
-            type: TIMELINE_TAB_TYPE,
-            init() {
-                this.plugin = plugin;
-                this.element.classList.add('timeline-dialog-content');
-                this.container = document.createElement('div');
-                this.container.className = 'timeline-container';
-                this.element.appendChild(this.container);
-
-                this.loadDataAndRender = async () => {
-                    this.container.innerHTML = '<div class="timeline-loading">加载数据...</div>';
-                    // 初始加载只取本年数据
-                    const data = await this.plugin.queryAllRecords(); 
-                    this.container.innerHTML = '';
-                    this.view = new TimelineView(this.plugin, this.container, data);
-                };
-
-                this.loadDataAndRender();
-
-                this.refreshHandler = () => this.loadDataAndRender();
-                this.plugin.eventBus.on('timeline-refresh', this.refreshHandler);
-            },
-            beforeDestroy() {
-                if (!this) return;
-                if (this.plugin?.eventBus && this.refreshHandler) {
-                    this.plugin.eventBus.off('timeline-refresh', this.refreshHandler);
-                }
-                if (this.view?.destroy) {
-                    this.view.destroy();
-                    this.view = null;
-                }
-            }
-        });
-
-        // 注册周视图标签页
-        const WEEK_TAB_TYPE = 'week-view-tab';
-        this.addTab({
-            type: WEEK_TAB_TYPE,
-            init() {
-                this.plugin = plugin;
-                this.element.classList.add('week-view-container');
-                this.container = document.createElement('div');
-                this.container.style.height = '100%';
-                this.container.style.overflow = 'auto';
-                this.element.appendChild(this.container);
-                this.weekView = new WeekView(this.plugin, this.container);
-            },
-            beforeDestroy() {
-                if (this.weekView) {
-                    this.weekView = null;
-                }
-            }
-        });
-
-        // ========== 移动端 Dock 添加 ==========
-        if (this.isMobile) {
-            this.addDock({
-                config: {
-                    position: "LeftBottom",
-                    size: { width: 200, height: 0 },
-                    icon: "iconCamera",
-                    title: "时光笺",
-                    hotkey: "⌥⌘W",
-                },
-                data: {},
-                type: "timeline_dock",
-                init: (dock) => {
-                    dock.element.innerHTML = `
-                        <div class="fn__flex-1 timeline-dock-container"></div>
-                    `;
-                    const container = dock.element.querySelector('.timeline-dock-container');
-                    // 异步加载数据并渲染视图
-                    this.queryAllRecords().then(data => {
-                        dock.view = new TimelineView(this, container, data);
-                    });
-                },
-                destroy: (dock) => {
-                    if (!dock) return;
-                    if (dock.view?.destroy) {
-                        dock.view.destroy();
-                        dock.view = null;
-                    }
-                }
-            });
-        }
     }
 
     addIcons(svgContent) {
@@ -4075,120 +417,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         document.body.appendChild(svg);
     }
 
-    onLayoutReady() {
-        // 非移动端才添加顶部栏图标
-        if (!this.isMobile) {
-            this.addTopBar({
-                icon: 'iconCamera',
-                title: '时光笺',
-                position: 'right',
-                callback: () => this.openTimelineTab()
-            });
-        }
-    }
 
-    openTimelineTab() {
-        openTab({
-            app: this.app,
-            custom: {
-                icon: "iconCamera",
-                title: "时光笺",
-                data: {},
-                id: this.name + TIMELINE_TAB_TYPE
-            }
-        });
-    }
 
-    openWeekTab() {
-        openTab({
-            app: this.app,
-            custom: {
-                icon: "iconCamera",
-                title: "周视图",
-                data: {},
-                id: this.name + "week-view-tab"
-            }
-        });
-    }
 
-    // 查询本年数据（用于普通视图）
-    async queryAllRecords() {
-        const sql = `
-            SELECT 
-                b.id,
-                b.content,
-                a1.value AS lifelog_date,
-                a2.value AS lifelog_time,
-                a3.value AS lifelog_type
-            FROM blocks b
-            INNER JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-date'
-            INNER JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-lifelog-time'
-            INNER JOIN attributes a3 ON b.id = a3.block_id AND a3.name = 'custom-lifelog-type'
-            WHERE 
-                b.type = 'p' 
-                AND substr(a1.value, 1, 4) = strftime('%Y', 'now')
-            ORDER BY 
-                a1.value DESC, 
-                a2.value DESC
-            LIMIT -1
-        `;
-        const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
-        if (result && result.code === 0) {
-            return result.data.map(record => ({
-                ...record,
-                lifelog_created: `${record.lifelog_date} ${record.lifelog_time}`,
-            }));
-        }
-        return [];
-    }
 
-    // 查询全部数据（用于统计视图和周视图）
-    async queryAllRecordsUnfiltered() {
-        const sql = `
-            SELECT 
-                b.id,
-                b.content,
-                a1.value AS lifelog_date,
-                a2.value AS lifelog_time,
-                a3.value AS lifelog_type
-            FROM blocks b
-            INNER JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-lifelog-date'
-            INNER JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-lifelog-time'
-            INNER JOIN attributes a3 ON b.id = a3.block_id AND a3.name = 'custom-lifelog-type'
-            WHERE b.type = 'p'
-            ORDER BY a1.value DESC, a2.value DESC
-            LIMIT -1
-        `;
-        const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
-        if (result && result.code === 0) {
-            return result.data.map(record => ({
-                ...record,
-                lifelog_created: `${record.lifelog_date} ${record.lifelog_time}`,
-            }));
-        }
-        return [];
-    }
 
-    // 新增：查询所有碎碎念记录（custom-deco-style = '碎碎念'）
-    async queryDiaryRecords() {
-        const sql = `
-            SELECT 
-                b.id,
-                b.content,
-                a2.value AS deco_date,
-                b.created
-            FROM blocks b
-            INNER JOIN attributes a1 ON b.id = a1.block_id AND a1.name = 'custom-deco-style' AND a1.value = '碎碎念'
-            LEFT JOIN attributes a2 ON b.id = a2.block_id AND a2.name = 'custom-deco-card-date'
-            WHERE b.type = 'p'
-            ORDER BY COALESCE(a2.value, b.created) DESC
-        `;
-        const result = await this.callSiyuanAPI('/api/query/sql', { stmt: sql });
-        if (result && result.code === 0) {
-            return result.data;
-        }
-        return [];
-    }
 
     async callSiyuanAPI(endpoint, data) {
         const token = window.siyuan?.config?.api?.token || '';
@@ -4202,129 +435,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             console.error(e);
             return null;
         }
-    }
-
-    /**
-     * 上传头像
-     * @param {HTMLElement} avatarElement - 触发上传的头像元素
-     * @param {string} role - 'self' 或 'opposite'，指定上传给谁
-     */
-    uploadAvatar(avatarElement, role) {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-
-        fileInput.onchange = async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('assetsDirPath', '/assets/');
-            formData.append('file[]', file);
-
-            try {
-                const response = await fetch('/api/asset/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.code === 0) {
-                    const succMap = result.data.succMap;
-                    const originalName = file.name;
-                    const newPath = succMap[originalName];
-                    if (newPath) {
-                        if (role === 'self') {
-                            await this.store.setAvatar(newPath);
-                            this.updateAvatarsByRole('self', newPath);
-                        } else {
-                            await this.store.setOppositeAvatar(newPath);
-                            this.updateAvatarsByRole('opposite', newPath);
-                        }
-                        showMessage('头像上传成功');
-                    }
-                } else {
-                    showMessage('上传失败：' + (result.msg || '未知错误'));
-                }
-            } catch (e) {
-                console.error(e);
-                showMessage('上传失败：' + e.message);
-            } finally {
-                document.body.removeChild(fileInput);
-            }
-        };
-
-        document.body.appendChild(fileInput);
-        fileInput.click();
-    }
-
-    /**
-     * 根据角色更新对应头像
-     * @param {string} role - 'self' 或 'opposite'
-     * @param {string} path - 图片路径
-     */
-    updateAvatarsByRole(role, path) {
-        const selector = role === 'self' 
-            ? '.timeline-avatar, .cover-avatar, .north-moments-card-avatar, .wechat-avatar-self'
-            : '.wechat-avatar-opposite';
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
-            el.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = path.startsWith('http') ? path : '/' + path;
-            img.onerror = () => {
-                el.innerHTML = `<svg><use xlink:href="#iconUser"></use></svg>`;
-            };
-            el.appendChild(img);
-        });
-    }
-
-    uploadCover(coverElement) {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-
-        fileInput.onchange = async () => {
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('assetsDirPath', '/assets/');
-            formData.append('file[]', file);
-
-            try {
-                const response = await fetch('/api/asset/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.code === 0) {
-                    const succMap = result.data.succMap;
-                    const originalName = file.name;
-                    const newPath = succMap[originalName];
-                    if (newPath) {
-                        await this.store.setCover(newPath);
-                        if (coverElement) {
-                            coverElement.style.backgroundImage = `url('${'/' + newPath}')`;
-                            coverElement.style.backgroundSize = 'cover';
-                            coverElement.style.backgroundPosition = 'center';
-                        }
-                        showMessage('封面上传成功');
-                    }
-                } else {
-                    showMessage('上传失败：' + (result.msg || '未知错误'));
-                }
-            } catch (e) {
-                console.error(e);
-                showMessage('上传失败：' + e.message);
-            } finally {
-                document.body.removeChild(fileInput);
-            }
-        };
-
-        document.body.appendChild(fileInput);
-        fileInput.click();
     }
 
     loadStyleDefaults() {
@@ -4448,7 +558,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             childList: true,
             subtree: true,
             attributes: true,
-            attributeFilter: ["custom-deco-style", "custom-deco-card-icon", "custom-deco-card-title"]
+            attributeFilter: DECO_ATTRS
         });
 
         this._interval = setInterval(() => {
@@ -4465,7 +575,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const id = blockEl.dataset.nodeId;
         if (!id || !this.attrsCache.has(id)) return;
         const attrs = this.attrsCache.get(id);
-        for (const attr of ["custom-deco-style", "custom-deco-card-icon", "custom-deco-card-title"]) {
+        for (const attr of DECO_ATTRS) {
             if (attrs[attr] && !blockEl.getAttribute(attr)) {
                 blockEl.setAttribute(attr, attrs[attr]);
             }
@@ -4515,16 +625,21 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const currentTitle = blockEl.getAttribute('custom-deco-card-title') || this.styleDefaults[currentStyle]?.title || '';
         const currentIcon = blockEl.getAttribute('custom-deco-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
 
-        const allCards = this.getAllCardItems();
-        const optionsHtml = allCards.map(item => 
-            `<option value="${item.label}" ${item.label === currentStyle ? 'selected' : ''}>${item.label}</option>`
-        ).join('');
+        const treeHtml = this._buildStyleTreeHtml(currentStyle);
 
         const contentHtml = `
             <div class="b3-dialog__content" style="padding: 20px;">
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
                     <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardType', '类型')}</label>
-                    <select id="card-type-select" class="b3-select" style="width:100%;">${optionsHtml}</select>
+                    <div style="display:flex; gap:12px;">
+                        ${treeHtml}
+                        <!-- 样式预览区 -->
+                        <div id="card-style-preview" style="flex:1; min-width:200px; border:1px dashed var(--b3-border-color); border-radius:8px; padding:10px; display:flex; flex-direction:column; overflow:hidden;">
+                            <div style="font-size:11px; color:var(--b3-text-color2); margin-bottom:6px; display:flex; align-items:center; gap:4px;">👁️ 预览</div>
+                            <div id="card-style-preview-inner" class="protyle-wysiwyg" style="flex:1; overflow:auto;"></div>
+                        </div>
+                    </div>
+                    <input id="card-type-select" type="hidden" value="${this._escapeAttr(currentStyle)}">
                 </div>
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
                     <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardIcon', '图标')}</label>
@@ -4554,23 +669,89 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         });
 
         const dialogElement = dialog.element;
-        const typeSelect = dialogElement.querySelector('#card-type-select');
+        const styleInput = dialogElement.querySelector('#card-type-select');
         const iconInput = dialogElement.querySelector('#card-icon-input');
         const titleInput = dialogElement.querySelector('#card-title-input');
+        const previewInnerEl = dialogElement.querySelector('#card-style-preview-inner');
 
-        typeSelect.addEventListener('change', () => {
-            const selectedLabel = typeSelect.value;
-            const defaults = this.styleDefaults[selectedLabel] || { icon: '', title: '' };
-            iconInput.value = defaults.icon;
-            titleInput.value = defaults.title;
-        });
+        // --- 预览渲染 ---
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        const renderStylePreview = () => {
+            if (!previewInnerEl) return;
+            const label = styleInput.value;
+            if (!label) { previewInnerEl.innerHTML = '<span style="font-size:12px;color:var(--b3-text-color3);">请选择样式</span>'; return; }
+            const defaults = self.styleDefaults[label] || { icon: '', title: label };
+            const ico = iconInput.value.trim() || defaults.icon;
+            const ttl = titleInput.value.trim() || defaults.title;
+            const isBuiltin = /^icon[A-Z]/.test(ico);
+            const iconAttr = isBuiltin ? '' : ico;
+            previewInnerEl.innerHTML =
+                '<div custom-deco-style="' + escapeAttr(label) + '"' +
+                (iconAttr ? ' custom-deco-card-icon="' + escapeAttr(iconAttr) + '"' : '') +
+                (ttl ? ' custom-deco-card-title="' + escapeAttr(ttl) + '"' : '') +
+                ' style="padding:14px 16px;" data-type="NodeParagraph">&nbsp;</div>';
+        };
+        // 初始渲染
+        setTimeout(renderStylePreview, 50);
+
+        // ---- 树交互：展开/折叠 + 叶子选中 ----
+        const treeEl = dialogElement.querySelector('.cs-style-tree');
+        if (treeEl) {
+            treeEl.querySelectorAll('.cs-st-hd[data-collapsed]').forEach(hd => {
+                hd.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const body = hd.parentElement.querySelector('.cs-st-body');
+                    const arrow = hd.querySelector('.cs-st-arr');
+                    if (!body) return;
+                    const collapsed = hd.getAttribute('data-collapsed') === 'true';
+                    body.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
+                    hd.setAttribute('data-collapsed', String(!collapsed));
+                    if (arrow) {
+                        const use = arrow.querySelector('use');
+                        if (use) {
+                            const href = collapsed ? '#iconDown' : '#iconRight';
+                            use.setAttribute('xlink:href', href);
+                            use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
+                        }
+                    }
+                });
+            });
+
+            treeEl.querySelectorAll('.cs-st-leaf').forEach(leaf => {
+                leaf.addEventListener('click', () => {
+                    treeEl.querySelectorAll('.cs-st-leaf.cs-st-sel').forEach(el => {
+                        el.classList.remove('cs-st-sel');
+                        el.style.background = '';
+                        el.style.color = '';
+                    });
+                    leaf.classList.add('cs-st-sel');
+                    leaf.style.background = 'var(--b3-theme-primary)';
+                    leaf.style.color = '#fff';
+                    styleInput.value = leaf.getAttribute('data-label') || '';
+                    // 自动填充默认图标和标题
+                    const label = styleInput.value;
+                    const defaults = this.styleDefaults[label] || { icon: '', title: '' };
+                    iconInput.value = defaults.icon;
+                    titleInput.value = defaults.title;
+                    renderStylePreview();
+                });
+            });
+        }
 
         dialogElement.querySelector('#choose-emoji-btn').addEventListener('click', () => {
-            this.showEmojiPicker(iconInput);
+            this._openGroupIconPicker(iconInput.value.trim(), function (picked) {
+                iconInput.value = picked || '';
+                iconInput.dispatchEvent(new Event('input'));
+                renderStylePreview();
+            });
         });
 
+        // 图标/标题变化时也刷新预览
+        iconInput.addEventListener('input', renderStylePreview);
+        titleInput.addEventListener('input', renderStylePreview);
+
         dialogElement.querySelector('#confirm-btn').addEventListener('click', async () => {
-            const newStyle = typeSelect.value;
+            const newStyle = styleInput.value;
             const newIcon = iconInput.value.trim();
             const newTitle = titleInput.value.trim();
 
@@ -4700,15 +881,21 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     btn.innerHTML = `<svg class="b3-menu__icon north-menu-icon"><use xlink:href="#iconList"></use></svg>
                      <span class="b3-menu__label">${this.getText('cardview', '卡片视图')}</span>
                      <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
-        
+
         const subMenu = document.createElement("div");
         subMenu.className = "b3-menu__submenu";
         const itemsContainer = document.createElement("div");
         itemsContainer.className = "b3-menu__items";
 
-        this.getSecondaryGroups().forEach(group => {
-            itemsContainer.appendChild(this.createSecondaryGroupButton(blockId, group));
+        // 一级块分类：引述块 / 普通块 / 图片相关
+        this.getMenuStructure().forEach(parent => {
+            itemsContainer.appendChild(this.createParentButton(blockId, parent));
         });
+
+        // 用户自定义块样式（预设）
+        if (this.customStyles && this.customStyles.length) {
+            itemsContainer.appendChild(this.createCustomParentButton(blockId));
+        }
 
         itemsContainer.appendChild(this.createSeparator());
         const removeItem = this.createRemoveStyleItem(blockId);
@@ -4717,6 +904,742 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         subMenu.appendChild(itemsContainer);
         btn.appendChild(subMenu);
         return btn;
+    }
+
+    // ========== 一级块分类按钮 → 二级细分类列表 ==========
+    createParentButton(blockId, parent) {
+        const btn = document.createElement("button");
+        btn.className = "b3-menu__item";
+
+        const iconColor = this.getColorForString(parent.id, 60, 50);
+
+        btn.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="${parent.icon}"></use></svg>
+                         <span class="b3-menu__label">${this.getText(parent.labelKey)}</span>
+                         <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
+
+        const subMenu = document.createElement("div");
+        subMenu.className = "b3-menu__submenu";
+        const itemsContainer = document.createElement("div");
+        itemsContainer.className = "b3-menu__items";
+
+        // 二级细分类（如 引述类 / 时间轴 / 线条装饰）
+        parent.children.forEach(category => {
+            itemsContainer.appendChild(this.createCategoryButton(blockId, category));
+        });
+
+        subMenu.appendChild(itemsContainer);
+        btn.appendChild(subMenu);
+        return btn;
+    }
+
+    // ========== 二级：分类按钮 → 三级：组列表 ==========
+    createCategoryButton(blockId, category) {
+        const btn = document.createElement("button");
+        btn.className = "b3-menu__item";
+
+        const iconColor = this.getColorForString(category.id, 65, 55);
+
+        btn.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="${category.icon}"></use></svg>
+                         <span class="b3-menu__label">${this.getText(category.labelKey)}</span>
+                         <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
+
+        const subMenu = document.createElement("div");
+        subMenu.className = "b3-menu__submenu";
+        const itemsContainer = document.createElement("div");
+        itemsContainer.className = "b3-menu__items";
+
+        // 三级：该分类下的具体组按钮
+        category.subGroups.forEach(group => {
+            itemsContainer.appendChild(this.createSecondaryGroupButton(blockId, group));
+        });
+
+        subMenu.appendChild(itemsContainer);
+        btn.appendChild(subMenu);
+        return btn;
+    }
+
+    // ========== 思源笔记原生设置入口：打开自定义块样式管理器 ==========
+    // 复写 Plugin.openSetting()，以思源原生设置风格（Dialog 模态面板）承载管理器，
+    // 不再使用自定义 Tab 页。顶栏按钮与右键「管理自定义样式」均调用此方法。
+    openSetting() {
+        const self = this;
+        const dialog = new Dialog({
+            title: this.getText('customManage', '自定义块样式'),
+            content: '<div id="cs-setting-root" style="height:100%; overflow:auto;"></div>',
+            width: "1200px",
+            height: "860px"
+        });
+        const rootEl = dialog.element.querySelector('#cs-setting-root');
+        this._settingRootEl = rootEl;
+        this.renderCustomStyleManager(rootEl);
+    }
+
+    // ========== 辅助：构建基础样式可折叠树形列表（替代 <select>）==========
+    _buildStyleTreeHtml(selectedLabel) {
+        const structure = this.getMenuStructure();
+        const allCards = this.getAllCardItems();
+        let pIdx = 0;
+        let html = '<div class="cs-style-tree" style="border:1px solid var(--b3-border-color); border-radius:8px; overflow-y:auto; max-height:280px; padding:4px 0;">';
+
+        // 收集已归组 label，用于「其他」兜底
+        const groupedLabels = new Set();
+
+        for (const parent of structure) {
+            const parentIcon = (parent.icon || '').startsWith('#') ? parent.icon.slice(1) : (parent.icon || '');
+            const parentLabel = this.getText(parent.labelKey, parent.id);
+            let catHtml = '';
+
+            for (const cat of parent.children) {
+                const catIcon = (cat.icon || '').startsWith('#') ? cat.icon.slice(1) : (cat.icon || '');
+                const catLabel = this.getText(cat.labelKey, cat.id);
+                let subHtml = '';
+
+                for (const group of cat.subGroups) {
+                    const items = allCards.filter(item => !!group.filter(item.label, item.key));
+                    if (!items.length) continue;
+                    items.forEach(item => groupedLabels.add(item.label));
+
+                    const gLabel = this.getText(group.labelKey, group.id);
+                    const gIcon = (group.icon || '').split('#').pop() || '';
+                    // 子组节点（Level 2）：可折叠
+                    subHtml += `
+                        <div class="cs-st-node cs-st-sub" data-st-type="sub" style="margin-left:22px;">
+                            <div class="cs-st-hd" style="display:flex; align-items:center; gap:5px; padding:4px 8px; cursor:pointer; border-radius:4px;" data-collapsed="true">
+                                <svg class="cs-st-arr" style="width:12px;height:12px;flex:none;opacity:.45;"><use xlink:href="#iconRight"></use></svg>
+                                ${gIcon ? '<svg style="width:14px;height:14px;flex:none;opacity:.6;"><use xlink:href="#' + gIcon + '"></use></svg>' : ''}
+                                <span style="font-size:12.5px; opacity:.7;">${this._escapeAttr(gLabel)}</span>
+                            </div>
+                            <div class="cs-st-body" data-children="sub" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
+                                <div style="overflow:hidden; min-height:0;">
+                                    ${items.map(item => {
+                                        const sel = item.label === selectedLabel ? ' cs-st-sel' : '';
+                                        return `<div class="cs-st-leaf${sel}" data-label="${this._escapeAttr(item.label)}" style="padding:4px 8px 4px 30px; font-size:12.5px; cursor:pointer; border-radius:4px; margin:1px 0; display:flex; align-items:center; gap:5px; transition:background .1s; ${sel ? 'background:var(--b3-theme-primary); color:#fff;' : ''}">${this._escapeAttr(item.label)}</div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>`;
+                }
+
+                if (!subHtml) continue;
+
+                // 分类节点（Level 1.5）：可折叠
+                catHtml += `
+                    <div class="cs-st-node cs-st-cat" data-st-type="cat" style="margin-left:12px;">
+                        <div class="cs-st-hd" style="display:flex; align-items:center; gap:5px; padding:4px 8px; cursor:pointer; border-radius:4px;" data-collapsed="true">
+                            <svg class="cs-st-arr" style="width:12px;height:12px;flex:none;opacity:.45;"><use xlink:href="#iconRight"></use></svg>
+                            ${catIcon ? '<svg style="width:14px;height:14px;flex:none;opacity:.65;"><use xlink:href="#' + catIcon + '"></use></svg>' : ''}
+                            <span style="font-size:13px; font-weight:600; opacity:.75;">${this._escapeAttr(catLabel)}</span>
+                        </div>
+                        <div class="cs-st-body" data-children="cat" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
+                            <div style="overflow:hidden; min-height:0;">${subHtml}</div>
+                        </div>
+                    </div>`;
+            }
+
+            if (!catHtml) continue;
+
+            // 父级节点（Level 0）：可折叠
+            html += `
+                <div class="cs-st-node cs-st-parent" data-pidx="${pIdx}" data-st-type="parent">
+                    <div class="cs-st-hd" style="display:flex; align-items:center; gap:6px; padding:5px 10px; cursor:pointer; border-radius:5px;" data-collapsed="true">
+                        <svg class="cs-st-arr" style="width:14px;height:14px;flex:none;opacity:.5;"><use xlink:href="#iconRight"></use></svg>
+                        ${parentIcon ? '<svg style="width:15px;height:15px;flex:none;opacity:.75;"><use xlink:href="#' + parentIcon + '"></use></svg>' : ''}
+                        <span style="font-size:13.5px; font-weight:700; opacity:.85;">${this._escapeAttr(parentLabel)}</span>
+                    </div>
+                    <div class="cs-st-body" data-children="parent" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
+                        <div style="overflow:hidden; min-height:0;">${catHtml}</div>
+                    </div>
+                </div>`;
+            pIdx++;
+        }
+
+        // 「其他」——未归组的项（平铺叶子）；图片相关（ImageCard）整体不出现在选择器内
+        const ungroupedItems = allCards.filter(item => !groupedLabels.has(item.label) && !item.key.endsWith('ImageCard'));
+        if (ungroupedItems.length) {
+            html += `<div class="cs-st-node cs-st-other" data-st-type="other">`;
+            html += `<div class="cs-st-hd" style="display:flex;align-items:center;gap:6px;padding:5px 10px;"><span style="font-size:13px;font-weight:600;opacity:.55;">${this.getText('blockOther', '其他')}</span></div>`;
+            html += '<div>';
+            ungroupedItems.forEach(item => {
+                const sel = item.label === selectedLabel ? ' cs-st-sel' : '';
+                html += `<div class="cs-st-leaf${sel}" data-label="${this._escapeAttr(item.label)}" style="padding:4px 8px 4px 20px; font-size:12.5px; cursor:pointer; border-radius:4px; margin:1px 0; display:flex; align-items:center; gap:5px; transition:background .1s; ${sel ? 'background:var(--b3-theme-primary); color:#fff;' : ''}">${this._escapeAttr(item.label)}</div>`;
+            });
+            html += '</div></div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    // ========== 打开新增/编辑样式的 Dialog 弹窗（含预览）==========
+    openStyleDialog(editId) {
+        const self = this;
+        const allCards = this.getAllCardItems();
+        const editing = editId ? (this.customStyles || []).find(c => c.id === editId) : null;
+        const treeHtml = this._buildStyleTreeHtml(editing ? editing.style : '');
+
+        const contentHtml = `
+            <div style="padding:20px 28px;">
+                <div style="font-size:16px; font-weight:700; margin-bottom:18px;">${editing ? (this.getText('customEdit', '编辑') + ' · ' + editing.name) : this.getText('customAdd', '新增自定义样式')}</div>
+
+                <!-- 名称 -->
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('customName', '名称')}<sup style="color:#e53935;">*</sup></label>
+                    <input id="cs-d-name" class="b3-text-field" type="text" value="${editing ? editing.name : ''}" placeholder="${this.getText('customNamePlaceholder', '如：我的日报模板')}" style="width:100%;">
+                </div>
+
+                <!-- 基础样式（可折叠树） -->
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('customBaseStyle', '基础样式')}<sup style="color:#e53935;">*</sup></label>
+                    ${treeHtml}
+                    <input id="cs-d-style" type="hidden" value="${this._escapeAttr(editing ? editing.style : '')}">
+                </div>
+
+                <!-- 图标 + 标题 并排 -->
+                <div style="display:flex; gap:14px; margin-bottom:14px;">
+                    <div style="flex:1;">
+                        <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('cardIcon', '图标')}</label>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <span id="cs-d-icon-prev" style="display:inline-flex;align-items:center;width:28px;height:28px;justify-content:center;font-size:18px;flex:none;border-radius:6px;background:var(--b3-theme-background);border:1px solid var(--b3-border-color);"></span>
+                            <input id="cs-d-icon" class="b3-text-field" type="text" value="${editing ? (editing.icon || '') : ''}" placeholder="${this.getText('iconPlaceholder', '例如 ✨')}" style="flex:1;">
+                            <button class="b3-button b3-button--outline" id="cs-d-emoji">${this.getText('choose', '选择')}</button>
+                        </div>
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('cardTitle', '标题')}</label>
+                        <input id="cs-d-title" class="b3-text-field" type="text" value="${editing ? (editing.title || '') : ''}" placeholder="${this.getText('titlePlaceholder', '卡片标题')}" style="width:100%;">
+                    </div>
+                </div>
+
+                <!-- 归属分组 -->
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('folderLabel', '归属分组')}</label>
+                    <div style="display:flex; gap:8px;">
+                        <select id="cs-d-folder" class="b3-select" style="flex:1; min-width:0;">${this._buildFolderOptionsHtml(editing ? editing.folderId : '')}</select>
+                        <button class="b3-button b3-button--outline" id="cs-d-newgroup" style="flex:none; white-space:nowrap;">+ ${this.getText('addFolder', '新建分组')}</button>
+                    </div>
+                </div>
+
+                <!-- 预览区域 -->
+                <div style="margin-top:16px; padding:12px; border-radius:8px; border:1px dashed var(--b3-border-color); background:var(--b3-theme-background);">
+                    <div style="font-size:11px; font-weight:600; opacity:.55; margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                        <svg style="width:12px;height:12px;"><use xlink:href="#iconEye"></use></svg>${this.getText('preview', '预览')}
+                    </div>
+                    <div id="cs-d-preview" style="min-height:70px;"></div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="fn__flex" style="justify-content:flex-end; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--b3-border-color);">
+                    ${editing ? '<button class="b3-button b3-button--cancel" id="cs-d-cancel">' + this.getText('cancel', '取消') + '</button>' : ''}
+                    <button class="b3-button b3-button--outline" id="cs-d-save" style="padding:6px 24px; font-weight:600;">💾 ${this.getText('customSave', '保存')}</button>
+                </div>
+            </div>`;
+
+        const dialog = new Dialog({
+            title: this.getText('customManage', '自定义块样式'),
+            content: contentHtml,
+            width: "720px"
+        });
+
+        const el = dialog.element;
+        const nameInput = el.querySelector('#cs-d-name');
+        const styleInput = el.querySelector('#cs-d-style');
+        const iconInput = el.querySelector('#cs-d-icon');
+        const titleInput = el.querySelector('#cs-d-title');
+        const previewContainer = el.querySelector('#cs-d-preview');
+        const folderSelect = el.querySelector('#cs-d-folder');
+
+        // ---- 树形基础样式选择器交互 ----
+        const treeEl = el.querySelector('.cs-style-tree');
+        if (treeEl) {
+            // 展开/折叠
+            treeEl.querySelectorAll('.cs-st-hd[data-collapsed]').forEach(hd => {
+                hd.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const body = hd.parentElement.querySelector('.cs-st-body');
+                    const arrow = hd.querySelector('.cs-st-arr');
+                    if (!body) return;
+                    const collapsed = hd.getAttribute('data-collapsed') === 'true';
+                    body.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
+                    hd.setAttribute('data-collapsed', String(!collapsed));
+                    if (arrow) {
+                        const use = arrow.querySelector('use');
+                        if (use) {
+                            const href = collapsed ? '#iconDown' : '#iconRight';
+                            use.setAttribute('xlink:href', href);
+                            use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
+                        }
+                    }
+                });
+            });
+
+            // 叶子选中
+            treeEl.querySelectorAll('.cs-st-leaf').forEach(leaf => {
+                leaf.addEventListener('click', () => {
+                    // 清除旧选中
+                    treeEl.querySelectorAll('.cs-st-leaf.cs-st-sel').forEach(el => {
+                        el.classList.remove('cs-st-sel');
+                        el.style.background = '';
+                        el.style.color = '';
+                    });
+                    // 设新选中
+                    leaf.classList.add('cs-st-sel');
+                    leaf.style.background = 'var(--b3-theme-primary)';
+                    leaf.style.color = '#fff';
+                    styleInput.value = leaf.getAttribute('data-label') || '';
+                    renderPreview();
+                });
+            });
+        }
+
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+
+        // --- 预览渲染 ---
+        // 辅助：在容器内渲染图标预览（内置图标用 SVG，emoji/文字直接文本）
+        const renderIconPreview = (container, val) => {
+            if (!container) return;
+            container.innerHTML = '';
+            if (!val) return;
+            const ns = 'http://www.w3.org/2000/svg';
+            const isBuiltin = /^icon[A-Z]/.test(val);
+            if (isBuiltin) {
+                const svg = document.createElementNS(ns, 'svg');
+                svg.setAttribute('style', 'width:18px;height:18px;');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                const use = document.createElementNS(ns, 'use');
+                use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + val);
+                use.setAttribute('href', '#' + val);
+                svg.appendChild(use);
+                container.appendChild(svg);
+            } else {
+                container.textContent = val;
+            }
+        };
+
+        // 图标输入框旁的实时预览
+        const iconPrevEl = el.querySelector('#cs-d-icon-prev');
+
+        const refreshIconPreview = () => { renderIconPreview(iconPrevEl, iconInput.value.trim()); };
+        setTimeout(refreshIconPreview, 50);
+        iconInput.addEventListener('input', refreshIconPreview);
+
+        const renderPreview = () => {
+            const label = styleInput.value;
+            if (!label || !previewContainer) return;
+            const defaults = self.styleDefaults[label] || { icon: '', title: label };
+            const rawIconVal = iconInput.value.trim() || defaults.icon;
+            const titleVal = titleInput.value.trim() || defaults.title;
+
+            // 内置图标（iconXxx）CSS content:attr() 无法渲染为 SVG，会显示原始名文本
+            // 所以预览时对内置图标不传 custom-deco-card-icon，让 CSS 用默认 emoji fallback
+            const isBuiltinIcon = /^icon[A-Z]/.test(rawIconVal);
+            const iconAttr = isBuiltinIcon ? '' : rawIconVal;
+
+            previewContainer.innerHTML =
+                '<div class="protyle-wysiwyg"><div custom-deco-style="' + escapeAttr(label) + '"' +
+                (iconAttr ? ' custom-deco-card-icon="' + escapeAttr(iconAttr) + '"' : '') +
+                (titleVal ? ' custom-deco-card-title="' + escapeAttr(titleVal) + '"' : '') +
+                ' style="padding:16px 20px;" data-type="NodeParagraph">&nbsp;</div></div>';
+        };
+
+        setTimeout(renderPreview, 50);
+        iconInput.addEventListener('input', renderPreview);
+        titleInput.addEventListener('input', renderPreview);
+
+        el.querySelector('#cs-d-emoji').addEventListener('click', () => self._openGroupIconPicker(iconInput.value.trim(), function (picked) {
+            iconInput.value = picked || '';
+            iconInput.dispatchEvent(new Event('input'));
+        }));
+
+        // 在弹窗内直接新建分组，并自动选中
+        const newGroupBtn = el.querySelector('#cs-d-newgroup');
+        if (newGroupBtn) newGroupBtn.addEventListener('click', () => {
+            self.openGroupDialog(null, async (g) => {
+                if (!self.customFolders) self.customFolders = [];
+                const newId = 'grp_' + Date.now();
+                self.customFolders.push({ id: newId, name: g.name, icon: g.icon || 'iconFolder' });
+                await self.saveData('customFolders', self.customFolders);
+                showMessage(self.getText('folderCreated', '已新建分组：') + name);
+                if (folderSelect) {
+                    folderSelect.innerHTML = self._buildFolderOptionsHtml(newId);
+                    folderSelect.value = newId;
+                }
+                // 同步刷新后台设置面板（若存在）
+                if (self._settingRootEl && self._settingRootEl.isConnected) self.renderCustomStyleManager(self._settingRootEl);
+            });
+        });
+
+        // 保存
+        el.querySelector('#cs-d-save').addEventListener('click', async () => {
+            const name = nameInput.value.trim();
+            const style = styleInput.value;
+            const icon = iconInput.value.trim();
+            const title = titleInput.value.trim();
+            const folderId = folderSelect ? folderSelect.value : '';
+
+            if (!name) { showMessage(self.getText('customNeedName', '请填写名称')); return; }
+
+            const rec = { id: editing ? editing.id : ('cs_' + Date.now()), name, style, icon, title, folderId: folderId || null };
+            if (editing) { const idx = self.customStyles.findIndex(c => c.id === editing.id); if (idx >= 0) self.customStyles[idx] = rec; }
+            else self.customStyles.push(rec);
+
+            await self.saveData('customStyles', self.customStyles);
+            showMessage(self.getText('customSaved', '已保存自定义样式：') + name);
+            dialog.destroy();
+
+            // 重渲染设置面板内容以刷新列表
+            if (self._settingRootEl && self._settingRootEl.isConnected) {
+                self.renderCustomStyleManager(self._settingRootEl);
+            }
+        });
+
+        // 取消
+        const cancelBtn = el.querySelector('#cs-d-cancel');
+        if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.destroy());
+    }
+
+    // ========== 设置面板渲染：可折叠文档树（引述块/普通块/图片相关） + 右侧内容 ==========
+    renderCustomStyleManager(element) {
+        const self = this;
+        const allStyles = this.customStyles || [];
+        const totalCount = allStyles.length;
+        const groups = this._getGroupedByFolder();
+
+        // ---- 左侧：可折叠分组树（用户自建分组 + 未分类）----
+        let treeHtml = '';
+        let treeGroupIdx = 0;
+        for (const g of groups) {
+            const isNone = g.id === '__none__';
+            // 未分类为空时不显示；用户分组即使为空也显示，便于看到并管理
+            if (!g.items.length && isNone) continue;
+
+            const icon = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 16 });
+            const gIdx = treeGroupIdx++;
+            const actions = isNone ? '' : `
+                <button class="cs-group-act" data-act="rename" data-gid="${g.id}" title="${this.getText('renameGroup', '重命名分组')}" style="border:none;background:transparent;cursor:pointer;padding:2px 4px;opacity:.45;border-radius:4px;line-height:1;display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;"><use xlink:href="#iconEdit"></use></svg></button>
+                <button class="cs-group-act" data-act="delete" data-gid="${g.id}" title="删除分组" style="border:none;background:transparent;cursor:pointer;padding:2px 4px;opacity:.45;border-radius:4px;line-height:1;display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;"><use xlink:href="#iconTrashcan"></use></svg></button>`;
+            treeHtml += `
+                <div class="cs-tree-group" data-group-id="${g.id}" style="margin-bottom:2px;">
+                    <div class="cs-tree-header" style="display:flex; align-items:center; gap:4px; padding:5px 8px; border-radius:6px; transition:background .15s;">
+                        <div class="cs-tree-toggle" data-toggle="${gIdx}" style="display:flex; align-items:center; gap:7px; flex:1; cursor:pointer; min-width:0;">
+                            <svg class="cs-tree-arrow" style="width:14px;height:14px; flex:none; opacity:.5;"><use xlink:href="#iconRight"></use></svg>
+                            ${icon}
+                            <span style="flex:1; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${this._escapeAttr(g.name)}</span>
+                            <span style="font-size:11px; opacity:.45; flex:none;">${g.items.length}</span>
+                        </div>
+                        ${actions}
+                    </div>
+                    <div class="cs-tree-children" data-children="${gIdx}" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;">
+                        <div style="overflow:hidden; min-height:0; padding-left:26px; padding-top:2px; padding-bottom:4px;">
+                        ${g.items.map(cs => `
+                            <div class="cs-tree-item" data-cs-id="${cs.id}" style="display:flex; align-items:center; gap:7px; padding:6px 8px; border-radius:5px; cursor:pointer; transition:background .12s; margin-bottom:1px;">
+                                <span style="font-size:1.1rem; flex:none;">${cs.icon || '✨'}</span>
+                                <span style="flex:1; font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${this._escapeAttr(cs.name)}</span>
+                            </div>
+                        `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // ---- 右侧内容 ----
+        let rightHtml = '';
+        if (totalCount === 0) {
+            rightHtml = `
+                <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+                    <div style="text-align:center; opacity:.4;">
+                        <div style="font-size:3.2rem; margin-bottom:14px;">✨</div>
+                        <div style="font-size:15px; font-weight:600; margin-bottom:6px;">${this.getText('customEmpty', '暂无自定义样式')}</div>
+                        <div style="font-size:12px; opacity:.65; margin-bottom:20px;">点击下方「新增」创建你的第一个样式</div>
+                    </div>
+                </div>`;
+        } else {
+            rightHtml = '<div style="flex:1; overflow-y:auto; padding:20px 28px;">';
+            for (const g of groups) {
+                if (!g.items.length) continue;
+                const isNone = g.id === '__none__';
+                const icon = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 15 });
+                rightHtml += `
+                    <div style="margin-bottom:20px;">
+                        <div class="fn__flex fn__flex-center" style="gap:7px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--b3-border-color);">
+                            <span style="font-size:14px;">${icon}</span>
+                            <span style="font-weight:700; font-size:14px;">${this._escapeAttr(g.name)}</span>
+                            <span style="margin-left:auto; font-size:11px; opacity:.4;">${g.items.length}</span>
+                        </div>
+                        ${g.items.map(cs => self._renderStyleCard(cs)).join('')}
+                    </div>`;
+            }
+            rightHtml += '</div>';
+        }
+
+        // ---- 整体布局 ----
+        const html = `
+            <div id="cs-root" style="display:flex; height:100%;">
+
+                <!-- ====== 左侧栏：分组树 ====== -->
+                <div id="cs-sidebar" style="width:250px; min-width:200px; max-width:280px; border-right:1px solid var(--b3-border-color); display:flex; flex-direction:column; flex:none; background:var(--b3-theme-surface);">
+
+                    <!-- 头部 -->
+                    <div style="padding:14px 14px 12px; border-bottom:1px solid var(--b3-border-color); flex:none;">
+                        <div class="fn__flex fn__flex-center" style="gap:7px;">
+                            <svg style="width:17px;height:17px;color:var(--b3-theme-primary);"><use xlink:href="#iconStar"></use></svg>
+                            <span style="font-weight:700; font-size:14px;">${this.getText('customManage', '自定义块样式')}</span>
+                            <button id="cs-btn-newgroup" class="b3-button b3-button--outline" style="margin-left:auto; padding:2px 9px; font-size:11px; font-weight:600;">+ ${this.getText('customGroup', '分组')}</button>
+                        </div>
+                        ${totalCount > 0 ? `<div style="font-size:11px; opacity:.45; margin-top:3px;">${totalCount} 个预设</div>` : ''}
+                    </div>
+
+                    <!-- 可折叠树 -->
+                    <div style="flex:1; overflow-y:auto; padding:8px 6px;">
+                        ${treeHtml || `<div style="padding:10px 8px; font-size:12px; opacity:.4;">${this.getText('noFolderHint', '还没有分组，点右上角「+ 分组」新建')}</div>`}
+                    </div>
+
+                    <!-- 底部操作栏 -->
+                    <div style="padding:12px 14px 16px; border-top:1px solid var(--b3-border-color); flex:none;">
+                        <button class="b3-button b3-button--outline" id="cs-btn-new" style="width:100%; padding:9px; font-weight:600; font-size:13px;">+ ${this.getText('customAdd', '新增自定义样式')}</button>
+                    </div>
+                </div>
+
+                <!-- ====== 右侧主内容区 ====== -->
+                <div id="cs-main" style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden; background:var(--b3-theme-background);">
+                    ${rightHtml}
+                </div>
+            </div>`;
+
+        element.innerHTML = html;
+
+        // ---- 新建分组 ----
+        const ngBtn = element.querySelector('#cs-btn-newgroup');
+        if (ngBtn) ngBtn.addEventListener('click', () => {
+            self.openGroupDialog(null, (g) => self.createGroup(g.name, g.icon));
+        });
+
+        // ---- 树节点展开/收起 ----
+        element.querySelectorAll('.cs-tree-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const idx = toggle.getAttribute('data-toggle');
+                const children = element.querySelector(`.cs-tree-children[data-children="${idx}"]`);
+                const arrow = toggle.querySelector('.cs-tree-arrow');
+                if (children) {
+                    const collapsed = children.style.gridTemplateRows !== '1fr';
+                    children.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
+                    const use = arrow ? arrow.querySelector('use') : null;
+                    if (use) {
+                        // 点击后：collapsed 为 true 表示本次展开(→ iconDown)，否则折叠(→ iconRight)
+                        const href = collapsed ? '#iconDown' : '#iconRight';
+                        use.setAttribute('xlink:href', href);
+                        use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
+                    }
+                }
+            });
+        });
+
+        // ---- 分组重命名 / 删除 ----
+        element.querySelectorAll('.cs-group-act').forEach(actBtn => {
+            actBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const gid = actBtn.getAttribute('data-gid');
+                const act = actBtn.getAttribute('data-act');
+                const grp = (self.customFolders || []).find(f => f.id === gid);
+                if (act === 'rename') {
+                    self.openGroupDialog(grp ? { name: grp.name, icon: grp.icon } : null, (g) => self.renameGroup(gid, g.name, g.icon));
+                } else if (act === 'delete') {
+                    if (confirm(self.getText('groupDeleteConfirm', '确定删除该分组？分组内的样式会移到「未分类」。'))) {
+                        self.deleteGroup(gid);
+                    }
+                }
+            });
+        });
+
+        // 树子项 hover + 点击编辑
+        element.querySelectorAll('.cs-tree-item').forEach(itemEl => {
+            itemEl.addEventListener('mouseenter', () => { itemEl.style.background = 'var(--b3-theme-background)'; });
+            itemEl.addEventListener('mouseleave', () => { itemEl.style.background = ''; });
+            itemEl.addEventListener('click', () => {
+                self.openStyleDialog(itemEl.getAttribute('data-cs-id'));
+            });
+        });
+
+        // 树头部 hover
+        element.querySelectorAll('.cs-tree-header').forEach(h => {
+            h.addEventListener('mouseenter', () => h.style.background = 'var(--b3-theme-background)');
+            h.addEventListener('mouseleave', () => h.style.background = '');
+        });
+
+        // 新增按钮 → Dialog
+        element.querySelector('#cs-btn-new').addEventListener('click', () => self.openStyleDialog(null));
+
+        // 卡片编辑 / 删除
+        element.querySelectorAll('[data-cs-edit]').forEach(btn => {
+            btn.addEventListener('click', () => self.openStyleDialog(btn.getAttribute('data-cs-edit')));
+        });
+        element.querySelectorAll('[data-cs-del]').forEach(async btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.getAttribute('data-cs-del');
+                self.customStyles = (self.customStyles || []).filter(c => c.id !== id);
+                await self.saveData('customStyles', self.customStyles);
+                showMessage(self.getText('customDeleted', '已删除自定义样式'));
+                self.renderCustomStyleManager(element);
+            });
+        });
+
+        // ---- 样式卡片悬停预览（浮层 tooltip）----
+        let hoverPreview = document.getElementById('cs-hover-preview');
+        if (!hoverPreview) {
+            hoverPreview = document.createElement('div');
+            hoverPreview.id = 'cs-hover-preview';
+            hoverPreview.className = 'b3-dialog__content';
+            hoverPreview.style.cssText = 'position:fixed; z-index:9999; width:300px; max-width:90vw; padding:14px 16px; box-shadow:0 6px 24px rgba(0,0,0,.18); border-radius:10px; background:var(--b3-theme-background); border:1px solid var(--b3-border-color); pointer-events:none; opacity:0; transition:opacity .12s; display:none;';
+            document.body.appendChild(hoverPreview);
+        }
+
+        element.querySelectorAll('.cs-style-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const label = card.getAttribute('data-cs-style') || '';
+                const ico = card.getAttribute('data-cs-icon') || '';
+                const ttl = card.getAttribute('data-cs-title') || '';
+                if (!label) return;
+                const isBuiltin = /^icon[A-Z]/.test(ico);
+                // 内置图标用 createElementNS 渲染真实 SVG；emoji 直接文本
+                let head = '';
+                if (ico && isBuiltin) {
+                    const _svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    _svg.setAttribute('style', 'width:16px;height:16px;vertical-align:text-bottom;margin-right:6px;');
+                    _svg.setAttribute('viewBox', '0 0 24 24');
+                    const _use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+                    _use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + ico);
+                    _use.setAttribute('href', '#' + ico);
+                    _svg.appendChild(_use);
+                    const _tmp = document.createElement('div'); _tmp.appendChild(_svg); head = _tmp.innerHTML;
+                } else if (ico) {
+                    head = '<span style="margin-right:6px;">' + ico + '</span>';
+                }
+                // 只传 custom-deco-style 让基础 CSS 生效；标题/图标/示例文字全部手动渲染，避免与 ::before 重复
+                hoverPreview.innerHTML =
+                    '<div class="protyle-wysiwyg"><div custom-deco-style="' + label + '"' +
+                    ' style="padding:14px 16px;" data-type="NodeParagraph">' + head + '<strong style="font-size:14px;">' + (ttl || label) + '</strong>' +
+                    '<p style="margin:8px 0 0;padding:0;font-size:12.5px;line-height:1.7;opacity:.75;">这是一段示例文字，用于预览「' + label + '」样式的实际效果。</p></div></div>';
+
+                // 定位：显示在卡片右侧，超出视口则放左侧
+                const rect = card.getBoundingClientRect();
+                hoverPreview.style.display = 'block';
+                const pw = hoverPreview.offsetWidth, ph = hoverPreview.offsetHeight;
+                let left = rect.right + 12;
+                if (left + pw > window.innerWidth - 8) left = rect.left - pw - 12;
+                if (left < 8) left = 8;
+                let top = rect.top;
+                if (top + ph > window.innerHeight - 8) top = window.innerHeight - ph - 8;
+                if (top < 8) top = 8;
+                hoverPreview.style.left = left + 'px';
+                hoverPreview.style.top = top + 'px';
+                requestAnimationFrame(() => { hoverPreview.style.opacity = '1'; });
+            });
+            card.addEventListener('mouseleave', () => {
+                hoverPreview.style.opacity = '0';
+                setTimeout(() => { if (hoverPreview.style.opacity === '0') hoverPreview.style.display = 'none'; }, 130);
+            });
+        });
+    }
+
+    // 渲染单张样式卡片（用于右侧列表）
+    _renderStyleCard(cs) {
+        return `
+            <div class="cs-style-card" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; border-radius:8px; border:1px solid var(--b3-border-color); background:var(--b3-theme-surface); transition:border-color .15s; margin-bottom:8px; cursor:default;">
+                <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                    <span style="font-size:1.35rem; flex:none;">${cs.icon || '✨'}</span>
+                    <div style="min-width:0; overflow:hidden;">
+                        <div style="font-weight:650; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cs.name}</div>
+                        <div style="font-size:11px; opacity:.55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cs.style}${cs.title ? ' · ' + cs.title : ''}</div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:5px; flex:none;">
+                    <button class="b3-button b3-button--outline b3-button--small" data-cs-edit="${cs.id}" style="padding:2px 8px; font-size:11px;">${this.getText('customEdit', '编辑')}</button>
+                    <button class="b3-button b3-button--outline b3-button--small" data-cs-del="${cs.id}" style="padding:2px 8px; font-size:11px;">${this.getText('customDelete', '删除')}</button>
+                </div>
+            </div>`;
+    }
+
+    // ========== 二级：自定义块父按钮 → 分组（引述/普通/图片/未分类）→ 各预设项 ==========
+    createCustomParentButton(blockId) {
+        const btn = document.createElement("button");
+        btn.className = "b3-menu__item";
+        btn.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconStar"></use></svg>
+                         <span class="b3-menu__label">${this.getText('blockCustom', '自定义')}</span>
+                         <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
+
+        const subMenu = document.createElement("div");
+        subMenu.className = "b3-menu__submenu";
+        const itemsContainer = document.createElement("div");
+        itemsContainer.className = "b3-menu__items";
+
+        const groups = this._getGroupedByFolder();
+        let anyGroup = false;
+
+        for (const g of groups) {
+            if (!g.items.length) continue;
+            anyGroup = true;
+
+            const isNone = g.id === '__none__';
+            const iconHtml = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 14, cls: 'b3-menu__icon' });
+            const groupBtn = document.createElement("button");
+            groupBtn.className = "b3-menu__item";
+            groupBtn.innerHTML = `${iconHtml}<span class="b3-menu__label">${this._escapeAttr(g.name)}</span>
+                                <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
+
+            const groupSub = document.createElement("div");
+            groupSub.className = "b3-menu__submenu";
+            const groupItems = document.createElement("div");
+            groupItems.className = "b3-menu__items";
+            g.items.forEach(cs => groupItems.appendChild(this.createCustomStyleItem(blockId, cs)));
+            groupSub.appendChild(groupItems);
+            groupBtn.appendChild(groupSub);
+            itemsContainer.appendChild(groupBtn);
+        }
+
+        if (!anyGroup) {
+            const empty = document.createElement("button");
+            empty.className = "b3-menu__item";
+            empty.setAttribute('disabled', 'true');
+            empty.innerHTML = `<span class="b3-menu__label" style="opacity:.5;">${this.getText('customEmpty', '暂无自定义样式')}</span>`;
+            itemsContainer.appendChild(empty);
+        }
+
+        // 管理入口
+        const manage = document.createElement("button");
+        manage.className = "b3-menu__item";
+        manage.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconSettings"></use></svg>
+                            <span class="b3-menu__label">${this.getText('customManage', '管理自定义样式')}</span>`;
+        manage.onclick = (e) => { e.stopPropagation(); this.openSetting(); };
+        itemsContainer.appendChild(manage);
+
+        subMenu.appendChild(itemsContainer);
+        btn.appendChild(subMenu);
+        return btn;
+    }
+
+    // ========== 三级：自定义预设项（一键套用） ==========
+    createCustomStyleItem(blockId, cs) {
+        const item = document.createElement("button");
+        item.className = "b3-menu__item";
+        item.innerHTML = `<span class="b3-menu__icon">${cs.icon || '✨'}</span>
+                          <span class="b3-menu__label">${cs.name}</span>`;
+
+        // 悬停预览
+        item.addEventListener('mouseenter', () => this._showMenuHoverPreview(item, cs.style, cs.icon || '', cs.title || ''));
+        item.addEventListener('mouseleave', () => this._hideMenuHoverPreview());
+
+        item.onclick = async (e) => {
+            e.stopPropagation();
+            this._hideMenuHoverPreview();
+            const attrs = {
+                "custom-deco-style": cs.style,
+                "custom-deco-card-icon": cs.icon || '',
+                "custom-deco-card-title": cs.title || ''
+            };
+            await this.setAttrs(blockId, attrs);
+            showMessage(this.getText('customApplied', '已套用自定义样式：') + cs.name);
+        };
+
+        return item;
     }
 
     createRemoveStyleItem(blockId) {
@@ -4755,10 +1678,18 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const iconColor = this.getColorForString(key, 80, 60); // 饱和度稍高，更鲜艳
 
         item.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="#iconSparkles"></use></svg>
-                          <span class="b3-menu__label">${label}</span>`;
+                          <span class="b3-menu__label">${label}</span`;
+
+        // 悬停预览
+        const defaults = this.styleDefaults ? this.styleDefaults[label] : null;
+        const previewIcon = defaults?.icon || '';
+        const previewTitle = defaults?.title || '';
+        item.addEventListener('mouseenter', () => this._showMenuHoverPreview(item, label, previewIcon, previewTitle));
+        item.addEventListener('mouseleave', () => this._hideMenuHoverPreview());
 
         item.onclick = async (e) => {
             e.stopPropagation();
+            this._hideMenuHoverPreview();
 
             const currentBlock = document.querySelector(`[data-node-id="${blockId}"]`);
             const existingTitle = currentBlock?.getAttribute('custom-deco-card-title') || '';
@@ -4767,7 +1698,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
             && !key.startsWith('polka')) {
-                const defaults = this.styleDefaults[label];
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     if (!existingTitle) {
@@ -4788,7 +1718,65 @@ if (key === 'diaryChatWhisperCard') {
 
             await this.setAttrs(blockId, attrs);
         };
-        return item;
+
+        return item;;
+    }
+
+    // ========== 菜单项悬停预览（tooltip 浮层）==========
+    _menuHoverEl = null;
+
+    _getMenuHoverEl() {
+        if (this._menuHoverEl) return this._menuHoverEl;
+        const el = document.createElement('div');
+        el.id = 'cs-menu-hover-preview';
+        el.style.cssText = 'position:fixed; z-index:2147483647; width:420px; max-width:70vw; padding:16px 18px; box-shadow:0 8px 32px rgba(0,0,0,.2); border-radius:12px; background:var(--b3-theme-background); border:1px solid var(--b3-border-color); pointer-events:none; opacity:0; transition:opacity .15s ease; display:none;';
+        document.body.appendChild(el);
+        this._menuHoverEl = el;
+        return el;
+    }
+
+    _showMenuHoverPreview(targetEl, styleLabel, icon, title) {
+        const el = this._getMenuHoverEl();
+        if (!styleLabel) return;
+        const isBuiltin = /^icon[A-Z]/.test(icon);
+        // 渲染图标
+        let headHtml = '';
+        if (icon && isBuiltin) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('style', 'width:16px;height:16px;vertical-align:text-bottom;margin-right:6px;');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+            use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + icon);
+            use.setAttribute('href', '#' + icon);
+            svg.appendChild(use);
+            const tmp = document.createElement('div'); tmp.appendChild(svg); headHtml = tmp.innerHTML;
+        } else if (icon) {
+            headHtml = '<span style="margin-right:6px;">' + icon + '</span>';
+        }
+        // 只传 custom-deco-style 让 CSS ::before 自动渲染图标+标题；内部只放占位符避免重复
+        el.innerHTML =
+            '<div class="protyle-wysiwyg"><div custom-deco-style="' + styleLabel + '"' +
+            ' style="padding:14px 16px;border-radius:8px;" data-type="NodeParagraph">&nbsp;</div></div>';
+
+        el.style.display = 'block';
+        const rect = targetEl.getBoundingClientRect();
+        const ew = el.offsetWidth, eh = el.offsetHeight;
+        let left = rect.right + 10;
+        if (left + ew > window.innerWidth - 6) left = rect.left - ew - 10;
+        if (left < 6) left = 6;
+        let top = rect.top;
+        if (top + eh > window.innerHeight - 6) top = window.innerHeight - eh - 6;
+        if (top < 6) top = 6;
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+        requestAnimationFrame(() => { el.style.opacity = '1'; });
+    }
+
+    _hideMenuHoverPreview() {
+        const el = this._menuHoverEl;
+        if (!el) return;
+        el.style.opacity = '0';
+        setTimeout(() => { if (el && el.style.opacity === '0') { el.style.display = 'none'; } }, 160);
     }
 
     // ========== 新增：基于字符串生成彩色HSL的方法 ==========
@@ -4829,188 +1817,463 @@ if (key === 'diaryChatWhisperCard') {
         return CARD_ITEMS.map(item => ({ key: item.key, label: item.label }));
     }
 
-    // ========== 二级菜单按字数排序（已在返回前排序） ==========
-    getSecondaryGroups() {
-        const groups = [
-            {
-                id: "whisper",
-                labelKey: "whisperGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin')
-            },
-            {
-                id: "whisperThin",
-                labelKey: "whisperThinGroup",
-                icon: "#iconLayout",
-                filter: (label, key) => key.includes('ThinWhisperCard')
-            },
-            {
-                id: "cardStyle",
-                labelKey: "creativeGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('CreativeCard')
-            },
-            {
-                id: "gradientCardGroup",
-                labelKey: "gradientCardGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('GradientCard')
-            },
-            {
-                id: "topLineStyle",
-                labelKey: "topLineGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.startsWith('topLine')  // 筛选所有顶线样式
-            },
-            {
-                id: "polkaStyle",
-                labelKey: "polkaGroup",
-                icon: "#iconSparkles",  // 使用闪亮图标
-                filter: (label, key) => key.startsWith('polka')  // 筛选所有波点样式
-            },
-            {
-                id: "journalCard",
-                labelKey: "journalCardGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('JournalCard')
-            },
-            {
-                id: "terminalGroup",
-                labelKey: "terminalGroup",
-                icon: "#iconTerminal",
-                filter: (label, key) => key.endsWith('TerminalCard')
-            },
-            {
-                id: "noticeGroup",
-                labelKey: "noticeGroup",
-                icon: "#iconInfo",
-                filter: (label, key) => key.endsWith('NoticeCard')
-            },
-            {
-                id: "gradientTop",
-                labelKey: "gradientTopGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('GradientTopCard')
-            },
-            {
-                id: "calloutGroup",
-                labelKey: "calloutGroup",
-                icon: "#iconInfo",
-                filter: (label, key) => key.endsWith('CalloutCard')
-            },
-            {
-                id: "imageGroup",
-                labelKey: "imageGroup",
-                icon: "#iconImage",
-                filter: (label, key) => key.endsWith('ImageCard')
-            },
-            {
-                id: "excerptGroup",
-                labelKey: "excerptGroup",
-                icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('ExcerptCard')
-            },
-            {
-                id: "chatWhisper",
-                labelKey: "chatWhisperGroup",
-                icon: "#iconSparkles",
-                filter: (label, key) => key.endsWith('ChatWhisperCard')
-            },
+    // ========== 自定义样式按「用户分组（文件夹）」归类 ==========
+    _escapeAttr(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    // 渲染分组图标为思源内置 svg（iconName 为空时回退 iconFolder）。opts: {size, cls, style}
+    _groupIconSvg(iconName, opts) {
+        const o = opts || {};
+        const name = (iconName && String(iconName).length) ? iconName : 'iconFolder';
+        const sz = o.size || 16;
+        const cls = o.cls ? ` class="${o.cls}"` : '';
+        const style = o.style || `width:${sz}px;height:${sz}px;flex:none;opacity:.8;`;
+        return `<svg${cls} style="${style}"><use xlink:href="#${name}"></use></svg>`;
+    }
+
+    // 返回有序数组：用户分组（按 customFolders 顺序）+ 末尾「未分类」
+    _getGroupedByFolder() {
+        const folders = this.customFolders || [];
+        const result = [];
+        const folderIds = new Set();
+        for (const f of folders) {
+            folderIds.add(f.id);
+            result.push({ id: f.id, name: f.name, icon: f.icon || 'iconFolder', items: [] });
+        }
+        const noneGroup = { id: '__none__', name: this.getText('unsorted', '未分类'), items: [] };
+        for (const cs of (this.customStyles || [])) {
+            const fid = cs.folderId || '';
+            if (fid && folderIds.has(fid)) {
+                const g = result.find(r => r.id === fid);
+                if (g) g.items.push(cs);
+                else noneGroup.items.push(cs);
+            } else {
+                noneGroup.items.push(cs);
+            }
+        }
+        result.push(noneGroup);
+        return result;
+    }
+
+    _buildFolderOptionsHtml(selectedId) {
+        const folders = this.customFolders || [];
+        let html = '<option value="">— ' + this.getText('noFolder', '不归入分组') + ' —</option>';
+        for (const f of folders) {
+            const sel = f.id === selectedId ? ' selected' : '';
+            html += `<option value="${f.id}"${sel}>${this._escapeAttr(f.name)}</option>`;
+        }
+        return html;
+    }
+
+    // ========== 分组的增删改 ==========
+    // existing: { name, icon } | null（新建）；onConfirm 回调接收 { name, icon }
+    openGroupDialog(existing, onConfirm) {
+        const self = this;
+        const isEdit = !!(existing && existing.name);
+        const selIcon = (existing && existing.icon) || 'iconFolder';
+
+        // 用 createElementNS 渲染图标（innerHTML 的 <use> 在 Dialog 内无法解析 symbol）
+        function makeIconPreview(name, size) {
+            const s = size || 18;
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', String(s));
+            svg.setAttribute('height', String(s));
+            svg.style.display = 'inline-block';
+            svg.style.verticalAlign = 'middle';
+            svg.style.flexShrink = '0';
+            const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+            use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + name);
+            use.setAttribute('xlink:href', '#' + name);
+            svg.appendChild(use);
+            return svg;
+        }
+
+        function isBuiltinIcon(val) {
+            return typeof val === 'string' && /^icon[A-Z]/.test(val);
+        }
+
+        function renderCurIcon(el, val) {
+            el.innerHTML = '';
+            if (isBuiltinIcon(val)) {
+                el.appendChild(makeIconPreview(val, 18));
+            } else {
+                el.textContent = val || '';
+                el.style.fontSize = '16px';
+            }
+        }
+
+        const dlg = new Dialog({
+            title: isEdit ? this.getText('renameGroup', '重命名分组') : this.getText('addFolder', '新建分组'),
+            width: "420px",
+            content: `<div style="padding:20px 24px;">
+                <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('folderName', '分组名称')}</label>
+                <input id="cs-g-name" class="b3-text-field" type="text" value="${existing && existing.name ? this._escapeAttr(existing.name) : ''}" placeholder="${this.getText('folderNamePlaceholder', '如：工作、日记')}" style="width:100%;">
+                <div style="display:flex; align-items:center; gap:10px; margin-top:16px;">
+                    <span id="cs-g-cur-icon" style="font-size:12px; opacity:.6; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-flex; align-items:center; min-height:20px;"></span>
+                    <button id="cs-g-pick-btn" class="b3-button b3-button--outline" style="padding:5px 14px; font-size:12px;">${this.getText('changeIcon', '更换图标')}</button>
+                </div>
+                <div class="fn__flex" style="justify-content:flex-end; gap:8px; margin-top:18px;">
+                    <button class="b3-button b3-button--cancel" id="cs-g-cancel">${this.getText('cancel', '取消')}</button>
+                    <button class="b3-button b3-button--outline" id="cs-g-ok" style="padding:6px 20px; font-weight:600;">${this.getText('confirm', '确定')}</button>
+                </div>
+            </div>`
+        });
+        const el = dlg.element;
+        const input = el.querySelector('#cs-g-name');
+        const curIconEl = el.querySelector('#cs-g-cur-icon');
+        let currentIcon = selIcon;
+
+        // 初始渲染图标预览
+        renderCurIcon(curIconEl, currentIcon);
+
+        // 点击「更换图标」→ 弹出三 Tab 选择器
+        el.querySelector('#cs-g-pick-btn').addEventListener('click', () => {
+            self._openGroupIconPicker(currentIcon, function (picked) {
+                currentIcon = picked;
+                renderCurIcon(curIconEl, picked);
+            });
+        });
+
+        setTimeout(() => input.focus(), 30);
+        const confirm = () => {
+            const name = input.value.trim();
+            if (!name) { showMessage(this.getText('needFolderName', '请填写分组名称')); return; }
+            onConfirm({ name, icon: currentIcon });
+            dlg.destroy();
+        };
+        el.querySelector('#cs-g-ok').addEventListener('click', confirm);
+        el.querySelector('#cs-g-cancel').addEventListener('click', () => dlg.destroy());
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirm(); });
+    }
+
+
+
+    // ========== 三 Tab 图标选择器（仿思源原生） ==========
+    _openGroupIconPicker(currentValue, onPick) {
+        var self = this;
+        var picked = currentValue || "";
+
+        function isBuiltin(val) {
+            return typeof val === "string" && /^icon[A-Z]/.test(val);
+        }
+
+        function svgEl(iconName, size) {
+            var s = size || 20;
+            var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", String(s));
+            svg.setAttribute("height", String(s));
+            svg.style.display = "inline-block";
+            svg.style.verticalAlign = "middle";
+            var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+            use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#" + iconName);
+            use.setAttribute("xlink:href", "#" + iconName);
+            svg.appendChild(use);
+            return svg;
+        }
+
+        var dlg = new Dialog({
+            title: self.getText("setIconTitle", "设置图标"),
+            width: "480px",
+            height: "560px",
+            content: "<div style=\"display:flex;flex-direction:column;height:100%;overflow:hidden;\">" +
+                "<div style=\"text-align:center;padding:18px 0 8px;\">" +
+                    "<div id=\"ip-prev\" style=\"width:60px;height:60px;border-radius:12px;border:1px solid var(--b3-border-color);margin:0 auto;display:flex;align-items:center;justify-content:center;background:var(--b3-theme-surface);font-size:32px;line-height:1;overflow:hidden;\"></div>" +
+                "</div>" +
+                "<div id=\"ip-tabs\" style=\"display:flex;border-bottom:2px solid var(--b3-border-color);padding:0 20px;margin:0;\">" +
+                    "<button data-t=\"emoji\" class=\"ip-tab-btn\" style=\"flex:1;padding:10px 0;text-align:center;font-size:14px;border:none;background:none;cursor:pointer;color:var(--b3-text-color1);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;\">Emoji</button>" +
+                    "<button data-t=\"builtin\" class=\"ip-tab-btn\" style=\"flex:1;padding:10px 0;text-align:center;font-size:14px;border:none;background:none;cursor:pointer;color:var(--b3-text-color2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;\">" + self.getText("builtinTab", "内置图标") + "</button>" +
+                "</div>" +
+                "<div id=\"ip-srch-wrap\" style=\"padding:8px 20px 0;\">" +
+                    "<input id=\"ip-srch\" class=\"b3-text-field\" type=\"text\" placeholder=\"" + self.getText("searchContent", "搜索...") + "\" style=\"width:100%;font-size:13px;\">" +
+                "</div>" +
+                "<div id=\"ip-body\" style=\"flex:1;overflow-y:auto;padding:10px 20px 16px;min-height:220px;\"></div>" +
+                "<div style=\"display:flex;justify-content:space-between;align-items:center;padding:12px 20px 16px;border-top:1px solid var(--b3-border-color);\">" +
+                    "<button id=\"ip-rst\" class=\"b3-button b3-button--cancel\" style=\"font-size:13px;padding:6px 16px;\">" + self.getText("resetToHash", "重置为 #") + "</button>" +
+                    "<button id=\"ip-ok\" class=\"b3-button b3-button--outline\" style=\"padding:7px 28px;font-weight:600;\">" + self.getText("confirm", "确定") + "</button>" +
+                "</div>" +
+            "</div>"
+        });
+
+        var el = dlg.element;
+        var body = el.querySelector("#ip-body");
+        var srchWrap = el.querySelector("#ip-srch-wrap");
+        var srchInput = el.querySelector("#ip-srch");
+        var prevBox = el.querySelector("#ip-prev");
+        var curTab = isBuiltin(picked) ? "builtin" : (picked ? "emoji" : "builtin");
+
+        var emojiData = null;
+
+        function updatePrev() {
+            prevBox.innerHTML = "";
+            if (!picked) {
+                var ph = document.createElement("span");
+                ph.style.cssText = "font-size:12px;opacity:.35;";
+                ph.textContent = "#";
+                prevBox.appendChild(ph);
+            } else if (isBuiltin(picked)) {
+                prevBox.appendChild(svgEl(picked, 30));
+            } else {
+                prevBox.textContent = picked;
+                prevBox.style.fontSize = "30px";
+            }
+        }
+
+        function goTab(tid) {
+            curTab = tid;
+            el.querySelectorAll(".ip-tab-btn").forEach(function (btn) {
+                var on = btn.getAttribute("data-t") === tid;
+                btn.style.color = on ? "var(--b3-theme-primary)" : "var(--b3-text-color2)";
+                btn.style.borderBottomColor = on ? "var(--b3-theme-primary)" : "transparent";
+                btn.style.fontWeight = on ? "600" : "400";
+            });
+            srchInput.value = "";
+            if (tid === "emoji") renderEmoji();
+            else renderBuiltin();
+        }
+
+        el.querySelectorAll(".ip-tab-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () { goTab(btn.getAttribute("data-t")); });
+        });
+
+        function hexToEmoji(hex) {
+            if (!hex) return "";
+            if (/[^0-9a-fA-F\-]/.test(hex)) return hex;
+            try { return String.fromCodePoint.apply(null, hex.split("-").map(function (p) { return parseInt(p, 16); })); }
+            catch (_) { return ""; }
+        }
+
+        async function renderEmoji(filter) {
+            body.innerHTML = '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">' + self.getText("loadingEmojis", "\u6b63\u5728\u52a0\u8f7d\u2026") + '</div>';
+            try {
+                if (!emojiData) {
+                    var res = await self.callSiyuanAPI("/api/system/getEmojiConf", {});
+                    emojiData = (res && res.code === 0) ? (res.data || []) : [];
+                }
+            } catch (_) {
+                body.innerHTML = '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">\u52a0\u8f7d\u5931\u8d25</div>';
+                return;
+            }
+
+            var groups = emojiData.filter(function (g) { return g.id !== "custom"; });
+            var q = (filter || "").toLowerCase();
+            var html = "";
+
+            groups.forEach(function (grp) {
+                var items = grp.items || [];
+                if (q) items = items.filter(function (it) {
+                    var label = (grp.title_zh_cn || grp.title || "") + " " + (it.description_zh_cn || it.description || "");
+                    return label.toLowerCase().indexOf(q) !== -1;
+                });
+                if (!items.length) return;
+
+                var btns = "";
+                items.forEach(function (it) {
+                    var ch = hexToEmoji(it.unicode);
+                    if (!ch) return;
+                    var esc = ch.replace(/"/g, "&quot;").replace(/</g, "&lt;");
+                    var sel = (ch === picked) ? "background:var(--b3-theme-primary)!important;color:#fff!important;" : "";
+                    btns += '<button class="ip-eitem" data-v="' + esc + '" style="font-size:22px;width:38px;height:38px;margin:3px;padding:0;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;background:transparent;transition:all .1s;' + sel + '">' + esc + "</button>";
+                });
+
+                html += '<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:600;opacity:.5;margin-bottom:6px;">' + self._escapeAttr(grp.title_zh_cn || grp.title || "") + '</div><div style="display:flex;flex-wrap:wrap;">' + btns + "</div></div>";
+            });
+
+            body.innerHTML = html || '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">\u65e0\u5339\u914d</div>';
+
+            body.querySelectorAll(".ip-eitem").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    picked = btn.getAttribute("data-v");
+                    updatePrev();
+                    body.querySelectorAll(".ip-eitem").forEach(function (b) { b.style.background = ""; b.style.color = ""; });
+                    btn.style.background = "var(--b3-theme-primary)";
+                    btn.style.color = "#fff";
+                });
+            });
+        }
+
+        function renderText() {
+            var v = isBuiltin(picked) ? "" : (picked || "");
+            body.innerHTML = '<div style="padding:16px 0;"><label style="display:block;font-size:13px;opacity:.65;margin-bottom:8px;">' + self.getText("enterTextOrEmoji", "\u8f93\u5165\u6587\u5b57\u6216 Emoji") + '</label>' +
+                '<input id="ip-txt" class="b3-text-field" type="text" value="' + self._escapeAttr(v) + '" placeholder="' + self._escapeAttr(self.getText("textPlaceholder", "\u5982 \ud83c\udfaf \u2606 \u81ea\u5b9a\u4e49")) + '" style="width:100%;font-size:14px;">' +
+                '<div id="ip-txt-prev" style="margin-top:14px;text-align:center;min-height:48px;font-size:36px;"></div></div>';
+            var ti = body.querySelector("#ip-txt");
+            var tp = body.querySelector("#ip-txt-prev");
+            function upd() {
+                var val = ti.value.trim();
+                tp.textContent = val;
+                tp.style.opacity = val ? "1" : ".2";
+            }
+            ti.addEventListener("input", upd);
+            ti.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") { e.preventDefault(); picked = ti.value.trim(); updatePrev(); }
+            });
+            upd();
+            ti.addEventListener("change", function () { picked = ti.value.trim(); });
+        }
+
+        function renderBuiltin(filter) {
+            body.innerHTML = "";
+            var names = SIYUAN_ICON_NAMES || [];
+            var q = (filter || "").toLowerCase();
+            var list = q ? names.filter(function (n) { return n.toLowerCase().indexOf(q) !== -1; }) : names;
+
+            list.forEach(function (name) {
+                var btn = document.createElement("button");
+                btn.type = "button";
+                btn.title = name;
+                var sel = (name === picked);
+                btn.style.cssText = "width:42px;height:42px;margin:3px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;border:1px solid " + (sel ? "var(--b3-theme-primary)" : "transparent") + ";background:" + (sel ? "var(--b3-theme-background)" : "transparent") + ";transition:all .12s;";
+                if (sel) btn.style.boxShadow = "inset 0 0 0 2px var(--b3-theme-primary)";
+                btn.appendChild(svgEl(name, 20));
+                btn.addEventListener("click", function () {
+                    picked = name;
+                    updatePrev();
+                    body.querySelectorAll("button[title]").forEach(function (b) {
+                        b.style.border = "1px solid transparent"; b.style.boxShadow = ""; b.style.background = "transparent";
+                    });
+                    btn.style.border = "1px solid var(--b3-theme-primary)";
+                    btn.style.boxShadow = "inset 0 0 0 2px var(--b3-theme-primary)";
+                    btn.style.background = "var(--b3-theme-background)";
+                });
+                body.appendChild(btn);
+            });
+            if (!list.length) {
+                var empty = document.createElement("div");
+                empty.style.cssText = "text-align:center;padding:40px 0;opacity:.4;font-size:13px;";
+                empty.textContent = self.getText("noMatch", "\u65e0\u5339\u914d\u7ed3\u679c");
+                body.appendChild(empty);
+            }
+        }
+
+        srchInput.addEventListener("input", function () {
+            var q = srchInput.value.trim();
+            if (curTab === "emoji") renderEmoji(q);
+            else if (curTab === "builtin") renderBuiltin(q);
+        });
+
+        el.querySelector("#ip-rst").addEventListener("click", function () {
+            picked = "";
+            updatePrev();
+        });
+
+        el.querySelector("#ip-ok").addEventListener("click", function () {
+            if (onPick) onPick(picked);
+            dlg.destroy();
+        });
+
+        updatePrev();
+        goTab(curTab);
+    }
+
+
+    async createGroup(name, icon) {
+        if (!this.customFolders) this.customFolders = [];
+        this.customFolders.push({ id: 'grp_' + Date.now(), name, icon: icon || 'iconFolder' });
+        await this.saveData('customFolders', this.customFolders);
+        showMessage(this.getText('folderCreated', '已新建分组：') + name);
+        if (this._settingRootEl && this._settingRootEl.isConnected) this.renderCustomStyleManager(this._settingRootEl);
+    }
+
+    async renameGroup(id, name, icon) {
+        const f = (this.customFolders || []).find(x => x.id === id);
+        if (!f) return;
+        f.name = name;
+        f.icon = icon || 'iconFolder';
+        await this.saveData('customFolders', this.customFolders);
+        showMessage(this.getText('groupRenamed', '已重命名分组'));
+        if (this._settingRootEl && this._settingRootEl.isConnected) this.renderCustomStyleManager(this._settingRootEl);
+    }
+
+    async deleteGroup(id) {
+        this.customFolders = (this.customFolders || []).filter(f => f.id !== id);
+        this.customStyles = (this.customStyles || []).map(c => (c.folderId === id ? Object.assign({}, c, { folderId: null }) : c));
+        await this.saveData('customFolders', this.customFolders);
+        await this.saveData('customStyles', this.customStyles);
+        showMessage(this.getText('groupDeleted', '已删除分组，样式已移至未分类'));
+        if (this._settingRootEl && this._settingRootEl.isConnected) this.renderCustomStyleManager(this._settingRootEl);
+    }
+
+    // ========== 菜单数据结构（五级：轻饰笔记 → 块类型 → 细分类 → 组 → 卡片项） ==========
+    getMenuStructure() {
+        return [
             {
                 id: "quoteBlock",
-                labelKey: "quoteGroup",
+                labelKey: "blockQuote",
                 icon: "#iconQuote",
-                filter: (label, key) => key.endsWith('QuoteCard')
-            }
+                children: [
+                    {
+                        id: "quoteCategory",
+                        labelKey: "categoryQuote",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "quoteBlock", labelKey: "quoteGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('QuoteCard') },
+                            { id: "excerptGroup", labelKey: "excerptGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('ExcerptCard') }
+                        ]
+                    },
+                    {
+                        id: "timelineCategory",
+                        labelKey: "categoryTimeline",
+                        icon: "#iconLayout",
+                        subGroups: [
+                            { id: "whisper", labelKey: "whisperGroup", icon: "#iconLayout", filter: (label, key) => key.startsWith('timeline') && key.includes('WhisperCard') && !key.includes('Thin') },
+                            { id: "whisperThin", labelKey: "whisperThinGroup", icon: "#iconLayout", filter: (label, key) => key.includes('ThinWhisperCard') }
+                        ]
+                    },
+                    {
+                        id: "lineDecorCategory",
+                        labelKey: "categoryLineDecor",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "topLineStyle", labelKey: "topLineGroup", icon: "#iconQuote", filter: (label, key) => key.startsWith('topLine') },
+                            { id: "polkaStyle", labelKey: "polkaGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('polka') }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "normalBlock",
+                labelKey: "blockNormal",
+                icon: "#iconSparkles",
+                children: [
+                    {
+                        id: "normalCardCategory",
+                        labelKey: "categoryNormalCard",
+                        icon: "#iconSparkles",
+                        subGroups: [
+                            { id: "cardStyle", labelKey: "creativeGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('CreativeCard') },
+                            { id: "gradientCardGroup", labelKey: "gradientCardGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('GradientCard') },
+                            { id: "journalCard", labelKey: "journalCardGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('JournalCard') },
+                            { id: "terminalGroup", labelKey: "terminalGroup", icon: "#iconTerminal", filter: (label, key) => key.endsWith('TerminalCard') },
+                            { id: "noticeGroup", labelKey: "noticeGroup", icon: "#iconInfo", filter: (label, key) => key.endsWith('NoticeCard') },
+                            { id: "gradientTop", labelKey: "gradientTopGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('GradientTopCard') },
+                            { id: "calloutGroup", labelKey: "calloutGroup", icon: "#iconInfo", filter: (label, key) => key.endsWith('CalloutCard') }
+                        ]
+                    },
+                    {
+                        id: "chatBubbleCategory",
+                        labelKey: "categoryChatBubble",
+                        icon: "#iconSparkles",
+                        subGroups: [
+                            { id: "chatWhisper", labelKey: "chatWhisperGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('ChatWhisperCard') }
+                        ]
+                    }
+                ]
+            },
         ];
-
-        // 按显示文本字数升序排序（短的在前）
-        return groups.sort((a, b) => {
-            const textA = this.getText(a.labelKey, '');
-            const textB = this.getText(b.labelKey, '');
-            return textA.length - textB.length;
-        });
     }
 
     getText(key, fallback) {
         return TEXT[key] || fallback;
     }
 
-    async getBlockInfo(blockId) {
-        return await this.callSiyuanAPI('/api/block/getBlockInfo', { id: blockId });
-    }
 
-    async openBlockDocument(blockId) {
-        try {
-            await openTab({
-                app: this.app,
-                doc: { 
-                    id: blockId,
-                    action: ["cb-get-hl", "cb-get-focus"]
-                }
-            });
-        } catch (e) {
-            const info = await this.getBlockInfo(blockId);
-            if (info && info.code === 0) {
-                const rootID = info.data.rootID;
-                await openTab({
-                    app: this.app,
-                    doc: { 
-                        id: rootID,
-                        anchor: blockId,
-                        action: ["cb-get-hl", "cb-get-focus"]
-                    }
-                });
-            } else {
-                showMessage('无法获取文档信息');
-            }
-        }
-    }
 
-    async editBlockContent(blockId, newContent) {
-        const result = await this.callSiyuanAPI('/api/block/updateBlock', {
-            dataType: 'markdown',
-            data: newContent,
-            id: blockId
-        });
 
-        if (result && result.code === 0) {
-            showMessage('更新成功');
-            this.eventBus.emit('timeline-record-updated', { id: blockId, content: newContent });
-        } else {
-            showMessage('更新失败');
-        }
-    }
-
-    showEditBlockDialog(blockId, currentContent) {
-        const escapeHtml = (text) => {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        };
-
-        const dialog = new Dialog({
-            title: '编辑记录',
-            content: `
-                <div class="b3-dialog__content" style="padding: 20px;">
-                    <textarea id="edit-content" class="b3-text-field" style="width:100%; min-height:150px;">${escapeHtml(currentContent)}</textarea>
-                </div>
-                <div class="b3-dialog__action" style="display:flex; justify-content:flex-end; padding:7px 24px;">
-                    <button class="b3-button b3-button--cancel" id="cancelEdit">取消</button>
-                    <button class="b3-button b3-button--outline" id="saveEdit">保存</button>
-                </div>
-            `,
-            width: '500px'
-        });
-
-        const dialogElement = dialog.element;
-        dialogElement.querySelector('#saveEdit').addEventListener('click', async () => {
-            const newContent = dialogElement.querySelector('#edit-content').value;
-            await this.editBlockContent(blockId, newContent);
-            dialog.destroy();
-        });
-        dialogElement.querySelector('#cancelEdit').addEventListener('click', () => dialog.destroy());
-    }
 
 onunload() {
     this.state.observer?.disconnect();
@@ -5020,11 +2283,11 @@ onunload() {
         document.removeEventListener('click', this._boundHandleTitleClick);
     }
     this.attrsCache.clear();
-    
-    // ✅ 补充：清理可能存在的 TimelineView 实例
-    if (this.timelineView) {
-        this.timelineView.destroy();
-        this.timelineView = null;
+
+    // 移除运行时注入的时间轴样式
+    if (this._timelineStyle && this._timelineStyle.parentNode) {
+        this._timelineStyle.parentNode.removeChild(this._timelineStyle);
+        this._timelineStyle = null;
     }
 }
 
