@@ -1,6 +1,6 @@
 "use strict";
 const siyuan = require("siyuan");
-const { showMessage, Dialog } = siyuan;
+const { showMessage, Dialog, openEmoji } = siyuan;
 
 // 思源笔记内置图标名（用于自定义分组的图标选择）。源串为无分隔拼接，按 icon 前缀正则切分得到数组。
 const SIYUAN_ICON_NAMES = (
@@ -165,6 +165,15 @@ const CARD_ITEMS = [
     { key: 'polkaCoralCard', label: '波点·珊瑚橙', icon: '🧡' },
     { key: 'polkaMatchaCard', label: '波点·抹茶', icon: '🍵' },
     { key: 'polkaBerryCard', label: '波点·浆果', icon: '🫐' },
+
+    // 顶条引述组（TitleBarCard）- 引述块场景下顶部色条 + 标题 + 内容
+    { key: 'titleBarBlueCard',   label: '顶条引述·蓝', icon: '' },
+    { key: 'titleBarRedCard',    label: '顶条引述·红', icon: '' },
+    { key: 'titleBarGreenCard',  label: '顶条引述·绿', icon: '' },
+    { key: 'titleBarOrangeCard', label: '顶条引述·橙', icon: '' },
+    { key: 'titleBarPurpleCard', label: '顶条引述·紫', icon: '' },
+    { key: 'titleBarCyanCard',   label: '顶条引述·青', icon: '' },
+    { key: 'titleBarPinkCard',   label: '顶条引述·粉', icon: '' },
 ];
 
 
@@ -178,7 +187,8 @@ const TEXT = {
     terminalGroup: '终端风格',   // 新增
     journalCardGroup: '手账卡片',  // 新增
     topLineGroup: '顶线样式',  // 新增这一行
-    polkaGroup: '波点格子风',  
+    polkaGroup: '波点格子风',
+    titleBarGroup: '顶条引述',  // 顶条引述（引述块场景）
     noticeGroup: '通知卡片',
     gradientTopGroup: '彩色顶部',
     excerptGroup: '引述卡片',  
@@ -597,10 +607,17 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const style = cardBlock.getAttribute('custom-deco-style');
         const cardKey = this.getCardKeyByLabel(style);
 
-        if (cardKey && cardKey.endsWith('QuoteCard')) return;
-        if (cardKey && cardKey.startsWith('topLine')) return;
+        // 引述块（quoteBlock 父级）所有样式不弹编辑框——用结构判断而非 key 后缀硬编码，
+        // 覆盖 QuoteCard/ExcerptCard/WhisperCard/ThinWhisper/topLine/polka 及自定义样式。
+        if (this._isQuoteStyle(style)) return;
+
+        // 日记私语等 WhisperCard 变体仍允许弹编辑框（保留旧例外的意图）：
+        // 原逻辑是 WhisperCard 全部排除但 diaryChatWhisperCard 例外——上面 _isQuoteStyle 不会命中 normalBlock 的 chatWhisper，
+        // 所以 diaryChatWhisperCard 仍会走到这里，保留编辑入口。
         if (cardKey && cardKey.includes('WhisperCard') && cardKey !== 'diaryChatWhisperCard') return;
-        if (!cardBlock.hasAttribute('custom-deco-card-title') && !cardKey.includes('WhisperCard')) return;
+
+        // 没有标题属性的普通卡片也不弹
+        if (!cardBlock.hasAttribute('custom-deco-card-title') && !(cardKey && cardKey.includes('WhisperCard'))) return;
 
         const rect = cardBlock.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
@@ -619,23 +636,39 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return null;
     }
 
+    // 判断 label 是否属于「引述块（quoteBlock）」父级（顶层第一个 Tab）。
+    // 用于：点击标题时不弹编辑框。复用 getMenuStructure 的分类，避免硬编码 key 后缀。
+    _isQuoteStyle(label) {
+        if (!label) return false;
+        const cardKey = this.getCardKeyByLabel(label);
+        const structure = this.getMenuStructure();
+        const quoteParent = structure.find(p => p.id === 'quoteBlock');
+        if (!quoteParent) return false;
+        for (const cat of quoteParent.children) {
+            for (const group of cat.subGroups) {
+                if (typeof group.filter === 'function' && group.filter(label, cardKey)) return true;
+            }
+        }
+        return false;
+    }
+
     async showEditDialog(blockEl) {
+        const self = this;
         const blockId = blockEl.dataset.nodeId;
         const currentStyle = blockEl.getAttribute('custom-deco-style') || Object.keys(this.styleDefaults)[0] || '';
         const currentTitle = blockEl.getAttribute('custom-deco-card-title') || this.styleDefaults[currentStyle]?.title || '';
         const currentIcon = blockEl.getAttribute('custom-deco-card-icon') || this.styleDefaults[currentStyle]?.icon || '';
 
-        const treeHtml = this._buildStyleTreeHtml(currentStyle);
+        const tabsHtml = this._buildStyleTabsHtml(currentStyle);
 
         const contentHtml = `
-            <div class="b3-dialog__content" style="padding: 20px;">
+            <div class="b3-dialog__content cs-edit-dialog" style="padding: 20px;">
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
-                    <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardType', '类型')}</label>
-                    <div style="display:flex; gap:12px;">
-                        ${treeHtml}
-                        <!-- 样式预览区 -->
-                        <div id="card-style-preview" style="flex:1; min-width:200px; border:1px dashed var(--b3-border-color); border-radius:8px; padding:10px; display:flex; flex-direction:column; overflow:hidden;">
-                            <div style="font-size:11px; color:var(--b3-text-color2); margin-bottom:6px; display:flex; align-items:center; gap:4px;">👁️ 预览</div>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; font-size:13px;">${this.getText('cardType', '类型')}</label>
+                    <div style="display:flex; gap:14px; align-items:stretch;">
+                        ${tabsHtml}
+                        <div id="card-style-preview" class="cs-preview-box" style="width:200px; flex:none;">
+                            <div class="cs-preview-label">👁️ ${this.getText('preview', '预览')}</div>
                             <div id="card-style-preview-inner" class="protyle-wysiwyg" style="flex:1; overflow:auto;"></div>
                         </div>
                     </div>
@@ -643,9 +676,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 </div>
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
                     <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardIcon', '图标')}</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input id="card-icon-input" class="b3-text-field" type="text" value="${currentIcon}" placeholder="例如 ✨" style="flex:1;">
-                        <button class="b3-button b3-button--outline" id="choose-emoji-btn">选择</button>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div id="card-icon-preview" data-icon="${this._escapeAttr(currentIcon)}" class="cs-icon-preview">${this._escapeAttr(currentIcon) || '😀'}</div>
+                        <button class="b3-button b3-button--outline" id="choose-emoji-btn">${this.getText('choose', '选择')}</button>
                     </div>
                 </div>
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
@@ -670,7 +703,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         const dialogElement = dialog.element;
         const styleInput = dialogElement.querySelector('#card-type-select');
-        const iconInput = dialogElement.querySelector('#card-icon-input');
+        const iconPreviewEl = dialogElement.querySelector('#card-icon-preview');
+        const setIconVal = (v) => { iconPreviewEl.dataset.icon = v || ''; iconPreviewEl.textContent = v || '😀'; };
         const titleInput = dialogElement.querySelector('#card-title-input');
         const previewInnerEl = dialogElement.querySelector('#card-style-preview-inner');
 
@@ -681,7 +715,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const label = styleInput.value;
             if (!label) { previewInnerEl.innerHTML = '<span style="font-size:12px;color:var(--b3-text-color3);">请选择样式</span>'; return; }
             const defaults = self.styleDefaults[label] || { icon: '', title: label };
-            const ico = iconInput.value.trim() || defaults.icon;
+            const ico = (iconPreviewEl.dataset.icon || '').trim() || defaults.icon;
             const ttl = titleInput.value.trim() || defaults.title;
             const isBuiltin = /^icon[A-Z]/.test(ico);
             const iconAttr = isBuiltin ? '' : ico;
@@ -694,44 +728,28 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         // 初始渲染
         setTimeout(renderStylePreview, 50);
 
-        // ---- 树交互：展开/折叠 + 叶子选中 ----
-        const treeEl = dialogElement.querySelector('.cs-style-tree');
-        if (treeEl) {
-            treeEl.querySelectorAll('.cs-st-hd[data-collapsed]').forEach(hd => {
-                hd.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const body = hd.parentElement.querySelector('.cs-st-body');
-                    const arrow = hd.querySelector('.cs-st-arr');
-                    if (!body) return;
-                    const collapsed = hd.getAttribute('data-collapsed') === 'true';
-                    body.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
-                    hd.setAttribute('data-collapsed', String(!collapsed));
-                    if (arrow) {
-                        const use = arrow.querySelector('use');
-                        if (use) {
-                            const href = collapsed ? '#iconDown' : '#iconRight';
-                            use.setAttribute('xlink:href', href);
-                            use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
-                        }
-                    }
+        // ---- Tab + 芯片交互：切换分类、选中样式 ----
+        const tabsEl = dialogElement.querySelector('.cs-style-tabs');
+        if (tabsEl) {
+            tabsEl.querySelectorAll('.cs-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const idx = tab.getAttribute('data-tab');
+                    tabsEl.querySelectorAll('.cs-tab').forEach(t => t.classList.toggle('cs-tab--active', t === tab));
+                    tabsEl.querySelectorAll('.cs-tab-panel').forEach(p => {
+                        p.classList.toggle('cs-tab-panel--active', p.getAttribute('data-panel') === idx);
+                    });
                 });
             });
 
-            treeEl.querySelectorAll('.cs-st-leaf').forEach(leaf => {
-                leaf.addEventListener('click', () => {
-                    treeEl.querySelectorAll('.cs-st-leaf.cs-st-sel').forEach(el => {
-                        el.classList.remove('cs-st-sel');
-                        el.style.background = '';
-                        el.style.color = '';
-                    });
-                    leaf.classList.add('cs-st-sel');
-                    leaf.style.background = 'var(--b3-theme-primary)';
-                    leaf.style.color = '#fff';
-                    styleInput.value = leaf.getAttribute('data-label') || '';
+            tabsEl.querySelectorAll('.cs-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    tabsEl.querySelectorAll('.cs-chip.cs-chip--active').forEach(c => c.classList.remove('cs-chip--active'));
+                    chip.classList.add('cs-chip--active');
+                    styleInput.value = chip.getAttribute('data-label') || '';
                     // 自动填充默认图标和标题
                     const label = styleInput.value;
                     const defaults = this.styleDefaults[label] || { icon: '', title: '' };
-                    iconInput.value = defaults.icon;
+                    setIconVal(defaults.icon);
                     titleInput.value = defaults.title;
                     renderStylePreview();
                 });
@@ -739,20 +757,25 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
 
         dialogElement.querySelector('#choose-emoji-btn').addEventListener('click', () => {
-            this._openGroupIconPicker(iconInput.value.trim(), function (picked) {
-                iconInput.value = picked || '';
-                iconInput.dispatchEvent(new Event('input'));
+            this._pickEmojiIcon((iconPreviewEl.dataset.icon || '').trim(), (picked) => {
+                setIconVal(picked);
                 renderStylePreview();
-            });
+            }, dialogElement.querySelector('#choose-emoji-btn'));
+        });
+        // 预览方块本身也可点击 → 弹 emoji 选择器
+        iconPreviewEl.addEventListener('click', () => {
+            this._pickEmojiIcon((iconPreviewEl.dataset.icon || '').trim(), (picked) => {
+                setIconVal(picked);
+                renderStylePreview();
+            }, iconPreviewEl);
         });
 
-        // 图标/标题变化时也刷新预览
-        iconInput.addEventListener('input', renderStylePreview);
+        // 标题变化时刷新预览
         titleInput.addEventListener('input', renderStylePreview);
 
         dialogElement.querySelector('#confirm-btn').addEventListener('click', async () => {
             const newStyle = styleInput.value;
-            const newIcon = iconInput.value.trim();
+            const newIcon = (iconPreviewEl.dataset.icon || '').trim();
             const newTitle = titleInput.value.trim();
 
             const attrs = {};
@@ -772,65 +795,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         });
     }
 
-    async showEmojiPicker(targetInput) {
-        const result = await this.callSiyuanAPI('/api/system/getEmojiConf', {});
-        if (!result || result.code !== 0) {
-            showMessage('获取表情列表失败');
-            return;
-        }
-
-        const groups = result.data || [];
-        const builtinGroups = groups.filter(g => g.id !== 'custom');
-
-        const unicodeToChar = (unicodeStr) => {
-            if (!unicodeStr) return '';
-            if (/[^0-9a-fA-F\-]/.test(unicodeStr)) {
-                return unicodeStr;
-            }
-            try {
-                const codePoints = unicodeStr.split('-').map(part => parseInt(part, 16));
-                return String.fromCodePoint(...codePoints);
-            } catch (e) {
-                console.warn('Emoji 转换失败:', unicodeStr, e);
-                return unicodeStr;
-            }
-        };
-
-        let groupsHtml = '';
-        builtinGroups.forEach(group => {
-            const title = group.title_zh_cn || group.title || '表情';
-            let itemsHtml = '';
-            group.items.forEach(item => {
-                const emojiChar = unicodeToChar(item.unicode);
-                itemsHtml += `<button class="b3-button emoji-item" data-emoji="${emojiChar}" style="font-size: 1.4rem; width: 36px; height: 36px; margin: 2px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">${emojiChar}</button>`;
-            });
-            groupsHtml += `
-                <div class="emoji-group" style="margin-bottom: 20px;">
-                    <div class="emoji-group-title" style="font-weight: 600; margin-bottom: 8px;">${title}</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 2px;">${itemsHtml}</div>
-                </div>
-            `;
-        });
-
-        const dialog = new Dialog({
-            title: '选择图标',
-            content: `
-                <div style="padding: 16px; max-height: 400px; overflow-y: auto;">
-                    ${groupsHtml}
-                </div>
-            `,
-            width: '600px',
-        });
-
-        const dialogElement = dialog.element;
-        dialogElement.querySelectorAll('.emoji-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const emoji = btn.dataset.emoji;
-                targetInput.value = emoji;
-                dialog.destroy();
-            });
-        });
-    }
+    // （原自定义 Emoji 弹窗 showEmojiPicker 已移除，统一改用思源内核 openEmoji）
 
     waitForMenu() {
         this.state.menu = document.querySelector("#commonMenu");
@@ -974,100 +939,93 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.renderCustomStyleManager(rootEl);
     }
 
-    // ========== 辅助：构建基础样式可折叠树形列表（替代 <select>）==========
-    _buildStyleTreeHtml(selectedLabel) {
+    // ========== 辅助：构建「Tab 分类 + 网格芯片」样式选择器（替代多级折叠树）==========
+    _buildStyleTabsHtml(selectedLabel) {
         const structure = this.getMenuStructure();
         const allCards = this.getAllCardItems();
-        let pIdx = 0;
-        let html = '<div class="cs-style-tree" style="border:1px solid var(--b3-border-color); border-radius:8px; overflow-y:auto; max-height:280px; padding:4px 0;">';
+        const findItems = (group) => allCards.filter(item => !!group.filter(item.label, item.key));
 
         // 收集已归组 label，用于「其他」兜底
         const groupedLabels = new Set();
+        structure.forEach(parent => parent.children.forEach(cat => cat.subGroups.forEach(group => {
+            findItems(group).forEach(item => groupedLabels.add(item.label));
+        })));
+        const ungrouped = allCards.filter(item => !groupedLabels.has(item.label) && !item.key.endsWith('ImageCard'));
+        const hasOther = ungrouped.length > 0;
 
-        for (const parent of structure) {
-            const parentIcon = (parent.icon || '').startsWith('#') ? parent.icon.slice(1) : (parent.icon || '');
-            const parentLabel = this.getText(parent.labelKey, parent.id);
-            let catHtml = '';
-
+        // 渲染某父级 Tab 内的面板（分类分组 + 芯片网格）
+        const buildPanel = (parent) => {
+            let html = '';
             for (const cat of parent.children) {
-                const catIcon = (cat.icon || '').startsWith('#') ? cat.icon.slice(1) : (cat.icon || '');
                 const catLabel = this.getText(cat.labelKey, cat.id);
                 let subHtml = '';
-
                 for (const group of cat.subGroups) {
-                    const items = allCards.filter(item => !!group.filter(item.label, item.key));
+                    const items = findItems(group);
                     if (!items.length) continue;
-                    items.forEach(item => groupedLabels.add(item.label));
-
                     const gLabel = this.getText(group.labelKey, group.id);
-                    const gIcon = (group.icon || '').split('#').pop() || '';
-                    // 子组节点（Level 2）：可折叠
                     subHtml += `
-                        <div class="cs-st-node cs-st-sub" data-st-type="sub" style="margin-left:22px;">
-                            <div class="cs-st-hd" style="display:flex; align-items:center; gap:5px; padding:4px 8px; cursor:pointer; border-radius:4px;" data-collapsed="true">
-                                <svg class="cs-st-arr" style="width:12px;height:12px;flex:none;opacity:.45;"><use xlink:href="#iconRight"></use></svg>
-                                ${gIcon ? '<svg style="width:14px;height:14px;flex:none;opacity:.6;"><use xlink:href="#' + gIcon + '"></use></svg>' : ''}
-                                <span style="font-size:12.5px; opacity:.7;">${this._escapeAttr(gLabel)}</span>
-                            </div>
-                            <div class="cs-st-body" data-children="sub" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
-                                <div style="overflow:hidden; min-height:0;">
-                                    ${items.map(item => {
-                                        const sel = item.label === selectedLabel ? ' cs-st-sel' : '';
-                                        return `<div class="cs-st-leaf${sel}" data-label="${this._escapeAttr(item.label)}" style="padding:4px 8px 4px 30px; font-size:12.5px; cursor:pointer; border-radius:4px; margin:1px 0; display:flex; align-items:center; gap:5px; transition:background .1s; ${sel ? 'background:var(--b3-theme-primary); color:#fff;' : ''}">${this._escapeAttr(item.label)}</div>`;
-                                    }).join('')}
-                                </div>
+                        <div class="cs-cat-block">
+                            <div class="cs-cat-block-title">${this._escapeAttr(gLabel)}</div>
+                            <div class="cs-chip-grid">
+                                ${items.map(item => {
+                                    const sel = item.label === selectedLabel ? ' cs-chip--active' : '';
+                                    const d = this.styleDefaults[item.label] || {};
+                                    const ico = d.icon ? '<span class="cs-chip-ico">' + this._escapeAttr(d.icon) + '</span>' : '';
+                                    return `<div class="cs-chip${sel}" data-label="${this._escapeAttr(item.label)}">${ico}${this._escapeAttr(item.label)}</div>`;
+                                }).join('')}
                             </div>
                         </div>`;
                 }
-
                 if (!subHtml) continue;
-
-                // 分类节点（Level 1.5）：可折叠
-                catHtml += `
-                    <div class="cs-st-node cs-st-cat" data-st-type="cat" style="margin-left:12px;">
-                        <div class="cs-st-hd" style="display:flex; align-items:center; gap:5px; padding:4px 8px; cursor:pointer; border-radius:4px;" data-collapsed="true">
-                            <svg class="cs-st-arr" style="width:12px;height:12px;flex:none;opacity:.45;"><use xlink:href="#iconRight"></use></svg>
-                            ${catIcon ? '<svg style="width:14px;height:14px;flex:none;opacity:.65;"><use xlink:href="#' + catIcon + '"></use></svg>' : ''}
-                            <span style="font-size:13px; font-weight:600; opacity:.75;">${this._escapeAttr(catLabel)}</span>
-                        </div>
-                        <div class="cs-st-body" data-children="cat" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
-                            <div style="overflow:hidden; min-height:0;">${subHtml}</div>
-                        </div>
+                html += `
+                    <div class="cs-cat-group">
+                        <div class="cs-cat-group-title">${this._escapeAttr(catLabel)}</div>
+                        ${subHtml}
                     </div>`;
             }
+            return html;
+        };
 
-            if (!catHtml) continue;
+        // 决定默认激活的 Tab（含「其他」）
+        const isInParent = (parent) => parent.children.some(cat => cat.subGroups.some(group =>
+            findItems(group).some(it => it.label === selectedLabel)));
+        let activeTab = 0;
+        for (let p = 0; p < structure.length; p++) { if (isInParent(structure[p])) { activeTab = p; break; } }
+        if (hasOther && activeTab === 0 && ungrouped.some(it => it.label === selectedLabel)) activeTab = structure.length;
 
-            // 父级节点（Level 0）：可折叠
-            html += `
-                <div class="cs-st-node cs-st-parent" data-pidx="${pIdx}" data-st-type="parent">
-                    <div class="cs-st-hd" style="display:flex; align-items:center; gap:6px; padding:5px 10px; cursor:pointer; border-radius:5px;" data-collapsed="true">
-                        <svg class="cs-st-arr" style="width:14px;height:14px;flex:none;opacity:.5;"><use xlink:href="#iconRight"></use></svg>
-                        ${parentIcon ? '<svg style="width:15px;height:15px;flex:none;opacity:.75;"><use xlink:href="#' + parentIcon + '"></use></svg>' : ''}
-                        <span style="font-size:13.5px; font-weight:700; opacity:.85;">${this._escapeAttr(parentLabel)}</span>
-                    </div>
-                    <div class="cs-st-body" data-children="parent" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease;">
-                        <div style="overflow:hidden; min-height:0;">${catHtml}</div>
-                    </div>
-                </div>`;
-            pIdx++;
-        }
-
-        // 「其他」——未归组的项（平铺叶子）；图片相关（ImageCard）整体不出现在选择器内
-        const ungroupedItems = allCards.filter(item => !groupedLabels.has(item.label) && !item.key.endsWith('ImageCard'));
-        if (ungroupedItems.length) {
-            html += `<div class="cs-st-node cs-st-other" data-st-type="other">`;
-            html += `<div class="cs-st-hd" style="display:flex;align-items:center;gap:6px;padding:5px 10px;"><span style="font-size:13px;font-weight:600;opacity:.55;">${this.getText('blockOther', '其他')}</span></div>`;
-            html += '<div>';
-            ungroupedItems.forEach(item => {
-                const sel = item.label === selectedLabel ? ' cs-st-sel' : '';
-                html += `<div class="cs-st-leaf${sel}" data-label="${this._escapeAttr(item.label)}" style="padding:4px 8px 4px 20px; font-size:12.5px; cursor:pointer; border-radius:4px; margin:1px 0; display:flex; align-items:center; gap:5px; transition:background .1s; ${sel ? 'background:var(--b3-theme-primary); color:#fff;' : ''}">${this._escapeAttr(item.label)}</div>`;
+        // 组装所有 Tab
+        const tabs = structure.map((parent, pIdx) => {
+            const parentLabel = this.getText(parent.labelKey, parent.id);
+            const parentIcon = (parent.icon || '').startsWith('#') ? parent.icon.slice(1) : (parent.icon || '');
+            return { pIdx, label: parentLabel, icon: parentIcon, panel: buildPanel(parent) };
+        });
+        if (hasOther) {
+            tabs.push({
+                pIdx: structure.length,
+                label: this.getText('blockOther', '其他'),
+                icon: '',
+                panel: `<div class="cs-cat-block"><div class="cs-chip-grid">${ungrouped.map(item => {
+                    const sel = item.label === selectedLabel ? ' cs-chip--active' : '';
+                    return `<div class="cs-chip${sel}" data-label="${this._escapeAttr(item.label)}">${this._escapeAttr(item.label)}</div>`;
+                }).join('')}</div></div>`
             });
-            html += '</div></div>';
         }
 
-        html += '</div>';
-        return html;
+        const tabBtns = tabs.map(t => `
+            <button class="cs-tab${t.pIdx === activeTab ? ' cs-tab--active' : ''}" data-tab="${t.pIdx}" type="button">
+                ${t.icon ? '<svg style="width:14px;height:14px;"><use xlink:href="#' + t.icon + '"></use></svg>' : ''}
+                <span>${this._escapeAttr(t.label)}</span>
+            </button>`).join('');
+
+        const panels = tabs.map(t => `
+            <div class="cs-tab-panel${t.pIdx === activeTab ? ' cs-tab-panel--active' : ''}" data-panel="${t.pIdx}">
+                ${t.panel || '<div class="cs-empty">暂无样式</div>'}
+            </div>`).join('');
+
+        return `<div class="cs-style-tabs">
+            <div class="cs-tab-bar" role="tablist">${tabBtns}</div>
+            <div class="cs-tab-panels">${panels}</div>
+        </div>`;
     }
 
     // ========== 打开新增/编辑样式的 Dialog 弹窗（含预览）==========
@@ -1075,7 +1033,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const self = this;
         const allCards = this.getAllCardItems();
         const editing = editId ? (this.customStyles || []).find(c => c.id === editId) : null;
-        const treeHtml = this._buildStyleTreeHtml(editing ? editing.style : '');
+        const tabsHtml = this._buildStyleTabsHtml(editing ? editing.style : '');
 
         const contentHtml = `
             <div style="padding:20px 28px;">
@@ -1087,20 +1045,19 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     <input id="cs-d-name" class="b3-text-field" type="text" value="${editing ? editing.name : ''}" placeholder="${this.getText('customNamePlaceholder', '如：我的日报模板')}" style="width:100%;">
                 </div>
 
-                <!-- 基础样式（可折叠树） -->
+                <!-- 基础样式（Tab + 网格） -->
                 <div style="margin-bottom:14px;">
-                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('customBaseStyle', '基础样式')}<sup style="color:#e53935;">*</sup></label>
-                    ${treeHtml}
+                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:600;">${this.getText('customBaseStyle', '基础样式')}<sup style="color:#e53935;">*</sup></label>
+                    ${tabsHtml}
                     <input id="cs-d-style" type="hidden" value="${this._escapeAttr(editing ? editing.style : '')}">
                 </div>
 
-                <!-- 图标 + 标题 并排 -->
+                <!-- 图标 + 标题 并排（图标列按内容收缩，标题列占满剩余） -->
                 <div style="display:flex; gap:14px; margin-bottom:14px;">
-                    <div style="flex:1;">
+                    <div style="flex:none;">
                         <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('cardIcon', '图标')}</label>
                         <div style="display:flex; gap:6px; align-items:center;">
-                            <span id="cs-d-icon-prev" style="display:inline-flex;align-items:center;width:28px;height:28px;justify-content:center;font-size:18px;flex:none;border-radius:6px;background:var(--b3-theme-background);border:1px solid var(--b3-border-color);"></span>
-                            <input id="cs-d-icon" class="b3-text-field" type="text" value="${editing ? (editing.icon || '') : ''}" placeholder="${this.getText('iconPlaceholder', '例如 ✨')}" style="flex:1;">
+                            <span id="cs-d-icon-prev" data-icon="${this._escapeAttr(editing ? (editing.icon || '') : '')}" style="display:inline-flex;align-items:center;width:28px;height:28px;justify-content:center;font-size:18px;flex:none;border-radius:6px;background:var(--b3-theme-background);border:1px solid var(--b3-border-color);cursor:pointer;"></span>
                             <button class="b3-button b3-button--outline" id="cs-d-emoji">${this.getText('choose', '选择')}</button>
                         </div>
                     </div>
@@ -1143,49 +1100,27 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const el = dialog.element;
         const nameInput = el.querySelector('#cs-d-name');
         const styleInput = el.querySelector('#cs-d-style');
-        const iconInput = el.querySelector('#cs-d-icon');
         const titleInput = el.querySelector('#cs-d-title');
         const previewContainer = el.querySelector('#cs-d-preview');
         const folderSelect = el.querySelector('#cs-d-folder');
 
-        // ---- 树形基础样式选择器交互 ----
-        const treeEl = el.querySelector('.cs-style-tree');
-        if (treeEl) {
-            // 展开/折叠
-            treeEl.querySelectorAll('.cs-st-hd[data-collapsed]').forEach(hd => {
-                hd.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const body = hd.parentElement.querySelector('.cs-st-body');
-                    const arrow = hd.querySelector('.cs-st-arr');
-                    if (!body) return;
-                    const collapsed = hd.getAttribute('data-collapsed') === 'true';
-                    body.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
-                    hd.setAttribute('data-collapsed', String(!collapsed));
-                    if (arrow) {
-                        const use = arrow.querySelector('use');
-                        if (use) {
-                            const href = collapsed ? '#iconDown' : '#iconRight';
-                            use.setAttribute('xlink:href', href);
-                            use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
-                        }
-                    }
+        // ---- Tab + 芯片交互：切换分类、选中基础样式 ----
+        const tabsEl = el.querySelector('.cs-style-tabs');
+        if (tabsEl) {
+            tabsEl.querySelectorAll('.cs-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const idx = tab.getAttribute('data-tab');
+                    tabsEl.querySelectorAll('.cs-tab').forEach(t => t.classList.toggle('cs-tab--active', t === tab));
+                    tabsEl.querySelectorAll('.cs-tab-panel').forEach(p => {
+                        p.classList.toggle('cs-tab-panel--active', p.getAttribute('data-panel') === idx);
+                    });
                 });
             });
-
-            // 叶子选中
-            treeEl.querySelectorAll('.cs-st-leaf').forEach(leaf => {
-                leaf.addEventListener('click', () => {
-                    // 清除旧选中
-                    treeEl.querySelectorAll('.cs-st-leaf.cs-st-sel').forEach(el => {
-                        el.classList.remove('cs-st-sel');
-                        el.style.background = '';
-                        el.style.color = '';
-                    });
-                    // 设新选中
-                    leaf.classList.add('cs-st-sel');
-                    leaf.style.background = 'var(--b3-theme-primary)';
-                    leaf.style.color = '#fff';
-                    styleInput.value = leaf.getAttribute('data-label') || '';
+            tabsEl.querySelectorAll('.cs-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    tabsEl.querySelectorAll('.cs-chip.cs-chip--active').forEach(c => c.classList.remove('cs-chip--active'));
+                    chip.classList.add('cs-chip--active');
+                    styleInput.value = chip.getAttribute('data-label') || '';
                     renderPreview();
                 });
             });
@@ -1215,18 +1150,27 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             }
         };
 
-        // 图标输入框旁的实时预览
+        // 图标预览方块（同时承担值存储：dataset.icon = 当前 emoji）
         const iconPrevEl = el.querySelector('#cs-d-icon-prev');
-
-        const refreshIconPreview = () => { renderIconPreview(iconPrevEl, iconInput.value.trim()); };
+        const setIconVal = (v) => {
+            const val = v || '';
+            iconPrevEl.dataset.icon = val;
+            renderIconPreview(iconPrevEl, val);
+        };
+        const refreshIconPreview = () => renderIconPreview(iconPrevEl, (iconPrevEl.dataset.icon || '').trim());
         setTimeout(refreshIconPreview, 50);
-        iconInput.addEventListener('input', refreshIconPreview);
+        // 预览方块本身也可点击 → 弹 emoji 选择器
+        iconPrevEl.addEventListener('click', () => {
+            self._pickEmojiIcon((iconPrevEl.dataset.icon || '').trim(), function (picked) {
+                setIconVal(picked);
+            }, iconPrevEl);
+        });
 
         const renderPreview = () => {
             const label = styleInput.value;
             if (!label || !previewContainer) return;
             const defaults = self.styleDefaults[label] || { icon: '', title: label };
-            const rawIconVal = iconInput.value.trim() || defaults.icon;
+            const rawIconVal = (iconPrevEl.dataset.icon || '').trim() || defaults.icon;
             const titleVal = titleInput.value.trim() || defaults.title;
 
             // 内置图标（iconXxx）CSS content:attr() 无法渲染为 SVG，会显示原始名文本
@@ -1242,13 +1186,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         };
 
         setTimeout(renderPreview, 50);
-        iconInput.addEventListener('input', renderPreview);
         titleInput.addEventListener('input', renderPreview);
 
-        el.querySelector('#cs-d-emoji').addEventListener('click', () => self._openGroupIconPicker(iconInput.value.trim(), function (picked) {
-            iconInput.value = picked || '';
-            iconInput.dispatchEvent(new Event('input'));
-        }));
+        el.querySelector('#cs-d-emoji').addEventListener('click', () => self._pickEmojiIcon((iconPrevEl.dataset.icon || '').trim(), function (picked) {
+            setIconVal(picked);
+        }, el.querySelector('#cs-d-emoji')));
 
         // 在弹窗内直接新建分组，并自动选中
         const newGroupBtn = el.querySelector('#cs-d-newgroup');
@@ -1256,7 +1198,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             self.openGroupDialog(null, async (g) => {
                 if (!self.customFolders) self.customFolders = [];
                 const newId = 'grp_' + Date.now();
-                self.customFolders.push({ id: newId, name: g.name, icon: g.icon || 'iconFolder' });
+                self.customFolders.push({ id: newId, name: g.name, icon: g.icon || '📁' });
                 await self.saveData('customFolders', self.customFolders);
                 showMessage(self.getText('folderCreated', '已新建分组：') + name);
                 if (folderSelect) {
@@ -1272,7 +1214,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         el.querySelector('#cs-d-save').addEventListener('click', async () => {
             const name = nameInput.value.trim();
             const style = styleInput.value;
-            const icon = iconInput.value.trim();
+            const icon = (iconPrevEl.dataset.icon || '').trim();
             const title = titleInput.value.trim();
             const folderId = folderSelect ? folderSelect.value : '';
 
@@ -1312,7 +1254,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             // 未分类为空时不显示；用户分组即使为空也显示，便于看到并管理
             if (!g.items.length && isNone) continue;
 
-            const icon = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 16 });
+            const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 16 });
             const gIdx = treeGroupIdx++;
             const actions = isNone ? '' : `
                 <button class="cs-group-act" data-act="rename" data-gid="${g.id}" title="${this.getText('renameGroup', '重命名分组')}" style="border:none;background:transparent;cursor:pointer;padding:2px 4px;opacity:.45;border-radius:4px;line-height:1;display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;"><use xlink:href="#iconEdit"></use></svg></button>
@@ -1357,7 +1299,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             for (const g of groups) {
                 if (!g.items.length) continue;
                 const isNone = g.id === '__none__';
-                const icon = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 15 });
+                const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 15 });
                 rightHtml += `
                     <div style="margin-bottom:20px;">
                         <div class="fn__flex fn__flex-center" style="gap:7px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--b3-border-color);">
@@ -1498,26 +1440,18 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 const ico = card.getAttribute('data-cs-icon') || '';
                 const ttl = card.getAttribute('data-cs-title') || '';
                 if (!label) return;
+                // 只传 custom-deco-style；标题块用 ::before 渲染 icon+title，避免和示例内容互相嵌套
                 const isBuiltin = /^icon[A-Z]/.test(ico);
-                // 内置图标用 createElementNS 渲染真实 SVG；emoji 直接文本
-                let head = '';
-                if (ico && isBuiltin) {
-                    const _svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    _svg.setAttribute('style', 'width:16px;height:16px;vertical-align:text-bottom;margin-right:6px;');
-                    _svg.setAttribute('viewBox', '0 0 24 24');
-                    const _use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-                    _use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + ico);
-                    _use.setAttribute('href', '#' + ico);
-                    _svg.appendChild(_use);
-                    const _tmp = document.createElement('div'); _tmp.appendChild(_svg); head = _tmp.innerHTML;
-                } else if (ico) {
-                    head = '<span style="margin-right:6px;">' + ico + '</span>';
-                }
-                // 只传 custom-deco-style 让基础 CSS 生效；标题/图标/示例文字全部手动渲染，避免与 ::before 重复
+                const iconAttr = (ico && !isBuiltin) ? ico : '';
+                const titleAttr = ttl || label;
                 hoverPreview.innerHTML =
-                    '<div class="protyle-wysiwyg"><div custom-deco-style="' + label + '"' +
-                    ' style="padding:14px 16px;" data-type="NodeParagraph">' + head + '<strong style="font-size:14px;">' + (ttl || label) + '</strong>' +
-                    '<p style="margin:8px 0 0;padding:0;font-size:12.5px;line-height:1.7;opacity:.75;">这是一段示例文字，用于预览「' + label + '」样式的实际效果。</p></div></div>';
+                    '<div class="protyle-wysiwyg">' +
+                    // 标题块：CSS ::before 自动渲染 icon + title
+                    '<div custom-deco-style="' + self._escapeAttr(label) + '"' +
+                    (iconAttr ? ' custom-deco-card-icon="' + self._escapeAttr(iconAttr) + '"' : '') +
+                    (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
+                    ' style="padding:14px 16px;" data-type="NodeParagraph">&nbsp;</div>' +
+                    '</div>';
 
                 // 定位：显示在卡片右侧，超出视口则放左侧
                 const rect = card.getBoundingClientRect();
@@ -1579,7 +1513,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             anyGroup = true;
 
             const isNone = g.id === '__none__';
-            const iconHtml = this._groupIconSvg(isNone ? 'iconFolder' : (g.icon || 'iconFolder'), { size: 14, cls: 'b3-menu__icon' });
+            const iconHtml = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 14, cls: 'b3-menu__icon' });
             const groupBtn = document.createElement("button");
             groupBtn.className = "b3-menu__item";
             groupBtn.innerHTML = `${iconHtml}<span class="b3-menu__label">${this._escapeAttr(g.name)}</span>
@@ -1697,7 +1631,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const attrs = { "custom-deco-style": label };
 
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
-            && !key.startsWith('polka')) {
+            && !key.startsWith('polka') && !key.startsWith('titleBar')) {
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     if (!existingTitle) {
@@ -1826,14 +1760,19 @@ if (key === 'diaryChatWhisperCard') {
             .replace(/>/g, '&gt;');
     }
 
-    // 渲染分组图标为思源内置 svg（iconName 为空时回退 iconFolder）。opts: {size, cls, style}
+    // 渲染分组图标：内置图标名（iconXxx）渲染为思源 svg，其余（Emoji / 文字）按文本渲染
     _groupIconSvg(iconName, opts) {
         const o = opts || {};
-        const name = (iconName && String(iconName).length) ? iconName : 'iconFolder';
         const sz = o.size || 16;
         const cls = o.cls ? ` class="${o.cls}"` : '';
-        const style = o.style || `width:${sz}px;height:${sz}px;flex:none;opacity:.8;`;
-        return `<svg${cls} style="${style}"><use xlink:href="#${name}"></use></svg>`;
+        const isSvg = (iconName && typeof iconName === 'string' && /^icon[A-Z]/.test(iconName));
+        if (isSvg) {
+            const style = o.style || `width:${sz}px;height:${sz}px;flex:none;opacity:.8;`;
+            return `<svg${cls} style="${style}"><use xlink:href="#${iconName}"></use></svg>`;
+        }
+        const text = (iconName && String(iconName).length) ? iconName : '📁';
+        const style = o.style || `font-size:${sz}px;flex:none;opacity:.85;line-height:1;`;
+        return `<span${cls} style="${style}">${this._escapeAttr(text)}</span>`;
     }
 
     // 返回有序数组：用户分组（按 customFolders 顺序）+ 末尾「未分类」
@@ -1843,7 +1782,7 @@ if (key === 'diaryChatWhisperCard') {
         const folderIds = new Set();
         for (const f of folders) {
             folderIds.add(f.id);
-            result.push({ id: f.id, name: f.name, icon: f.icon || 'iconFolder', items: [] });
+            result.push({ id: f.id, name: f.name, icon: f.icon || '📁', items: [] });
         }
         const noneGroup = { id: '__none__', name: this.getText('unsorted', '未分类'), items: [] };
         for (const cs of (this.customStyles || [])) {
@@ -1875,7 +1814,7 @@ if (key === 'diaryChatWhisperCard') {
     openGroupDialog(existing, onConfirm) {
         const self = this;
         const isEdit = !!(existing && existing.name);
-        const selIcon = (existing && existing.icon) || 'iconFolder';
+        const selIcon = (existing && existing.icon) || '📁';
 
         // 用 createElementNS 渲染图标（innerHTML 的 <use> 在 Dialog 内无法解析 symbol）
         function makeIconPreview(name, size) {
@@ -1933,10 +1872,10 @@ if (key === 'diaryChatWhisperCard') {
 
         // 点击「更换图标」→ 弹出三 Tab 选择器
         el.querySelector('#cs-g-pick-btn').addEventListener('click', () => {
-            self._openGroupIconPicker(currentIcon, function (picked) {
+            self._pickEmojiIcon(currentIcon, function (picked) {
                 currentIcon = picked;
                 renderCurIcon(curIconEl, picked);
-            });
+            }, el.querySelector('#cs-g-pick-btn'));
         });
 
         setTimeout(() => input.focus(), 30);
@@ -1953,227 +1892,84 @@ if (key === 'diaryChatWhisperCard') {
 
 
 
-    // ========== 三 Tab 图标选择器（仿思源原生） ==========
-    _openGroupIconPicker(currentValue, onPick) {
-        var self = this;
-        var picked = currentValue || "";
 
-        function isBuiltin(val) {
-            return typeof val === "string" && /^icon[A-Z]/.test(val);
-        }
+    // ========== 图标选择：直接调用思源内核 openEmoji（去除内置图标，统一用 Emoji）==========
 
-        function svgEl(iconName, size) {
-            var s = size || 20;
-            var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("width", String(s));
-            svg.setAttribute("height", String(s));
-            svg.style.display = "inline-block";
-            svg.style.verticalAlign = "middle";
-            var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-            use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#" + iconName);
-            use.setAttribute("xlink:href", "#" + iconName);
-            svg.appendChild(use);
-            return svg;
-        }
-
-        var dlg = new Dialog({
-            title: self.getText("setIconTitle", "设置图标"),
-            width: "480px",
-            height: "560px",
-            content: "<div style=\"display:flex;flex-direction:column;height:100%;overflow:hidden;\">" +
-                "<div style=\"text-align:center;padding:18px 0 8px;\">" +
-                    "<div id=\"ip-prev\" style=\"width:60px;height:60px;border-radius:12px;border:1px solid var(--b3-border-color);margin:0 auto;display:flex;align-items:center;justify-content:center;background:var(--b3-theme-surface);font-size:32px;line-height:1;overflow:hidden;\"></div>" +
-                "</div>" +
-                "<div id=\"ip-tabs\" style=\"display:flex;border-bottom:2px solid var(--b3-border-color);padding:0 20px;margin:0;\">" +
-                    "<button data-t=\"emoji\" class=\"ip-tab-btn\" style=\"flex:1;padding:10px 0;text-align:center;font-size:14px;border:none;background:none;cursor:pointer;color:var(--b3-text-color1);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;\">Emoji</button>" +
-                    "<button data-t=\"builtin\" class=\"ip-tab-btn\" style=\"flex:1;padding:10px 0;text-align:center;font-size:14px;border:none;background:none;cursor:pointer;color:var(--b3-text-color2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;\">" + self.getText("builtinTab", "内置图标") + "</button>" +
-                "</div>" +
-                "<div id=\"ip-srch-wrap\" style=\"padding:8px 20px 0;\">" +
-                    "<input id=\"ip-srch\" class=\"b3-text-field\" type=\"text\" placeholder=\"" + self.getText("searchContent", "搜索...") + "\" style=\"width:100%;font-size:13px;\">" +
-                "</div>" +
-                "<div id=\"ip-body\" style=\"flex:1;overflow-y:auto;padding:10px 20px 16px;min-height:220px;\"></div>" +
-                "<div style=\"display:flex;justify-content:space-between;align-items:center;padding:12px 20px 16px;border-top:1px solid var(--b3-border-color);\">" +
-                    "<button id=\"ip-rst\" class=\"b3-button b3-button--cancel\" style=\"font-size:13px;padding:6px 16px;\">" + self.getText("resetToHash", "重置为 #") + "</button>" +
-                    "<button id=\"ip-ok\" class=\"b3-button b3-button--outline\" style=\"padding:7px 28px;font-weight:600;\">" + self.getText("confirm", "确定") + "</button>" +
-                "</div>" +
-            "</div>"
-        });
-
-        var el = dlg.element;
-        var body = el.querySelector("#ip-body");
-        var srchWrap = el.querySelector("#ip-srch-wrap");
-        var srchInput = el.querySelector("#ip-srch");
-        var prevBox = el.querySelector("#ip-prev");
-        var curTab = isBuiltin(picked) ? "builtin" : (picked ? "emoji" : "builtin");
-
-        var emojiData = null;
-
-        function updatePrev() {
-            prevBox.innerHTML = "";
-            if (!picked) {
-                var ph = document.createElement("span");
-                ph.style.cssText = "font-size:12px;opacity:.35;";
-                ph.textContent = "#";
-                prevBox.appendChild(ph);
-            } else if (isBuiltin(picked)) {
-                prevBox.appendChild(svgEl(picked, 30));
-            } else {
-                prevBox.textContent = picked;
-                prevBox.style.fontSize = "30px";
+    // 将 openEmoji 返回的十六进制码点（或自定义图标路径）归一化为可存储的图标串
+    _normalizeEmoji(v) {
+        const s = (typeof v === 'string') ? v.trim() : '';
+        if (!s) return '';
+        if (s.includes('.') || s.includes('/')) return s; // 自定义/动态图标为路径，原样返回
+        if (/^[0-9a-fA-F]+(-[0-9a-fA-F]+)*$/.test(s)) {
+            const codes = s.split('-').map(c => parseInt(c, 16));
+            if (codes.every(c => Number.isFinite(c))) {
+                try { return String.fromCodePoint(...codes); } catch (e) { return s; }
             }
         }
-
-        function goTab(tid) {
-            curTab = tid;
-            el.querySelectorAll(".ip-tab-btn").forEach(function (btn) {
-                var on = btn.getAttribute("data-t") === tid;
-                btn.style.color = on ? "var(--b3-theme-primary)" : "var(--b3-text-color2)";
-                btn.style.borderBottomColor = on ? "var(--b3-theme-primary)" : "transparent";
-                btn.style.fontWeight = on ? "600" : "400";
-            });
-            srchInput.value = "";
-            if (tid === "emoji") renderEmoji();
-            else renderBuiltin();
-        }
-
-        el.querySelectorAll(".ip-tab-btn").forEach(function (btn) {
-            btn.addEventListener("click", function () { goTab(btn.getAttribute("data-t")); });
-        });
-
-        function hexToEmoji(hex) {
-            if (!hex) return "";
-            if (/[^0-9a-fA-F\-]/.test(hex)) return hex;
-            try { return String.fromCodePoint.apply(null, hex.split("-").map(function (p) { return parseInt(p, 16); })); }
-            catch (_) { return ""; }
-        }
-
-        async function renderEmoji(filter) {
-            body.innerHTML = '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">' + self.getText("loadingEmojis", "\u6b63\u5728\u52a0\u8f7d\u2026") + '</div>';
-            try {
-                if (!emojiData) {
-                    var res = await self.callSiyuanAPI("/api/system/getEmojiConf", {});
-                    emojiData = (res && res.code === 0) ? (res.data || []) : [];
-                }
-            } catch (_) {
-                body.innerHTML = '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">\u52a0\u8f7d\u5931\u8d25</div>';
-                return;
-            }
-
-            var groups = emojiData.filter(function (g) { return g.id !== "custom"; });
-            var q = (filter || "").toLowerCase();
-            var html = "";
-
-            groups.forEach(function (grp) {
-                var items = grp.items || [];
-                if (q) items = items.filter(function (it) {
-                    var label = (grp.title_zh_cn || grp.title || "") + " " + (it.description_zh_cn || it.description || "");
-                    return label.toLowerCase().indexOf(q) !== -1;
-                });
-                if (!items.length) return;
-
-                var btns = "";
-                items.forEach(function (it) {
-                    var ch = hexToEmoji(it.unicode);
-                    if (!ch) return;
-                    var esc = ch.replace(/"/g, "&quot;").replace(/</g, "&lt;");
-                    var sel = (ch === picked) ? "background:var(--b3-theme-primary)!important;color:#fff!important;" : "";
-                    btns += '<button class="ip-eitem" data-v="' + esc + '" style="font-size:22px;width:38px;height:38px;margin:3px;padding:0;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;background:transparent;transition:all .1s;' + sel + '">' + esc + "</button>";
-                });
-
-                html += '<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:600;opacity:.5;margin-bottom:6px;">' + self._escapeAttr(grp.title_zh_cn || grp.title || "") + '</div><div style="display:flex;flex-wrap:wrap;">' + btns + "</div></div>";
-            });
-
-            body.innerHTML = html || '<div style="text-align:center;padding:40px 0;opacity:.4;font-size:13px;">\u65e0\u5339\u914d</div>';
-
-            body.querySelectorAll(".ip-eitem").forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    picked = btn.getAttribute("data-v");
-                    updatePrev();
-                    body.querySelectorAll(".ip-eitem").forEach(function (b) { b.style.background = ""; b.style.color = ""; });
-                    btn.style.background = "var(--b3-theme-primary)";
-                    btn.style.color = "#fff";
-                });
-            });
-        }
-
-        function renderText() {
-            var v = isBuiltin(picked) ? "" : (picked || "");
-            body.innerHTML = '<div style="padding:16px 0;"><label style="display:block;font-size:13px;opacity:.65;margin-bottom:8px;">' + self.getText("enterTextOrEmoji", "\u8f93\u5165\u6587\u5b57\u6216 Emoji") + '</label>' +
-                '<input id="ip-txt" class="b3-text-field" type="text" value="' + self._escapeAttr(v) + '" placeholder="' + self._escapeAttr(self.getText("textPlaceholder", "\u5982 \ud83c\udfaf \u2606 \u81ea\u5b9a\u4e49")) + '" style="width:100%;font-size:14px;">' +
-                '<div id="ip-txt-prev" style="margin-top:14px;text-align:center;min-height:48px;font-size:36px;"></div></div>';
-            var ti = body.querySelector("#ip-txt");
-            var tp = body.querySelector("#ip-txt-prev");
-            function upd() {
-                var val = ti.value.trim();
-                tp.textContent = val;
-                tp.style.opacity = val ? "1" : ".2";
-            }
-            ti.addEventListener("input", upd);
-            ti.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") { e.preventDefault(); picked = ti.value.trim(); updatePrev(); }
-            });
-            upd();
-            ti.addEventListener("change", function () { picked = ti.value.trim(); });
-        }
-
-        function renderBuiltin(filter) {
-            body.innerHTML = "";
-            var names = SIYUAN_ICON_NAMES || [];
-            var q = (filter || "").toLowerCase();
-            var list = q ? names.filter(function (n) { return n.toLowerCase().indexOf(q) !== -1; }) : names;
-
-            list.forEach(function (name) {
-                var btn = document.createElement("button");
-                btn.type = "button";
-                btn.title = name;
-                var sel = (name === picked);
-                btn.style.cssText = "width:42px;height:42px;margin:3px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;border:1px solid " + (sel ? "var(--b3-theme-primary)" : "transparent") + ";background:" + (sel ? "var(--b3-theme-background)" : "transparent") + ";transition:all .12s;";
-                if (sel) btn.style.boxShadow = "inset 0 0 0 2px var(--b3-theme-primary)";
-                btn.appendChild(svgEl(name, 20));
-                btn.addEventListener("click", function () {
-                    picked = name;
-                    updatePrev();
-                    body.querySelectorAll("button[title]").forEach(function (b) {
-                        b.style.border = "1px solid transparent"; b.style.boxShadow = ""; b.style.background = "transparent";
-                    });
-                    btn.style.border = "1px solid var(--b3-theme-primary)";
-                    btn.style.boxShadow = "inset 0 0 0 2px var(--b3-theme-primary)";
-                    btn.style.background = "var(--b3-theme-background)";
-                });
-                body.appendChild(btn);
-            });
-            if (!list.length) {
-                var empty = document.createElement("div");
-                empty.style.cssText = "text-align:center;padding:40px 0;opacity:.4;font-size:13px;";
-                empty.textContent = self.getText("noMatch", "\u65e0\u5339\u914d\u7ed3\u679c");
-                body.appendChild(empty);
-            }
-        }
-
-        srchInput.addEventListener("input", function () {
-            var q = srchInput.value.trim();
-            if (curTab === "emoji") renderEmoji(q);
-            else if (curTab === "builtin") renderBuiltin(q);
-        });
-
-        el.querySelector("#ip-rst").addEventListener("click", function () {
-            picked = "";
-            updatePrev();
-        });
-
-        el.querySelector("#ip-ok").addEventListener("click", function () {
-            if (onPick) onPick(picked);
-            dlg.destroy();
-        });
-
-        updatePrev();
-        goTab(curTab);
+        return s;
     }
 
+    // 统一的图标选择器：优先使用思源内核 openEmoji；不可用时退回文本输入
+    _pickEmojiIcon(currentValue, onPick, anchorEl) {
+        const self = this;
+        const cur = (currentValue || '').toString().trim();
+
+        const fallback = () => self._showIconTextInput(cur, onPick);
+
+        if (typeof openEmoji !== 'function') { fallback(); return; }
+
+        let position = { x: Math.round(window.innerWidth / 2), y: Math.round(window.innerHeight / 2) };
+        if (anchorEl && typeof anchorEl.getBoundingClientRect === 'function') {
+            const r = anchorEl.getBoundingClientRect();
+            position = { x: Math.round(r.left), y: Math.round(r.bottom) };
+        }
+
+        try {
+            openEmoji({
+                position: position,
+                selectedCB: (emoji) => {
+                    const v = self._normalizeEmoji(emoji);
+                    if (onPick) onPick(v);
+                },
+                hideDynamicIcon: false,
+                hideCustomIcon: true,
+            });
+        } catch (e) {
+            console.warn('openEmoji 调用失败，退回文本输入', e);
+            fallback();
+        }
+    }
+
+    // openEmoji 不可用时的兜底：纯文本 / Emoji 输入
+    _showIconTextInput(currentValue, onPick) {
+        const self = this;
+        const dlg = new Dialog({
+            title: self.getText('setIconTitle', '设置图标'),
+            width: '360px',
+            content: '<div style="padding:16px;">' +
+                '<label style="display:block;font-size:13px;opacity:.65;margin-bottom:8px;">' + self.getText('enterTextOrEmoji', '输入文字或 Emoji') + '</label>' +
+                '<input id="ip-txt-fb" class="b3-text-field" type="text" value="' + self._escapeAttr(currentValue) + '" placeholder="' + self._escapeAttr(self.getText('textPlaceholder', '输入 Emoji 或文字')) + '" style="width:100%;font-size:14px;">' +
+                '<div id="ip-txt-prev-fb" style="margin-top:14px;text-align:center;min-height:48px;font-size:36px;"></div>' +
+                '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">' +
+                    '<button class="b3-button b3-button--cancel" id="ip-fb-cancel">' + self.getText('cancel', '取消') + '</button>' +
+                    '<button class="b3-button b3-button--outline" id="ip-fb-ok">' + self.getText('confirm', '确定') + '</button>' +
+                '</div>' +
+            '</div>'
+        });
+        const el = dlg.element;
+        const ti = el.querySelector('#ip-txt-fb');
+        const tp = el.querySelector('#ip-txt-prev-fb');
+        const upd = () => { tp.textContent = ti.value.trim(); tp.style.opacity = ti.value.trim() ? '1' : '.2'; };
+        ti.addEventListener('input', upd);
+        upd();
+        ti.focus();
+        el.querySelector('#ip-fb-cancel').addEventListener('click', () => dlg.destroy());
+        el.querySelector('#ip-fb-ok').addEventListener('click', () => { if (onPick) onPick(ti.value.trim()); dlg.destroy(); });
+    }
 
     async createGroup(name, icon) {
         if (!this.customFolders) this.customFolders = [];
-        this.customFolders.push({ id: 'grp_' + Date.now(), name, icon: icon || 'iconFolder' });
+        this.customFolders.push({ id: 'grp_' + Date.now(), name, icon: icon || '📁' });
         await this.saveData('customFolders', this.customFolders);
         showMessage(this.getText('folderCreated', '已新建分组：') + name);
         if (this._settingRootEl && this._settingRootEl.isConnected) this.renderCustomStyleManager(this._settingRootEl);
@@ -2183,7 +1979,7 @@ if (key === 'diaryChatWhisperCard') {
         const f = (this.customFolders || []).find(x => x.id === id);
         if (!f) return;
         f.name = name;
-        f.icon = icon || 'iconFolder';
+        f.icon = icon || '📁';
         await this.saveData('customFolders', this.customFolders);
         showMessage(this.getText('groupRenamed', '已重命名分组'));
         if (this._settingRootEl && this._settingRootEl.isConnected) this.renderCustomStyleManager(this._settingRootEl);
@@ -2230,7 +2026,8 @@ if (key === 'diaryChatWhisperCard') {
                         icon: "#iconQuote",
                         subGroups: [
                             { id: "topLineStyle", labelKey: "topLineGroup", icon: "#iconQuote", filter: (label, key) => key.startsWith('topLine') },
-                            { id: "polkaStyle", labelKey: "polkaGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('polka') }
+                            { id: "polkaStyle", labelKey: "polkaGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('polka') },
+                            { id: "titleBarStyle", labelKey: "titleBarGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('titleBar') }
                         ]
                     }
                 ]

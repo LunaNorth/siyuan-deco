@@ -1648,6 +1648,142 @@
     color: #95a5a6 !important;
 }
 
+/* ============================================ 顶条引述组（引述块样式：厚色条 header + 白字标题） ============================================ */
+/* 机制与「优雅顶线」完全一致：块内第一行文字 = 标题（不使用 custom-deco-card-* 属性） */
+/* 区别：顶线是 3px 细线 + 彩色标题文字；顶条是整条厚色块背景 + 白字标题 */
+
+.protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"]) {
+    padding: 0 0 14px 0 !important;
+    border: 1px solid var(--b3-theme-surface-lighter) !important;
+    border-radius: 6px !important;
+    background-color: var(--b3-theme-background) !important;
+    color: unset !important;
+    margin: 8px 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03) !important;
+}
+
+/* 第一行 = 厚色条 header（白字） */
+.protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"]) > [data-node-id]:first-child {
+    margin: 0 0 12px 0 !important;
+    padding: 11px 18px !important;
+    border: none !important;
+    border-radius: 5px 5px 0 0 !important;
+    font-weight: 600 !important;
+    font-size: var(--b3-font-size-editor);
+    line-height: 1.6 !important;
+    color: #ffffff !important;
+}
+/* header 内的行内元素统一继承白字 */
+.protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"]) > [data-node-id]:first-child span {
+    color: inherit !important;
+}
+
+/* 正文区域左右内边距 */
+.protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"]) > [data-node-id]:not(:first-child) {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+}
+
+.protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"])::before {
+    display: none !important;
+}
+
+.protyle-wysiwyg .li > [custom-deco-style^="顶条引述"]:not([fold="1"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.protyle-wysiwyg .li > [custom-deco-style^="顶条引述"]:not([fold="1"]) > [data-node-id]:first-child {
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+}
+
+#preview .protyle-wysiwyg [custom-deco-style^="顶条引述"]:not([fold="1"]) {
+    margin-left: 10px;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+/* ========== 颜色变体（7 色 · 厚色条 header + 白字标题）========== */
+
+/* 🔵 蓝 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·蓝"]:not([fold="1"]) {
+    border-color: #c3dcf7 !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·蓝"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #2c70c0 !important;
+}
+
+/* 🔴 红 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·红"]:not([fold="1"]) {
+    border-color: #f8ccc6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·红"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #c94a3f !important;
+}
+
+/* 🟢 绿 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·绿"]:not([fold="1"]) {
+    border-color: #c2e6d3 !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·绿"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #2b8f5e !important;
+}
+
+/* 🟠 橙 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·橙"]:not([fold="1"]) {
+    border-color: #fad7b3 !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·橙"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #cd6e1f !important;
+}
+
+/* 🟣 紫 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·紫"]:not([fold="1"]) {
+    border-color: #d8ccf6 !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·紫"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #6b4dbb !important;
+}
+
+/* 🔷 青 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·青"]:not([fold="1"]) {
+    border-color: #bce2dd !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·青"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #1f8a80 !important;
+}
+
+/* 🌸 粉 */
+.protyle-wysiwyg [custom-deco-style="顶条引述·粉"]:not([fold="1"]) {
+    border-color: #f8cbdc !important;
+}
+.protyle-wysiwyg [custom-deco-style="顶条引述·粉"]:not([fold="1"]) > [data-node-id]:first-child {
+    background-color: #d04e7c !important;
+}
+
+/* 暗色主题：仅收敛边框色，色条与白字保持不变 */
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·蓝"]:not([fold="1"]) {
+    border-color: #24405e !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·红"]:not([fold="1"]) {
+    border-color: #5e2b26 !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·绿"]:not([fold="1"]) {
+    border-color: #224633 !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·橙"]:not([fold="1"]) {
+    border-color: #5c3a1c !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·紫"]:not([fold="1"]) {
+    border-color: #3b2d5e !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·青"]:not([fold="1"]) {
+    border-color: #1d4643 !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style="顶条引述·粉"]:not([fold="1"]) {
+    border-color: #5c2a3c !important;
+}
+
 /* ========== 新特性卡片 ========== */
 .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"]) {
     background: #ffffff !important;
@@ -2961,6 +3097,8 @@
     background: #1f4047 !important;
     color: #b2f5ea !important;
 }
+
+
 :root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="疑问通知"]:not([fold="1"]) {
     background: #1e1e1e !important;
     color: #e0e0e0 !important;
@@ -3268,5 +3406,93 @@
 :root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="Callout-想法"]::before {
     color: #fde047 !important;
 }
+
+/* ============================================================
+   自定义样式选择器（Tab 分类 + 网格芯片）—— 替代原来的多级折叠树
+   仅在插件弹窗内生效；使用思源原生 CSS 变量，亮/暗主题自适应
+   ============================================================ */
+.cs-style-tabs { display: flex; flex-direction: column; min-width: 0; }
+.cs-style-tabs { flex: 1; }
+
+.cs-tab-bar {
+    display: flex; gap: 4px; padding: 4px;
+    margin-bottom: 10px;
+    background: var(--b3-theme-surface);
+    border: 1px solid var(--b3-border-color);
+    border-radius: 9px;
+    overflow-x: auto;
+}
+.cs-tab {
+    flex: 1 0 auto;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 6px 12px;
+    border: none; background: transparent; cursor: pointer;
+    font-size: 12.5px; font-weight: 600; color: var(--b3-text-color2);
+    border-radius: 6px; transition: background .15s, color .15s;
+    white-space: nowrap; line-height: 1;
+}
+.cs-tab:hover { background: var(--b3-theme-background); color: var(--b3-text-color); }
+.cs-tab--active { background: var(--b3-theme-primary); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.cs-tab--active svg { opacity: .9; }
+
+.cs-tab-panels { overflow-y: auto; max-height: 260px; padding-right: 2px; }
+.cs-tab-panel { display: none; }
+.cs-tab-panel--active { display: block; animation: csFadeIn .18s ease; }
+@keyframes csFadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+
+.cs-cat-group { margin-bottom: 12px; }
+.cs-cat-group-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    color: var(--b3-text-color3); opacity: .75; margin-bottom: 7px;
+    display: flex; align-items: center; gap: 6px;
+}
+.cs-cat-group-title::after { content: ""; flex: 1; height: 1px; background: var(--b3-border-color); opacity: .6; }
+
+.cs-cat-block { margin-bottom: 10px; }
+.cs-cat-block-title {
+    font-size: 11.5px; font-weight: 600; color: var(--b3-text-color2);
+    margin-bottom: 6px; opacity: .85;
+}
+
+.cs-chip-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.cs-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 11px; font-size: 12px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--b3-border-color); background: var(--b3-theme-surface);
+    color: var(--b3-text-color); transition: none; user-select: none; white-space: nowrap;
+}
+.cs-chip--active {
+    background: var(--b3-theme-primary); border-color: var(--b3-theme-primary);
+    color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.cs-chip-ico { font-size: 12px; line-height: 1; }
+
+/* 卡片编辑弹窗的图标预览方块（替代原来的长输入框，点击也可触发选择） */
+.cs-icon-preview {
+    width: 36px; height: 32px;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 6px;
+    background: var(--b3-theme-surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1;
+    cursor: pointer; user-select: none;
+    transition: none;
+}
+
+.cs-empty { font-size: 12px; opacity: .5; padding: 12px 4px; }
+
+/* 预览区美化 */
+.cs-preview-box {
+    border: 1px solid var(--b3-border-color); border-radius: 10px;
+    padding: 10px; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--b3-theme-surface);
+}
+.cs-preview-label {
+    font-size: 11px; color: var(--b3-text-color2); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 4px; opacity: .8;
+}
+
+/* 编辑弹窗整体微调 */
+.cs-edit-dialog .b3-dialog__item > label { color: var(--b3-text-color); }
 
 
