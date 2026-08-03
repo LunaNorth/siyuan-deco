@@ -41,9 +41,13 @@ if exist "%TEMP_DIR%\build.bat" del /q "%TEMP_DIR%\build.bat" >nul 2>&1
 if exist "%TEMP_DIR%\.hotreload" del /q "%TEMP_DIR%\.hotreload" >nul 2>&1
 if exist "%TEMP_DIR%\update.sh" del /q "%TEMP_DIR%\update.sh" >nul 2>&1
 
-REM ✅ 按用户要求排除：i18n 文件夹 和 README_zh_CN.md
+REM 按用户要求排除：i18n 文件夹 和 README_zh_CN.md
 if exist "%TEMP_DIR%\i18n" rd /s /q "%TEMP_DIR%\i18n" >nul 2>&1
 if exist "%TEMP_DIR%\README_zh_CN.md" del /q "%TEMP_DIR%\README_zh_CN.md" >nul 2>&1
+
+REM ========== 新增：排除 icons 文件夹 ==========
+if exist "%TEMP_DIR%\icons" rd /s /q "%TEMP_DIR%\icons" >nul 2>&1
+REM ============================================
 
 REM 删除 LICENSE（保留历史排除逻辑）
 if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
@@ -71,4 +75,5 @@ if not exist "%ORIGINAL_DIR%\%OUTPUT%" (
 REM 清理临时目录
 rd /s /q "%TEMP_DIR%" >nul 2>&1
 
-echo ✅ 打包成功
+REM 修改成功提示，明确说明排除了 icons 文件夹
+echo ✅ 打包成功，已排除 .git、node_modules、i18n、icons、README_zh_CN.md、LICENSE 等不需要的内容。
