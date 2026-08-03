@@ -2,14 +2,7 @@
 const siyuan = require("siyuan");
 const { showMessage, Dialog, openEmoji } = siyuan;
 
-// 思源笔记内置图标名（用于自定义分组的图标选择）。源串为无分隔拼接，按 icon 前缀正则切分得到数组。
-const SIYUAN_ICON_NAMES = (
-    "iconBrainiconPictureInPictureiconPlugZapiconSquareAsteriskiconSquarePlusiconSquareStopiconSendiconLayoutGridiconListFilterPlusiconFolderClockiconTriangleAlerticonCirclePlayiconCircleStopiconListTreeiconPaintBucketiconLanguageiconPanelLefticonPanelBottomiconPanelRighticonPanelLeftDashediconPanelBottomDashediconPanelRightDashediconSelectAlliconUploadAssetsiconDownloadAssetsiconKeepContenticonFullWidthiconTurnIntoiconGlobeiconPublishiconDocxiconSearchAsseticonAddDociconExpandLeveliconWidthiconAlignSettingsiconFoldUnFoldiconJumpToiconEnterBackiconEntericonRecentDocsiconOutlineiconCallouticonIncludeiconGroupsiconCameraiconGalleryiconBoardiconTerminaliconSoftWrapiconLinkiconLinkOfficonImgDowniconArrowDowniconUnpiniconPiniconOpeniconKeyiconClockiconAttriconPasteiconCopyiconPhoneiconEmailiconDragiconCalendariconNumbericonIndeterminateCheckiconPluginiconUsersiconZoomIniconZoomOuticonFeedbackiconCloseRoundiconLayouticonFullscreenExiticonFullscreeniconScrollHoriziconScrollVerticonSparklesiconDatabaseiconBIUiconKeyboardHideiconWorkspaceiconCloudiconCloudOfficonCloudErroriconCloudSucciconLiandiiconRiffCardiconEyeofficonEyeiconReplaceiconRtliconLtriconBackiconForwardiconLayoutBottomiconLayoutRighticonReficonFiltericonDarkiconLighticonModeiconHistoryiconCleariconFormaticonQuiticonDockiconHideDockiconInboxiconGithubiconGitHubIiconHTML5iconStariconSpreadEveniconSpreadOddiconScrollWrappediconSelectTexticonHandiconSiYuaniconCuticonAddiconUncheckiconDoticonUnderlineiconAiconMiconNiconYuqueiconGlobalGraphiconGraphiconLeftTopiconLeftBottomiconRightTopiconRightBottomiconBottomLefticonBottomRighticonMoveiconBazaariconKeymapiconFonticonVIPiconSupericonSelecticonSQLiconSupiconSubiconMarkiconEditiconPDFiconVideoiconSplitLRiconSplitTBiconFocusiconSorticonDownloadiconUploadiconExacticonRegexiconMenuiconLefticonRighticonDowniconUpiconTagsiconTagiconImageiconRefreshiconUnlockiconLockiconAccounticonMarkdowniconListItemiconBookmarksiconBookmarkiconH1iconH2iconH3iconH4iconH5iconH6iconHeadingsiconMathiconCloseiconRestoreiconFilesiconFilesRooticonNewNoteBookiconMaxiconMiniconSettingsiconFoldericonSearchiconFileiconHearticonParagraphiconMpiconQuoteiconAftericonBeforeiconInsertLefticonInsertRighticonDeleteColumniconDeleteRowiconLineiconCodeiconInlineCodeiconBothiconThemeiconOpenWindowiconPauseiconPreviewiconInfoiconHelpiconStrikeiconContracticonExpandiconRecordiconBoldiconBugiconPlayiconCheckiconTrashcaniconMoreiconEmojiiconAlignCentericonAlignJustifyiconAlignLefticonAlignRighticonItaliciconOutdenticonIndenticonOrderedListiconListiconTableiconRedoiconUndoiconZhihu"
-).match(/icon[A-Z][A-Za-z0-9]*?(?=icon[A-Z]|$)/g);
-
-// ========== 卡片定义 ==========
 const CARD_ITEMS = [
-    // 卡片风格组（CreativeCard）
     { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
     { key: 'studyNoteCreativeCard', label: '学习笔记', icon: '📚' },
     { key: 'importantReminderCreativeCard', label: '提醒', icon: '❗' },
@@ -1239,257 +1232,292 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.destroy());
     }
 
-    // ========== 设置面板渲染：可折叠文档树（引述块/普通块/图片相关） + 右侧内容 ==========
+    // ========== 设置面板渲染：现代化单栏布局（顶部分组标签栏 + 下方卡片网格）==========
     renderCustomStyleManager(element) {
         const self = this;
         const allStyles = this.customStyles || [];
         const totalCount = allStyles.length;
         const groups = this._getGroupedByFolder();
 
-        // ---- 左侧：可折叠分组树（用户自建分组 + 未分类）----
-        let treeHtml = '';
-        let treeGroupIdx = 0;
+        // 确定默认激活的分组（第一个有项目的分组）
+        const activeGroupId = this._csActiveGroup || (groups.find(g => g.items.length) ? groups.find(g => g.items.length).id : groups[0]?.id);
+        const activeGroup = groups.find(g => g.id === activeGroupId) || groups[0];
+        const activeItems = activeGroup?.items || [];
+
+        // ---- 顶部分组标签栏 ----
+        let tabsHtml = '';
+        let firstVisibleId = null;
         for (const g of groups) {
             const isNone = g.id === '__none__';
-            // 未分类为空时不显示；用户分组即使为空也显示，便于看到并管理
             if (!g.items.length && isNone) continue;
-
-            const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 16 });
-            const gIdx = treeGroupIdx++;
-            const actions = isNone ? '' : `
-                <button class="cs-group-act" data-act="rename" data-gid="${g.id}" title="${this.getText('renameGroup', '重命名分组')}" style="border:none;background:transparent;cursor:pointer;padding:2px 4px;opacity:.45;border-radius:4px;line-height:1;display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;"><use xlink:href="#iconEdit"></use></svg></button>
-                <button class="cs-group-act" data-act="delete" data-gid="${g.id}" title="删除分组" style="border:none;background:transparent;cursor:pointer;padding:2px 4px;opacity:.45;border-radius:4px;line-height:1;display:inline-flex;align-items:center;"><svg style="width:14px;height:14px;"><use xlink:href="#iconTrashcan"></use></svg></button>`;
-            treeHtml += `
-                <div class="cs-tree-group" data-group-id="${g.id}" style="margin-bottom:2px;">
-                    <div class="cs-tree-header" style="display:flex; align-items:center; gap:4px; padding:5px 8px; border-radius:6px; transition:background .15s;">
-                        <div class="cs-tree-toggle" data-toggle="${gIdx}" style="display:flex; align-items:center; gap:7px; flex:1; cursor:pointer; min-width:0;">
-                            <svg class="cs-tree-arrow" style="width:14px;height:14px; flex:none; opacity:.5;"><use xlink:href="#iconRight"></use></svg>
-                            ${icon}
-                            <span style="flex:1; font-size:13px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${this._escapeAttr(g.name)}</span>
-                            <span style="font-size:11px; opacity:.45; flex:none;">${g.items.length}</span>
-                        </div>
-                        ${actions}
-                    </div>
-                    <div class="cs-tree-children" data-children="${gIdx}" style="display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;">
-                        <div style="overflow:hidden; min-height:0; padding-left:26px; padding-top:2px; padding-bottom:4px;">
-                        ${g.items.map(cs => `
-                            <div class="cs-tree-item" data-cs-id="${cs.id}" style="display:flex; align-items:center; gap:7px; padding:6px 8px; border-radius:5px; cursor:pointer; transition:background .12s; margin-bottom:1px;">
-                                <span style="font-size:1.1rem; flex:none;">${cs.icon || '✨'}</span>
-                                <span style="flex:1; font-size:12.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${this._escapeAttr(cs.name)}</span>
-                            </div>
-                        `).join('')}
-                        </div>
-                    </div>
-                </div>`;
+            if (!firstVisibleId) firstVisibleId = g.id;
+            const isActive = g.id === activeGroupId;
+            const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 14 });
+            tabsHtml += `
+                <button class="cs-tab-pill ${isActive ? 'cs-tab-pill--active' : ''}" data-gid="${g.id}">
+                    ${icon}
+                    <span class="cs-tab-pill__name">${this._escapeAttr(g.name)}</span>
+                    <span class="cs-tab-pill__count">${g.items.length}</span>
+                </button>`;
         }
 
-        // ---- 右侧内容 ----
-        let rightHtml = '';
+        // ---- 内容区 ----
+        let contentHtml = '';
         if (totalCount === 0) {
-            rightHtml = `
-                <div style="flex:1; display:flex; align-items:center; justify-content:center;">
-                    <div style="text-align:center; opacity:.4;">
-                        <div style="font-size:3.2rem; margin-bottom:14px;">✨</div>
-                        <div style="font-size:15px; font-weight:600; margin-bottom:6px;">${this.getText('customEmpty', '暂无自定义样式')}</div>
-                        <div style="font-size:12px; opacity:.65; margin-bottom:20px;">点击下方「新增」创建你的第一个样式</div>
-                    </div>
+            contentHtml = `
+                <div class="cs-empty-state">
+                    <div class="cs-empty-illustration">✨</div>
+                    <div class="cs-empty-title">${this.getText('customEmpty', '暂无自定义样式')}</div>
+                    <div class="cs-empty-desc">${this.getText('customEmptyHint', '点击右上角「新增」创建你的第一个样式')}</div>
+                    <button class="b3-button b3-button--outline cs-empty-btn" id="cs-btn-new-empty">
+                        <svg style="width:14px;height:14px;"><use xlink:href="#iconAdd"></use></svg>
+                        ${this.getText('customAdd', '新增自定义样式')}
+                    </button>
+                </div>`;
+        } else if (activeItems.length === 0) {
+            contentHtml = `
+                <div class="cs-empty-state">
+                    <div class="cs-empty-illustration">📂</div>
+                    <div class="cs-empty-title">${this.getText('groupEmpty', '该分组暂无样式')}</div>
+                    <div class="cs-empty-desc">${this.getText('groupEmptyHint', '切换到其他分组或新建一个样式')}</div>
                 </div>`;
         } else {
-            rightHtml = '<div style="flex:1; overflow-y:auto; padding:20px 28px;">';
-            for (const g of groups) {
-                if (!g.items.length) continue;
-                const isNone = g.id === '__none__';
-                const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 15 });
-                rightHtml += `
-                    <div style="margin-bottom:20px;">
-                        <div class="fn__flex fn__flex-center" style="gap:7px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--b3-border-color);">
-                            <span style="font-size:14px;">${icon}</span>
-                            <span style="font-weight:700; font-size:14px;">${this._escapeAttr(g.name)}</span>
-                            <span style="margin-left:auto; font-size:11px; opacity:.4;">${g.items.length}</span>
-                        </div>
-                        ${g.items.map(cs => self._renderStyleCard(cs)).join('')}
-                    </div>`;
-            }
-            rightHtml += '</div>';
+            contentHtml = `<div class="cs-card-grid">`;
+            activeItems.forEach((cs, idx) => {
+                contentHtml += self._renderStyleCard(cs, idx);
+            });
+            contentHtml += `</div>`;
         }
 
-        // ---- 整体布局 ----
+        // ---- 整体布局（现代单栏）----
         const html = `
-            <div id="cs-root" style="display:flex; height:100%;">
+            <div id="cs-root" class="cs-modern-layout">
 
-                <!-- ====== 左侧栏：分组树 ====== -->
-                <div id="cs-sidebar" style="width:250px; min-width:200px; max-width:280px; border-right:1px solid var(--b3-border-color); display:flex; flex-direction:column; flex:none; background:var(--b3-theme-surface);">
-
-                    <!-- 头部 -->
-                    <div style="padding:14px 14px 12px; border-bottom:1px solid var(--b3-border-color); flex:none;">
-                        <div class="fn__flex fn__flex-center" style="gap:7px;">
-                            <svg style="width:17px;height:17px;color:var(--b3-theme-primary);"><use xlink:href="#iconStar"></use></svg>
-                            <span style="font-weight:700; font-size:14px;">${this.getText('customManage', '自定义块样式')}</span>
-                            <button id="cs-btn-newgroup" class="b3-button b3-button--outline" style="margin-left:auto; padding:2px 9px; font-size:11px; font-weight:600;">+ ${this.getText('customGroup', '分组')}</button>
-                        </div>
-                        ${totalCount > 0 ? `<div style="font-size:11px; opacity:.45; margin-top:3px;">${totalCount} 个预设</div>` : ''}
+                <!-- 顶部导航栏 -->
+                <header class="cs-header">
+                    <div class="cs-header__left">
+                        <svg class="cs-header__icon"><use xlink:href="#iconStar"></use></svg>
+                        <span class="cs-header__title">${this.getText('customManage', '自定义块样式')}</span>
+                        ${totalCount > 0 ? `<span class="cs-header__badge">${totalCount}</span>` : ''}
                     </div>
-
-                    <!-- 可折叠树 -->
-                    <div style="flex:1; overflow-y:auto; padding:8px 6px;">
-                        ${treeHtml || `<div style="padding:10px 8px; font-size:12px; opacity:.4;">${this.getText('noFolderHint', '还没有分组，点右上角「+ 分组」新建')}</div>`}
+                    <div class="cs-header__actions">
+                        <button class="cs-action-btn" id="cs-btn-newgroup" title="${this.getText('customGroup', '新建分组')}">
+                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                            <span>${this.getText('customGroup', '分组')}</span>
+                        </button>
+                        <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-new" title="${this.getText('customAdd', '新增自定义样式')}">
+                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                            <span>${this.getText('customAdd', '新增')}</span>
+                        </button>
                     </div>
+                </header>
 
-                    <!-- 底部操作栏 -->
-                    <div style="padding:12px 14px 16px; border-top:1px solid var(--b3-border-color); flex:none;">
-                        <button class="b3-button b3-button--outline" id="cs-btn-new" style="width:100%; padding:9px; font-weight:600; font-size:13px;">+ ${this.getText('customAdd', '新增自定义样式')}</button>
+                <!-- 分组标签栏 -->
+                ${groups.some(g => g.items.length) ? `
+                <nav class="cs-tabs-bar" id="cs-tabs-bar">
+                    <div class="cs-tabs-track">
+                        ${tabsHtml}
                     </div>
-                </div>
+                </nav>` : ''}
 
-                <!-- ====== 右侧主内容区 ====== -->
-                <div id="cs-main" style="flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden; background:var(--b3-theme-background);">
-                    ${rightHtml}
-                </div>
+                <!-- 主内容区 -->
+                <main class="cs-content" id="cs-content">
+                    ${contentHtml}
+                </main>
+
             </div>`;
 
         element.innerHTML = html;
 
-        // ---- 新建分组 ----
+        // ====== 交互绑定 ======
+
+        // 新建分组
         const ngBtn = element.querySelector('#cs-btn-newgroup');
         if (ngBtn) ngBtn.addEventListener('click', () => {
             self.openGroupDialog(null, (g) => self.createGroup(g.name, g.icon));
         });
 
-        // ---- 树节点展开/收起 ----
-        element.querySelectorAll('.cs-tree-toggle').forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const idx = toggle.getAttribute('data-toggle');
-                const children = element.querySelector(`.cs-tree-children[data-children="${idx}"]`);
-                const arrow = toggle.querySelector('.cs-tree-arrow');
-                if (children) {
-                    const collapsed = children.style.gridTemplateRows !== '1fr';
-                    children.style.gridTemplateRows = collapsed ? '1fr' : '0fr';
-                    const use = arrow ? arrow.querySelector('use') : null;
-                    if (use) {
-                        // 点击后：collapsed 为 true 表示本次展开(→ iconDown)，否则折叠(→ iconRight)
-                        const href = collapsed ? '#iconDown' : '#iconRight';
-                        use.setAttribute('xlink:href', href);
-                        use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', href);
-                    }
+        // 新增按钮（顶部 + 空状态）
+        element.querySelectorAll('#cs-btn-new, #cs-btn-new-empty').forEach(btn => {
+            if (btn) btn.addEventListener('click', () => self.openStyleDialog(null));
+        });
+
+        // 分组标签切换
+        element.querySelectorAll('.cs-tab-pill').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const gid = tab.getAttribute('data-gid');
+                if (gid === self._csActiveGroup) return;
+                self._csActiveGroup = gid;
+                // 动画过渡：淡出 → 重绘 → 淡入
+                const contentEl = element.querySelector('#cs-content');
+                if (contentEl) {
+                    contentEl.style.opacity = '0';
+                    contentEl.style.transform = 'translateY(6px)';
+                    setTimeout(() => {
+                        self.renderCustomStyleManager(element);
+                        const newContent = element.querySelector('#cs-content');
+                        if (newContent) {
+                            newContent.style.opacity = '0';
+                            newContent.style.transform = 'translateY(6px)';
+                            requestAnimationFrame(() => {
+                                newContent.style.transition = 'opacity .25s ease, transform .25s ease';
+                                newContent.style.opacity = '1';
+                                newContent.style.transform = 'translateY(0)';
+                            });
+                        }
+                    }, 120);
                 }
+                return;
             });
         });
-
-        // ---- 分组重命名 / 删除 ----
-        element.querySelectorAll('.cs-group-act').forEach(actBtn => {
-            actBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const gid = actBtn.getAttribute('data-gid');
-                const act = actBtn.getAttribute('data-act');
-                const grp = (self.customFolders || []).find(f => f.id === gid);
-                if (act === 'rename') {
-                    self.openGroupDialog(grp ? { name: grp.name, icon: grp.icon } : null, (g) => self.renameGroup(gid, g.name, g.icon));
-                } else if (act === 'delete') {
-                    if (confirm(self.getText('groupDeleteConfirm', '确定删除该分组？分组内的样式会移到「未分类」。'))) {
-                        self.deleteGroup(gid);
-                    }
-                }
-            });
-        });
-
-        // 树子项 hover + 点击编辑
-        element.querySelectorAll('.cs-tree-item').forEach(itemEl => {
-            itemEl.addEventListener('mouseenter', () => { itemEl.style.background = 'var(--b3-theme-background)'; });
-            itemEl.addEventListener('mouseleave', () => { itemEl.style.background = ''; });
-            itemEl.addEventListener('click', () => {
-                self.openStyleDialog(itemEl.getAttribute('data-cs-id'));
-            });
-        });
-
-        // 树头部 hover
-        element.querySelectorAll('.cs-tree-header').forEach(h => {
-            h.addEventListener('mouseenter', () => h.style.background = 'var(--b3-theme-background)');
-            h.addEventListener('mouseleave', () => h.style.background = '');
-        });
-
-        // 新增按钮 → Dialog
-        element.querySelector('#cs-btn-new').addEventListener('click', () => self.openStyleDialog(null));
 
         // 卡片编辑 / 删除
         element.querySelectorAll('[data-cs-edit]').forEach(btn => {
-            btn.addEventListener('click', () => self.openStyleDialog(btn.getAttribute('data-cs-edit')));
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                self.openStyleDialog(btn.getAttribute('data-cs-edit'));
+            });
         });
-        element.querySelectorAll('[data-cs-del]').forEach(async btn => {
-            btn.addEventListener('click', async () => {
+        element.querySelectorAll('[data-cs-del]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const id = btn.getAttribute('data-cs-del');
-                self.customStyles = (self.customStyles || []).filter(c => c.id !== id);
-                await self.saveData('customStyles', self.customStyles);
-                showMessage(self.getText('customDeleted', '已删除自定义样式'));
-                self.renderCustomStyleManager(element);
+                const cs = (self.customStyles || []).find(c => c.id === id);
+                const name = cs ? cs.name : '';
+                const dlg = new Dialog({
+                    title: self.getText('customDeleteConfirmTitle', '删除自定义样式'),
+                    width: '360px',
+                    content: `<div style="padding:20px 24px;">
+                        <div style="font-size:13px; line-height:1.6; color:var(--b3-text-color);">
+                            ${self.getText('customDeleteConfirmText', '确定要删除')}
+                            「<strong style="color:var(--b3-text-color);">${self._escapeAttr(name)}</strong>」
+                            ${self.getText('customDeleteConfirmText2', '吗？此操作不可撤销。')}
+                        </div>
+                        <div class="fn__flex" style="justify-content:flex-end; gap:8px; margin-top:20px;">
+                            <button class="b3-button b3-button--cancel" id="cs-del-cancel">${self.getText('customCancel', '取消')}</button>
+                            <button class="b3-button b3-button--outline" id="cs-del-ok" style="padding:6px 20px; font-weight:600;">${self.getText('customDelete', '删除')}</button>
+                        </div>
+                    </div>`
+                });
+                const confirmDel = async () => {
+                    dlg.destroy();
+                    self.customStyles = (self.customStyles || []).filter(c => c.id !== id);
+                    await self.saveData('customStyles', self.customStyles);
+                    showMessage(self.getText('customDeleted', '已删除自定义样式'));
+                    self.renderCustomStyleManager(element);
+                };
+                dlg.element.querySelector('#cs-del-ok').addEventListener('click', confirmDel);
+                dlg.element.querySelector('#cs-del-cancel').addEventListener('click', () => dlg.destroy());
             });
         });
 
-        // ---- 样式卡片悬停预览（浮层 tooltip）----
+        // 卡片点击 → 编辑
+        element.querySelectorAll('.cs-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('[data-cs-edit]') || e.target.closest('[data-cs-del]')) return;
+                self.openStyleDialog(card.getAttribute('data-cs-id'));
+            });
+        });
+
+        // ---- 悬停预览浮层 ----
         let hoverPreview = document.getElementById('cs-hover-preview');
         if (!hoverPreview) {
             hoverPreview = document.createElement('div');
             hoverPreview.id = 'cs-hover-preview';
             hoverPreview.className = 'b3-dialog__content';
-            hoverPreview.style.cssText = 'position:fixed; z-index:9999; width:300px; max-width:90vw; padding:14px 16px; box-shadow:0 6px 24px rgba(0,0,0,.18); border-radius:10px; background:var(--b3-theme-background); border:1px solid var(--b3-border-color); pointer-events:none; opacity:0; transition:opacity .12s; display:none;';
+            hoverPreview.style.cssText = 'position:fixed; z-index:9999; width:420px; max-width:90vw; padding:8px 14px; box-shadow:0 6px 20px rgba(0,0,0,.14); border-radius:8px; background:var(--b3-theme-background); border:1px solid var(--b3-border-color); pointer-events:none; opacity:0; transition:opacity .15s,transform .15s; display:none; transform:scale(.96);';
             document.body.appendChild(hoverPreview);
         }
 
-        element.querySelectorAll('.cs-style-card').forEach(card => {
+        element.querySelectorAll('.cs-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
                 const label = card.getAttribute('data-cs-style') || '';
                 const ico = card.getAttribute('data-cs-icon') || '';
                 const ttl = card.getAttribute('data-cs-title') || '';
                 if (!label) return;
-                // 只传 custom-deco-style；标题块用 ::before 渲染 icon+title，避免和示例内容互相嵌套
                 const isBuiltin = /^icon[A-Z]/.test(ico);
                 const iconAttr = (ico && !isBuiltin) ? ico : '';
                 const titleAttr = ttl || label;
                 hoverPreview.innerHTML =
                     '<div class="protyle-wysiwyg">' +
-                    // 标题块：CSS ::before 自动渲染 icon + title
                     '<div custom-deco-style="' + self._escapeAttr(label) + '"' +
                     (iconAttr ? ' custom-deco-card-icon="' + self._escapeAttr(iconAttr) + '"' : '') +
                     (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
-                    ' style="padding:14px 16px;" data-type="NodeParagraph">&nbsp;</div>' +
+                    ' style="padding:10px 14px;" data-type="NodeParagraph">&nbsp;</div>' +
                     '</div>';
 
-                // 定位：显示在卡片右侧，超出视口则放左侧
+                // 定位到卡片下方
                 const rect = card.getBoundingClientRect();
                 hoverPreview.style.display = 'block';
                 const pw = hoverPreview.offsetWidth, ph = hoverPreview.offsetHeight;
-                let left = rect.right + 12;
-                if (left + pw > window.innerWidth - 8) left = rect.left - pw - 12;
+                let left = rect.left + (rect.width - pw) / 2;  // 水平居中对齐卡片
                 if (left < 8) left = 8;
-                let top = rect.top;
-                if (top + ph > window.innerHeight - 8) top = window.innerHeight - ph - 8;
+                if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+                let top = rect.bottom + 8;  // 卡片正下方
+                if (top + ph > window.innerHeight - 8) {
+                    // 下方放不下则改到上方
+                    top = rect.top - ph - 8;
+                }
                 if (top < 8) top = 8;
                 hoverPreview.style.left = left + 'px';
                 hoverPreview.style.top = top + 'px';
-                requestAnimationFrame(() => { hoverPreview.style.opacity = '1'; });
+                requestAnimationFrame(() => { hoverPreview.style.opacity = '1'; hoverPreview.style.transform = 'scale(1) translateY(0)'; });
             });
             card.addEventListener('mouseleave', () => {
                 hoverPreview.style.opacity = '0';
-                setTimeout(() => { if (hoverPreview.style.opacity === '0') hoverPreview.style.display = 'none'; }, 130);
+                hoverPreview.style.transform = 'scale(.96)';
+                setTimeout(() => { if (hoverPreview.style.opacity === '0') hoverPreview.style.display = 'none'; }, 160);
             });
+        });
+
+        // 入场动画：卡片依次淡入
+        const cards = element.querySelectorAll('.cs-card');
+        cards.forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(12px)';
+            setTimeout(() => {
+                card.style.transition = 'opacity .3s ease, transform .3s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 60 + i * 45);
         });
     }
 
-    // 渲染单张样式卡片（用于右侧列表）
-    _renderStyleCard(cs) {
+    // 渲染单张样式卡片（现代网格版）
+    _renderStyleCard(cs, index) {
+        const icon = cs.icon || '✨';
+        // 根据图标/名称生成一个稳定的柔和背景色
+        const hue = this._stringHue(cs.name + cs.id);
+        const bgLight = `hsl(${hue}, 70%, 96%)`;
+        const bgMid = `hsl(${hue}, 65%, 90%)`;
+        const accentColor = `hsl(${hue}, 65%, 45%)`;
+
         return `
-            <div class="cs-style-card" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; border-radius:8px; border:1px solid var(--b3-border-color); background:var(--b3-theme-surface); transition:border-color .15s; margin-bottom:8px; cursor:default;">
-                <div style="display:flex; align-items:center; gap:10px; min-width:0;">
-                    <span style="font-size:1.35rem; flex:none;">${cs.icon || '✨'}</span>
-                    <div style="min-width:0; overflow:hidden;">
-                        <div style="font-weight:650; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cs.name}</div>
-                        <div style="font-size:11px; opacity:.55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cs.style}${cs.title ? ' · ' + cs.title : ''}</div>
-                    </div>
+            <div class="cs-card" data-cs-id="${cs.id}" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}"
+                 style="--cs-accent:${accentColor}; --cs-bg-light:${bgLight}; --cs-bg-mid:${bgMid}; animation-delay:${index * 45}ms;">
+                <div class="cs-card__icon-wrap">
+                    <span class="cs-card__icon">${icon}</span>
                 </div>
-                <div style="display:flex; gap:5px; flex:none;">
-                    <button class="b3-button b3-button--outline b3-button--small" data-cs-edit="${cs.id}" style="padding:2px 8px; font-size:11px;">${this.getText('customEdit', '编辑')}</button>
-                    <button class="b3-button b3-button--outline b3-button--small" data-cs-del="${cs.id}" style="padding:2px 8px; font-size:11px;">${this.getText('customDelete', '删除')}</button>
+                <div class="cs-card__body">
+                    <div class="cs-card__name">${this._escapeAttr(cs.name)}</div>
+                    <div class="cs-card__meta">${this._escapeAttr(cs.style)}${cs.title ? '<span class="cs-card__meta-sep">·</span>' + this._escapeAttr(cs.title) : ''}</div>
+                </div>
+                <div class="cs-card__actions">
+                    <button class="cs-card__act cs-card__act--edit" data-cs-edit="${cs.id}" title="${this.getText('customEdit', '编辑')}">
+                        <svg style="width:14px;height:14px;"><use xlink:href="#iconEdit"></use></svg>
+                    </button>
+                    <button class="cs-card__act cs-card__act--del" data-cs-del="${cs.id}" title="${this.getText('customDelete', '删除')}">
+                        <svg style="width:14px;height:14px;"><use xlink:href="#iconTrashcan"></use></svg>
+                    </button>
                 </div>
             </div>`;
+    }
+
+    // 辅助：根据字符串生成色相值（用于卡片图标背景色）
+    _stringHue(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+        return Math.abs(hash % 360);
     }
 
     // ========== 二级：自定义块父按钮 → 分组（引述/普通/图片/未分类）→ 各预设项 ==========

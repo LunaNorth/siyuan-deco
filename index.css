@@ -3408,8 +3408,379 @@
 }
 
 /* ============================================================
-   自定义样式选择器（Tab 分类 + 网格芯片）—— 替代原来的多级折叠树
-   仅在插件弹窗内生效；使用思源原生 CSS 变量，亮/暗主题自适应
+   自定义块样式管理器 —— 现代化单栏布局（顶部分组标签栏 + 卡片网格）
+   替代原来的左右分栏树形布局
+   ============================================================ */
+
+/* ====== 整体布局容器 ====== */
+.cs-modern-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--b3-theme-background);
+}
+
+/* ====== 顶部导航栏 ====== */
+.cs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px 12px;
+    flex-shrink: 0;
+}
+.cs-header__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cs-header__icon {
+    width: 20px;
+    height: 20px;
+    color: var(--b3-theme-primary);
+    flex-shrink: 0;
+}
+.cs-header__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--b3-text-color);
+    letter-spacing: -0.2px;
+}
+.cs-header__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--b3-theme-primary);
+    background: var(--b3-theme-surface);
+    border: 1px solid var(--b3-theme-primary-lighter, rgba(59,130,246,.15));
+    border-radius: 10px;
+}
+.cs-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 操作按钮 */
+.cs-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--b3-text-color2);
+    background: var(--b3-theme-surface);
+    border: 1px solid var(--b3-border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .18s ease;
+    white-space: nowrap;
+    line-height: 1;
+}
+.cs-action-btn:hover {
+    color: var(--b3-text-color);
+    border-color: var(--b3-theme-primary-lighter, rgba(59,130,246,.4));
+    background: var(--b3-theme-background);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.cs-action-btn--primary {
+    color: #fff;
+    background: var(--b3-theme-primary);
+    border-color: var(--b3-theme-primary);
+}
+.cs-action-btn--primary:hover {
+    background: var(--b3-theme-primary-dark, #2563eb);
+    border-color: var(--b3-theme-primary-dark, #2563eb);
+    box-shadow: 0 3px 12px rgba(59,130,246,.3);
+    transform: translateY(-1px);
+}
+.cs-action-btn--primary:active {
+    transform: translateY(0);
+}
+
+/* ====== 分组标签栏（Pill Tabs）====== */
+.cs-tabs-bar {
+    flex-shrink: 0;
+    padding: 0 24px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.cs-tabs-bar::-webkit-scrollbar { display: none; }
+.cs-tabs-track {
+    display: flex;
+    gap: 6px;
+}
+
+/* 单个分组标签 Pill */
+.cs-tab-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--b3-text-color2);
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s ease;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    line-height: 1.2;
+}
+.cs-tab-pill:hover {
+    color: var(--b3-text-color);
+    background: var(--b3-theme-surface);
+    border-color: var(--b3-border-color);
+}
+.cs-tab-pill--active {
+    color: var(--b3-theme-primary);
+    background: var(--b3-theme-primary-lightest, rgba(59,130,246,.08));
+    border-color: var(--b3-theme-primary-lighter, rgba(59,130,246,.25));
+    box-shadow: 0 1px 6px rgba(59,130,246,.1);
+}
+.cs-tab-pill__name {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cs-tab-pill__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 8px;
+    background: var(--b3-border-color);
+    color: var(--b3-text-color3);
+    transition: all .2s ease;
+}
+.cs-tab-pill--active .cs-tab-pill__count {
+    background: var(--b3-theme-primary);
+    color: #fff;
+}
+
+/* ====== 主内容区 ====== */
+.cs-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 24px 24px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ====== 卡片网格 ====== */
+.cs-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* ====== 单张卡片（紧凑版）====== */
+.cs-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--b3-border-color);
+    background: var(--b3-theme-surface);
+    cursor: pointer;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    position: relative;
+    overflow: hidden;
+}
+.cs-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--cs-accent, var(--b3-theme-primary));
+    opacity: 0;
+    transition: opacity .22s ease;
+    border-radius: 0 2px 2px 0;
+}
+.cs-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+    border-color: var(--cs-accent-lighter, rgba(128,128,128,.25));
+    background: var(--b3-theme-background);
+}
+.cs-card:hover::before {
+    opacity: 1;
+}
+.cs-card:active {
+    transform: translateY(0) scale(.99);
+}
+
+/* 卡片图标区域 */
+.cs-card__icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--cs-bg-light, var(--b3-theme-surface));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform .22s ease;
+    position: relative;
+    overflow: hidden;
+}
+.cs-card__icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.4) 0%, transparent 60%);
+    border-radius: inherit;
+}
+.cs-card:hover .cs-card__icon-wrap {
+    transform: scale(1.08) rotate(-3deg);
+}
+.cs-card__icon {
+    font-size: 17px;
+    line-height: 1;
+    z-index: 1;
+}
+
+/* 卡片文字区域 */
+.cs-card__body {
+    flex: 1;
+    min-width: 0;
+}
+.cs-card__name {
+    font-size: 12.5px;
+    font-weight: 650;
+    color: var(--b3-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+    letter-spacing: -0.15px;
+}
+.cs-card__meta {
+    font-size: 10.5px;
+    color: var(--b3-text-color3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: .75;
+}
+.cs-card__meta-sep {
+    margin: 0 4px;
+    opacity: .45;
+}
+
+/* 卡片操作按钮（hover 显示）*/
+.cs-card__actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+.cs-card:hover .cs-card__actions {
+    opacity: 1;
+    transform: translateX(0);
+}
+.cs-card__act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    background: var(--b3-theme-surface);
+    color: var(--b3-text-color3);
+    cursor: pointer;
+    transition: all .15s ease;
+    flex-shrink: 0;
+}
+.cs-card__act:hover {
+    background: var(--b3-theme-background);
+    color: var(--b3-text-color);
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+.cs-card__act--edit:hover {
+    color: var(--b3-theme-primary);
+    background: var(--b3-theme-primary-lightest, rgba(59,130,246,.08));
+}
+.cs-card__act--del:hover {
+    color: #ef4444;
+    background: rgba(239,68,68,.07);
+}
+
+/* ====== 空状态 ====== */
+.cs-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    animation: csEmptyIn .4s ease both;
+}
+@keyframes csEmptyIn {
+    from { opacity: 0; transform: translateY(16px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+.cs-empty-illustration {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 20px;
+    filter: grayscale(.2);
+    animation: csFloat 3s ease-in-out infinite;
+}
+@keyframes csFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+.cs-empty-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--b3-text-color);
+    margin-bottom: 8px;
+}
+.cs-empty-desc {
+    font-size: 13px;
+    color: var(--b3-text-color3);
+    max-width: 280px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+.cs-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px !important;
+    font-size: 13.5px !important;
+    border-radius: 10px !important;
+    transition: all .2s ease !important;
+}
+.cs-empty-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(59,130,246,.25) !important;
+}
+
+
+/* ============================================================
+   自定义样式选择器（Tab 分类 + 网格芯片）—— 用于新增/编辑弹窗内
    ============================================================ */
 .cs-style-tabs { display: flex; flex-direction: column; min-width: 0; }
 .cs-style-tabs { flex: 1; }
