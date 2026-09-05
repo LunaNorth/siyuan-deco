@@ -2,6 +2,54 @@
 const siyuan = require("siyuan");
 const { showMessage, Dialog, openEmoji } = siyuan;
 
+// 自定义图标（通过 this.addIcons 注册为思源全局图标，用于顶栏+右键菜单）
+// 参考轻语做法：模块级常量，onload 中注册一次即可，无需主题切换兜底
+const PLUGIN_ICON = `
+<symbol id="iconDecoCard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="18" height="16" rx="2"/>
+    <path d="M3 9h18"/>
+    <path d="M7 13h6"/>
+</symbol>
+<symbol id="iconDecoSparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/>
+    <path d="M19 15l.6 1.4 1.4.6-1.4.6L19 19l-.6-1.4-1.4-.6 1.4-.6L19 15z"/>
+</symbol>
+<symbol id="iconDecoLayers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/>
+    <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+    <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+</symbol>
+<symbol id="iconDecoPalette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+</symbol>
+<symbol id="iconDecoBrush" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m14.622 17.897-10.68-2.913"/>
+    <path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z"/>
+    <path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15"/>
+</symbol>
+<symbol id="iconDecoWand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/>
+    <path d="m14 7 3 3"/>
+    <path d="M5 6v4"/>
+    <path d="M19 14v4"/>
+    <path d="M10 2v2"/>
+    <path d="M7 8H3"/>
+    <path d="M21 16h-4"/>
+    <path d="M11 3H9"/>
+</symbol>
+<symbol id="iconDecoFolder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>
+</symbol>
+<symbol id="iconDecoTag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+    <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+</symbol>`;
+
+
 const CARD_ITEMS = [
     { key: 'newCreativeCard', label: '创意卡片', icon: '✨' },
     { key: 'studyNoteCreativeCard', label: '学习笔记', icon: '📚' },
@@ -173,6 +221,11 @@ const CARD_ITEMS = [
 const TEXT = {
     cardview: '轻饰笔记',
 
+    previewToggle: '悬停预览',
+    previewDesc: '鼠标悬停在样式项上时，是否实时显示样式效果预览',
+    previewOn: '已开启悬停预览',
+    previewOff: '已关闭悬停预览',
+
     whisperGroup: '时间轴粗', 
     whisperThinGroup: '时间轴细', 
     creativeGroup: '卡片风格',
@@ -205,7 +258,24 @@ const TEXT = {
 
     // 自定义块样式
     blockCustom: '自定义',
-    customManage: '自定义块样式',
+    customManage: '轻饰笔记',
+    showCustomMenuToggle: '显示自定义样式',
+    showCustomMenuDesc: '是否在右键菜单中显示「自定义」样式入口（关闭后仍可通过顶栏按钮进入管理器）',
+    showCustomMenuOn: '已显示自定义样式入口',
+    showCustomMenuOff: '已隐藏自定义样式入口',
+
+    // 样式显隐（独立分类：控制右键菜单中哪些样式项显示或隐藏）
+    styleVisibilityTitle: '样式显隐',
+    styleVisibilityDesc: '控制右键菜单中哪些样式项显示或隐藏',
+    styleVisibilitySearch: '搜索样式...',
+    styleVisibilityBuiltIn: '内置样式',
+    styleVisibilityCustom: '自定义样式',
+
+    // 设置搜索
+    settingsSearch: '设置搜索',
+    noSearchResult: '未找到匹配的设置项',
+    noSearchHint: '尝试更换关键词，或检查是否有空格/错别字',
+    searchResultsFor: '搜索结果',
     customName: '名称',
     customBaseStyle: '基础样式',
     customAdd: '新增自定义样式',
@@ -368,7 +438,10 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const style = document.createElement('style');
         style.textContent = `
             .north-menu-icon {
-                color: var(--b3-theme-primary);  /* 使用思源主题主色，也可自定义颜色如 #ff6b6b */
+                color: var(--b3-theme-primary);  /* 亮色模式：使用思源主题主色（品牌色） */
+            }
+            [data-theme-mode="dark"] .north-menu-icon {
+                color: var(--b3-theme-on-background);  /* 暗色模式：改用文字色（确保图标可见） */
             }
         `;
         document.head.appendChild(style);
@@ -379,6 +452,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         timelineStyle.textContent = generateTimelineCSS();
         document.head.appendChild(timelineStyle);
         this._timelineStyle = timelineStyle;
+
+        // 注入自定义图标（贴合「轻饰笔记」卡片样式主题）
+        this.addIcons(PLUGIN_ICON);
 
         this.loadStyleDefaults();
 
@@ -398,13 +474,30 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             this.customFolders = [];
         }
 
-        // 顶栏按钮：打开自定义块样式管理器
-        this.addTopBar({
-            icon: 'iconStar',
-            title: this.getText('customManage', '自定义块样式'),
-            position: 'right',
-            callback: () => this.openSetting()
-        });
+        // 加载悬停预览开关（默认关闭）
+        try {
+            this.showPreview = (await this.loadData('showPreview')) === true;
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 读取预览开关失败', e);
+            this.showPreview = false;
+        }
+
+        // 加载右键菜单「自定义样式」显示开关（默认开启）
+        try {
+            this.showCustomMenu = (await this.loadData('showCustomMenu')) !== false;
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 读取自定义菜单开关失败', e);
+            this.showCustomMenu = true;
+        }
+
+        // 加载样式显示控制（隐藏的样式 key 集合，默认全部显示）
+        try {
+            this.hiddenStyles = (await this.loadData('hiddenStyles')) || [];
+            if (!Array.isArray(this.hiddenStyles)) this.hiddenStyles = [];
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 读取隐藏样式失败', e);
+            this.hiddenStyles = [];
+        }
 
         this.state = { menu: null, observer: null, restoreObserver: null };
         this.waitForMenu();
@@ -413,14 +506,16 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
     }
 
-    addIcons(svgContent) {
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.style.display = 'none';
-        svg.innerHTML = svgContent;
-        document.body.appendChild(svg);
+    // 布局就绪后注册顶栏按钮（参考轻语：addTopBar 必须在 onLayoutReady 中调用，
+    // 而非 onload，否则自定义图标在主题切换后会丢失）
+    onLayoutReady() {
+        this.addTopBar({
+            icon: 'iconDecoCard',
+            title: this.getText('customManage', '自定义块样式'),
+            position: 'right',
+            callback: () => this.openSetting()
+        });
     }
-
-
 
 
 
@@ -670,7 +765,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
                     <label style="display:block; margin-bottom:6px; font-weight:500;">${this.getText('cardIcon', '图标')}</label>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <div id="card-icon-preview" data-icon="${this._escapeAttr(currentIcon)}" class="cs-icon-preview">${this._escapeAttr(currentIcon) || '😀'}</div>
+                        <div id="card-icon-preview" data-icon="${this._escapeAttr(currentIcon)}" class="cs-icon-preview">${this._renderIconHtml(currentIcon) || '😀'}</div>
                         <button class="b3-button b3-button--outline" id="choose-emoji-btn">${this.getText('choose', '选择')}</button>
                     </div>
                 </div>
@@ -697,7 +792,10 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const dialogElement = dialog.element;
         const styleInput = dialogElement.querySelector('#card-type-select');
         const iconPreviewEl = dialogElement.querySelector('#card-icon-preview');
-        const setIconVal = (v) => { iconPreviewEl.dataset.icon = v || ''; iconPreviewEl.textContent = v || '😀'; };
+        const setIconVal = (v) => {
+            iconPreviewEl.dataset.icon = v || '';
+            iconPreviewEl.innerHTML = v ? this._renderIconHtml(v) : '😀';
+        };
         const titleInput = dialogElement.querySelector('#card-title-input');
         const previewInnerEl = dialogElement.querySelector('#card-style-preview-inner');
 
@@ -802,41 +900,109 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     observeMenu() {
         if (this.state.observer) this.state.observer.disconnect();
         this.state.observer = new MutationObserver(muts => {
-            muts.forEach(m => {
+            for (const m of muts) {
+                // 主路径：监听 #commonMenu 的 class 变化（从隐藏变为显示）
                 if (m.type === "attributes" && m.attributeName === "class") {
                     const oldClass = m.oldValue || "", newClass = m.target.className;
                     if (oldClass.includes("fn__none") && !newClass.includes("fn__none")) {
                         this.insertMenuItem();
+                        return;
                     }
                 }
-            });
+                // 兜底 1：监听 style 变化（部分版本直接改 display）
+                if (m.type === "attributes" && m.attributeName === "style") {
+                    const styleAttr = m.target.getAttribute("style") || "";
+                    if (!/display\s*:\s*none/i.test(styleAttr)) {
+                        if (!document.querySelector("#North-CardView-Top")) {
+                            this.insertMenuItem();
+                        }
+                        return;
+                    }
+                }
+                // 兜底 2：监听 #commonMenu 子节点变化（菜单内容被重新填充时）
+                if (m.type === "childList" && m.target === this.state.menu && m.addedNodes.length > 0) {
+                    if (!document.querySelector("#North-CardView-Top")) {
+                        this.insertMenuItem();
+                    }
+                    return;
+                }
+            }
         });
         this.state.observer.observe(this.state.menu, {
             attributes: true,
-            attributeFilter: ["class"],
-            attributeOldValue: true
+            attributeFilter: ["class", "style"],
+            attributeOldValue: true,
+            childList: true,
+            subtree: false
         });
     }
 
     insertMenuItem() {
-        if (document.querySelector("#North-CardView-Top")) return;
-        const block = document.querySelector(".protyle-wysiwyg--select");
-        if (!block?.dataset?.nodeId) return;
+        // 防止重复插入：先清理已存在的菜单项（连同其前的分隔符）
+        const existing = document.querySelector("#North-CardView-Top");
+        if (existing) {
+            const prev = existing.previousElementSibling;
+            if (prev && prev.classList && prev.classList.contains("b3-menu__separator")) {
+                prev.remove();
+            }
+            existing.remove();
+        }
+
         const container = document.querySelector("#commonMenu .b3-menu__items");
         if (!container) return;
-        const refItem = Array.from(container.children).find(i => i.getAttribute("data-id") === "updateAndCreatedAt");
-        if (!refItem) return;
 
-        const topBtn = this.createTopMenuButton(block.dataset.nodeId);
-        container.insertBefore(topBtn, refItem);
-        container.insertBefore(this.createSeparator(), refItem);
+        // 定位插入参考点：用户偏好放在菜单最顶部（「转换为」之前）。
+        // refItem = 第一个子元素时，insertBefore 会把插件项插到「转换为」前面。
+        // Fallback：菜单为空时退回 updateAndCreatedAt 之前 / 最后一个分隔符之后。
+        let refItem = container.firstElementChild;
+        if (!refItem) {
+            refItem = Array.from(container.children)
+                .find(i => i.getAttribute("data-id") === "updateAndCreatedAt");
+            if (!refItem) {
+                const seps = Array.from(container.querySelectorAll(".b3-menu__separator"));
+                if (seps.length) {
+                    refItem = seps[seps.length - 1].nextElementSibling;
+                }
+            }
+        }
+
+        // 多重 fallback 查找当前选中/悬停的块，兼容桌面端、平板端、移动端
+        const findBlockEl = () => {
+            return document.querySelector(".protyle-wysiwyg--select")
+                || document.querySelector(".protyle-wysiwyg--hl")
+                || document.querySelector("[data-node-id].protyle-wysiwyg--hl")
+                || document.querySelector(".protyle-wysiwyg__hl [data-node-id]");
+        };
+
+        // 延迟重试：处理思源设置选中状态与菜单显示之间的时序差
+        // （某些平板/移动端是菜单先弹出、选中 class 后设置）
+        const tryInsert = (attempt = 0) => {
+            const block = findBlockEl();
+            if (block && block.dataset.nodeId) {
+                const topBtn = this.createTopMenuButton(block.dataset.nodeId);
+                const sep = this.createSeparator();
+                if (refItem && refItem.parentNode === container) {
+                    container.insertBefore(topBtn, refItem);
+                    container.insertBefore(sep, refItem);
+                } else {
+                    container.appendChild(sep);
+                    container.appendChild(topBtn);
+                }
+                return;
+            }
+            if (attempt < 10) {
+                setTimeout(() => tryInsert(attempt + 1), 40);
+            }
+        };
+
+        tryInsert();
     }
 
     createTopMenuButton(blockId) {
     const btn = document.createElement("button");
     btn.id = "North-CardView-Top";
     btn.className = "b3-menu__item";
-    btn.innerHTML = `<svg class="b3-menu__icon north-menu-icon"><use xlink:href="#iconList"></use></svg>
+    btn.innerHTML = `<svg class="b3-menu__icon north-menu-icon"><use xlink:href="#iconDecoCard"></use></svg>
                      <span class="b3-menu__label">${this.getText('cardview', '卡片视图')}</span>
                      <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
 
@@ -851,7 +1017,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         });
 
         // 用户自定义块样式（预设）
-        if (this.customStyles && this.customStyles.length) {
+        if (this.showCustomMenu && this.customStyles && this.customStyles.length) {
             itemsContainer.appendChild(this.createCustomParentButton(blockId));
         }
 
@@ -917,18 +1083,19 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     // ========== 思源笔记原生设置入口：打开自定义块样式管理器 ==========
-    // 复写 Plugin.openSetting()，以思源原生设置风格（Dialog 模态面板）承载管理器，
+    // 复写 Plugin.openSetting()，以思源原生设置风格（左侧分类导航 + 右侧内容区）承载管理器，
     // 不再使用自定义 Tab 页。顶栏按钮与右键「管理自定义样式」均调用此方法。
     openSetting() {
         const self = this;
         const dialog = new Dialog({
             title: this.getText('customManage', '自定义块样式'),
-            content: '<div id="cs-setting-root" style="height:100%; overflow:auto;"></div>',
-            width: "1200px",
-            height: "860px"
+            content: '<div id="cs-setting-root" style="height:100%;width:100%;display:flex;overflow:hidden;"></div>',
+            width: "1280px",
+            height: "780px"
         });
         const rootEl = dialog.element.querySelector('#cs-setting-root');
         this._settingRootEl = rootEl;
+        this._activeSettingsCategory = this._activeSettingsCategory || 'general';
         this.renderCustomStyleManager(rootEl);
     }
 
@@ -1138,6 +1305,14 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 use.setAttribute('href', '#' + val);
                 svg.appendChild(use);
                 container.appendChild(svg);
+            } else if (val.includes('/') || val.includes('.')) {
+                // 动态图标路径（如 api/icon/getDynamicIcon?...）用 <img> 渲染
+                const img = document.createElement('img');
+                const src = val.startsWith('http') || val.startsWith('//') ? val : '/' + val;
+                img.src = src;
+                img.alt = '';
+                img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
+                container.appendChild(img);
             } else {
                 container.textContent = val;
             }
@@ -1232,25 +1407,686 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if (cancelBtn) cancelBtn.addEventListener('click', () => dialog.destroy());
     }
 
-    // ========== 设置面板渲染：现代化单栏布局（顶部分组标签栏 + 下方卡片网格）==========
+    // ========== 设置面板渲染：思源原生风格（左侧分类导航 + 右侧内容区）==========
     renderCustomStyleManager(element) {
         const self = this;
         const allStyles = this.customStyles || [];
         const totalCount = allStyles.length;
+
+        // ---- 左侧分类栏 HTML ----
+        const categories = [
+            { id: 'general', label: '通用', icon: 'iconSettings' },
+            { id: 'styles', label: '自定义样式', icon: 'iconSparkles' },
+            { id: 'groups', label: '分组管理', icon: 'iconFolder' },
+            { id: 'visibility', label: '样式显隐', icon: 'iconEye' }
+        ];
+        const catHtml = categories.map(c => {
+            const isActive = c.id === this._activeSettingsCategory;
+            return `<button class="cs-settings-cat-item${isActive ? ' active' : ''}" data-cat="${c.id}">
+                <svg class="cs-settings-cat-icon"><use xlink:href="#${c.icon}"></use></svg>
+                <span>${c.label}</span>
+            </button>`;
+        }).join('');
+
+        // ---- 右侧内容区：根据激活分类渲染 ----
+        let mainHtml = '';
+        if (this._activeSettingsCategory === 'general') {
+            mainHtml = this._renderGeneralSettings();
+        } else if (this._activeSettingsCategory === 'groups') {
+            mainHtml = this._renderGroupSettings();
+        } else if (this._activeSettingsCategory === 'visibility') {
+            mainHtml = this._renderVisibilitySettings();
+        } else {
+            mainHtml = this._renderStylesSettings(element);
+        }
+
+        // ---- 整体布局（左右分栏）----
+        const html = `
+            <div id="cs-root" class="cs-settings-layout">
+                <aside class="cs-settings-sidebar">
+                    <div class="cs-settings-sidebar-header">
+                        <svg class="cs-settings-sidebar-header-icon"><use xlink:href="#iconSettings"></use></svg>
+                        <span>设置</span>
+                    </div>
+                    <input type="text" class="cs-settings-sidebar-search" id="cs-settings-search" placeholder="搜索">
+                    ${catHtml}
+                </aside>
+                <div class="cs-settings-main" id="cs-settings-main">
+                    ${mainHtml}
+                </div>
+            </div>`;
+
+        element.innerHTML = html;
+
+        // ====== 交互绑定 ======
+
+        // 分类切换
+        element.querySelectorAll('.cs-settings-cat-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const catId = btn.getAttribute('data-cat');
+                if (catId === self._activeSettingsCategory) return;
+                self._activeSettingsCategory = catId;
+                self.renderCustomStyleManager(element);
+            });
+        });
+
+        // 分类内容事件绑定
+        if (this._activeSettingsCategory === 'general') {
+            this._bindGeneralSettings(element);
+        } else if (this._activeSettingsCategory === 'groups') {
+            this._bindGroupSettings(element);
+        } else if (this._activeSettingsCategory === 'visibility') {
+            this._bindVisibilitySettings(element);
+        } else {
+            // 自定义样式管理：绑定卡片网格事件
+            this._bindStylesSettings(element);
+        }
+
+        // 侧栏全局搜索绑定
+        this._bindSettingsSearch(element);
+    }
+
+    // ---------- 渲染「通用」分类内容 ----------
+    _renderGeneralSettings() {
+        return `
+            <div class="cs-settings-group">
+                <div class="cs-settings-section-title">预览</div>
+                <div class="cs-settings-group-card">
+                    <div class="cs-settings-group-body">
+                        <div class="cs-settings-item">
+                            <div class="cs-settings-item-text">
+                                <div class="cs-settings-item-title">${this.getText('previewToggle', '悬停预览')}</div>
+                                <div class="cs-settings-item-desc">${this.getText('previewDesc', '鼠标悬停在样式项上时，是否实时显示样式效果预览')}</div>
+                            </div>
+                            <div class="cs-settings-item-ctrl">
+                                <label class="cs-switch">
+                                    <input type="checkbox" id="cs-toggle-preview" ${this.showPreview ? 'checked' : ''}>
+                                    <span class="cs-switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="cs-settings-item">
+                            <div class="cs-settings-item-text">
+                                <div class="cs-settings-item-title">${this.getText('showCustomMenuToggle', '显示自定义样式')}</div>
+                                <div class="cs-settings-item-desc">${this.getText('showCustomMenuDesc', '是否在右键菜单中显示「自定义」样式入口（关闭后仍可通过顶栏按钮进入管理器）')}</div>
+                            </div>
+                            <div class="cs-settings-item-ctrl">
+                                <label class="cs-switch">
+                                    <input type="checkbox" id="cs-toggle-custom-menu" ${this.showCustomMenu ? 'checked' : ''}>
+                                    <span class="cs-switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    _bindGeneralSettings(element) {
+        const self = this;
+        const previewToggle = element.querySelector('#cs-toggle-preview');
+        if (previewToggle) {
+            previewToggle.addEventListener('change', async (e) => {
+                self.showPreview = e.target.checked;
+                try {
+                    await self.saveData('showPreview', self.showPreview);
+                } catch (err) { /* 忽略保存失败 */ }
+                showMessage(self.getText(e.target.checked ? 'previewOn' : 'previewOff',
+                    e.target.checked ? '已开启悬停预览' : '已关闭悬停预览'));
+            });
+        }
+        // 右键菜单「自定义样式」显示开关
+        const customMenuToggle = element.querySelector('#cs-toggle-custom-menu');
+        if (customMenuToggle) {
+            customMenuToggle.addEventListener('change', async (e) => {
+                self.showCustomMenu = e.target.checked;
+                try {
+                    await self.saveData('showCustomMenu', self.showCustomMenu);
+                } catch (err) { /* 忽略保存失败 */ }
+                showMessage(self.getText(e.target.checked ? 'showCustomMenuOn' : 'showCustomMenuOff',
+                    e.target.checked ? '已显示自定义样式入口' : '已隐藏自定义样式入口'));
+            });
+        }
+    }
+
+    // ---------- 渲染「分组管理」分类内容 ----------
+    _renderGroupSettings() {
+        const folders = this.customFolders || [];
+        const styles = this.customStyles || [];
+
+        // 每个分组的样式数量
+        const countMap = {};
+        styles.forEach(s => {
+            const fid = s.folderId || '__none__';
+            countMap[fid] = (countMap[fid] || 0) + 1;
+        });
+
+        let rowsHtml = '';
+        if (folders.length === 0) {
+            rowsHtml = `
+                <div class="cs-empty-state">
+                    <div class="cs-empty-illustration">📁</div>
+                    <div class="cs-empty-title">${this.getText('groupEmptyTitle', '还没有任何分组')}</div>
+                    <div class="cs-empty-desc">${this.getText('groupEmptyHint2', '点击下方「新建分组」开始整理你的样式')}</div>
+                </div>`;
+        } else {
+            rowsHtml = folders.map((g, idx) => {
+                const cnt = countMap[g.id] || 0;
+                return `
+                    <div class="cs-group-row" data-gid="${g.id}" style="animation-delay:${idx * 40}ms;">
+                        <div class="cs-group-row__icon">${this._renderIconHtml(g.icon) || '📁'}</div>
+                        <div class="cs-group-row__body">
+                            <div class="cs-group-row__name">${this._escapeAttr(g.name)}</div>
+                            <div class="cs-group-row__meta">${cnt} 个样式</div>
+                        </div>
+                        <div class="cs-group-row__actions">
+                            <button class="cs-group-row__act" data-g-edit="${g.id}" title="${this.getText('edit', '编辑')}">
+                                <svg style="width:15px;height:15px;"><use xlink:href="#iconEdit"></use></svg>
+                            </button>
+                            <button class="cs-group-row__act cs-group-row__act--del" data-g-del="${g.id}" title="${this.getText('delete', '删除')}">
+                                <svg style="width:15px;height:15px;"><use xlink:href="#iconTrashcan"></use></svg>
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        return `
+            <div class="cs-settings-group">
+                <div class="cs-settings-section-title">${this.getText('groupManage', '分组管理')}</div>
+                <div class="cs-settings-group-card" style="padding:12px 16px;">
+                    <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+                        <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-newgroup2" title="${this.getText('customGroup', '新建分组')}">
+                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                            <span>${this.getText('customGroup', '新建分组')}</span>
+                        </button>
+                    </div>
+                    <div class="cs-group-list">
+                        ${rowsHtml}
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    // ---------- 渲染「样式显隐」分类内容 ----------
+    _renderVisibilitySettings() {
+        const hiddenSet = new Set(this.hiddenStyles || []);
+        const allStyles = CARD_ITEMS || [];
+        const customStyles = this.customStyles || [];
+
+        // 按菜单层级分组内置样式
+        const structure = this.getMenuStructure();
+        let sectionsHtml = '';
+
+        for (const block of structure) {
+            for (const cat of (block.children || [])) {
+                for (const sg of (cat.subGroups || [])) {
+                    const items = allStyles.filter(item => sg.filter(item.label, item.key));
+                    if (!items.length) continue;
+                    const groupLabel = this.getText(sg.labelKey, sg.labelKey);
+                    const visibleItems = items.filter(i => !hiddenSet.has(i.key));
+                    const hiddenCount = items.length - visibleItems.length;
+
+                    sectionsHtml += `
+                        <div class="cs-visibility-group">
+                            <div class="cs-visibility-group__header">
+                                <span class="cs-visibility-group__name">${this._escapeAttr(groupLabel)}</span>
+                                <span class="cs-visibility-group__count">${visibleItems.length}/${items.length} ${this.getText('visible', '显示')}</span>
+                            </div>
+                            <div class="cs-visibility-items">`;
+                    for (const item of items) {
+                        const isHidden = hiddenSet.has(item.key);
+                        sectionsHtml += `
+                                <div class="cs-visibility-item${isHidden ? ' cs-visibility-item--hidden' : ''}" data-vs-key="${item.key}">
+                                    <span class="cs-visibility-item__icon">${this._renderIconHtml(item.icon) || ''}</span>
+                                    <span class="cs-visibility-item__label">${this._escapeAttr(item.label)}</span>
+                                    <label class="cs-switch cs-switch--sm">
+                                        <input type="checkbox" class="cs-vs-toggle" data-vs-key="${item.key}" ${!isHidden ? 'checked' : ''}>
+                                        <span class="cs-switch-slider"></span>
+                                    </label>
+                                </div>`;
+                    }
+                    sectionsHtml += `
+                            </div>
+                        </div>`;
+                }
+            }
+        }
+
+        // 自定义样式
+        if (customStyles.length) {
+            const visibleCustom = customStyles.filter(s => !hiddenSet.has(s.id));
+            sectionsHtml += `
+                <div class="cs-visibility-group">
+                    <div class="cs-visibility-group__header">
+                        <span class="cs-visibility-group__name">${this.getText('styleVisibilityCustom', '自定义样式')}</span>
+                        <span class="cs-visibility-group__count">${visibleCustom.length}/${customStyles.length} ${this.getText('visible', '显示')}</span>
+                    </div>
+                    <div class="cs-visibility-items">`;
+            for (const cs of customStyles) {
+                const isHidden = hiddenSet.has(cs.id);
+                sectionsHtml += `
+                        <div class="cs-visibility-item${isHidden ? ' cs-visibility-item--hidden' : ''}" data-vs-key="${cs.id}">
+                            <span class="cs-visibility-item__icon">${this._renderIconHtml(cs.icon) || '✨'}</span>
+                            <span class="cs-visibility-item__label">${this._escapeAttr(cs.name)}</span>
+                            <label class="cs-switch cs-switch--sm">
+                                <input type="checkbox" class="cs-vs-toggle" data-vs-key="${cs.id}" ${!isHidden ? 'checked' : ''}>
+                                <span class="cs-switch-slider"></span>
+                            </label>
+                        </div>`;
+            }
+            sectionsHtml += `
+                    </div>
+                </div>`;
+        }
+
+        return `
+            <div class="cs-settings-group">
+                <div class="cs-settings-section-title">${this.getText('styleVisibilityTitle', '样式显隐')}</div>
+                <div class="cs-settings-group-card" style="padding:16px 20px;">
+                    <div style="font-size:12.5px; opacity:.6; margin-bottom:12px; line-height:1.5;">
+                        ${this.getText('styleVisibilityDesc', '控制右键菜单中哪些样式项显示或隐藏')}
+                    </div>
+                    <input type="text" class="cs-settings-sidebar-search" id="cs-vs-search" placeholder="${this.getText('styleVisibilitySearch', '搜索样式...')}" style="width:100%; margin-bottom:12px;">
+                    <div id="cs-visibility-list">
+                        ${sectionsHtml}
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    _bindGroupSettings(element) {
+        const self = this;
+        const ngBtn = element.querySelector('#cs-btn-newgroup2');
+        if (ngBtn) ngBtn.addEventListener('click', () => {
+            self.openGroupDialog(null, (g) => self.createGroup(g.name, g.icon));
+        });
+
+        // 编辑分组
+        element.querySelectorAll('[data-g-edit]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-g-edit');
+                const f = (self.customFolders || []).find(x => x.id === id);
+                if (!f) return;
+                self.openGroupDialog(f, (g) => {
+                    self.renameGroup(id, g.name, g.icon);
+                    self.renderCustomStyleManager(element);
+                });
+            });
+        });
+
+        // 删除分组（含确认）
+        element.querySelectorAll('[data-g-del]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-g-del');
+                const f = (self.customFolders || []).find(x => x.id === id);
+                const name = f ? f.name : '';
+                const dlg = new Dialog({
+                    title: self.getText('deleteGroupConfirmTitle', '删除分组'),
+                    width: '360px',
+                    content: `<div style="padding:20px 24px;">
+                        <div style="font-size:13px; line-height:1.6; color:var(--b3-text-color);">
+                            ${self.getText('deleteGroupConfirmText', '确定要删除分组')}
+                            「<strong style="color:var(--b3-text-color);">${self._escapeAttr(name)}</strong>」
+                            ${self.getText('deleteGroupConfirmText2', '吗？分组下的样式会移到「未分类」。')}
+                        </div>
+                        <div class="fn__flex" style="justify-content:flex-end; gap:8px; margin-top:20px;">
+                            <button class="b3-button b3-button--cancel" id="cs-gdel-cancel">${self.getText('cancel', '取消')}</button>
+                            <button class="b3-button b3-button--outline" id="cs-gdel-ok" style="padding:6px 20px; font-weight:600;">${self.getText('delete', '删除')}</button>
+                        </div>
+                    </div>`
+                });
+                const confirmDel = async () => {
+                    dlg.destroy();
+                    await self.deleteGroup(id);
+                    showMessage(self.getText('groupDeleted', '已删除分组'));
+                    self.renderCustomStyleManager(element);
+                };
+                dlg.element.querySelector('#cs-gdel-ok').addEventListener('click', confirmDel);
+                dlg.element.querySelector('#cs-gdel-cancel').addEventListener('click', () => dlg.destroy());
+            });
+        });
+
+        // 入场动画
+        const rows = element.querySelectorAll('.cs-group-row');
+        rows.forEach((row, i) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                row.style.transition = 'opacity .28s ease, transform .28s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 40 + i * 40);
+        });
+    }
+
+    // ---------- 绑定「样式显隐」分类交互 ----------
+    _bindVisibilitySettings(element) {
+        const self = this;
+
+        // 显隐开关绑定
+        element.querySelectorAll('.cs-vs-toggle').forEach(toggle => {
+            toggle.addEventListener('change', async (e) => {
+                const key = e.target.getAttribute('data-vs-key');
+                if (!key) return;
+                if (e.target.checked) {
+                    // 显示：从 hiddenStyles 移除
+                    self.hiddenStyles = (self.hiddenStyles || []).filter(k => k !== key);
+                } else {
+                    // 隐藏：加入 hiddenStyles
+                    if (!self.hiddenStyles.includes(key)) self.hiddenStyles.push(key);
+                }
+                try {
+                    await self.saveData('hiddenStyles', self.hiddenStyles);
+                } catch (err) { /* 忽略 */ }
+                // 更新该项视觉状态
+                const itemEl = e.target.closest('.cs-visibility-item');
+                if (itemEl) {
+                    itemEl.classList.toggle('cs-visibility-item--hidden', !e.target.checked);
+                }
+                // 更新分组计数
+                const groupHeader = itemEl ? itemEl.closest('.cs-visibility-group') : null;
+                if (groupHeader) {
+                    const countEl = groupHeader.querySelector('.cs-visibility-group__count');
+                    if (countEl) {
+                        const items = groupHeader.querySelectorAll('.cs-visibility-item');
+                        const visibleCount = Array.from(items).filter(el => !el.classList.contains('cs-visibility-item--hidden')).length;
+                        countEl.textContent = `${visibleCount}/${items.length} ${self.getText('visible', '显示')}`;
+                    }
+                }
+            });
+        });
+
+        // 搜索过滤
+        const searchInput = element.querySelector('#cs-vs-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const q = (e.target.value || '').trim().toLowerCase();
+                element.querySelectorAll('.cs-visibility-item').forEach(item => {
+                    const label = (item.querySelector('.cs-visibility-item__label') || {}).textContent || '';
+                    item.style.display = (!q || label.toLowerCase().includes(q)) ? '' : 'none';
+                });
+                element.querySelectorAll('.cs-visibility-group').forEach(group => {
+                    // 只要该分组下有子项可见，就保留分组表头
+                    const hasVisible = Array.from(group.querySelectorAll('.cs-visibility-item')).some(el => el.style.display !== 'none');
+                    group.style.display = hasVisible ? '' : 'none';
+                });
+            });
+        }
+    }
+
+    // ---------- 侧栏全局搜索 ----------
+    _bindSettingsSearch(element) {
+        const self = this;
+        const searchInput = element.querySelector('#cs-settings-search');
+        if (!searchInput) return;
+
+        // 防抖：避免每次按键都重新渲染
+        let timer = null;
+
+        const doSearch = () => {
+            const q = (searchInput.value || '').trim();
+            const mainEl = element.querySelector('#cs-settings-main');
+            if (!mainEl) return;
+
+            if (!q) {
+                // 搜索清空，恢复当前分类视图
+                self._restoreCategoryView(element);
+                return;
+            }
+            mainEl.innerHTML = self._renderSearchResults(q);
+
+            // 绑定搜索结果中的通用开关（悬停预览 / 显示自定义样式）
+            mainEl.querySelectorAll('.cs-search-toggle').forEach(toggle => {
+                toggle.addEventListener('change', async (e) => {
+                    const itemRow = e.target.closest('[data-search-key]');
+                    const key = itemRow ? itemRow.getAttribute('data-search-key') : '';
+                    if (key === 'preview') {
+                        self.showPreview = e.target.checked;
+                        try { await self.saveData('showPreview', self.showPreview); } catch (err) { /* ignore */ }
+                        showMessage(self.getText(e.target.checked ? 'previewOn' : 'previewOff',
+                            e.target.checked ? '已开启悬停预览' : '已关闭悬停预览'));
+                    } else if (key === 'customMenu') {
+                        self.showCustomMenu = e.target.checked;
+                        try { await self.saveData('showCustomMenu', self.showCustomMenu); } catch (err) { /* ignore */ }
+                        showMessage(self.getText(e.target.checked ? 'showCustomMenuOn' : 'showCustomMenuOff',
+                            e.target.checked ? '已显示自定义样式入口' : '已隐藏自定义样式入口'));
+                    }
+                });
+            });
+
+            // 绑定搜索结果中的显隐开关（样式显示/隐藏）
+            mainEl.querySelectorAll('.cs-search-vs-toggle').forEach(toggle => {
+                toggle.addEventListener('change', async (e) => {
+                    const vsKey = e.target.getAttribute('data-vs-key');
+                    if (!vsKey) return;
+                    if (e.target.checked) {
+                        self.hiddenStyles = (self.hiddenStyles || []).filter(k => k !== vsKey);
+                    } else {
+                        if (!self.hiddenStyles.includes(vsKey)) self.hiddenStyles.push(vsKey);
+                    }
+                    try { await self.saveData('hiddenStyles', self.hiddenStyles); } catch (err) { /* ignore */ }
+                    // 更新该项视觉
+                    const itemRow = e.target.closest('[data-vs-key]');
+                    if (itemRow) {
+                        itemRow.classList.toggle('cs-settings-item--dimmed', !e.target.checked);
+                    }
+                });
+            });
+        };
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(doSearch, 180);
+        });
+
+        // 回车时也立即触发
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                clearTimeout(timer);
+                doSearch();
+            }
+        });
+    }
+
+    _restoreCategoryView(element) {
+        let html = '';
+        if (this._activeSettingsCategory === 'general') {
+            html = this._renderGeneralSettings();
+        } else if (this._activeSettingsCategory === 'groups') {
+            html = this._renderGroupSettings();
+        } else if (this._activeSettingsCategory === 'visibility') {
+            html = this._renderVisibilitySettings();
+        } else {
+            html = this._renderStylesSettings(element);
+        }
+        const mainEl = element.querySelector('#cs-settings-main');
+        if (mainEl) mainEl.innerHTML = html;
+
+        // 重新绑定当前分类的事件
+        if (this._activeSettingsCategory === 'general') {
+            this._bindGeneralSettings(element);
+        } else if (this._activeSettingsCategory === 'groups') {
+            this._bindGroupSettings(element);
+        } else if (this._activeSettingsCategory === 'visibility') {
+            this._bindVisibilitySettings(element);
+        } else {
+            this._bindStylesSettings(element);
+        }
+    }
+
+    _renderSearchResults(query) {
+        const q = query.toLowerCase();
+        const allItems = [];   // 所有匹配项（扁平列表，按类型区分渲染）
+
+        // ---- 1. 通用设置项（带真实开关）----
+        const generalDefs = [
+            { id: 'cs-search-preview', key: 'preview', label: this.getText('previewToggle', '悬停预览'), desc: this.getText('previewDesc', '鼠标悬停在样式项上时，是否实时显示样式效果预览'), checked: !!this.showPreview, type: 'toggle' },
+            { id: 'cs-search-custommenu', key: 'customMenu', label: this.getText('showCustomMenuToggle', '显示自定义样式'), desc: this.getText('showCustomMenuDesc', '是否在右键菜单中显示「自定义」样式入口（关闭后仍可通过顶栏按钮进入管理器）'), checked: !!this.showCustomMenu, type: 'toggle' }
+        ];
+        generalDefs.forEach(def => {
+            if (def.label.toLowerCase().includes(q) || def.desc.toLowerCase().includes(q)) {
+                allItems.push({ ...def, icon: 'iconSettings', section: this.getText('blockGeneral', '通用') });
+            }
+        });
+
+        // ---- 2. 样式显隐项（带真实显隐开关）----
+        const hiddenSet = new Set(this.hiddenStyles || []);
+        const allCards = CARD_ITEMS || [];
+        const customStyles = this.customStyles || [];
+        const structure = this.getMenuStructure();
+
+        for (const block of structure) {
+            for (const cat of (block.children || [])) {
+                for (const sg of (cat.subGroups || [])) {
+                    const items = allCards.filter(item => sg.filter(item.label, item.key));
+                    items.forEach(m => {
+                        if (m.label.toLowerCase().includes(q) || m.key.toLowerCase().includes(q)) {
+                            allItems.push({
+                                id: 'cs-vs-s-' + m.key,
+                                vsKey: m.key,
+                                label: m.label,
+                                desc: m.key,
+                                icon: m.icon || 'iconSparkles',
+                                checked: !hiddenSet.has(m.key),
+                                type: 'visibility',
+                                section: this.getText('styleVisibilityTitle', '样式显隐')
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        // 自定义样式的显隐
+        customStyles.forEach(cs => {
+            if ((cs.name || '').toLowerCase().includes(q)) {
+                allItems.push({
+                    id: 'cs-vs-c-' + cs.id,
+                    vsKey: cs.id,
+                    label: cs.name,
+                    desc: this.getText('styleVisibilityCustom', '自定义样式'),
+                    icon: cs.icon || 'iconSparkles',
+                    checked: !hiddenSet.has(cs.id),
+                    type: 'visibility',
+                    section: this.getText('styleVisibilityTitle', '样式显隐')
+                });
+            }
+        });
+
+        // ---- 3. 分组管理：分组名称（信息行，无开关）----
+        const folders = this.customFolders || [];
+        folders.forEach(f => {
+            if ((f.name || '').toLowerCase().includes(q)) {
+                allItems.push({
+                    label: f.name,
+                    desc: this.getText('groupManage', '分组管理'),
+                    icon: f.icon || 'iconFolder',
+                    type: 'info',
+                    section: this.getText('groupManage', '分组管理')
+                });
+            }
+        });
+
+        // ---- 4. 自定义样式：名称（信息行，无开关）----
+        customStyles.forEach(cs => {
+            if ((cs.name || '').toLowerCase().includes(q)) {
+                // 避免和显隐里重复（同一个自定义样式可能同时命中两处）
+                const already = allItems.some(it => it.type === 'visibility' && it.vsKey === cs.id);
+                if (!already) {
+                    allItems.push({
+                        label: cs.name,
+                        desc: cs.style ? this.getText('customBaseStyle', '基础样式') + ': ' + cs.style : '',
+                        icon: cs.icon || 'iconSparkles',
+                        type: 'info',
+                        section: this.getText('blockCustom', '自定义样式')
+                    });
+                }
+            }
+        });
+
+        // ---- 无结果 ----
+        if (!allItems.length) {
+            return `
+                <div class="cs-search-empty">
+                    <div class="cs-search-empty__icon">
+                        <svg style="width:48px;height:48px;opacity:.25;"><use xlink:href="#iconSearch"></use></svg>
+                    </div>
+                    <div class="cs-search-empty__text">${this.getText('noSearchResult', '未找到匹配的设置项')}</div>
+                    <div class="cs-search-empty__hint">${this.getText('noSearchHint', '尝试更换关键词，或检查是否有空格/错别字')}</div>
+                </div>`;
+        }
+
+        // ---- 渲染：使用 .cs-settings-item 风格（无图标，和正常设置项完全一致）----
+        const itemsHtml = allItems.map(item => {
+            const textHtml = `
+                <div class="cs-settings-item-text">
+                    <div class="cs-settings-item-title">${this._escapeAttr(item.label)}</div>
+                    <div class="cs-settings-item-desc">${this._escapeAttr(item.desc)}</div>
+                </div>`;
+
+            if (item.type === 'toggle') {
+                // 通用开关项
+                return `
+                    <div class="cs-settings-item" data-search-type="toggle" data-search-key="${item.key}">
+                        ${textHtml}
+                        <div class="cs-settings-item-ctrl">
+                            <label class="cs-switch">
+                                <input type="checkbox" class="cs-search-toggle" id="${item.id}" ${item.checked ? 'checked' : ''}>
+                                <span class="cs-switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>`;
+            } else if (item.type === 'visibility') {
+                // 显隐开关项
+                return `
+                    <div class="cs-settings-item${item.checked ? '' : ' cs-settings-item--dimmed'}" data-search-type="visibility" data-vs-key="${item.vsKey}">
+                        ${textHtml}
+                        <div class="cs-settings-item-ctrl">
+                            <label class="cs-switch">
+                                <input type="checkbox" class="cs-search-vs-toggle" id="${item.id}" data-vs-key="${item.vsKey}" ${item.checked ? 'checked' : ''}>
+                                <span class="cs-switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>`;
+            } else {
+                // 信息行（无开关，如分组名）
+                return `
+                    <div class="cs-settings-item" data-search-type="info">
+                        ${textHtml}
+                        <div class="cs-settings-item-ctrl">
+                            <span class="cs-settings-item__section-tag">${this._escapeAttr(item.section)}</span>
+                        </div>
+                    </div>`;
+            }
+        }).join('');
+
+        return `
+            <div class="cs-settings-group">
+                <div class="cs-settings-group-card">
+                    <div class="cs-settings-group-body">
+                        ${itemsHtml}
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    // ---------- 渲染「自定义样式」分类内容 ----------
+    _renderStylesSettings(element) {
+        const allStyles = this.customStyles || [];
+        const totalCount = allStyles.length;
         const groups = this._getGroupedByFolder();
 
-        // 确定默认激活的分组（第一个有项目的分组）
         const activeGroupId = this._csActiveGroup || (groups.find(g => g.items.length) ? groups.find(g => g.items.length).id : groups[0]?.id);
+        // 首次渲染时同步 _csActiveGroup，确保后续标签切换有正确的基准值
+        if (!this._csActiveGroup) this._csActiveGroup = activeGroupId;
         const activeGroup = groups.find(g => g.id === activeGroupId) || groups[0];
         const activeItems = activeGroup?.items || [];
 
-        // ---- 顶部分组标签栏 ----
+        // 分组标签栏
         let tabsHtml = '';
-        let firstVisibleId = null;
         for (const g of groups) {
             const isNone = g.id === '__none__';
             if (!g.items.length && isNone) continue;
-            if (!firstVisibleId) firstVisibleId = g.id;
             const isActive = g.id === activeGroupId;
             const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 14 });
             tabsHtml += `
@@ -1261,7 +2097,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 </button>`;
         }
 
-        // ---- 内容区 ----
+        // 内容区（列表式布局，参考市场/插件列表风格）
         let contentHtml = '';
         if (totalCount === 0) {
             contentHtml = `
@@ -1284,52 +2120,45 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         } else {
             contentHtml = `<div class="cs-card-grid">`;
             activeItems.forEach((cs, idx) => {
-                contentHtml += self._renderStyleCard(cs, idx);
+                contentHtml += this._renderStyleCard(cs, idx);
             });
             contentHtml += `</div>`;
         }
 
-        // ---- 整体布局（现代单栏）----
-        const html = `
-            <div id="cs-root" class="cs-modern-layout">
-
-                <!-- 顶部导航栏 -->
-                <header class="cs-header">
-                    <div class="cs-header__left">
-                        <svg class="cs-header__icon"><use xlink:href="#iconStar"></use></svg>
-                        <span class="cs-header__title">${this.getText('customManage', '自定义块样式')}</span>
-                        ${totalCount > 0 ? `<span class="cs-header__badge">${totalCount}</span>` : ''}
+        return `
+            <div class="cs-settings-group">
+                <div class="cs-settings-group-card" style="padding:16px 20px 20px;">
+                    <div class="cs-styles-toolbar">
+                        <div class="cs-styles-toolbar-left">
+                            <span class="cs-styles-toolbar-title">${this.getText('customManage', '自定义块样式')}</span>
+                            ${totalCount > 0 ? `<span class="cs-header__badge">${totalCount}</span>` : ''}
+                        </div>
+                        <div class="cs-styles-toolbar-right">
+                            <button class="cs-action-btn" id="cs-btn-newgroup" title="${this.getText('customGroup', '新建分组')}">
+                                <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                                <span>${this.getText('customGroup', '分组')}</span>
+                            </button>
+                            <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-new" title="${this.getText('customAdd', '新增自定义样式')}">
+                                <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                                <span>${this.getText('customAdd', '新增')}</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="cs-header__actions">
-                        <button class="cs-action-btn" id="cs-btn-newgroup" title="${this.getText('customGroup', '新建分组')}">
-                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
-                            <span>${this.getText('customGroup', '分组')}</span>
-                        </button>
-                        <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-new" title="${this.getText('customAdd', '新增自定义样式')}">
-                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
-                            <span>${this.getText('customAdd', '新增')}</span>
-                        </button>
+                    ${groups.some(g => g.items.length) ? `
+                    <nav class="cs-tabs-bar" id="cs-tabs-bar">
+                        <div class="cs-tabs-track">
+                            ${tabsHtml}
+                        </div>
+                    </nav>` : ''}
+                    <div class="cs-content" id="cs-content" style="flex:1;overflow-y:auto;padding-top:4px;">
+                        ${contentHtml}
                     </div>
-                </header>
-
-                <!-- 分组标签栏 -->
-                ${groups.some(g => g.items.length) ? `
-                <nav class="cs-tabs-bar" id="cs-tabs-bar">
-                    <div class="cs-tabs-track">
-                        ${tabsHtml}
-                    </div>
-                </nav>` : ''}
-
-                <!-- 主内容区 -->
-                <main class="cs-content" id="cs-content">
-                    ${contentHtml}
-                </main>
-
+                </div>
             </div>`;
+    }
 
-        element.innerHTML = html;
-
-        // ====== 交互绑定 ======
+    _bindStylesSettings(element) {
+        const self = this;
 
         // 新建分组
         const ngBtn = element.querySelector('#cs-btn-newgroup');
@@ -1347,14 +2176,17 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             tab.addEventListener('click', () => {
                 const gid = tab.getAttribute('data-gid');
                 if (gid === self._csActiveGroup) return;
+                // 更新激活状态：先移除所有标签的 active 类，再给当前点击的加上
+                element.querySelectorAll('.cs-tab-pill').forEach(t => t.classList.remove('cs-tab-pill--active'));
+                tab.classList.add('cs-tab-pill--active');
                 self._csActiveGroup = gid;
-                // 动画过渡：淡出 → 重绘 → 淡入
                 const contentEl = element.querySelector('#cs-content');
                 if (contentEl) {
                     contentEl.style.opacity = '0';
                     contentEl.style.transform = 'translateY(6px)';
                     setTimeout(() => {
-                        self.renderCustomStyleManager(element);
+                        // 只刷新内容区，不重建整个面板
+                        self._refreshStylesContent(element);
                         const newContent = element.querySelector('#cs-content');
                         if (newContent) {
                             newContent.style.opacity = '0';
@@ -1371,7 +2203,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             });
         });
 
-        // 卡片编辑 / 删除
+        // 内容区事件（卡片 / 悬停预览 / 入场动画）单独绑定，避免刷新内容时重复绑定工具栏与分类标签
+        this._bindStylesContentEvents(element);
+    }
+
+    // 内容区事件：仅绑定 #cs-content 内部的可变部分（卡片 / 悬停预览 / 入场动画）
+    _bindStylesContentEvents(element) {
+        const self = this;
+
+        // 卡片编辑 / 删除 / 点击
         element.querySelectorAll('[data-cs-edit]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1410,8 +2250,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 dlg.element.querySelector('#cs-del-cancel').addEventListener('click', () => dlg.destroy());
             });
         });
-
-        // 卡片点击 → 编辑
         element.querySelectorAll('.cs-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 if (e.target.closest('[data-cs-edit]') || e.target.closest('[data-cs-del]')) return;
@@ -1419,7 +2257,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             });
         });
 
-        // ---- 悬停预览浮层 ----
+        // 悬停预览浮层
         let hoverPreview = document.getElementById('cs-hover-preview');
         if (!hoverPreview) {
             hoverPreview = document.createElement('div');
@@ -1431,6 +2269,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         element.querySelectorAll('.cs-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
+                if (!self.showPreview) return;
                 const label = card.getAttribute('data-cs-style') || '';
                 const ico = card.getAttribute('data-cs-icon') || '';
                 const ttl = card.getAttribute('data-cs-title') || '';
@@ -1445,17 +2284,14 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
                     ' style="padding:10px 14px;" data-type="NodeParagraph">&nbsp;</div>' +
                     '</div>';
-
-                // 定位到卡片下方
                 const rect = card.getBoundingClientRect();
                 hoverPreview.style.display = 'block';
                 const pw = hoverPreview.offsetWidth, ph = hoverPreview.offsetHeight;
-                let left = rect.left + (rect.width - pw) / 2;  // 水平居中对齐卡片
+                let left = rect.left + (rect.width - pw) / 2;
                 if (left < 8) left = 8;
                 if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
-                let top = rect.bottom + 8;  // 卡片正下方
+                let top = rect.bottom + 8;
                 if (top + ph > window.innerHeight - 8) {
-                    // 下方放不下则改到上方
                     top = rect.top - ph - 8;
                 }
                 if (top < 8) top = 8;
@@ -1470,7 +2306,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             });
         });
 
-        // 入场动画：卡片依次淡入
+        // 入场动画
         const cards = element.querySelectorAll('.cs-card');
         cards.forEach((card, i) => {
             card.style.opacity = '0';
@@ -1481,6 +2317,48 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 card.style.transform = 'translateY(0)';
             }, 60 + i * 45);
         });
+    }
+
+    // 仅刷新「自定义样式」分类的内容区（不重建侧栏）
+    _refreshStylesContent(element) {
+        const allStyles = this.customStyles || [];
+        const groups = this._getGroupedByFolder();
+        const activeGroupId = this._csActiveGroup || (groups.find(g => g.items.length) ? groups.find(g => g.items.length).id : groups[0]?.id);
+        const activeGroup = groups.find(g => g.id === activeGroupId) || groups[0];
+        const activeItems = activeGroup?.items || [];
+
+        let contentHtml = '';
+        if (allStyles.length === 0) {
+            contentHtml = `
+                <div class="cs-empty-state">
+                    <div class="cs-empty-illustration">✨</div>
+                    <div class="cs-empty-title">${this.getText('customEmpty', '暂无自定义样式')}</div>
+                    <div class="cs-empty-desc">${this.getText('customEmptyHint', '点击右上角「新增」创建你的第一个样式')}</div>
+                    <button class="b3-button b3-button--outline cs-empty-btn" id="cs-btn-new-empty">
+                        <svg style="width:14px;height:14px;"><use xlink:href="#iconAdd"></use></svg>
+                        ${this.getText('customAdd', '新增自定义样式')}
+                    </button>
+                </div>`;
+        } else if (activeItems.length === 0) {
+            contentHtml = `
+                <div class="cs-empty-state">
+                    <div class="cs-empty-illustration">📂</div>
+                    <div class="cs-empty-title">${this.getText('groupEmpty', '该分组暂无样式')}</div>
+                    <div class="cs-empty-desc">${this.getText('groupEmptyHint', '切换到其他分组或新建一个样式')}</div>
+                </div>`;
+        } else {
+            contentHtml = `<div class="cs-card-grid">`;
+            activeItems.forEach((cs, idx) => {
+                contentHtml += this._renderStyleCard(cs, idx);
+            });
+            contentHtml += `</div>`;
+        }
+
+        const contentEl = element.querySelector('#cs-content');
+        if (contentEl) contentEl.innerHTML = contentHtml;
+
+        // 重新绑定内容区事件（仅内容区，工具栏/分类标签不重复绑定）
+        this._bindStylesContentEvents(element);
     }
 
     // 渲染单张样式卡片（现代网格版）
@@ -1496,7 +2374,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             <div class="cs-card" data-cs-id="${cs.id}" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}"
                  style="--cs-accent:${accentColor}; --cs-bg-light:${bgLight}; --cs-bg-mid:${bgMid}; animation-delay:${index * 45}ms;">
                 <div class="cs-card__icon-wrap">
-                    <span class="cs-card__icon">${icon}</span>
+                    <span class="cs-card__icon">${this._renderIconHtml(icon) || '✨'}</span>
                 </div>
                 <div class="cs-card__body">
                     <div class="cs-card__name">${this._escapeAttr(cs.name)}</div>
@@ -1513,6 +2391,24 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             </div>`;
     }
 
+    // 辅助：将图标值渲染为 HTML（Emoji 字符原样输出，动态图标路径用 <img> 渲染）
+    _renderIconHtml(iconValue) {
+        const v = (iconValue || '').trim();
+        if (!v) return '';
+        // 含 / 或 . 的视为路径/URL（动态图标如 api/icon/getDynamicIcon?...）
+        if (v.includes('/') || v.includes('.')) {
+            // 相对路径补全
+            const src = v.startsWith('http') || v.startsWith('//') ? v : '/' + v;
+            return `<img src="${this._escapeAttr(src)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+        }
+        // 内置图标（如 iconSettings、iconFolder、iconSparkles 等）渲染为 SVG <use>
+        if (/^icon[A-Z]/.test(v)) {
+            return `<svg style="width:1em;height:1em;vertical-align:text-bottom;fill:currentColor;"><use xlink:href="#${this._escapeAttr(v)}"></use></svg>`;
+        }
+        // 其他（emoji 等）原样返回
+        return this._escapeAttr(v);
+    }
+
     // 辅助：根据字符串生成色相值（用于卡片图标背景色）
     _stringHue(str) {
         let hash = 0;
@@ -1524,7 +2420,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     createCustomParentButton(blockId) {
         const btn = document.createElement("button");
         btn.className = "b3-menu__item";
-        btn.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconStar"></use></svg>
+        const iconColor = this.getColorForString('custom', 60, 50);
+        btn.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="#iconDecoLayers"></use></svg>
                          <span class="b3-menu__label">${this.getText('blockCustom', '自定义')}</span>
                          <svg class="b3-menu__icon b3-menu__icon--small"><use xlink:href="#iconRight"></use></svg>`;
 
@@ -1534,9 +2431,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         itemsContainer.className = "b3-menu__items";
 
         const groups = this._getGroupedByFolder();
+        const hiddenSet = new Set(this.hiddenStyles || []);
         let anyGroup = false;
 
         for (const g of groups) {
+            // 过滤掉被「样式显示控制」隐藏的自定义样式
+            g.items = (g.items || []).filter(cs => !hiddenSet.has(cs.id));
             if (!g.items.length) continue;
             anyGroup = true;
 
@@ -1607,7 +2507,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     createRemoveStyleItem(blockId) {
         const item = document.createElement("button");
         item.className = "b3-menu__item";
-        item.innerHTML = `<svg class="b3-menu__icon"><use xlink:href="#iconTrashcan"></use></svg>
+        item.innerHTML = `<svg class="b3-menu__icon" style="color: var(--b3-color-red, #e74c3c);"><use xlink:href="#iconTrashcan"></use></svg>
                           <span class="b3-menu__label">${this.getText('removeStyle', '移除样式')}</span>`;
         item.onclick = async (e) => {
             e.stopPropagation();
@@ -1640,7 +2540,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const iconColor = this.getColorForString(key, 80, 60); // 饱和度稍高，更鲜艳
 
         item.innerHTML = `<svg class="b3-menu__icon" style="color: ${iconColor};"><use xlink:href="#iconSparkles"></use></svg>
-                          <span class="b3-menu__label">${label}</span`;
+                          <span class="b3-menu__label">${label}</span>`;
 
         // 悬停预览
         const defaults = this.styleDefaults ? this.styleDefaults[label] : null;
@@ -1698,6 +2598,7 @@ if (key === 'diaryChatWhisperCard') {
     }
 
     _showMenuHoverPreview(targetEl, styleLabel, icon, title) {
+        if (!this.showPreview) return; // 预览开关关闭时直接返回
         const el = this._getMenuHoverEl();
         if (!styleLabel) return;
         const isBuiltin = /^icon[A-Z]/.test(icon);
@@ -1757,8 +2658,11 @@ if (key === 'diaryChatWhisperCard') {
         const itemsContainer = document.createElement("div");
         itemsContainer.className = "b3-menu__items";
 
+        const hiddenSet = new Set(this.hiddenStyles || []);
         // 过滤并生成三级菜单项（可按需排序，此处保持原有顺序）
         this.getAllCardItems().forEach(item => {
+            // 被「样式显示控制」隐藏的项不出现在右键菜单
+            if (hiddenSet.has(item.key)) return;
             if (filterFunc(item.label, item.key)) {
                 itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
             }
@@ -1797,6 +2701,12 @@ if (key === 'diaryChatWhisperCard') {
         if (isSvg) {
             const style = o.style || `width:${sz}px;height:${sz}px;flex:none;opacity:.8;`;
             return `<svg${cls} style="${style}"><use xlink:href="#${iconName}"></use></svg>`;
+        }
+        // 动态图标路径用 <img> 渲染，Emoji/文本原样输出
+        if (iconName && typeof iconName === 'string' && (iconName.includes('/') || iconName.includes('.'))) {
+            const src = iconName.startsWith('http') || iconName.startsWith('//') ? iconName : '/' + iconName;
+            const style = o.style || `width:${sz}px;height:${sz}px;flex:none;object-fit:contain;`;
+            return `<img${cls} src="${this._escapeAttr(src)}" alt="" style="${style}">`;
         }
         const text = (iconName && String(iconName).length) ? iconName : '📁';
         const style = o.style || `font-size:${sz}px;flex:none;opacity:.85;line-height:1;`;
