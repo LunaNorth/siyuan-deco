@@ -2755,7 +2755,7 @@
     display: block;
     font-weight: 600; /* 匹配图片的标题加粗程度 */
     font-size: var(--b3-font-size-editor);   /* 和原图标题字号一致 */
-    margin-bottom: 6px; /* 标题和正文间距更贴近原图 */
+    margin-bottom: 14px; /* 标题和正文间距：与彩色便签系列一致的呼吸空间 */
     line-height: 1.4;
     
     /* 标题颜色：精准匹配图片的橙棕色（#c2410c） */
@@ -3675,79 +3675,99 @@
     letter-spacing: -0.2px;
 }
 
+/* 工具栏标题旁的计数徽标 */
+.cs-header__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--b3-theme-primary) 12%, transparent);
+    color: var(--b3-theme-primary);
+}
+
 .cs-styles-toolbar-right {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-/* ====== 分组管理列表 ====== */
-.cs-group-list {
+/* ====== 分组管理（紧凑芯片，多列自动换行）====== */
+.cs-group-chip-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
 }
-.cs-group-row {
+.cs-group-chip {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 8px;
+    gap: 7px;
+    padding: 6px 7px 6px 10px;
+    border: 1px solid var(--b3-border-color);
     border-radius: 8px;
-    cursor: default;
-    transition: background .15s ease;
+    background: var(--b3-theme-surface);
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease;
     position: relative;
+    max-width: 250px;
+    user-select: none;
 }
-.cs-group-row:hover {
-    background: var(--b3-list-hover);
+.cs-group-chip:hover {
+    border-color: color-mix(in srgb, var(--b3-theme-primary) 40%, var(--b3-border-color));
+    background: var(--b3-theme-background);
 }
-.cs-group-row:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 52px;
-    right: 8px;
-    bottom: 0;
-    height: 1px;
-    background: color-mix(in srgb, var(--b3-border-color) 30%, transparent);
-    pointer-events: none;
-}
-.cs-group-row__icon {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-    border-radius: 9px;
+/* 图标位固定尺寸：emoji 直接展示，图片图标由内联 width:100% 填满 26px 盒子 */
+.cs-group-chip__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
     background: color-mix(in srgb, var(--b3-theme-primary) 10%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 19px;
+    font-size: 15px;
     line-height: 1;
+    flex: none;
+    overflow: hidden;
 }
-.cs-group-row__body {
-    flex: 1;
-    min-width: 0;
-}
-.cs-group-row__name {
-    font-size: 13.5px;
+.cs-group-chip__icon img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 5px; }
+.cs-group-chip__name {
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--b3-text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 2px;
+    max-width: 9em;
 }
-.cs-group-row__meta {
-    font-size: 11.5px;
+.cs-group-chip__count {
+    font-size: 10.5px;
+    line-height: 16px;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--b3-border-color) 40%, transparent);
     color: var(--b3-text-color3);
+    flex: none;
 }
-.cs-group-row__actions {
+.cs-group-chip__actions {
     display: flex;
     align-items: center;
-    gap: 2px;
-    flex-shrink: 0;
+    gap: 1px;
+    flex: none;
     opacity: 0;
-    transition: opacity .18s ease;
+    transition: opacity .15s ease;
 }
-.cs-group-row:hover .cs-group-row__actions {
-    opacity: 1;
+.cs-group-chip:hover .cs-group-chip__actions { opacity: 1; }
+.cs-group-chip__actions .cs-group-row__act {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
 }
 .cs-group-row__act {
     display: inline-flex;
@@ -3771,7 +3791,8 @@
     color: #ef4444;
 }
 
-/* 操作按钮 */
+/* 操作按钮（分组 / 新增自定义样式）
+   hover 只做底色微变：无位移、无阴影跳变；primary 悬停文字保持白色 */
 .cs-action-btn {
     display: inline-flex;
     align-items: center;
@@ -3784,29 +3805,37 @@
     border: 1px solid var(--b3-border-color);
     border-radius: 8px;
     cursor: pointer;
-    transition: all .18s ease;
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease;
     white-space: nowrap;
     line-height: 1;
 }
-.cs-action-btn:hover {
+.cs-action-btn:not(.cs-action-btn--primary):hover {
     color: var(--b3-text-color);
     border-color: var(--b3-theme-primary-lighter, rgba(59,130,246,.4));
-    background: var(--b3-theme-background);
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 7%, var(--b3-theme-surface));
+}
+.cs-action-btn:not(.cs-action-btn--primary):active {
+    background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 14%, var(--b3-theme-surface));
 }
 .cs-action-btn--primary {
     color: #fff;
     background: var(--b3-theme-primary);
     border-color: var(--b3-theme-primary);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--b3-theme-primary) 25%, transparent);
 }
 .cs-action-btn--primary:hover {
+    color: #fff;
     background: var(--b3-theme-primary-dark, #2563eb);
     border-color: var(--b3-theme-primary-dark, #2563eb);
-    box-shadow: 0 3px 12px rgba(59,130,246,.3);
-    transform: translateY(-1px);
 }
 .cs-action-btn--primary:active {
-    transform: translateY(0);
+    background: color-mix(in srgb, var(--b3-theme-primary-dark, #2563eb) 85%, #000);
+    border-color: color-mix(in srgb, var(--b3-theme-primary-dark, #2563eb) 85%, #000);
+}
+.cs-action-btn:focus-visible,
+.cs-tab-pill:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--b3-theme-primary) 45%, transparent);
+    outline-offset: 1px;
 }
 
 /* 分组标签栏（Pill Tabs）-- 用于自定义样式分类内 */
@@ -3826,7 +3855,7 @@
     gap: 6px;
 }
 
-/* 单个分组标签 Pill */
+/* 单个分组标签 Pill（hover 仅底色微变，激活态用浅色底 + 主色文字，不再叠加下划线） */
 .cs-tab-pill {
     display: inline-flex;
     align-items: center;
@@ -3839,7 +3868,7 @@
     border: 1.5px solid transparent;
     border-radius: 8px;
     cursor: pointer;
-    transition: all .2s ease;
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease, opacity .18s ease;
     white-space: nowrap;
     user-select: none;
     position: relative;
@@ -3847,27 +3876,16 @@
 }
 .cs-tab-pill:hover {
     color: var(--b3-text-color);
-    background: var(--b3-theme-surface);
-    border-color: var(--b3-border-color);
+    background: var(--b3-list-hover, var(--b3-theme-surface));
 }
 .cs-tab-pill--active {
     color: var(--b3-theme-primary);
     background: var(--b3-theme-primary-lightest, rgba(59,130,246,.08));
     border-color: var(--b3-theme-primary-lighter, rgba(59,130,246,.25));
-    box-shadow: 0 1px 6px rgba(59,130,246,.1);
-    position: relative;
 }
-.cs-tab-pill--active::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -13px;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: var(--b3-theme-primary);
-    border-radius: 2px;
-}
+/* 空分组：弱化显示，悬停恢复 */
+.cs-tab-pill--empty { opacity: .5; }
+.cs-tab-pill--empty:hover { opacity: 1; }
 .cs-tab-pill__name {
     max-width: 90px;
     overflow: hidden;
@@ -3901,149 +3919,65 @@
 }
 
 
-/* ====== 卡片网格（响应式：自动填充，最小 200px）====== */
-.cs-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+/* ====== 样式列表（紧凑芯片，多列自动换行，同「样式选择」芯片风格）====== */
+.cs-style-list {
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
-
-/* ====== 单张卡片（紧凑版）====== */
-.cs-card {
+.cs-style-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    gap: 7px;
+    padding: 6px 7px 6px 9px;
     border: 1px solid var(--b3-border-color);
+    border-radius: 8px;
     background: var(--b3-theme-surface);
     cursor: pointer;
-    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    transition: border-color .15s ease, background-color .15s ease;
     position: relative;
-    overflow: hidden;
+    max-width: 250px;
+    user-select: none;
 }
-.cs-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--cs-accent, var(--b3-theme-primary));
-    opacity: 0;
-    transition: opacity .22s ease;
-    border-radius: 0 2px 2px 0;
-}
-.cs-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
-    border-color: var(--cs-accent-lighter, rgba(128,128,128,.25));
+.cs-style-row:hover {
+    border-color: color-mix(in srgb, var(--cs-accent, var(--b3-theme-primary)) 45%, var(--b3-border-color));
     background: var(--b3-theme-background);
 }
-.cs-card:hover::before {
-    opacity: 1;
-}
-.cs-card:active {
-    transform: translateY(0) scale(.99);
-}
-
-/* 卡片图标区域 */
-.cs-card__icon-wrap {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+.cs-style-row__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
     background: var(--cs-bg-light, var(--b3-theme-surface));
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    transition: transform .22s ease;
-    position: relative;
-    overflow: hidden;
-}
-.cs-card__icon-wrap::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,.4) 0%, transparent 60%);
-    border-radius: inherit;
-}
-.cs-card:hover .cs-card__icon-wrap {
-    transform: scale(1.08) rotate(-3deg);
-}
-.cs-card__icon {
-    font-size: 17px;
+    font-size: 15px;
     line-height: 1;
-    z-index: 1;
+    flex: none;
+    overflow: hidden;
 }
-
-/* 卡片文字区域 */
-.cs-card__body {
-    flex: 1;
-    min-width: 0;
-}
-.cs-card__name {
+.cs-style-row__name {
     font-size: 12.5px;
-    font-weight: 650;
+    font-weight: 600;
     color: var(--b3-text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 3px;
-    letter-spacing: -0.15px;
+    max-width: 9em;
 }
-.cs-card__meta {
-    font-size: 10.5px;
-    color: var(--b3-text-color3);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: .75;
-}
-.cs-card__meta-sep {
-    margin: 0 4px;
-    opacity: .45;
-}
-
-/* 卡片操作按钮（hover 显示）*/
-.cs-card__actions {
+.cs-style-row__actions {
     display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-    opacity: 0;
-    transform: translateX(6px);
-    transition: opacity .2s ease, transform .2s ease;
-}
-.cs-card:hover .cs-card__actions {
-    opacity: 1;
-    transform: translateX(0);
-}
-.cs-card__act {
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 7px;
-    background: var(--b3-theme-surface);
-    color: var(--b3-text-color3);
-    cursor: pointer;
-    transition: all .15s ease;
-    flex-shrink: 0;
+    gap: 1px;
+    flex: none;
+    opacity: 0;
+    transition: opacity .15s ease;
 }
-.cs-card__act:hover {
-    background: var(--b3-theme-background);
-    color: var(--b3-text-color);
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-}
-.cs-card__act--edit:hover {
-    color: var(--b3-theme-primary);
-    background: var(--b3-theme-primary-lightest, rgba(59,130,246,.08));
-}
-.cs-card__act--del:hover {
-    color: #ef4444;
-    background: rgba(239,68,68,.07);
+.cs-style-row:hover .cs-style-row__actions { opacity: 1; }
+.cs-style-row__actions .cs-group-row__act {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
 }
 
 /* ====== 空状态 ====== */
@@ -4065,11 +3999,6 @@
     line-height: 1;
     margin-bottom: 14px;
     filter: grayscale(.2);
-    animation: csFloat 3s ease-in-out infinite;
-}
-@keyframes csFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
 }
 .cs-empty-title {
     font-size: 17px;
@@ -4091,11 +4020,10 @@
     padding: 10px 22px !important;
     font-size: 13.5px !important;
     border-radius: 10px !important;
-    transition: all .2s ease !important;
+    transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease !important;
 }
 .cs-empty-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(59,130,246,.25) !important;
+    box-shadow: 0 2px 10px rgba(59,130,246,.18) !important;
 }
 
 
@@ -4122,8 +4050,14 @@
     border-radius: 6px; transition: background .15s, color .15s;
     white-space: nowrap; line-height: 1;
 }
-.cs-tab:hover { background: var(--b3-theme-background); color: var(--b3-text-color); }
-.cs-tab--active { background: var(--b3-theme-primary); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.cs-tab:hover { background: var(--b3-list-hover, var(--b3-theme-background)); color: var(--b3-text-color); }
+/* 分段控件：选中段浮起（浅底 + 主色字），替代原来一整条实心蓝 */
+.cs-tab--active {
+    background: var(--b3-theme-background);
+    color: var(--b3-theme-primary);
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0,0,0,.10), 0 0 0 1px var(--b3-border-color);
+}
 .cs-tab--active svg { opacity: .9; }
 
 .cs-tab-panels { overflow-y: auto; max-height: 260px; padding-right: 2px; }
@@ -4157,6 +4091,184 @@
     color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 .cs-chip-ico { font-size: 12px; line-height: 1; }
+
+/* 色系芯片色点（无图标的颜色变体芯片用） */
+.cs-chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+/* ============================================================
+   新增/编辑自定义样式弹窗：左表单 + 右常驻预览
+   ============================================================ */
+.cs-dlg {
+    display: flex;
+    gap: 18px;
+    padding: 20px 20px 0;
+    align-items: stretch;
+}
+.cs-dlg__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.cs-dlg__field { min-width: 0; }
+.cs-dlg__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--b3-text-color);
+}
+.cs-dlg__req { color: #e53935; }
+.cs-dlg__label-hint {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--b3-text-color3);
+}
+.cs-dlg__row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+.cs-dlg__field--icon { flex: none; }
+
+/* 图标选择方块（点击即弹选择器，空值显示灰色加号） */
+.cs-dlg__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+    line-height: 1;
+    border-radius: 8px;
+    background: var(--b3-theme-background);
+    border: 1px solid var(--b3-border-color);
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+.cs-dlg__icon-btn:hover {
+    border-color: var(--b3-theme-primary-lighter, rgba(59,130,246,.4));
+    background: color-mix(in srgb, var(--b3-theme-primary) 6%, var(--b3-theme-background));
+}
+.cs-dlg__icon-btn img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.cs-dlg__folder {
+    display: flex;
+    gap: 8px;
+}
+.cs-dlg__folder .b3-select { flex: 1; min-width: 0; }
+
+/* 右侧预览栏 */
+.cs-dlg__side {
+    width: 224px;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+}
+.cs-dlg__side-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--b3-text-color3);
+    margin-bottom: 6px;
+}
+.cs-dlg__preview {
+    flex: 1;
+    min-height: 180px;
+    border: 1px dashed var(--b3-border-color);
+    border-radius: 10px;
+    background: var(--b3-theme-background);
+    padding: 8px;
+    overflow: auto;
+    box-sizing: border-box;
+}
+.cs-dlg__preview-empty {
+    height: 100%;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--b3-text-color3);
+}
+.cs-dlg__preview .protyle-wysiwyg { padding: 0; }
+
+/* 底部操作区（取消/保存同高同重，避免一纯文字一大色块） */
+.cs-dlg__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    margin-top: 16px;
+    border-top: 1px solid var(--b3-border-color);
+}
+.cs-dlg__footer .b3-button {
+    min-width: 96px;
+    padding: 7px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 8px;
+}
+.cs-dlg__footer #cs-d-save { font-weight: 600; }
+
+/* 取消：红色系（浅红底 + 实红描边 + 红字），悬停实心红 */
+/* 描边用不透明红色，并显式清掉 outline 自带的主色描边/阴影/focus 光环，避免透出蓝色 */
+.cs-dlg__footer #cs-d-cancel,
+.cs-dlg__footer #cs-d-cancel:focus,
+.cs-dlg__footer #cs-d-cancel:focus-visible {
+    color: #dc2626;
+    border: 1px solid #ef4444;
+    outline: none;
+    box-shadow: none;
+    background: color-mix(in srgb, #ef4444 10%, var(--b3-theme-background));
+}
+/* 悬停/聚焦/按下均不变色：取消保持浅红底红字，保存保持实心蓝白字 */
+.cs-dlg__footer #cs-d-cancel:hover,
+.cs-dlg__footer #cs-d-cancel:focus,
+.cs-dlg__footer #cs-d-cancel:focus-visible {
+    color: #dc2626;
+    border-color: #ef4444;
+    background: color-mix(in srgb, #ef4444 10%, var(--b3-theme-background));
+    box-shadow: none;
+    outline: none;
+}
+.cs-dlg__footer #cs-d-save:hover,
+.cs-dlg__footer #cs-d-save:focus,
+.cs-dlg__footer #cs-d-save:active {
+    color: #fff;
+    background: var(--b3-theme-primary);
+    border-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+.cs-dlg__footer #cs-d-save {
+    font-weight: 600;
+    border: 1px solid transparent; /* 占位保持与取消等高 */
+}
+
+/* 基础样式未选时的错误提示态 */
+.cs-dlg__field--error .cs-tab-bar {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, .15);
+}
 
 /* 卡片编辑弹窗的图标预览方块（替代原来的长输入框，点击也可触发选择） */
 .cs-icon-preview {
@@ -4276,7 +4388,7 @@
     flex-shrink: 0;
 }
 
-/* 分组内样式项列表 */
+/* 分组内样式项列表（开关行式：状态一目了然） */
 .cs-visibility-items {
     display: flex;
     flex-direction: column;
@@ -4289,7 +4401,7 @@
     gap: 10px;
     padding: 8px 6px;
     border-radius: 6px;
-    transition: background .15s ease, opacity .2s ease;
+    transition: background-color .15s ease, opacity .2s ease;
     position: relative;
 }
 .cs-visibility-item:hover {
@@ -4317,10 +4429,12 @@
     font-size: 15px;
     line-height: 1;
     color: var(--b3-text-color2);
+    overflow: hidden;
 }
 .cs-visibility-item__icon img {
     width: 16px;
     height: 16px;
+    object-fit: contain;
     vertical-align: middle;
     border-radius: 3px;
 }
@@ -4333,7 +4447,29 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+/* 分组头部右侧：计数 + 批量操作 */
+.cs-visibility-group__right {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+.cs-vs-bulk {
+    border: none;
+    background: transparent;
+    color: var(--b3-text-color3);
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+    white-space: nowrap;
+}
+.cs-vs-bulk:hover {
+    color: var(--b3-theme-primary);
+    background: color-mix(in srgb, var(--b3-theme-primary) 8%, transparent);
+}
 /* ====== 侧栏全局搜索（真实设置项风格，无图标）====== */
 
 /* 搜索结果中信息行的分类标签 */
@@ -4377,3 +4513,150 @@
 }
 
 
+/* ============================================
+   彩色便签（普通块新分类）
+   3 个小类：便利贴（5 色）/ 莫兰迪色卡（5 色）/ 荧光笔迹（4 色）
+   配色通过 --sticky-accent 注入，用 color-mix 派生底色与文字色，
+   亮暗模式自动适配。
+   ============================================ */
+
+/* -------------------- 一、便利贴：柔色便签纸 + 右下折角 -------------------- */
+.protyle-wysiwyg [custom-deco-style^="便利贴·"]:not([fold="1"]) {
+    padding: 48px 18px 16px !important;
+    position: relative !important;
+    margin: 14px 0 !important;
+    background-color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 26%, var(--b3-theme-background)) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .08) !important;
+    overflow: hidden !important;
+}
+.protyle-wysiwyg [custom-deco-style^="便利贴·"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 9px !important;
+    left: 14px !important;
+    right: 16px !important;
+    font-size: var(--b3-font-size-editor);
+    font-weight: 700 !important;
+    color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 42%, var(--b3-theme-on-background)) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* 右下折角：露出页面背景 */
+.protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style^="便利贴·"]:not([fold="1"])::after {
+    content: "" !important;
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-style: solid !important;
+    border-width: 18px 18px 0 0 !important;
+    border-color: transparent var(--b3-theme-background) transparent transparent !important;
+    filter: drop-shadow(-2px -2px 2px rgba(0, 0, 0, .07)) !important;
+}
+.protyle-wysiwyg [custom-deco-style="便利贴·柠檬"]:not([fold="1"]) { --sticky-accent: #e0c341; }
+.protyle-wysiwyg [custom-deco-style="便利贴·蜜桃"]:not([fold="1"]) { --sticky-accent: #ef9a8d; }
+.protyle-wysiwyg [custom-deco-style="便利贴·薄荷"]:not([fold="1"]) { --sticky-accent: #66bb9a; }
+.protyle-wysiwyg [custom-deco-style="便利贴·天空"]:not([fold="1"]) { --sticky-accent: #64a5e8; }
+.protyle-wysiwyg [custom-deco-style="便利贴·香芋"]:not([fold="1"]) { --sticky-accent: #a583d4; }
+/* 未设置图标/标题时的回退标题 */
+.protyle-wysiwyg [custom-deco-style="便利贴·柠檬"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍋 便利贴·柠檬"; }
+.protyle-wysiwyg [custom-deco-style="便利贴·蜜桃"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍑 便利贴·蜜桃"; }
+.protyle-wysiwyg [custom-deco-style="便利贴·薄荷"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌿 便利贴·薄荷"; }
+.protyle-wysiwyg [custom-deco-style="便利贴·天空"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "☁️ 便利贴·天空"; }
+.protyle-wysiwyg [custom-deco-style="便利贴·香芋"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍇 便利贴·香芋"; }
+
+/* -------------------- 二、莫兰迪色卡：低饱和淡底 + 同色描边 + 灰调标题 -------------------- */
+.protyle-wysiwyg [custom-deco-style^="莫兰迪·"]:not([fold="1"]) {
+    padding: 48px 18px 14px 18px !important;
+    position: relative !important;
+    margin: 10px 0 !important;
+    background-color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 10%, var(--b3-theme-surface)) !important;
+    border: 1px solid color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 25%, transparent) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+.protyle-wysiwyg [custom-deco-style^="莫兰迪·"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 10px !important;
+    left: 18px !important;
+    right: 16px !important;
+    font-size: var(--b3-font-size-editor);
+    font-weight: 700 !important;
+    color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 55%, var(--b3-theme-on-background)) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰绿"]:not([fold="1"]) { --sticky-accent: #93a89b; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰粉"]:not([fold="1"]) { --sticky-accent: #c49792; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰蓝"]:not([fold="1"]) { --sticky-accent: #8fa8bd; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·暖灰"]:not([fold="1"]) { --sticky-accent: #b3a582; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰紫"]:not([fold="1"]) { --sticky-accent: #9c8ab8; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰绿"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌿 莫兰迪·灰绿"; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰粉"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🥀 莫兰迪·灰粉"; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰蓝"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌫️ 莫兰迪·灰蓝"; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·暖灰"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌾 莫兰迪·暖灰"; }
+.protyle-wysiwyg [custom-deco-style="莫兰迪·灰紫"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🪻 莫兰迪·灰紫"; }
+
+/* -------------------- 三、荧光笔迹：同色晕染高亮 -------------------- */
+.protyle-wysiwyg [custom-deco-style^="荧光·"]:not([fold="1"]) {
+    position: relative !important;
+    padding: .5em .9em !important;
+    margin: 6px 0 !important;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 24%, transparent), color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 5%, transparent) 75%) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    line-height: 1.85 !important;
+}
+.protyle-wysiwyg [custom-deco-style="荧光·黄"]:not([fold="1"]) { --sticky-accent: #fde047; }
+.protyle-wysiwyg [custom-deco-style="荧光·绿"]:not([fold="1"]) { --sticky-accent: #86efac; }
+.protyle-wysiwyg [custom-deco-style="荧光·粉"]:not([fold="1"]) { --sticky-accent: #f9a8d4; }
+.protyle-wysiwyg [custom-deco-style="荧光·蓝"]:not([fold="1"]) { --sticky-accent: #93c5fd; }
+
+/* -------------------- 四、云霞渐变：马卡龙色柔和晕染渐变卡 -------------------- */
+.protyle-wysiwyg [custom-deco-style^="云笺·"]:not([fold="1"]) {
+    padding: 48px 20px 16px !important;
+    position: relative !important;
+    margin: 12px 0 !important;
+    background: linear-gradient(135deg,
+        color-mix(in srgb, var(--cg1, var(--b3-theme-primary)) 30%, var(--b3-theme-background)),
+        color-mix(in srgb, var(--cg2, var(--b3-theme-primary)) 26%, var(--b3-theme-background)) 55%,
+        color-mix(in srgb, var(--cg3, var(--cg2)) 30%, var(--b3-theme-background))) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .35),
+        0 3px 14px rgba(0, 0, 0, .06) !important;
+    overflow: hidden !important;
+}
+[data-theme-mode="dark"] .protyle-wysiwyg [custom-deco-style^="云笺·"]:not([fold="1"]) {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .08),
+        0 3px 14px rgba(0, 0, 0, .22) !important;
+}
+.protyle-wysiwyg [custom-deco-style^="云笺·"]:not([fold="1"])::before {
+    content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
+    position: absolute !important;
+    top: 10px !important;
+    left: 20px !important;
+    right: 20px !important;
+    font-size: var(--b3-font-size-editor);
+    font-weight: 700 !important;
+    color: color-mix(in srgb, var(--cg1, var(--b3-theme-primary)) 42%, var(--b3-theme-on-background)) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.protyle-wysiwyg [custom-deco-style="云笺·晨曦"]:not([fold="1"]) { --cg1: #fda4af; --cg2: #fdba74; --cg3: #fde68a; }
+.protyle-wysiwyg [custom-deco-style="云笺·薄荷"]:not([fold="1"]) { --cg1: #6ee7b7; --cg2: #7dd3fc; }
+.protyle-wysiwyg [custom-deco-style="云笺·星空"]:not([fold="1"]) { --cg1: #c4b5fd; --cg2: #93c5fd; --cg3: #f9a8d4; }
+.protyle-wysiwyg [custom-deco-style="云笺·蜜桃"]:not([fold="1"]) { --cg1: #fecdd3; --cg2: #fed7aa; }
+.protyle-wysiwyg [custom-deco-style="云笺·青柠"]:not([fold="1"]) { --cg1: #d9f99d; --cg2: #6ee7b7; }
+.protyle-wysiwyg [custom-deco-style="云笺·晨曦"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌅 云笺·晨曦"; }
+.protyle-wysiwyg [custom-deco-style="云笺·薄荷"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌿 云笺·薄荷"; }
+.protyle-wysiwyg [custom-deco-style="云笺·星空"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌌 云笺·星空"; }
+.protyle-wysiwyg [custom-deco-style="云笺·蜜桃"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍑 云笺·蜜桃"; }
+.protyle-wysiwyg [custom-deco-style="云笺·青柠"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍋 云笺·青柠"; }

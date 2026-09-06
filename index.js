@@ -1,6 +1,6 @@
 "use strict";
 const siyuan = require("siyuan");
-const { showMessage, Dialog, openEmoji } = siyuan;
+const { showMessage, Dialog, openEmoji, Menu } = siyuan;
 
 // 自定义图标（通过 this.addIcons 注册为思源全局图标，用于顶栏+右键菜单）
 // 参考轻语做法：模块级常量，onload 中注册一次即可，无需主题切换兜底
@@ -47,6 +47,10 @@ const PLUGIN_ICON = `
 <symbol id="iconDecoTag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
     <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+<symbol id="iconDecoSave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/>
+    <path d="M6 3v5a1 1 0 0 0 1 1h7"/>
 </symbol>`;
 
 
@@ -215,8 +219,28 @@ const CARD_ITEMS = [
     { key: 'titleBarPurpleCard', label: '顶条引述·紫', icon: '' },
     { key: 'titleBarCyanCard',   label: '顶条引述·青', icon: '' },
     { key: 'titleBarPinkCard',   label: '顶条引述·粉', icon: '' },
-];
 
+    // 彩色便签组 - key 分别以 PostCard / MorandiCard / MarkCard 结尾，方便 endsWith 过滤
+    { key: 'lemonPostCard',    label: '便利贴·柠檬', icon: '🍋' },
+    { key: 'peachPostCard',    label: '便利贴·蜜桃', icon: '🍑' },
+    { key: 'mintPostCard',     label: '便利贴·薄荷', icon: '🌿' },
+    { key: 'skyPostCard',      label: '便利贴·天空', icon: '☁️' },
+    { key: 'grapePostCard',    label: '便利贴·香芋', icon: '🍇' },
+    { key: 'sageMorandiCard',  label: '莫兰迪·灰绿', icon: '🌿' },
+    { key: 'roseMorandiCard',  label: '莫兰迪·灰粉', icon: '🥀' },
+    { key: 'hazeMorandiCard',  label: '莫兰迪·灰蓝', icon: '🌫️' },
+    { key: 'oatMorandiCard',   label: '莫兰迪·暖灰', icon: '🌾' },
+    { key: 'mauveMorandiCard', label: '莫兰迪·灰紫', icon: '🪻' },
+    { key: 'yellowMarkCard',   label: '荧光·黄', icon: '🖍️' },
+    { key: 'greenMarkCard',    label: '荧光·绿', icon: '🖍️' },
+    { key: 'pinkMarkCard',     label: '荧光·粉', icon: '🖍️' },
+    { key: 'blueMarkCard',     label: '荧光·蓝', icon: '🖍️' },
+    { key: 'dawnCloudCard',    label: '云笺·晨曦', icon: '🌅' },
+    { key: 'mintCloudCard',    label: '云笺·薄荷', icon: '🌿' },
+    { key: 'nightCloudCard',   label: '云笺·星空', icon: '🌌' },
+    { key: 'peachCloudCard',   label: '云笺·蜜桃', icon: '🍑' },
+    { key: 'limeCloudCard',    label: '云笺·青柠', icon: '🍋' },
+];
 
 const TEXT = {
     cardview: '轻饰笔记',
@@ -254,6 +278,11 @@ const TEXT = {
     categoryTimeline: '时间轴',
     categoryLineDecor: '线条装饰',
     categoryChatBubble: '对话气泡',
+    categorySticky: '彩色便签',
+    postItGroup: '便利贴',
+    morandiGroup: '莫兰迪色卡',
+    markerGroup: '荧光笔迹',
+    cloudGroup: '云霞渐变',
     categoryImage: '图片设置',
 
     // 自定义块样式
@@ -268,6 +297,8 @@ const TEXT = {
     styleVisibilityTitle: '样式显隐',
     styleVisibilityDesc: '控制右键菜单中哪些样式项显示或隐藏',
     styleVisibilitySearch: '搜索样式...',
+    bulkShow: '全部显示',
+    bulkHide: '全部隐藏',
     styleVisibilityBuiltIn: '内置样式',
     styleVisibilityCustom: '自定义样式',
 
@@ -278,6 +309,8 @@ const TEXT = {
     searchResultsFor: '搜索结果',
     customName: '名称',
     customBaseStyle: '基础样式',
+    customBaseStyleHint: '先选块类型，再点选具体样式',
+    customNeedStyle: '请先选择基础样式',
     customAdd: '新增自定义样式',
     customSave: '保存',
     customEdit: '编辑',
@@ -291,6 +324,9 @@ const TEXT = {
     // 自定义分组（用户自建，数据沿用 customFolders）
     addFolder: '新建分组',
     folderName: '分组名称',
+    allTab: '全部',
+    moveToGroup: '移动到分组',
+    movedToGroup: '已移动到分组：',
     folderNamePlaceholder: '如：工作、日记',
     needFolderName: '请填写分组名称',
     folderCreated: '已新建分组：',
@@ -500,6 +536,23 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
 
         this.state = { menu: null, observer: null, restoreObserver: null };
+
+        // 仅当刚在编辑器内右键、或点击块把手时才允许注入「轻饰笔记」菜单项，
+        // 防止主菜单（Alt+\）等其它共用 #commonMenu 的菜单被误注入。
+        this._blockMenuArmed = 0;
+        this._onDocContextmenu = (e) => {
+            if (e.target && e.target.closest && e.target.closest('.protyle-wysiwyg')) {
+                this._blockMenuArmed = Date.now();
+            }
+        };
+        this._onDocGutterClick = (e) => {
+            if (e.target && e.target.closest && e.target.closest('.protyle-gutters')) {
+                this._blockMenuArmed = Date.now();
+            }
+        };
+        document.addEventListener('contextmenu', this._onDocContextmenu, true);
+        document.addEventListener('click', this._onDocGutterClick, true);
+
         this.waitForMenu();
         this.addTitleClickListener();
         this.startAttributeRestoreObserver();
@@ -706,6 +759,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         // 没有标题属性的普通卡片也不弹
         if (!cardBlock.hasAttribute('custom-deco-card-title') && !(cardKey && cardKey.includes('WhisperCard'))) return;
+
+        // 荧光笔迹等纯排版样式（MarkCard）不渲染图标/标题，点击不弹编辑卡片
+        if (cardKey && cardKey.endsWith('MarkCard')) return;
 
         const rect = cardBlock.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
@@ -938,6 +994,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     insertMenuItem() {
+        // 仅当 2 秒内刚在编辑器内右键 / 点击块把手时才注入；
+        // 主菜单等其它菜单打开时没有该武装标记，直接跳过（块选中态 class 会残留，不能作为判断依据）。
+        if (!this._blockMenuArmed || (Date.now() - this._blockMenuArmed) > 2000) return;
+        this._blockMenuArmed = 0;
+
         // 防止重复插入：先清理已存在的菜单项（连同其前的分隔符）
         const existing = document.querySelector("#North-CardView-Top");
         if (existing) {
@@ -1011,17 +1072,27 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const itemsContainer = document.createElement("div");
         itemsContainer.className = "b3-menu__items";
 
-        // 一级块分类：引述块 / 普通块 / 图片相关
+        // 一级块分类：引述块 / 普通块 / 图片相关（全部隐藏的分类不显示）
+        let hasAny = false;
         this.getMenuStructure().forEach(parent => {
-            itemsContainer.appendChild(this.createParentButton(blockId, parent));
+            const parentBtn = this.createParentButton(blockId, parent);
+            if (parentBtn) {
+                itemsContainer.appendChild(parentBtn);
+                hasAny = true;
+            }
         });
 
         // 用户自定义块样式（预设）
         if (this.showCustomMenu && this.customStyles && this.customStyles.length) {
-            itemsContainer.appendChild(this.createCustomParentButton(blockId));
+            const customBtn = this.createCustomParentButton(blockId);
+            if (customBtn) {
+                itemsContainer.appendChild(customBtn);
+                hasAny = true;
+            }
         }
 
-        itemsContainer.appendChild(this.createSeparator());
+        // 上方没有任何可见项时不加分隔符；「移除样式」始终保留
+        if (hasAny) itemsContainer.appendChild(this.createSeparator());
         const removeItem = this.createRemoveStyleItem(blockId);
         itemsContainer.appendChild(removeItem);
 
@@ -1047,9 +1118,16 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         itemsContainer.className = "b3-menu__items";
 
         // 二级细分类（如 引述类 / 时间轴 / 线条装饰）
+        let hasVisible = false;
         parent.children.forEach(category => {
-            itemsContainer.appendChild(this.createCategoryButton(blockId, category));
+            const catBtn = this.createCategoryButton(blockId, category);
+            if (catBtn) {
+                itemsContainer.appendChild(catBtn);
+                hasVisible = true;
+            }
         });
+        // 一级入口下没有任何可见分类时，整个入口不显示
+        if (!hasVisible) return null;
 
         subMenu.appendChild(itemsContainer);
         btn.appendChild(subMenu);
@@ -1072,10 +1150,29 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const itemsContainer = document.createElement("div");
         itemsContainer.className = "b3-menu__items";
 
-        // 三级：该分类下的具体组按钮
-        category.subGroups.forEach(group => {
-            itemsContainer.appendChild(this.createSecondaryGroupButton(blockId, group));
-        });
+        // 三级：该分类下的具体组按钮；分类下仅有一个组时直接平铺条目，省掉一层菜单
+        let hasVisible = false;
+        if (category.subGroups.length === 1) {
+            const hiddenSet = new Set(this.hiddenStyles || []);
+            this.getAllCardItems().forEach(item => {
+                // 被「样式显示控制」隐藏的项不出现在右键菜单
+                if (hiddenSet.has(item.key)) return;
+                if (category.subGroups[0].filter(item.label, item.key)) {
+                    itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
+                    hasVisible = true;
+                }
+            });
+        } else {
+            category.subGroups.forEach(group => {
+                const groupBtn = this.createSecondaryGroupButton(blockId, group);
+                if (groupBtn) {
+                    itemsContainer.appendChild(groupBtn);
+                    hasVisible = true;
+                }
+            });
+        }
+        // 分类下没有任何可见条目时，整个分类菜单不显示
+        if (!hasVisible) return null;
 
         subMenu.appendChild(itemsContainer);
         btn.appendChild(subMenu);
@@ -1100,6 +1197,16 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     }
 
     // ========== 辅助：构建「Tab 分类 + 网格芯片」样式选择器（替代多级折叠树）==========
+    // 色系芯片色点：无图标且名称含色彩字时，渲染对应色相的小圆点便于扫读
+    _colorDotHtml(label) {
+        const HUES = { '红': 4, '橙': 25, '黄': 48, '绿': 135, '青': 178, '蓝': 215, '紫': 268, '粉': 325 };
+        const m = String(label || '').match(/红|橙|黄|绿|青|蓝|紫|粉|黑|灰/);
+        if (!m) return '';
+        const bg = HUES[m[0]] !== undefined ? `hsl(${HUES[m[0]]}, 72%, 58%)`
+            : (m[0] === '黑' ? '#454545' : '#b9b9b9');
+        return `<span class="cs-chip-dot" style="background:${bg};"></span>`;
+    }
+
     _buildStyleTabsHtml(selectedLabel) {
         const structure = this.getMenuStructure();
         const allCards = this.getAllCardItems();
@@ -1123,14 +1230,18 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     const items = findItems(group);
                     if (!items.length) continue;
                     const gLabel = this.getText(group.labelKey, group.id);
+                    // 分类下只有一个组、或子组与分类同名时，省掉一层重复标题
+                    const hideSubTitle = cat.subGroups.length === 1 || gLabel === catLabel;
                     subHtml += `
                         <div class="cs-cat-block">
-                            <div class="cs-cat-block-title">${this._escapeAttr(gLabel)}</div>
+                            ${hideSubTitle ? '' : `<div class="cs-cat-block-title">${this._escapeAttr(gLabel)}</div>`}
                             <div class="cs-chip-grid">
                                 ${items.map(item => {
                                     const sel = item.label === selectedLabel ? ' cs-chip--active' : '';
                                     const d = this.styleDefaults[item.label] || {};
-                                    const ico = d.icon ? '<span class="cs-chip-ico">' + this._escapeAttr(d.icon) + '</span>' : '';
+                                    const ico = d.icon
+                                        ? '<span class="cs-chip-ico">' + this._escapeAttr(d.icon) + '</span>'
+                                        : this._colorDotHtml(item.label);
                                     return `<div class="cs-chip${sel}" data-label="${this._escapeAttr(item.label)}">${ico}${this._escapeAttr(item.label)}</div>`;
                                 }).join('')}
                             </div>
@@ -1188,73 +1299,76 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         </div>`;
     }
 
-    // ========== 打开新增/编辑样式的 Dialog 弹窗（含预览）==========
+    // ========== 打开新增/编辑样式的 Dialog 弹窗（左表单 + 右常驻预览）==========
     openStyleDialog(editId) {
         const self = this;
-        const allCards = this.getAllCardItems();
         const editing = editId ? (this.customStyles || []).find(c => c.id === editId) : null;
         const tabsHtml = this._buildStyleTabsHtml(editing ? editing.style : '');
 
+        const dialogTitle = editing
+            ? (this.getText('customEdit', '编辑') + ' · ' + editing.name)
+            : this.getText('customAdd', '新增自定义样式');
+
         const contentHtml = `
-            <div style="padding:20px 28px;">
-                <div style="font-size:16px; font-weight:700; margin-bottom:18px;">${editing ? (this.getText('customEdit', '编辑') + ' · ' + editing.name) : this.getText('customAdd', '新增自定义样式')}</div>
+            <div class="cs-dlg">
+                <div class="cs-dlg__main">
+                    <!-- 名称 -->
+                    <div class="cs-dlg__field">
+                        <label class="cs-dlg__label">${this.getText('customName', '名称')}<sup class="cs-dlg__req">*</sup></label>
+                        <input id="cs-d-name" class="b3-text-field" type="text" value="${editing ? this._escapeAttr(editing.name) : ''}" placeholder="${this.getText('customNamePlaceholder', '如：我的日报模板')}" style="width:100%;">
+                    </div>
 
-                <!-- 名称 -->
-                <div style="margin-bottom:14px;">
-                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('customName', '名称')}<sup style="color:#e53935;">*</sup></label>
-                    <input id="cs-d-name" class="b3-text-field" type="text" value="${editing ? editing.name : ''}" placeholder="${this.getText('customNamePlaceholder', '如：我的日报模板')}" style="width:100%;">
-                </div>
+                    <!-- 基础样式（块类型分段 + 具体样式芯片） -->
+                    <div class="cs-dlg__field" id="cs-d-style-field">
+                        <label class="cs-dlg__label">${this.getText('customBaseStyle', '基础样式')}<sup class="cs-dlg__req">*</sup><span class="cs-dlg__label-hint">${this.getText('customBaseStyleHint', '先选块类型，再点选具体样式')}</span></label>
+                        ${tabsHtml}
+                        <input id="cs-d-style" type="hidden" value="${this._escapeAttr(editing ? editing.style : '')}">
+                    </div>
 
-                <!-- 基础样式（Tab + 网格） -->
-                <div style="margin-bottom:14px;">
-                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:600;">${this.getText('customBaseStyle', '基础样式')}<sup style="color:#e53935;">*</sup></label>
-                    ${tabsHtml}
-                    <input id="cs-d-style" type="hidden" value="${this._escapeAttr(editing ? editing.style : '')}">
-                </div>
-
-                <!-- 图标 + 标题 并排（图标列按内容收缩，标题列占满剩余） -->
-                <div style="display:flex; gap:14px; margin-bottom:14px;">
-                    <div style="flex:none;">
-                        <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('cardIcon', '图标')}</label>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <span id="cs-d-icon-prev" data-icon="${this._escapeAttr(editing ? (editing.icon || '') : '')}" style="display:inline-flex;align-items:center;width:28px;height:28px;justify-content:center;font-size:18px;flex:none;border-radius:6px;background:var(--b3-theme-background);border:1px solid var(--b3-border-color);cursor:pointer;"></span>
-                            <button class="b3-button b3-button--outline" id="cs-d-emoji">${this.getText('choose', '选择')}</button>
+                    <!-- 图标 + 标题 并排 -->
+                    <div class="cs-dlg__row">
+                        <div class="cs-dlg__field cs-dlg__field--icon">
+                            <label class="cs-dlg__label">${this.getText('cardIcon', '图标')}</label>
+                            <span id="cs-d-icon-prev" class="cs-dlg__icon-btn" data-icon="${this._escapeAttr(editing ? (editing.icon || '') : '')}" title="${this.getText('clickPickIcon', '点击选择图标')}"></span>
+                        </div>
+                        <div class="cs-dlg__field" style="flex:1;">
+                            <label class="cs-dlg__label">${this.getText('cardTitle', '标题')}</label>
+                            <input id="cs-d-title" class="b3-text-field" type="text" value="${editing ? this._escapeAttr(editing.title || '') : ''}" placeholder="${this.getText('titlePlaceholder', '卡片标题')}" style="width:100%;">
                         </div>
                     </div>
-                    <div style="flex:1;">
-                        <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('cardTitle', '标题')}</label>
-                        <input id="cs-d-title" class="b3-text-field" type="text" value="${editing ? (editing.title || '') : ''}" placeholder="${this.getText('titlePlaceholder', '卡片标题')}" style="width:100%;">
+
+                    <!-- 归属分组 -->
+                    <div class="cs-dlg__field">
+                        <label class="cs-dlg__label">${this.getText('folderLabel', '归属分组')}</label>
+                        <div class="cs-dlg__folder">
+                            <select id="cs-d-folder" class="b3-select">${this._buildFolderOptionsHtml(editing ? editing.folderId : '')}</select>
+                            <button class="b3-button b3-button--outline" id="cs-d-newgroup" style="flex:none; white-space:nowrap;">+ ${this.getText('addFolder', '新建分组')}</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 归属分组 -->
-                <div style="margin-bottom:14px;">
-                    <label style="display:block; margin-bottom:6px; font-size:13px; font-weight:600;">${this.getText('folderLabel', '归属分组')}</label>
-                    <div style="display:flex; gap:8px;">
-                        <select id="cs-d-folder" class="b3-select" style="flex:1; min-width:0;">${this._buildFolderOptionsHtml(editing ? editing.folderId : '')}</select>
-                        <button class="b3-button b3-button--outline" id="cs-d-newgroup" style="flex:none; white-space:nowrap;">+ ${this.getText('addFolder', '新建分组')}</button>
-                    </div>
-                </div>
-
-                <!-- 预览区域 -->
-                <div style="margin-top:16px; padding:12px; border-radius:8px; border:1px dashed var(--b3-border-color); background:var(--b3-theme-background);">
-                    <div style="font-size:11px; font-weight:600; opacity:.55; margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                <!-- 右侧常驻预览 -->
+                <aside class="cs-dlg__side">
+                    <div class="cs-dlg__side-label">
                         <svg style="width:12px;height:12px;"><use xlink:href="#iconEye"></use></svg>${this.getText('preview', '预览')}
                     </div>
-                    <div id="cs-d-preview" style="min-height:70px;"></div>
-                </div>
+                    <div id="cs-d-preview" class="cs-dlg__preview"></div>
+                </aside>
+            </div>
 
-                <!-- 操作按钮 -->
-                <div class="fn__flex" style="justify-content:flex-end; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--b3-border-color);">
-                    ${editing ? '<button class="b3-button b3-button--cancel" id="cs-d-cancel">' + this.getText('cancel', '取消') + '</button>' : ''}
-                    <button class="b3-button b3-button--outline" id="cs-d-save" style="padding:6px 24px; font-weight:600;">💾 ${this.getText('customSave', '保存')}</button>
-                </div>
+            <!-- 操作按钮 -->
+            <div class="cs-dlg__footer">
+                <button class="b3-button b3-button--outline" id="cs-d-cancel">${this.getText('cancel', '取消')}</button>
+                <button class="b3-button" id="cs-d-save">
+                    <svg style="width:14px;height:14px;"><use xlink:href="#iconDecoSave"></use></svg>
+                    ${this.getText('customSave', '保存')}
+                </button>
             </div>`;
 
         const dialog = new Dialog({
-            title: this.getText('customManage', '自定义块样式'),
+            title: dialogTitle,
             content: contentHtml,
-            width: "720px"
+            width: "780px"
         });
 
         const el = dialog.element;
@@ -1284,16 +1398,28 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     renderPreview();
                 });
             });
+            // 新建时自动选中当前面板的第一个芯片，保证预览始终有内容、不会存出空样式
+            if (!editing && !styleInput.value) {
+                const firstChip = tabsEl.querySelector('.cs-tab-panel--active .cs-chip');
+                if (firstChip) {
+                    firstChip.classList.add('cs-chip--active');
+                    styleInput.value = firstChip.getAttribute('data-label') || '';
+                }
+            }
         }
 
         const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
 
         // --- 预览渲染 ---
-        // 辅助：在容器内渲染图标预览（内置图标用 SVG，emoji/文字直接文本）
+        // 辅助：在容器内渲染图标预览（内置图标用 SVG，emoji/文字直接文本，空值显示灰色加号）
         const renderIconPreview = (container, val) => {
             if (!container) return;
+            container.classList.toggle('is-empty', !val);
             container.innerHTML = '';
-            if (!val) return;
+            if (!val) {
+                container.innerHTML = '<svg style="width:13px;height:13px;opacity:.4;"><use xlink:href="#iconAdd"></use></svg>';
+                return;
+            }
             const ns = 'http://www.w3.org/2000/svg';
             const isBuiltin = /^icon[A-Z]/.test(val);
             if (isBuiltin) {
@@ -1336,7 +1462,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         const renderPreview = () => {
             const label = styleInput.value;
-            if (!label || !previewContainer) return;
+            if (!previewContainer) return;
+            if (!label) {
+                previewContainer.innerHTML = `<div class="cs-dlg__preview-empty">${self.getText('customNeedStyle', '请先选择基础样式')}</div>`;
+                return;
+            }
             const defaults = self.styleDefaults[label] || { icon: '', title: label };
             const rawIconVal = (iconPrevEl.dataset.icon || '').trim() || defaults.icon;
             const titleVal = titleInput.value.trim() || defaults.title;
@@ -1350,15 +1480,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 '<div class="protyle-wysiwyg"><div custom-deco-style="' + escapeAttr(label) + '"' +
                 (iconAttr ? ' custom-deco-card-icon="' + escapeAttr(iconAttr) + '"' : '') +
                 (titleVal ? ' custom-deco-card-title="' + escapeAttr(titleVal) + '"' : '') +
-                ' style="padding:16px 20px;" data-type="NodeParagraph">&nbsp;</div></div>';
+                ' style="padding:12px 14px;" data-type="NodeParagraph">&nbsp;</div></div>';
         };
 
         setTimeout(renderPreview, 50);
         titleInput.addEventListener('input', renderPreview);
-
-        el.querySelector('#cs-d-emoji').addEventListener('click', () => self._pickEmojiIcon((iconPrevEl.dataset.icon || '').trim(), function (picked) {
-            setIconVal(picked);
-        }, el.querySelector('#cs-d-emoji')));
 
         // 在弹窗内直接新建分组，并自动选中
         const newGroupBtn = el.querySelector('#cs-d-newgroup');
@@ -1368,7 +1494,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 const newId = 'grp_' + Date.now();
                 self.customFolders.push({ id: newId, name: g.name, icon: g.icon || '📁' });
                 await self.saveData('customFolders', self.customFolders);
-                showMessage(self.getText('folderCreated', '已新建分组：') + name);
+                showMessage(self.getText('folderCreated', '已新建分组：') + g.name);
                 if (folderSelect) {
                     folderSelect.innerHTML = self._buildFolderOptionsHtml(newId);
                     folderSelect.value = newId;
@@ -1386,7 +1512,16 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const title = titleInput.value.trim();
             const folderId = folderSelect ? folderSelect.value : '';
 
-            if (!name) { showMessage(self.getText('customNeedName', '请填写名称')); return; }
+            if (!name) { showMessage(self.getText('customNeedName', '请填写名称')); nameInput.focus(); return; }
+            if (!style) {
+                showMessage(self.getText('customNeedStyle', '请先选择基础样式'));
+                const styleField = el.querySelector('#cs-d-style-field');
+                if (styleField) {
+                    styleField.classList.add('cs-dlg__field--error');
+                    setTimeout(() => styleField.classList.remove('cs-dlg__field--error'), 1200);
+                }
+                return;
+            }
 
             const rec = { id: editing ? editing.id : ('cs_' + Date.now()), name, style, icon, title, folderId: folderId || null };
             if (editing) { const idx = self.customStyles.findIndex(c => c.id === editing.id); if (idx >= 0) self.customStyles[idx] = rec; }
@@ -1567,52 +1702,73 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 <div class="cs-empty-state">
                     <div class="cs-empty-illustration">📁</div>
                     <div class="cs-empty-title">${this.getText('groupEmptyTitle', '还没有任何分组')}</div>
-                    <div class="cs-empty-desc">${this.getText('groupEmptyHint2', '点击下方「新建分组」开始整理你的样式')}</div>
+                    <div class="cs-empty-desc">${this.getText('groupEmptyHint2', '点击右上角「新建分组」开始整理你的样式')}</div>
                 </div>`;
         } else {
             rowsHtml = folders.map((g, idx) => {
                 const cnt = countMap[g.id] || 0;
                 return `
-                    <div class="cs-group-row" data-gid="${g.id}" style="animation-delay:${idx * 40}ms;">
-                        <div class="cs-group-row__icon">${this._renderIconHtml(g.icon) || '📁'}</div>
-                        <div class="cs-group-row__body">
-                            <div class="cs-group-row__name">${this._escapeAttr(g.name)}</div>
-                            <div class="cs-group-row__meta">${cnt} 个样式</div>
-                        </div>
-                        <div class="cs-group-row__actions">
+                    <div class="cs-group-chip" data-gid="${g.id}" style="animation-delay:${idx * 40}ms;" title="${cnt} ${this.getText('customCountUnit', '个样式')}">
+                        <span class="cs-group-chip__icon">${this._renderIconHtml(g.icon) || '📁'}</span>
+                        <span class="cs-group-chip__name">${this._escapeAttr(g.name)}</span>
+                        <span class="cs-group-chip__count">${cnt}</span>
+                        <span class="cs-group-chip__actions">
                             <button class="cs-group-row__act" data-g-edit="${g.id}" title="${this.getText('edit', '编辑')}">
-                                <svg style="width:15px;height:15px;"><use xlink:href="#iconEdit"></use></svg>
+                                <svg style="width:13px;height:13px;"><use xlink:href="#iconEdit"></use></svg>
                             </button>
                             <button class="cs-group-row__act cs-group-row__act--del" data-g-del="${g.id}" title="${this.getText('delete', '删除')}">
-                                <svg style="width:15px;height:15px;"><use xlink:href="#iconTrashcan"></use></svg>
+                                <svg style="width:13px;height:13px;"><use xlink:href="#iconTrashcan"></use></svg>
                             </button>
-                        </div>
+                        </span>
                     </div>`;
             }).join('');
         }
 
         return `
             <div class="cs-settings-group">
-                <div class="cs-settings-section-title">${this.getText('groupManage', '分组管理')}</div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 10px 4px;">
+                    <div class="cs-settings-section-title" style="margin:0;">${this.getText('groupManage', '分组管理')}</div>
+                    <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-newgroup2" title="${this.getText('customGroup', '新建分组')}">
+                        <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
+                        <span>${this.getText('customGroup', '新建分组')}</span>
+                    </button>
+                </div>
                 <div class="cs-settings-group-card" style="padding:12px 16px;">
-                    <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
-                        <button class="cs-action-btn cs-action-btn--primary" id="cs-btn-newgroup2" title="${this.getText('customGroup', '新建分组')}">
-                            <svg style="width:15px;height:15px;"><use xlink:href="#iconAdd"></use></svg>
-                            <span>${this.getText('customGroup', '新建分组')}</span>
-                        </button>
-                    </div>
-                    <div class="cs-group-list">
+                    <div class="cs-group-chip-list">
                         ${rowsHtml}
                     </div>
                 </div>
             </div>`;
     }
 
-    // ---------- 渲染「样式显隐」分类内容 ----------
+    // ---------- 渲染「样式显隐」分类内容（开关行式：状态一目了然） ----------
     _renderVisibilitySettings() {
         const hiddenSet = new Set(this.hiddenStyles || []);
         const allStyles = CARD_ITEMS || [];
         const customStyles = this.customStyles || [];
+
+        // 单个显隐行（图标 + 名称 + 开关）
+        const itemRow = (key, label, icon, isHidden) => `
+                                <div class="cs-visibility-item${isHidden ? ' cs-visibility-item--hidden' : ''}" data-vs-key="${this._escapeAttr(key)}">
+                                    <span class="cs-visibility-item__icon">${this._renderIconHtml(icon) || ''}</span>
+                                    <span class="cs-visibility-item__label">${this._escapeAttr(label)}</span>
+                                    <label class="cs-switch cs-switch--sm">
+                                        <input type="checkbox" class="cs-vs-toggle" data-vs-key="${this._escapeAttr(key)}" ${!isHidden ? 'checked' : ''}>
+                                        <span class="cs-switch-slider"></span>
+                                    </label>
+                                </div>`;
+
+        // 分组头部（名称 + 计数 + 批量操作）
+        const header = (label, visible, total) => `
+                            <div class="cs-visibility-group__header">
+                                <span class="cs-visibility-group__name">${this._escapeAttr(label)}</span>
+                                <span class="cs-visibility-group__right">
+                                    <span class="cs-visibility-group__count">${visible}/${total} ${this.getText('visible', '显示')}</span>
+                                    <button class="cs-vs-bulk" data-vs-bulk="show">${this.getText('bulkShow', '全部显示')}</button>
+                                    <button class="cs-vs-bulk" data-vs-bulk="hide">${this.getText('bulkHide', '全部隐藏')}</button>
+                                </span>
+                            </div>
+                            <div class="cs-visibility-items">`;
 
         // 按菜单层级分组内置样式
         const structure = this.getMenuStructure();
@@ -1625,26 +1781,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     if (!items.length) continue;
                     const groupLabel = this.getText(sg.labelKey, sg.labelKey);
                     const visibleItems = items.filter(i => !hiddenSet.has(i.key));
-                    const hiddenCount = items.length - visibleItems.length;
 
                     sectionsHtml += `
                         <div class="cs-visibility-group">
-                            <div class="cs-visibility-group__header">
-                                <span class="cs-visibility-group__name">${this._escapeAttr(groupLabel)}</span>
-                                <span class="cs-visibility-group__count">${visibleItems.length}/${items.length} ${this.getText('visible', '显示')}</span>
-                            </div>
-                            <div class="cs-visibility-items">`;
+                            ${header(groupLabel, visibleItems.length, items.length)}`;
                     for (const item of items) {
-                        const isHidden = hiddenSet.has(item.key);
-                        sectionsHtml += `
-                                <div class="cs-visibility-item${isHidden ? ' cs-visibility-item--hidden' : ''}" data-vs-key="${item.key}">
-                                    <span class="cs-visibility-item__icon">${this._renderIconHtml(item.icon) || ''}</span>
-                                    <span class="cs-visibility-item__label">${this._escapeAttr(item.label)}</span>
-                                    <label class="cs-switch cs-switch--sm">
-                                        <input type="checkbox" class="cs-vs-toggle" data-vs-key="${item.key}" ${!isHidden ? 'checked' : ''}>
-                                        <span class="cs-switch-slider"></span>
-                                    </label>
-                                </div>`;
+                        sectionsHtml += itemRow(item.key, item.label, item.icon, hiddenSet.has(item.key));
                     }
                     sectionsHtml += `
                             </div>
@@ -1658,22 +1800,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const visibleCustom = customStyles.filter(s => !hiddenSet.has(s.id));
             sectionsHtml += `
                 <div class="cs-visibility-group">
-                    <div class="cs-visibility-group__header">
-                        <span class="cs-visibility-group__name">${this.getText('styleVisibilityCustom', '自定义样式')}</span>
-                        <span class="cs-visibility-group__count">${visibleCustom.length}/${customStyles.length} ${this.getText('visible', '显示')}</span>
-                    </div>
-                    <div class="cs-visibility-items">`;
+                    ${header(this.getText('styleVisibilityCustom', '自定义样式'), visibleCustom.length, customStyles.length)}`;
             for (const cs of customStyles) {
-                const isHidden = hiddenSet.has(cs.id);
-                sectionsHtml += `
-                        <div class="cs-visibility-item${isHidden ? ' cs-visibility-item--hidden' : ''}" data-vs-key="${cs.id}">
-                            <span class="cs-visibility-item__icon">${this._renderIconHtml(cs.icon) || '✨'}</span>
-                            <span class="cs-visibility-item__label">${this._escapeAttr(cs.name)}</span>
-                            <label class="cs-switch cs-switch--sm">
-                                <input type="checkbox" class="cs-vs-toggle" data-vs-key="${cs.id}" ${!isHidden ? 'checked' : ''}>
-                                <span class="cs-switch-slider"></span>
-                            </label>
-                        </div>`;
+                sectionsHtml += itemRow(cs.id, cs.name, cs.icon, hiddenSet.has(cs.id));
             }
             sectionsHtml += `
                     </div>
@@ -1706,6 +1835,20 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         element.querySelectorAll('[data-g-edit]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-g-edit');
+                const f = (self.customFolders || []).find(x => x.id === id);
+                if (!f) return;
+                self.openGroupDialog(f, (g) => {
+                    self.renameGroup(id, g.name, g.icon);
+                    self.renderCustomStyleManager(element);
+                });
+            });
+        });
+
+        // 点击芯片 = 编辑分组（按钮除外）
+        element.querySelectorAll('.cs-group-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                if (e.target.closest('[data-g-edit]') || e.target.closest('[data-g-del]')) return;
+                const id = chip.getAttribute('data-gid');
                 const f = (self.customFolders || []).find(x => x.id === id);
                 if (!f) return;
                 self.openGroupDialog(f, (g) => {
@@ -1748,27 +1891,44 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         });
 
         // 入场动画
-        const rows = element.querySelectorAll('.cs-group-row');
+        const rows = element.querySelectorAll('.cs-group-chip');
         rows.forEach((row, i) => {
             row.style.opacity = '0';
-            row.style.transform = 'translateY(10px)';
+            row.style.transform = 'translateY(8px)';
             setTimeout(() => {
-                row.style.transition = 'opacity .28s ease, transform .28s ease';
+                row.style.transition = 'opacity .25s ease, transform .25s ease';
                 row.style.opacity = '1';
                 row.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    row.style.transition = '';
+                    row.style.transform = '';
+                    row.style.opacity = '';
+                }, 300);
             }, 40 + i * 40);
         });
     }
 
-    // ---------- 绑定「样式显隐」分类交互 ----------
+    // ---------- 绑定「样式显隐」分类交互（开关行式 + 批量操作） ----------
     _bindVisibilitySettings(element) {
         const self = this;
+
+        const persist = async () => {
+            try { await self.saveData('hiddenStyles', self.hiddenStyles); } catch (err) { /* 忽略 */ }
+        };
+        // 更新分组头部的 x/y 计数
+        const updateCount = (group) => {
+            const items = group.querySelectorAll('.cs-visibility-item');
+            const visibleCount = Array.from(items).filter(el => !el.classList.contains('cs-visibility-item--hidden')).length;
+            const countEl = group.querySelector('.cs-visibility-group__count');
+            if (countEl) countEl.textContent = `${visibleCount}/${items.length} ${self.getText('visible', '显示')}`;
+        };
 
         // 显隐开关绑定
         element.querySelectorAll('.cs-vs-toggle').forEach(toggle => {
             toggle.addEventListener('change', async (e) => {
                 const key = e.target.getAttribute('data-vs-key');
                 if (!key) return;
+                const itemEl = e.target.closest('.cs-visibility-item');
                 if (e.target.checked) {
                     // 显示：从 hiddenStyles 移除
                     self.hiddenStyles = (self.hiddenStyles || []).filter(k => k !== key);
@@ -1776,28 +1936,37 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     // 隐藏：加入 hiddenStyles
                     if (!self.hiddenStyles.includes(key)) self.hiddenStyles.push(key);
                 }
-                try {
-                    await self.saveData('hiddenStyles', self.hiddenStyles);
-                } catch (err) { /* 忽略 */ }
-                // 更新该项视觉状态
-                const itemEl = e.target.closest('.cs-visibility-item');
-                if (itemEl) {
-                    itemEl.classList.toggle('cs-visibility-item--hidden', !e.target.checked);
-                }
-                // 更新分组计数
-                const groupHeader = itemEl ? itemEl.closest('.cs-visibility-group') : null;
-                if (groupHeader) {
-                    const countEl = groupHeader.querySelector('.cs-visibility-group__count');
-                    if (countEl) {
-                        const items = groupHeader.querySelectorAll('.cs-visibility-item');
-                        const visibleCount = Array.from(items).filter(el => !el.classList.contains('cs-visibility-item--hidden')).length;
-                        countEl.textContent = `${visibleCount}/${items.length} ${self.getText('visible', '显示')}`;
-                    }
-                }
+                await persist();
+                if (itemEl) itemEl.classList.toggle('cs-visibility-item--hidden', !e.target.checked);
+                const group = itemEl ? itemEl.closest('.cs-visibility-group') : null;
+                if (group) updateCount(group);
             });
         });
 
-        // 搜索过滤
+        // 分组批量显示/隐藏
+        element.querySelectorAll('[data-vs-bulk]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const group = btn.closest('.cs-visibility-group');
+                if (!group) return;
+                const hide = btn.getAttribute('data-vs-bulk') === 'hide';
+                group.querySelectorAll('.cs-visibility-item').forEach(itemEl => {
+                    const key = itemEl.getAttribute('data-vs-key');
+                    if (!key) return;
+                    itemEl.classList.toggle('cs-visibility-item--hidden', hide);
+                    const cb = itemEl.querySelector('.cs-vs-toggle');
+                    if (cb) cb.checked = !hide;
+                    if (hide) {
+                        if (!self.hiddenStyles.includes(key)) self.hiddenStyles.push(key);
+                    } else {
+                        self.hiddenStyles = (self.hiddenStyles || []).filter(k => k !== key);
+                    }
+                });
+                await persist();
+                updateCount(group);
+            });
+        });
+
+        // 搜索过滤（隐藏无结果的分组）
         const searchInput = element.querySelector('#cs-vs-search');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -1807,7 +1976,6 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     item.style.display = (!q || label.toLowerCase().includes(q)) ? '' : 'none';
                 });
                 element.querySelectorAll('.cs-visibility-group').forEach(group => {
-                    // 只要该分组下有子项可见，就保留分组表头
                     const hasVisible = Array.from(group.querySelectorAll('.cs-visibility-item')).some(el => el.style.display !== 'none');
                     group.style.display = hasVisible ? '' : 'none';
                 });
@@ -2074,9 +2242,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     _renderStylesSettings(element) {
         const allStyles = this.customStyles || [];
         const totalCount = allStyles.length;
-        const groups = this._getGroupedByFolder();
+        const groups = this._getStylePanelGroups();
 
-        const activeGroupId = this._csActiveGroup || (groups.find(g => g.items.length) ? groups.find(g => g.items.length).id : groups[0]?.id);
+        const activeGroupId = this._csActiveGroup || '__all__';
         // 首次渲染时同步 _csActiveGroup，确保后续标签切换有正确的基准值
         if (!this._csActiveGroup) this._csActiveGroup = activeGroupId;
         const activeGroup = groups.find(g => g.id === activeGroupId) || groups[0];
@@ -2088,9 +2256,10 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const isNone = g.id === '__none__';
             if (!g.items.length && isNone) continue;
             const isActive = g.id === activeGroupId;
+            const isEmpty = !g.items.length;
             const icon = this._groupIconSvg(isNone ? '🗂️' : (g.icon || '📁'), { size: 14 });
             tabsHtml += `
-                <button class="cs-tab-pill ${isActive ? 'cs-tab-pill--active' : ''}" data-gid="${g.id}">
+                <button class="cs-tab-pill${isActive ? ' cs-tab-pill--active' : ''}${isEmpty ? ' cs-tab-pill--empty' : ''}" data-gid="${g.id}">
                     ${icon}
                     <span class="cs-tab-pill__name">${this._escapeAttr(g.name)}</span>
                     <span class="cs-tab-pill__count">${g.items.length}</span>
@@ -2118,9 +2287,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     <div class="cs-empty-desc">${this.getText('groupEmptyHint', '切换到其他分组或新建一个样式')}</div>
                 </div>`;
         } else {
-            contentHtml = `<div class="cs-card-grid">`;
+            contentHtml = `<div class="cs-style-list">`;
             activeItems.forEach((cs, idx) => {
-                contentHtml += this._renderStyleCard(cs, idx);
+                contentHtml += this._renderStyleRow(cs, idx);
             });
             contentHtml += `</div>`;
         }
@@ -2250,14 +2419,20 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 dlg.element.querySelector('#cs-del-cancel').addEventListener('click', () => dlg.destroy());
             });
         });
-        element.querySelectorAll('.cs-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('[data-cs-edit]') || e.target.closest('[data-cs-del]')) return;
-                self.openStyleDialog(card.getAttribute('data-cs-id'));
+        element.querySelectorAll('[data-cs-move]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                self._openMoveToGroupMenu(btn.getAttribute('data-cs-move'), btn, () => self.renderCustomStyleManager(element));
+            });
+        });
+        element.querySelectorAll('.cs-style-row').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.closest('[data-cs-edit]') || e.target.closest('[data-cs-del]') || e.target.closest('[data-cs-move]')) return;
+                self.openStyleDialog(row.getAttribute('data-cs-id'));
             });
         });
 
-        // 悬停预览浮层
+        // 悬停预览浮层（严格跟随「悬停预览」开关）
         let hoverPreview = document.getElementById('cs-hover-preview');
         if (!hoverPreview) {
             hoverPreview = document.createElement('div');
@@ -2267,12 +2442,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             document.body.appendChild(hoverPreview);
         }
 
-        element.querySelectorAll('.cs-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
+        element.querySelectorAll('.cs-style-row').forEach(row => {
+            row.addEventListener('mouseenter', () => {
                 if (!self.showPreview) return;
-                const label = card.getAttribute('data-cs-style') || '';
-                const ico = card.getAttribute('data-cs-icon') || '';
-                const ttl = card.getAttribute('data-cs-title') || '';
+                const label = row.getAttribute('data-cs-style') || '';
+                const ico = row.getAttribute('data-cs-icon') || '';
+                const ttl = row.getAttribute('data-cs-title') || '';
                 if (!label) return;
                 const isBuiltin = /^icon[A-Z]/.test(ico);
                 const iconAttr = (ico && !isBuiltin) ? ico : '';
@@ -2284,7 +2459,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
                     ' style="padding:10px 14px;" data-type="NodeParagraph">&nbsp;</div>' +
                     '</div>';
-                const rect = card.getBoundingClientRect();
+                const rect = row.getBoundingClientRect();
                 hoverPreview.style.display = 'block';
                 const pw = hoverPreview.offsetWidth, ph = hoverPreview.offsetHeight;
                 let left = rect.left + (rect.width - pw) / 2;
@@ -2299,31 +2474,36 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 hoverPreview.style.top = top + 'px';
                 requestAnimationFrame(() => { hoverPreview.style.opacity = '1'; hoverPreview.style.transform = 'scale(1) translateY(0)'; });
             });
-            card.addEventListener('mouseleave', () => {
+            row.addEventListener('mouseleave', () => {
                 hoverPreview.style.opacity = '0';
                 hoverPreview.style.transform = 'scale(.96)';
                 setTimeout(() => { if (hoverPreview.style.opacity === '0') hoverPreview.style.display = 'none'; }, 160);
             });
         });
 
-        // 入场动画
-        const cards = element.querySelectorAll('.cs-card');
-        cards.forEach((card, i) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(12px)';
+        // 入场动画（淡入 + 轻微上移，结束后清理内联样式）
+        const rows = element.querySelectorAll('.cs-style-row');
+        rows.forEach((row, i) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(8px)';
             setTimeout(() => {
-                card.style.transition = 'opacity .3s ease, transform .3s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 60 + i * 45);
+                row.style.transition = 'opacity .25s ease, transform .25s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    row.style.transition = '';
+                    row.style.transform = '';
+                    row.style.opacity = '';
+                }, 300);
+            }, 40 + i * 35);
         });
     }
 
     // 仅刷新「自定义样式」分类的内容区（不重建侧栏）
     _refreshStylesContent(element) {
         const allStyles = this.customStyles || [];
-        const groups = this._getGroupedByFolder();
-        const activeGroupId = this._csActiveGroup || (groups.find(g => g.items.length) ? groups.find(g => g.items.length).id : groups[0]?.id);
+        const groups = this._getStylePanelGroups();
+        const activeGroupId = this._csActiveGroup || '__all__';
         const activeGroup = groups.find(g => g.id === activeGroupId) || groups[0];
         const activeItems = activeGroup?.items || [];
 
@@ -2347,9 +2527,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                     <div class="cs-empty-desc">${this.getText('groupEmptyHint', '切换到其他分组或新建一个样式')}</div>
                 </div>`;
         } else {
-            contentHtml = `<div class="cs-card-grid">`;
+            contentHtml = `<div class="cs-style-list">`;
             activeItems.forEach((cs, idx) => {
-                contentHtml += this._renderStyleCard(cs, idx);
+                contentHtml += this._renderStyleRow(cs, idx);
             });
             contentHtml += `</div>`;
         }
@@ -2361,34 +2541,86 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this._bindStylesContentEvents(element);
     }
 
-    // 渲染单张样式卡片（现代网格版）
-    _renderStyleCard(cs, index) {
+    // 渲染单条样式（紧凑芯片，多列自动换行，同「样式选择」芯片风格）
+    _renderStyleRow(cs, index) {
         const icon = cs.icon || '✨';
         // 根据图标/名称生成一个稳定的柔和背景色
         const hue = this._stringHue(cs.name + cs.id);
         const bgLight = `hsl(${hue}, 70%, 96%)`;
-        const bgMid = `hsl(${hue}, 65%, 90%)`;
         const accentColor = `hsl(${hue}, 65%, 45%)`;
+        const folder = (this.customFolders || []).find(f => f.id === cs.folderId);
+        const groupText = folder ? folder.name : this.getText('unsorted', '未分类');
+        const tip = this.getText('folderLabel', '归属分组') + '：' + groupText
+            + ' · ' + this.getText('customBaseStyle', '基础样式') + '：' + (cs.style || '');
 
         return `
-            <div class="cs-card" data-cs-id="${cs.id}" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}"
-                 style="--cs-accent:${accentColor}; --cs-bg-light:${bgLight}; --cs-bg-mid:${bgMid}; animation-delay:${index * 45}ms;">
-                <div class="cs-card__icon-wrap">
-                    <span class="cs-card__icon">${this._renderIconHtml(icon) || '✨'}</span>
-                </div>
-                <div class="cs-card__body">
-                    <div class="cs-card__name">${this._escapeAttr(cs.name)}</div>
-                    <div class="cs-card__meta">${this._escapeAttr(cs.style)}${cs.title ? '<span class="cs-card__meta-sep">·</span>' + this._escapeAttr(cs.title) : ''}</div>
-                </div>
-                <div class="cs-card__actions">
-                    <button class="cs-card__act cs-card__act--edit" data-cs-edit="${cs.id}" title="${this.getText('customEdit', '编辑')}">
-                        <svg style="width:14px;height:14px;"><use xlink:href="#iconEdit"></use></svg>
+            <div class="cs-style-row" data-cs-id="${cs.id}" data-cs-style="${cs.style}" data-cs-icon="${cs.icon || ''}" data-cs-title="${cs.title || ''}"
+                 style="--cs-accent:${accentColor}; --cs-bg-light:${bgLight}; animation-delay:${index * 40}ms;" title="${this._escapeAttr(tip)}">
+                <span class="cs-style-row__icon">${this._renderIconHtml(icon) || '✨'}</span>
+                <span class="cs-style-row__name">${this._escapeAttr(cs.name)}</span>
+                <span class="cs-style-row__actions">
+                    <button class="cs-group-row__act" data-cs-move="${cs.id}" title="${this.getText('moveToGroup', '移动到分组')}">
+                        <svg style="width:13px;height:13px;"><use xlink:href="#iconFolder"></use></svg>
                     </button>
-                    <button class="cs-card__act cs-card__act--del" data-cs-del="${cs.id}" title="${this.getText('customDelete', '删除')}">
-                        <svg style="width:14px;height:14px;"><use xlink:href="#iconTrashcan"></use></svg>
+                    <button class="cs-group-row__act" data-cs-edit="${cs.id}" title="${this.getText('customEdit', '编辑')}">
+                        <svg style="width:13px;height:13px;"><use xlink:href="#iconEdit"></use></svg>
                     </button>
-                </div>
+                    <button class="cs-group-row__act cs-group-row__act--del" data-cs-del="${cs.id}" title="${this.getText('customDelete', '删除')}">
+                        <svg style="width:13px;height:13px;"><use xlink:href="#iconTrashcan"></use></svg>
+                    </button>
+                </span>
             </div>`;
+    }
+
+    // 卡片快捷「移动到分组」菜单（原生 Menu，免打开编辑弹窗）
+    _openMoveToGroupMenu(id, anchorEl, onMoved) {
+        const cs = (this.customStyles || []).find(c => c.id === id);
+        if (!cs || !anchorEl) return;
+        const folders = this.customFolders || [];
+
+        const move = async (folderId) => {
+            cs.folderId = folderId || null;
+            await this.saveData('customStyles', this.customStyles);
+            const target = folderId ? (folders.find(f => f.id === folderId)?.name || '') : this.getText('unsorted', '未分类');
+            showMessage(this.getText('movedToGroup', '已移动到分组：') + target);
+            if (onMoved) onMoved();
+        };
+
+        const menu = new Menu('cs-move-group');
+        menu.addItem({
+            label: this.getText('unsorted', '未分类'),
+            icon: 'iconFolder',
+            current: !cs.folderId,
+            click: () => move('')
+        });
+        for (const f of folders) {
+            menu.addItem({
+                label: f.name,
+                icon: 'iconFolder',
+                current: cs.folderId === f.id,
+                click: () => move(f.id)
+            });
+        }
+        menu.addSeparator();
+        // 菜单里直接新建分组并移入
+        menu.addItem({
+            label: '+ ' + this.getText('addFolder', '新建分组'),
+            icon: 'iconAdd',
+            click: () => {
+                this.openGroupDialog(null, async (g) => {
+                    if (!this.customFolders) this.customFolders = [];
+                    const newId = 'grp_' + Date.now();
+                    this.customFolders.push({ id: newId, name: g.name, icon: g.icon || '📁' });
+                    await this.saveData('customFolders', this.customFolders);
+                    cs.folderId = newId;
+                    await this.saveData('customStyles', this.customStyles);
+                    showMessage(this.getText('folderCreated', '已新建分组：') + g.name);
+                    if (onMoved) onMoved();
+                });
+            }
+        });
+        const rect = anchorEl.getBoundingClientRect();
+        menu.open({ x: rect.left, y: rect.bottom + 4 });
     }
 
     // 辅助：将图标值渲染为 HTML（Emoji 字符原样输出，动态图标路径用 <img> 渲染）
@@ -2521,6 +2753,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const btn = document.createElement("button");
         btn.className = "b3-menu__item";
 
+        // 组内全部被「样式显隐」隐藏时，整组菜单不显示
+        const hiddenSet = new Set(this.hiddenStyles || []);
+        const hasVisible = this.getAllCardItems().some(item => !hiddenSet.has(item.key) && group.filter(item.label, item.key));
+        if (!hasVisible) return null;
+
         // 为二级菜单生成独特颜色
         const iconColor = this.getColorForString(group.id, 75, 60); // 饱和75%，明度60%
 
@@ -2559,7 +2796,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const attrs = { "custom-deco-style": label };
 
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
-            && !key.startsWith('polka') && !key.startsWith('titleBar')) {
+            && !key.startsWith('polka') && !key.startsWith('titleBar') && !key.endsWith('MarkCard')) {
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     if (!existingTitle) {
@@ -2714,6 +2951,15 @@ if (key === 'diaryChatWhisperCard') {
     }
 
     // 返回有序数组：用户分组（按 customFolders 顺序）+ 末尾「未分类」
+    // 管理面板专用：分组前加一个「全部」聚合组（不落库，仅用于列表渲染）
+    _getStylePanelGroups() {
+        const groups = this._getGroupedByFolder();
+        return [
+            { id: '__all__', name: this.getText('allTab', '全部'), icon: '📚', items: (this.customStyles || []).slice() },
+            ...groups
+        ];
+    }
+
     _getGroupedByFolder() {
         const folders = this.customFolders || [];
         const result = [];
@@ -2778,6 +3024,13 @@ if (key === 'diaryChatWhisperCard') {
             el.innerHTML = '';
             if (isBuiltinIcon(val)) {
                 el.appendChild(makeIconPreview(val, 18));
+            } else if (val && (val.includes('/') || val.includes('.'))) {
+                // 动态/自定义图标为路径：渲染为图片，而不是把路径当文本显示
+                const img = document.createElement('img');
+                img.src = val.startsWith('http') || val.startsWith('//') ? val : '/' + val;
+                img.alt = '';
+                img.style.cssText = 'width:18px;height:18px;object-fit:contain;display:block;border-radius:4px;flex:none;';
+                el.appendChild(img);
             } else {
                 el.textContent = val || '';
                 el.style.fontSize = '16px';
@@ -2945,8 +3198,7 @@ if (key === 'diaryChatWhisperCard') {
                         labelKey: "categoryQuote",
                         icon: "#iconQuote",
                         subGroups: [
-                            { id: "quoteBlock", labelKey: "quoteGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('QuoteCard') },
-                            { id: "excerptGroup", labelKey: "excerptGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('ExcerptCard') }
+                            { id: "quoteBlock", labelKey: "quoteGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('QuoteCard') }
                         ]
                     },
                     {
@@ -2976,6 +3228,14 @@ if (key === 'diaryChatWhisperCard') {
                 icon: "#iconSparkles",
                 children: [
                     {
+                        id: "excerptCategory",
+                        labelKey: "excerptGroup",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "excerptGroup", labelKey: "excerptGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('ExcerptCard') }
+                        ]
+                    },
+                    {
                         id: "normalCardCategory",
                         labelKey: "categoryNormalCard",
                         icon: "#iconSparkles",
@@ -2996,6 +3256,17 @@ if (key === 'diaryChatWhisperCard') {
                         subGroups: [
                             { id: "chatWhisper", labelKey: "chatWhisperGroup", icon: "#iconSparkles", filter: (label, key) => key.endsWith('ChatWhisperCard') }
                         ]
+                    },
+                    {
+                        id: "stickyCategory",
+                        labelKey: "categorySticky",
+                        icon: "#iconSparkles",
+                        subGroups: [
+                            { id: "postItGroup",   labelKey: "postItGroup",   icon: "#iconSparkles", filter: (label, key) => key.endsWith('PostCard') },
+                            { id: "morandiGroup",  labelKey: "morandiGroup",  icon: "#iconSparkles", filter: (label, key) => key.endsWith('MorandiCard') },
+                            { id: "markerGroup",   labelKey: "markerGroup",   icon: "#iconSparkles", filter: (label, key) => key.endsWith('MarkCard') },
+                            { id: 'cloudGroup', labelKey: 'cloudGroup', icon: '#iconSparkles', filter: (label, key) => key.endsWith('CloudCard') }
+                        ]
                     }
                 ]
             },
@@ -3014,6 +3285,14 @@ onunload() {
     this.state.observer?.disconnect();
     this._restoreObserver?.disconnect();
     if (this._interval) clearInterval(this._interval);
+    if (this._onDocContextmenu) {
+        document.removeEventListener('contextmenu', this._onDocContextmenu, true);
+        this._onDocContextmenu = null;
+    }
+    if (this._onDocGutterClick) {
+        document.removeEventListener('click', this._onDocGutterClick, true);
+        this._onDocGutterClick = null;
+    }
     if (this._boundHandleTitleClick) {
         document.removeEventListener('click', this._boundHandleTitleClick);
     }
