@@ -10,6 +10,7 @@
     margin: 2px 0 !important;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    outline: none; /* Neo 等主题会给 .bq 叠 outline 装饰，插件已完整接管外观，须清掉 */
 }
 /* 七色引述各自的左边框色 / 背景 / 文字色 */
 .protyle-wysiwyg [custom-deco-style="灰调引述"]:not([fold="1"]) { border-left: 4px solid #6b7280 !important; background-color: #f9fafb !important; color: #374151 !important; }
@@ -44,10 +45,13 @@
     border-radius: 20px !important;
     padding: 10px 15px !important;
     background: var(--b3-theme-background) !important;
+    outline: none; /* 清掉 Neo 等主题给 .bq 叠的 outline 装饰 */
 }
-/* 尾巴根部：页面底色小块盖住底边描边（重置思源 .bq::before 的 left/top/背景等旧属性） */
+/* 尾巴根部：页面底色小块盖住底边描边（重置思源 .bq::before 的 left/top/背景等旧属性；
+   display 显式恢复可见，防止被主题的 .bq::before 竖线隐藏规则波及） */
 .protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"])::before {
     content: "";
+    display: block;
     position: absolute;
     top: auto;
     width: 25px;
@@ -62,8 +66,9 @@
 }
 /* 尾巴弧线：只画顶边描边并配左上大圆角，向下垂出 3.6rem；
    标准外边距下尾巴会伸进下一块的区域，pointer-events 放行点击。
-   top: auto / 透明背景 / 无阴影 用于在选中态（思源会给 ::after 叠加
-   top:0 + 100% 尺寸 + 浅蓝背景的选中遮罩）下保持尾巴原样不被拉走或填充 */
+   top: auto / 透明背景 / 无阴影 / 无 outline 用于在选中态压掉主题叠在
+   ::after 上的选中遮罩（默认主题：top:0 + 100% 尺寸 + 浅蓝背景；
+   Neo 主题：outline 细描边 + outline-offset + 圆角），保持尾巴原样 */
 .protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"])::after {
     content: "";
     position: absolute;
@@ -79,8 +84,21 @@
     border-radius: 35px 0 0 0;
     background-color: transparent;
     box-shadow: none;
+    outline: none;
+    outline-offset: 0;
     pointer-events: none;
     z-index: 3;
+}
+/* 选中 / 搜索高亮态兜底：Neo 用 .protyle-wysiwyg--select::after 与本规则同优先级
+   声明 border-radius，靠加载顺序取胜不可靠；这里以更高优先级显式压掉
+   outline 描边并固定弧线几何，确保选中气泡时尾巴周围不出现矩形描边 */
+.protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"]).protyle-wysiwyg--select::after,
+.protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"]).protyle-wysiwyg--hl::after {
+    outline: none;
+    outline-offset: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 35px 0 0 0;
 }
 
 /* 各颜色变体：只覆盖描边色（亮色） */
@@ -131,6 +149,7 @@
     border-radius: 8px !important;
     background-color: transparent !important;
     color: var(--b3-theme-on-background);
+    outline: none; /* 清掉 Neo 等主题给 .bq 叠的 outline 装饰 */
 }
 /* 隐藏思源 .bq 自带的左侧竖线 */
 .protyle-wysiwyg [custom-deco-style^="描边引述"]:not([fold="1"])::before {
@@ -170,6 +189,7 @@
     border-radius: 4px !important;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0, 0, 0, 0.1) !important;
     color: var(--b3-theme-on-background);
+    outline: none; /* 清掉 Neo 等主题给 .bq 叠的 outline 装饰 */
 }
 /* 隐藏思源 .bq 自带的左侧竖线 */
 .protyle-wysiwyg [custom-deco-style^="衬色引述"]:not([fold="1"])::before {
@@ -188,21 +208,29 @@
 /* ========== 角标引述（一对「」角标收束文字，极简无框） ========== */
 /* 改写自极简角标引用样式：无底色无边框，仅左上「、右下」一对角标，
    角标颜色由 --bj-accent（各变体注入）控制，正文保持主题色。
-   ::before 需重置思源 .bq 竖线的宽度/背景/定位等旧属性；
+   ::before 需重置思源 .bq 竖线的宽度/背景/定位等旧属性，并显式恢复 display——
+   Neo 等主题用 .bq::before { display:none } 隐藏竖线，会把左上角标一起藏掉；
    ::after 的 top/left/width/height/背景/阴影 用于在选中态（思源会给 ::after
    叠加 top:0 + 100%×100% 的浅蓝选中遮罩）下保持右下角标原位不变形。 */
 .protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"]) {
     position: relative;
     color: var(--b3-theme-on-background);
-    padding: 0.3em 1.8em !important;
+    /* 水平 1em：与细边引述的 16px 对齐，同时保住「」角标墨迹（约 13px）的避让空间，
+       原先的 1.8em（28.8px）比其他引述样式缩进太多 */
+    padding: 0.3em 1em !important;
     margin: 2px 0 !important;
     background-color: transparent !important;
+    outline: none; /* Neo 等主题会给 .bq 叠一圈 outline 装饰，角标本无框，不清掉会多出一圈浅色圆角框 */
 }
-/* 左上角标「（重置思源 .bq::before 竖线的宽度/背景/上下定位等旧属性） */
+/* 左上角标「（重置思源 .bq::before 竖线的宽度/背景/上下定位等旧属性；
+   display 显式恢复可见，防止被主题的 .bq::before 竖线隐藏规则波及；
+   left 负偏移补偿 CJK 角标字形的字身框留白（雅黑下「墨迹在框内右侧
+   约 0.625em 处），否则墨迹会缩进块内约一个字宽，与块左缘不对齐） */
 .protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"])::before {
     content: "\300C";
+    display: block;
     position: absolute;
-    left: 0;
+    left: -0.625em;
     top: -0.1em;
     bottom: auto;
     width: auto;
@@ -211,13 +239,12 @@
     font-size: 1.5em;
     line-height: 1;
     color: var(--bj-accent, var(--b3-theme-primary));
-    opacity: .45;
 }
-/* 右下角标」 */
+/* 右下角标」（right 负偏移同理：」墨迹距字身框右缘约 0.667em） */
 .protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"])::after {
     content: "\300D";
     position: absolute;
-    right: 0;
+    right: -0.667em;
     bottom: -0.1em;
     top: auto;
     left: auto;
@@ -225,12 +252,23 @@
     height: auto;
     background-color: transparent;
     box-shadow: none;
+    outline: none;
+    outline-offset: 0;
     border-radius: 0;
     font-size: 1.5em;
     line-height: 1;
     color: var(--bj-accent, var(--b3-theme-primary));
-    opacity: .45;
     pointer-events: none;
+}
+/* 选中 / 搜索高亮态兜底：同气泡引述，以更高优先级压掉 Neo 等主题
+   叠在 ::after 上的 outline 细描边与圆角，选中时角标周围不出现矩形描边 */
+.protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"]).protyle-wysiwyg--select::after,
+.protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"]).protyle-wysiwyg--hl::after {
+    outline: none;
+    outline-offset: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
 }
 
 /* 颜色变体：只注入角标色 */
@@ -256,6 +294,7 @@
     border-radius: 16px !important;
     background-color: color-mix(in srgb, var(--thin-accent, var(--b3-theme-primary)) 12%, var(--b3-theme-background)) !important;
     color: var(--b3-theme-on-background);
+    outline: none; /* 清掉 Neo 等主题给 .bq 叠的 outline 装饰 */
 }
 /* 隐藏思源 .bq 自带的左侧竖线 */
 .protyle-wysiwyg [custom-deco-style^="细边引述"]:not([fold="1"])::before {
