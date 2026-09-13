@@ -31,6 +31,246 @@
     display: none;
 }
 
+/* ========== 气泡引述（对话气泡：圆角描边 + 左下小尾巴，多色） ========== */
+/* 改写自 Obsidian 气泡引用样式。注意：底色必须与页面底色一致，
+   尾巴根部用 ::before 以页面底色抹掉一小段底边描边来形成气泡开口，
+   一旦底色与页面不同，遮罩边缘就会露馅。
+   基础几何用 ^= 前缀匹配全部颜色变体，同时兼容历史无后缀的“气泡引述”（= 紫）。 */
+.protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"]) {
+    position: relative;
+    color: var(--b3-theme-on-background);
+    margin: 2px 0 calc(1rem + 4px) !important; /* 顶部沿用统一标准；底部收紧到紧凑值（用户微调） */
+    border: 3px solid #8a70f6 !important; /* 默认紫色，各颜色变体在下方覆盖 */
+    border-radius: 20px !important;
+    padding: 10px 15px !important;
+    background: var(--b3-theme-background) !important;
+}
+/* 尾巴根部：页面底色小块盖住底边描边（重置思源 .bq::before 的 left/top/背景等旧属性） */
+.protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"])::before {
+    content: "";
+    position: absolute;
+    top: auto;
+    width: 25px;
+    height: 0;
+    left: 20px;
+    bottom: -4px;
+    border: 4px solid var(--b3-theme-background);
+    border-radius: 0;
+    background-color: transparent;
+    pointer-events: none;
+    z-index: 2;
+}
+/* 尾巴弧线：只画顶边描边并配左上大圆角，向下垂出 3.6rem；
+   标准外边距下尾巴会伸进下一块的区域，pointer-events 放行点击。
+   top: auto / 透明背景 / 无阴影 用于在选中态（思源会给 ::after 叠加
+   top:0 + 100% 尺寸 + 浅蓝背景的选中遮罩）下保持尾巴原样不被拉走或填充 */
+.protyle-wysiwyg [custom-deco-style^="气泡引述"]:not([fold="1"])::after {
+    content: "";
+    position: absolute;
+    top: auto;
+    width: 1.75rem;
+    height: 3.45rem;
+    left: 1.8rem;
+    bottom: -3.6rem;
+    border: 2.5px solid #8a70f6;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 35px 0 0 0;
+    background-color: transparent;
+    box-shadow: none;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* 各颜色变体：只覆盖描边色（亮色） */
+.protyle-wysiwyg [custom-deco-style="气泡引述·紫"]:not([fold="1"]) { border-color: #8a70f6 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·紫"]:not([fold="1"])::after { border-top-color: #8a70f6; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·蓝"]:not([fold="1"]) { border-color: #3b82f6 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·蓝"]:not([fold="1"])::after { border-top-color: #3b82f6; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·绿"]:not([fold="1"]) { border-color: #22c55e !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·绿"]:not([fold="1"])::after { border-top-color: #22c55e; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·橙"]:not([fold="1"]) { border-color: #f97316 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·橙"]:not([fold="1"])::after { border-top-color: #f97316; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·红"]:not([fold="1"]) { border-color: #ef4444 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·红"]:not([fold="1"])::after { border-top-color: #ef4444; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·黄"]:not([fold="1"]) { border-color: #eab308 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·黄"]:not([fold="1"])::after { border-top-color: #eab308; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·灰"]:not([fold="1"]) { border-color: #6b7280 !important; }
+.protyle-wysiwyg [custom-deco-style="气泡引述·灰"]:not([fold="1"])::after { border-top-color: #6b7280; }
+
+/* 暗色模式：描边提亮增强对比；底色仍与页面一致（尾巴遮罩依赖这一点） */
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述"]:not([fold="1"]),
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·紫"]:not([fold="1"]) {
+    border-color: #a78bfa !important;
+}
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述"]:not([fold="1"])::after,
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·紫"]:not([fold="1"])::after {
+    border-top-color: #a78bfa;
+}
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·蓝"]:not([fold="1"]) { border-color: #60a5fa !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·蓝"]:not([fold="1"])::after { border-top-color: #60a5fa; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·绿"]:not([fold="1"]) { border-color: #4ade80 !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·绿"]:not([fold="1"])::after { border-top-color: #4ade80; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·橙"]:not([fold="1"]) { border-color: #fb923c !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·橙"]:not([fold="1"])::after { border-top-color: #fb923c; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·红"]:not([fold="1"]) { border-color: #f87171 !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·红"]:not([fold="1"])::after { border-top-color: #f87171; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·黄"]:not([fold="1"]) { border-color: #facc15 !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·黄"]:not([fold="1"])::after { border-top-color: #facc15; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·灰"]:not([fold="1"]) { border-color: #9ca3af !important; }
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="气泡引述·灰"]:not([fold="1"])::after { border-top-color: #9ca3af; }
+
+/* ========== 描边引述（透明底 + 3px 描边圆角，引述类多色） ========== */
+/* 改写自 Obsidian 描边引用样式：无底色、四周 3px 描边，与调色引述（左条 + 实底）形成互补。
+   基础几何用 ^= 前缀匹配全部颜色变体；暗色仅灰色提亮（与调色引述家族约定一致）。 */
+.protyle-wysiwyg [custom-deco-style^="描边引述"]:not([fold="1"]) {
+    padding: 10px !important;
+    margin: 2px 0 !important;
+    border: 3px solid #6b7280 !important; /* 默认灰色，各颜色变体在下方覆盖 */
+    border-radius: 8px !important;
+    background-color: transparent !important;
+    color: var(--b3-theme-on-background);
+}
+/* 隐藏思源 .bq 自带的左侧竖线 */
+.protyle-wysiwyg [custom-deco-style^="描边引述"]:not([fold="1"])::before {
+    display: none;
+}
+/* 内部首末段留白（对应原样式的 first/last-child 0.5em） */
+.protyle-wysiwyg [custom-deco-style^="描边引述"]:not([fold="1"]) > .p:first-child {
+    margin-top: 0.5em;
+}
+.protyle-wysiwyg [custom-deco-style^="描边引述"]:not([fold="1"]) > .p:last-child {
+    margin-bottom: 0.5em;
+}
+
+/* 颜色变体：只覆盖描边色 */
+.protyle-wysiwyg [custom-deco-style="描边引述·灰"]:not([fold="1"]) { border-color: #6b7280 !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·蓝"]:not([fold="1"]) { border-color: #3b82f6 !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·绿"]:not([fold="1"]) { border-color: #22c55e !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·橙"]:not([fold="1"]) { border-color: #f97316 !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·紫"]:not([fold="1"]) { border-color: #a855f7 !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·红"]:not([fold="1"]) { border-color: #ef4444 !important; }
+.protyle-wysiwyg [custom-deco-style="描边引述·黄"]:not([fold="1"]) { border-color: #eab308 !important; }
+
+/* 暗色模式：仅灰色提亮（与调色引述家族约定一致），其余色保持不变 */
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="描边引述·灰"]:not([fold="1"]) {
+    border-color: #9ca3af !important;
+}
+
+/* ========== 衬色引述（厚左条 + 衬色底 + 阴影） ========== */
+/* 衬底色由 color-mix 从 --bq-accent（各变体注入）与主题背景派生：
+   亮色 = 32% 色值混入白底，暗色 = 32% 混入暗底，无需为每个颜色手写两套色值。
+   border-inline-start 为逻辑属性，RTL 下自动镜像。 */
+.protyle-wysiwyg [custom-deco-style^="衬色引述"]:not([fold="1"]) {
+    padding: 10px 12px !important;
+    margin: 2px 0 !important;
+    border-inline-start: 0.3rem solid var(--bq-accent, var(--b3-theme-primary)) !important;
+    background-color: color-mix(in srgb, var(--bq-accent, var(--b3-theme-primary)) 32%, var(--b3-theme-background)) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0, 0, 0, 0.1) !important;
+    color: var(--b3-theme-on-background);
+}
+/* 隐藏思源 .bq 自带的左侧竖线 */
+.protyle-wysiwyg [custom-deco-style^="衬色引述"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 各颜色变体：只注入主色，衬底由 color-mix 自动派生 */
+.protyle-wysiwyg [custom-deco-style="衬色引述·紫"]:not([fold="1"]) { --bq-accent: rgb(177, 132, 255); }
+.protyle-wysiwyg [custom-deco-style="衬色引述·蓝"]:not([fold="1"]) { --bq-accent: #3b82f6; }
+.protyle-wysiwyg [custom-deco-style="衬色引述·绿"]:not([fold="1"]) { --bq-accent: #22c55e; }
+.protyle-wysiwyg [custom-deco-style="衬色引述·橙"]:not([fold="1"]) { --bq-accent: #f97316; }
+.protyle-wysiwyg [custom-deco-style="衬色引述·红"]:not([fold="1"]) { --bq-accent: #ef4444; }
+.protyle-wysiwyg [custom-deco-style="衬色引述·黄"]:not([fold="1"]) { --bq-accent: #eab308; }
+.protyle-wysiwyg [custom-deco-style="衬色引述·灰"]:not([fold="1"]) { --bq-accent: #6b7280; }
+
+/* ========== 角标引述（一对「」角标收束文字，极简无框） ========== */
+/* 改写自极简角标引用样式：无底色无边框，仅左上「、右下」一对角标，
+   角标颜色由 --bj-accent（各变体注入）控制，正文保持主题色。
+   ::before 需重置思源 .bq 竖线的宽度/背景/定位等旧属性；
+   ::after 的 top/left/width/height/背景/阴影 用于在选中态（思源会给 ::after
+   叠加 top:0 + 100%×100% 的浅蓝选中遮罩）下保持右下角标原位不变形。 */
+.protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"]) {
+    position: relative;
+    color: var(--b3-theme-on-background);
+    padding: 0.3em 1.8em !important;
+    margin: 2px 0 !important;
+    background-color: transparent !important;
+}
+/* 左上角标「（重置思源 .bq::before 竖线的宽度/背景/上下定位等旧属性） */
+.protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"])::before {
+    content: "\300C";
+    position: absolute;
+    left: 0;
+    top: -0.1em;
+    bottom: auto;
+    width: auto;
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 1.5em;
+    line-height: 1;
+    color: var(--bj-accent, var(--b3-theme-primary));
+    opacity: .45;
+}
+/* 右下角标」 */
+.protyle-wysiwyg [custom-deco-style^="角标引述"]:not([fold="1"])::after {
+    content: "\300D";
+    position: absolute;
+    right: 0;
+    bottom: -0.1em;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    font-size: 1.5em;
+    line-height: 1;
+    color: var(--bj-accent, var(--b3-theme-primary));
+    opacity: .45;
+    pointer-events: none;
+}
+
+/* 颜色变体：只注入角标色 */
+.protyle-wysiwyg [custom-deco-style="角标引述·紫"]:not([fold="1"]) { --bj-accent: #a855f7; }
+.protyle-wysiwyg [custom-deco-style="角标引述·蓝"]:not([fold="1"]) { --bj-accent: #3b82f6; }
+.protyle-wysiwyg [custom-deco-style="角标引述·绿"]:not([fold="1"]) { --bj-accent: #22c55e; }
+.protyle-wysiwyg [custom-deco-style="角标引述·橙"]:not([fold="1"]) { --bj-accent: #f97316; }
+.protyle-wysiwyg [custom-deco-style="角标引述·红"]:not([fold="1"]) { --bj-accent: #ef4444; }
+.protyle-wysiwyg [custom-deco-style="角标引述·黄"]:not([fold="1"]) { --bj-accent: #eab308; }
+.protyle-wysiwyg [custom-deco-style="角标引述·灰"]:not([fold="1"]) { --bj-accent: #6b7280; }
+
+/* 暗色模式：仅灰色提亮（与其它引述家族约定一致） */
+:root[data-theme-mode=dark] .protyle-wysiwyg [custom-deco-style="角标引述·灰"]:not([fold="1"]) { --bj-accent: #9ca3af; }
+
+/* ========== 细边引述（1.5px 细描边 + 极浅衬底 + 16px 大圆角） ========== */
+/* 改写自暖黄/薄荷细边引用样式：衬底由 color-mix 从 --thin-accent（各变体注入）
+   与主题背景派生（12%），亮色为原版的极浅色调，暗色自动变为深色调；
+   无伪元素装饰，与思源选中遮罩无冲突。 */
+.protyle-wysiwyg [custom-deco-style^="细边引述"]:not([fold="1"]) {
+    padding: 12px 16px !important;
+    margin: 2px 0 !important;
+    border: 1.5px solid var(--thin-accent, var(--b3-theme-primary)) !important;
+    border-radius: 16px !important;
+    background-color: color-mix(in srgb, var(--thin-accent, var(--b3-theme-primary)) 12%, var(--b3-theme-background)) !important;
+    color: var(--b3-theme-on-background);
+}
+/* 隐藏思源 .bq 自带的左侧竖线 */
+.protyle-wysiwyg [custom-deco-style^="细边引述"]:not([fold="1"])::before {
+    display: none;
+}
+
+/* 颜色变体：只注入描边色（柔色调，衬底自动派生） */
+.protyle-wysiwyg [custom-deco-style="细边引述·黄"]:not([fold="1"]) { --thin-accent: #fcd34d; }
+.protyle-wysiwyg [custom-deco-style="细边引述·绿"]:not([fold="1"]) { --thin-accent: #34d399; }
+.protyle-wysiwyg [custom-deco-style="细边引述·蓝"]:not([fold="1"]) { --thin-accent: #93c5fd; }
+.protyle-wysiwyg [custom-deco-style="细边引述·橙"]:not([fold="1"]) { --thin-accent: #fdba74; }
+.protyle-wysiwyg [custom-deco-style="细边引述·红"]:not([fold="1"]) { --thin-accent: #fca5a5; }
+.protyle-wysiwyg [custom-deco-style="细边引述·紫"]:not([fold="1"]) { --thin-accent: #d8b4fe; }
+.protyle-wysiwyg [custom-deco-style="细边引述·灰"]:not([fold="1"]) { --thin-accent: #9ca3af; }
+
 /* -------------------------------------------------------卡片----------------------------------------------------------- */
 /* ========== 手账卡片 - 今日心情 🌸 ========== */
 .protyle-wysiwyg [custom-deco-style="今日小幸运"]:not([fold="1"]) {
@@ -1568,7 +1808,7 @@
 }
 
 .protyle-wysiwyg .li > [custom-deco-style^="优雅顶线"]:not([fold="1"]) {
-    margin-left: 0 !important;
+    margin-left: 34px !important; /* 与思源 .li>[data-node-id] 的列表缩进一致，避免卡片凸出到项目符号区域 */
     margin-right: 0 !important;
 }
 .protyle-wysiwyg .li > [custom-deco-style^="优雅顶线"]:not([fold="1"]) > [data-node-id]:first-child {
@@ -1689,7 +1929,7 @@
 }
 
 .protyle-wysiwyg .li > [custom-deco-style^="顶条引述"]:not([fold="1"]) {
-    margin-left: 0 !important;
+    margin-left: 34px !important; /* 与思源 .li>[data-node-id] 的列表缩进一致，避免卡片凸出到项目符号区域 */
     margin-right: 0 !important;
 }
 .protyle-wysiwyg .li > [custom-deco-style^="顶条引述"]:not([fold="1"]) > [data-node-id]:first-child {
@@ -2120,7 +2360,7 @@
 }
 
 .protyle-wysiwyg .li > [custom-deco-style^="波点·"]:not([fold="1"]) {
-    margin-left: 0 !important;
+    margin-left: 34px !important; /* 与思源 .li>[data-node-id] 的列表缩进一致，避免卡片凸出到项目符号区域 */
     margin-right: 0 !important;
 }
 .protyle-wysiwyg .li > [custom-deco-style^="波点·"]:not([fold="1"]) > [data-node-id]:first-child {
@@ -4285,6 +4525,10 @@
 .cs-empty { font-size: 12px; opacity: .5; padding: 12px 4px; }
 
 /* 预览区美化 */
+/* 编辑卡片弹窗：类型选择 + 预览并排（行内样式改为类，便于窄屏媒体查询覆盖） */
+.cs-edit-row { display: flex; gap: 14px; align-items: stretch; }
+.cs-edit-row .cs-preview-box { width: 200px; flex: none; }
+
 .cs-preview-box {
     border: 1px solid var(--b3-border-color); border-radius: 10px;
     padding: 10px; display: flex; flex-direction: column; overflow: hidden;
@@ -4660,3 +4904,90 @@
 .protyle-wysiwyg [custom-deco-style="云笺·星空"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🌌 云笺·星空"; }
 .protyle-wysiwyg [custom-deco-style="云笺·蜜桃"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍑 云笺·蜜桃"; }
 .protyle-wysiwyg [custom-deco-style="云笺·青柠"]:not([fold="1"]):not([custom-deco-card-icon]):not([custom-deco-card-title])::before { content: "🍋 云笺·青柠"; }
+
+/* ============================================================
+   列表项内卡片对齐修复（全局兜底）
+   思源通过 .li > [data-node-id] { margin-left: 34px } 缩进列表子块，
+   而上方多数卡片样式用 margin 简写（如 margin: 2px 0 !important）
+   把左右外边距一并归零并覆盖了该缩进，导致列表项内的卡片向左凸出、
+   压到项目符号区域。这里统一恢复与列表文本对齐的 34px 左缩进
+   （34px 与思源缩进常量、项目符号槽宽度一致）。
+   注意：该规则需放在文件末尾，依靠 cascade 顺序覆盖同特异性的卡片基础规则。
+   ============================================================ */
+.protyle-wysiwyg .li > [custom-deco-style]:not([fold="1"]) {
+    margin-left: 34px !important;
+}
+
+/* 右对齐聊天气泡（发送消息）依赖 margin-left: auto 定位，不参与左缩进恢复 */
+.protyle-wysiwyg .li > [custom-deco-style="发送消息"]:not([fold="1"]) {
+    margin-left: auto !important;
+}
+
+/* RTL 块：思源把列表缩进放在右侧（margin-right: 34px），做镜像恢复 */
+.protyle-wysiwyg [style*="direction: rtl"] .li > [custom-deco-style]:not([fold="1"]):not([custom-deco-style="发送消息"]) {
+    margin-left: 0 !important;
+    margin-right: 34px !important;
+}
+
+/* ============================================================
+   移动端 / 窄屏适配（视口 ≤ 720px：手机端思源，或桌面端窄窗口）
+   背景：思源把弹窗容器限制在 88vw（手机端为 100vw - 安全区）内，
+   固定宽度的多栏布局（设置界面侧栏 220px、编辑弹窗预览栏 224px、
+   编辑卡片预览盒 200px）会把正文挤到只剩几十像素，叠加弹窗默认的
+   word-break: break-all 就出现一字一行的竖排、无法阅读。
+   处理：多栏改为纵向堆叠，侧栏转为顶部横向导航，并压缩内边距。
+   ============================================================ */
+@media (max-width: 720px) {
+    /* 窄栏下恢复正常的断行规则，避免英文单词被逐字打断 */
+    .cs-settings-layout,
+    .cs-dlg,
+    .cs-edit-dialog {
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    /* ---- 设置弹窗：侧栏转为顶部横向导航条 ---- */
+    .cs-settings-layout { flex-direction: column; }
+    .cs-settings-sidebar {
+        width: 100%;
+        box-sizing: border-box; /* 思源未全局设置 border-box，content-box 会让 100% + padding 溢出被裁 */
+        flex: none;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 10px;
+        border-right: none;
+        border-bottom: 1px solid var(--b3-border-color);
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    .cs-settings-sidebar-header { display: none; } /* 弹窗标题已标明身份，省一行 */
+    .cs-settings-sidebar-search {
+        width: 118px;
+        flex: none;
+        margin: 0;
+    }
+    .cs-settings-cat-item {
+        flex: none;
+        margin: 0;
+        padding: 0 10px;
+        line-height: 30px;
+        min-height: 30px;
+        white-space: nowrap;
+    }
+    .cs-settings-main { padding: 14px 14px 24px; }
+    .cs-settings-item { gap: 12px; padding: 12px 12px; }
+
+    /* ---- 新增/编辑样式弹窗：预览栏移到表单下方 ---- */
+    .cs-dlg { flex-direction: column; gap: 12px; padding: 14px 14px 0; }
+    .cs-dlg__side { width: 100%; flex: none; }
+    .cs-dlg__preview { min-height: 140px; max-height: 220px; }
+    .cs-dlg__footer { padding: 10px 14px; margin-top: 12px; }
+    .cs-dlg__footer .b3-button { flex: 1; min-width: 0; }
+
+    /* ---- 编辑卡片弹窗：预览盒移到芯片下方（配合 JS 移除行内宽度） ---- */
+    .cs-edit-row { flex-direction: column; }
+    .cs-edit-row .cs-preview-box { width: 100%; }
+    .cs-edit-row .cs-preview-box .protyle-wysiwyg { max-height: 220px; }
+}

@@ -78,6 +78,52 @@ const CARD_ITEMS = [
     { key: 'redQuoteCard', label: '红调引述', icon: '' },
     { key: 'yellowQuoteCard', label: '黄调引述', icon: '' },
 
+    // 描边引述组（OutlineQuoteCard）——透明底 + 3px 描边圆角，与调色引述同一套七色
+    { key: 'outlineGrayQuoteCard',    label: '描边引述·灰', icon: '' },
+    { key: 'outlineBlueQuoteCard',    label: '描边引述·蓝', icon: '' },
+    { key: 'outlineGreenQuoteCard',   label: '描边引述·绿', icon: '' },
+    { key: 'outlineOrangeQuoteCard',  label: '描边引述·橙', icon: '' },
+    { key: 'outlinePurpleQuoteCard',  label: '描边引述·紫', icon: '' },
+    { key: 'outlineRedQuoteCard',     label: '描边引述·红', icon: '' },
+    { key: 'outlineYellowQuoteCard',  label: '描边引述·黄', icon: '' },
+
+    // 衬色样式组（TintQuoteCard）——厚左条 + 衬色底 + 阴影；衬色由 CSS color-mix 从 --bq-accent 自动派生，亮暗模式自适应
+    { key: 'tintPurpleQuoteCard', label: '衬色引述·紫', icon: '' },
+    { key: 'tintBlueQuoteCard',   label: '衬色引述·蓝', icon: '' },
+    { key: 'tintGreenQuoteCard',  label: '衬色引述·绿', icon: '' },
+    { key: 'tintOrangeQuoteCard', label: '衬色引述·橙', icon: '' },
+    { key: 'tintRedQuoteCard',    label: '衬色引述·红', icon: '' },
+    { key: 'tintYellowQuoteCard', label: '衬色引述·黄', icon: '' },
+    { key: 'tintGrayQuoteCard',   label: '衬色引述·灰', icon: '' },
+
+    // 角标样式组（BracketQuoteCard）——一对「」角标收束文字，极简无框；颜色仅用于角标
+    { key: 'bracketPurpleQuoteCard', label: '角标引述·紫', icon: '' },
+    { key: 'bracketBlueQuoteCard',   label: '角标引述·蓝', icon: '' },
+    { key: 'bracketGreenQuoteCard',  label: '角标引述·绿', icon: '' },
+    { key: 'bracketOrangeQuoteCard', label: '角标引述·橙', icon: '' },
+    { key: 'bracketRedQuoteCard',    label: '角标引述·红', icon: '' },
+    { key: 'bracketYellowQuoteCard', label: '角标引述·黄', icon: '' },
+    { key: 'bracketGrayQuoteCard',   label: '角标引述·灰', icon: '' },
+
+    // 细边样式组（ThinQuoteCard）——1.5px 细描边 + 极浅衬底 + 16px 大圆角；
+    // 衬底由 CSS color-mix 从 --thin-accent 自动派生，亮暗模式自适应
+    { key: 'thinYellowQuoteCard', label: '细边引述·黄', icon: '' },
+    { key: 'thinGreenQuoteCard',  label: '细边引述·绿', icon: '' },
+    { key: 'thinBlueQuoteCard',   label: '细边引述·蓝', icon: '' },
+    { key: 'thinOrangeQuoteCard', label: '细边引述·橙', icon: '' },
+    { key: 'thinRedQuoteCard',    label: '细边引述·红', icon: '' },
+    { key: 'thinPurpleQuoteCard', label: '细边引述·紫', icon: '' },
+    { key: 'thinGrayQuoteCard',   label: '细边引述·灰', icon: '' },
+
+    // 气泡样式组（BubbleQuoteCard）——对话气泡，颜色变体；无后缀的“气泡引述”是历史别名（= 紫），CSS 继续兼容
+    { key: 'bubblePurpleQuoteCard', label: '气泡引述·紫', icon: '' },
+    { key: 'bubbleBlueQuoteCard',   label: '气泡引述·蓝', icon: '' },
+    { key: 'bubbleGreenQuoteCard',  label: '气泡引述·绿', icon: '' },
+    { key: 'bubbleOrangeQuoteCard', label: '气泡引述·橙', icon: '' },
+    { key: 'bubbleRedQuoteCard',    label: '气泡引述·红', icon: '' },
+    { key: 'bubbleYellowQuoteCard', label: '气泡引述·黄', icon: '' },
+    { key: 'bubbleGrayQuoteCard',   label: '气泡引述·灰', icon: '' },
+
     // 轻言轻语组（WhisperCard）
     { key: 'timelineRedWhisperCard', label: '时间轴·红', icon: '⏳' },
     { key: 'timelineOrangeWhisperCard', label: '时间轴·橙', icon: '⏳' },
@@ -242,6 +288,12 @@ const CARD_ITEMS = [
     { key: 'limeCloudCard',    label: '云笺·青柠', icon: '🍋' },
 ];
 
+// 历史标签别名：样式改名后，旧块上的 custom-deco-style 标签仍能映射到新 key
+// （渲染由 CSS 兼容选择器兜底，这里只负责逻辑层：标题点击、引述判断等）
+const LABEL_ALIASES = {
+    '气泡引述': 'bubblePurpleQuoteCard', // 七色化之前无后缀的气泡引述（= 紫）
+};
+
 const TEXT = {
     cardview: '轻饰笔记',
 
@@ -274,6 +326,16 @@ const TEXT = {
 
     // 二级分类（块内细分类）
     categoryQuote: '引述类',
+    categoryBubble: '气泡样式',
+    bubbleGroup: '气泡引述',
+    categoryOutline: '描边样式',
+    outlineGroup: '描边引述',
+    categoryTint: '衬色样式',
+    tintGroup: '衬色引述',
+    categoryBracket: '角标样式',
+    bracketGroup: '角标引述',
+    categoryThin: '细边样式',
+    thinGroup: '细边引述',
     categoryNormalCard: '普通卡片',
     categoryTimeline: '时间轴',
     categoryLineDecor: '线条装饰',
@@ -777,6 +839,10 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         for (const item of CARD_ITEMS) {
             if (item.label === label) return item.key;
         }
+        // 历史标签别名（如改名前的“气泡引述”）
+        if (label && Object.prototype.hasOwnProperty.call(LABEL_ALIASES, label)) {
+            return LABEL_ALIASES[label];
+        }
         return null;
     }
 
@@ -790,7 +856,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if (!quoteParent) return false;
         for (const cat of quoteParent.children) {
             for (const group of cat.subGroups) {
-                if (typeof group.filter === 'function' && group.filter(label, cardKey)) return true;
+                // 未注册标签（自定义样式等）没有 key，传空串避免过滤器对 null 调字符串方法
+                if (typeof group.filter === 'function' && group.filter(label, cardKey || '')) return true;
             }
         }
         return false;
@@ -809,9 +876,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             <div class="b3-dialog__content cs-edit-dialog" style="padding: 20px;">
                 <div class="b3-dialog__item" style="margin-bottom: 16px;">
                     <label style="display:block; margin-bottom:8px; font-weight:600; font-size:13px;">${this.getText('cardType', '类型')}</label>
-                    <div style="display:flex; gap:14px; align-items:stretch;">
+                    <div class="cs-edit-row">
                         ${tabsHtml}
-                        <div id="card-style-preview" class="cs-preview-box" style="width:200px; flex:none;">
+                        <div id="card-style-preview" class="cs-preview-box">
                             <div class="cs-preview-label">👁️ ${this.getText('preview', '预览')}</div>
                             <div id="card-style-preview-inner" class="protyle-wysiwyg" style="flex:1; overflow:auto;"></div>
                         </div>
@@ -842,7 +909,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const dialog = new Dialog({
             title: this.getText('editCardTitle', '编辑卡片'),
             content: contentHtml,
-            width: "480px"
+            width: Math.min(480, window.innerWidth - 24) + "px"
         });
 
         const dialogElement = dialog.element;
@@ -1184,11 +1251,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     // 不再使用自定义 Tab 页。顶栏按钮与右键「管理自定义样式」均调用此方法。
     openSetting() {
         const self = this;
+        // 手机端 / 矮窗口下夹紧弹窗尺寸：思源会按 88vw 截宽，固定 1280x780 会让内部布局被挤坏
         const dialog = new Dialog({
             title: this.getText('customManage', '自定义块样式'),
             content: '<div id="cs-setting-root" style="height:100%;width:100%;display:flex;overflow:hidden;"></div>',
-            width: "1280px",
-            height: "780px"
+            width: Math.min(1280, window.innerWidth - 24) + "px",
+            height: Math.min(780, window.innerHeight - 24) + "px"
         });
         const rootEl = dialog.element.querySelector('#cs-setting-root');
         this._settingRootEl = rootEl;
@@ -1368,7 +1436,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const dialog = new Dialog({
             title: dialogTitle,
             content: contentHtml,
-            width: "780px"
+            width: Math.min(780, window.innerWidth - 24) + "px"
         });
 
         const el = dialog.element;
@@ -3198,7 +3266,47 @@ if (key === 'diaryChatWhisperCard') {
                         labelKey: "categoryQuote",
                         icon: "#iconQuote",
                         subGroups: [
-                            { id: "quoteBlock", labelKey: "quoteGroup", icon: "#iconQuote", filter: (label, key) => key.endsWith('QuoteCard') }
+                            { id: "quoteBlock", labelKey: "quoteGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.endsWith('QuoteCard') && typeof label === 'string' && label.endsWith('调引述') }
+                        ]
+                    },
+                    {
+                        id: "bubbleCategory",
+                        labelKey: "categoryBubble",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "bubbleStyle", labelKey: "bubbleGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.startsWith('bubble') }
+                        ]
+                    },
+                    {
+                        id: "outlineCategory",
+                        labelKey: "categoryOutline",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "outlineStyle", labelKey: "outlineGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.startsWith('outline') }
+                        ]
+                    },
+                    {
+                        id: "tintCategory",
+                        labelKey: "categoryTint",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "tintStyle", labelKey: "tintGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.startsWith('tint') }
+                        ]
+                    },
+                    {
+                        id: "bracketCategory",
+                        labelKey: "categoryBracket",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "bracketStyle", labelKey: "bracketGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.startsWith('bracket') }
+                        ]
+                    },
+                    {
+                        id: "thinCategory",
+                        labelKey: "categoryThin",
+                        icon: "#iconQuote",
+                        subGroups: [
+                            { id: "thinStyle", labelKey: "thinGroup", icon: "#iconQuote", filter: (label, key) => typeof key === 'string' && key.startsWith('thin') }
                         ]
                     },
                     {
