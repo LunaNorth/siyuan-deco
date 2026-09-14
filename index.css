@@ -5030,3 +5030,482 @@
     .cs-edit-row .cs-preview-box { width: 100%; }
     .cs-edit-row .cs-preview-box .protyle-wysiwyg { max-height: 220px; }
 }
+
+/* ============================================================
+   批量设置样式：面板（多选块 → 逐块指定样式）+ 样式树选择浮层
+   视觉沿用「自定义块样式」设置面板：分组卡片 + 发丝分隔线 + 同款按钮
+   ============================================================ */
+
+/* 右键菜单里的「选中数量」徽标：方形 + 圆角，和菜单文字同一水平线 */
+.cs-bulk-menu-count {
+    flex: none;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin: 0 0 0 auto;
+    border-radius: 5px;
+    line-height: 1;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--b3-theme-on-primary, #fff);
+    background: var(--b3-theme-primary);
+}
+
+/* 注意：这里**不要**设 background。整块不透明底色会盖住思源弹窗容器底部的圆角
+   （顶部有思源自己的标题栏挡着所以看不出问题），底部就变成直角了。
+   背景交给 .b3-dialog__container 自己出，和设置弹窗的 #cs-setting-root 一个做法。 */
+.cs-bulk {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- 顶部条：说明 + 统一选择 ---- */
+.cs-bulk__bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px 12px;
+}
+.cs-bulk__bar-desc {
+    flex: 1;
+    min-width: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--b3-text-color3);
+}
+.cs-bulk__bar-desc b {
+    font-weight: 600;
+    color: var(--b3-theme-primary);
+}
+.cs-bulk__quick {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ---- 「选择样式」按钮（顶部统一选择 + 每行通用） ---- */
+.cs-bulk__quick-pick,
+.cs-bulk__pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 176px;
+    height: 30px;
+    padding: 0 8px 0 11px;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 8px;
+    background: var(--b3-theme-surface);
+    color: var(--b3-text-color2);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.cs-bulk__quick-pick:hover,
+.cs-bulk__pick:hover {
+    color: var(--b3-text-color);
+    border-color: var(--b3-theme-primary-lighter, rgba(59, 130, 246, .4));
+    background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 7%, var(--b3-theme-surface));
+}
+.cs-bulk__quick-label,
+.cs-bulk__pick-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 已经选好样式的行：按钮转主色 */
+.cs-bulk__pick.is-set {
+    color: var(--b3-theme-primary);
+    font-weight: 600;
+    border-color: color-mix(in srgb, var(--b3-theme-primary) 45%, var(--b3-border-color));
+    background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 8%, var(--b3-theme-surface));
+}
+.cs-bulk__caret {
+    flex: none;
+    width: 13px;
+    height: 13px;
+    opacity: .5;
+    transform: rotate(90deg);
+}
+.cs-bulk__quick-apply {
+    height: 30px;
+    padding: 0 13px;
+}
+.cs-bulk__quick-apply:disabled,
+.cs-bulk__quick-apply:disabled:hover {
+    color: var(--b3-text-color3);
+    background: var(--b3-theme-surface);
+    border-color: var(--b3-border-color);
+    box-shadow: none;
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* ---- 块列表：分组卡片 + 发丝分隔线（同设置面板 .cs-settings-group-card） ---- */
+.cs-bulk__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 18px 14px;
+}
+.cs-bulk__card {
+    background: color-mix(in srgb, var(--b3-theme-surface, var(--b3-theme-background)) 50%, transparent);
+    border-radius: 10px;
+    padding: 4px 0;
+}
+/* 行两侧留 6px 内缩 + 圆角：hover 的高亮块不再贴着卡片边缘，四角是圆的。
+   文字位置和原来一致（6 外边距 + 8 内边距 = 原来的 14）。 */
+.cs-bulk__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 6px;
+    padding: 11px 8px;
+    position: relative;
+    border-radius: 8px;
+    transition: background-color .12s ease;
+}
+.cs-bulk__row:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 0;
+    height: 1px;
+    background: color-mix(in srgb, var(--b3-border-color) 35%, transparent);
+    pointer-events: none;
+}
+.cs-bulk__row:hover { background: var(--b3-list-hover); }
+.cs-bulk__row.is-set { background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 5%, transparent); }
+
+.cs-bulk__idx {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--b3-text-color3);
+    background: var(--b3-theme-background);
+}
+.cs-bulk__row.is-set .cs-bulk__idx {
+    color: var(--b3-theme-on-primary, #fff);
+    background: var(--b3-theme-primary);
+    border-color: var(--b3-theme-primary);
+}
+
+.cs-bulk__meta { flex: 1; min-width: 0; }
+.cs-bulk__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--b3-theme-on-background);
+    word-break: break-word;
+}
+.cs-bulk__kind {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 0 6px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 4px;
+    font-size: 10.5px;
+    color: var(--b3-text-color3);
+    background: var(--b3-theme-background);
+}
+
+/* ---- 底部：与设置弹窗底部按钮同款 ---- */
+.cs-bulk__footer {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--b3-border-color);
+}
+.cs-bulk__foot-hint {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    color: var(--b3-text-color3);
+}
+.cs-bulk__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+/* 取消：浅红底 + 实红描边 + 红字，任何状态下都不变色 */
+.cs-bulk__btn--cancel,
+.cs-bulk__btn--cancel:hover,
+.cs-bulk__btn--cancel:focus,
+.cs-bulk__btn--cancel:focus-visible,
+.cs-bulk__btn--cancel:active {
+    color: #dc2626;
+    border: 1px solid #ef4444;
+    background: color-mix(in srgb, #ef4444 10%, var(--b3-theme-background));
+    outline: none;
+    box-shadow: none;
+}
+/* 应用：实心主色 */
+.cs-bulk__btn--ok,
+.cs-bulk__btn--ok:hover,
+.cs-bulk__btn--ok:focus,
+.cs-bulk__btn--ok:active {
+    color: #fff;
+    font-weight: 600;
+    background: var(--b3-theme-primary);
+    border: 1px solid transparent;
+    outline: none;
+    box-shadow: none;
+}
+.cs-bulk__btn:disabled,
+.cs-bulk__btn:disabled:hover {
+    color: var(--b3-text-color3);
+    background: var(--b3-theme-surface);
+    border: 1px solid var(--b3-border-color);
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   样式树选择浮层（仿思源文档树：折叠箭头 + 缩进导轨 + 圆点叶子）
+   一级「引述块 / 普通块」→ 二级分类 → 三级样式
+   ============================================================ */
+.cs-bulk-picker {
+    position: fixed;
+    z-index: 2147483647;
+    width: 300px;
+    max-height: 380px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 10px;
+    background: var(--b3-theme-background);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, .18);
+}
+.cs-bulk-picker__search {
+    flex: none;
+    padding: 8px 10px;
+}
+.cs-bulk-picker__search input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 28px;
+    padding: 0 9px;
+    border: 1px solid var(--b3-border-color);
+    border-radius: 6px;
+    outline: none;
+    font-size: 12.5px;
+    color: var(--b3-text-color);
+    background: var(--b3-theme-surface);
+}
+.cs-bulk-picker__search input:focus {
+    border-color: var(--b3-theme-primary-lighter, rgba(59, 130, 246, .5));
+    background: var(--b3-theme-background);
+}
+.cs-bulk-picker__list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 2px 8px 8px;
+}
+.cs-bulk-picker__foot {
+    flex: none;
+    padding: 7px 8px;
+    border-top: 1px solid var(--b3-border-color);
+}
+.cs-bulk-picker__clear {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--b3-text-color3);
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+}
+.cs-bulk-picker__clear:hover {
+    background: var(--b3-list-hover);
+    color: var(--b3-text-color);
+}
+.cs-bulk-picker__empty {
+    padding: 22px 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--b3-text-color3);
+}
+
+/* ---- 树：折叠 ---- */
+.cs-bulk-tree__node.is-collapsed > .cs-bulk-tree__children { display: none; }
+
+/* ---- 树：缩进导轨 ---- */
+.cs-bulk-tree__children {
+    margin-left: 18px;
+    border-left: 1px solid color-mix(in srgb, var(--b3-border-color) 70%, transparent);
+}
+
+/* ---- 树：行通用（箭头 + 图标 + 名称 + 计数） ---- */
+.cs-bulk-tree__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--b3-theme-on-background);
+    font-size: 12.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color .12s ease;
+}
+.cs-bulk-tree__item:hover { background: var(--b3-list-hover); }
+
+/* ---- 树：一级 ---- */
+.cs-bulk-tree__row--l1 {
+    padding: 7px 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+/* ---- 树：二级 ---- */
+.cs-bulk-tree__row--l2 { font-weight: 500; }
+
+/* ---- 树：挂在导轨上的行（二级 + 叶子）---- */
+.cs-bulk-tree__children > .cs-bulk-tree__row--l2 { padding-left: 13px; }
+.cs-bulk-tree__children > .cs-bulk-tree__leaf { padding-left: 16px; }
+/* 肘形接头：从导轨伸出的短横线 */
+.cs-bulk-tree__children > .cs-bulk-tree__row--l2::before,
+.cs-bulk-tree__children > .cs-bulk-tree__leaf::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 8px;
+    height: 1px;
+    background: color-mix(in srgb, var(--b3-border-color) 70%, transparent);
+    pointer-events: none;
+}
+
+/* ---- 树：折叠箭头 ---- */
+.cs-bulk-tree__caret {
+    flex: none;
+    width: 13px;
+    height: 13px;
+    opacity: .55;
+    transform: rotate(90deg);
+    transition: transform .12s ease;
+}
+.cs-bulk-tree__node.is-collapsed > .cs-bulk-tree__row > .cs-bulk-tree__caret {
+    transform: none;
+}
+
+/* ---- 树：层级图标 ---- */
+.cs-bulk-tree__icon {
+    flex: none;
+    width: 16px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--b3-text-color2);
+    overflow: hidden;
+}
+.cs-bulk-tree__icon img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    vertical-align: middle;
+    border-radius: 3px;
+}
+
+.cs-bulk-tree__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cs-bulk-tree__count {
+    flex: none;
+    font-size: 10.5px;
+    color: var(--b3-text-color3);
+    opacity: .6;
+}
+
+/* ---- 树：叶子圆点 ---- */
+.cs-bulk-tree__children > .cs-bulk-tree__leaf::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--b3-text-color3) 55%, transparent);
+    pointer-events: none;
+}
+
+/* ---- 树：已选中的叶子 ---- */
+.cs-bulk-tree__leaf.is-active {
+    color: var(--b3-theme-primary);
+    font-weight: 600;
+    background: color-mix(in srgb, var(--b3-theme-primary, #5b8def) 9%, transparent);
+}
+/* 选中时不要圆点：整行高亮已经够醒目，再压个点会显得脏 */
+.cs-bulk-tree__children > .cs-bulk-tree__leaf.is-active::after {
+    display: none;
+}
+
+/* ---- 窄屏 ---- */
+@media (max-width: 720px) {
+    .cs-bulk__bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 14px 10px;
+    }
+    .cs-bulk__quick { justify-content: space-between; }
+    .cs-bulk__quick-pick { flex: 1; max-width: none; }
+    .cs-bulk__pick { max-width: 42%; }
+    .cs-bulk__body { padding: 0 12px 12px; }
+    .cs-bulk__row { margin: 0 5px; padding: 10px 6px; gap: 10px; }
+    .cs-bulk__footer { padding: 10px 14px; }
+    .cs-bulk__btn { flex: 1; min-width: 0; }
+    .cs-bulk__foot-hint { display: none; }
+    .cs-bulk-picker { width: calc(100vw - 24px); }
+}

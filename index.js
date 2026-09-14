@@ -47,6 +47,7 @@ const PLUGIN_ICON = `
 <symbol id="iconDecoTag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
     <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
+</symbol>
 <symbol id="iconDecoSave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
     <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
     <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/>
@@ -434,6 +435,22 @@ const TEXT = {
     cardTitle: '标题',
     cancel: '取消',
     confirm: '确定',
+
+    // ===== 批量设置样式 =====
+    bulkSet: '批量设置样式',
+    bulkQuickPick: '统一选择样式',
+    bulkApplyAll: '应用到全部',
+    bulkUnset: '未修改',
+    bulkApply: '应用',
+    bulkApplied: '已批量设置样式：',
+    bulkNone: '还没有为任何块选择样式',
+    bulkNoBlock: '请先在编辑器中选中要设置的块',
+    bulkSearchStyle: '搜索样式...',
+    bulkClear: '清除选择',
+    bulkEmptyBlock: '(空块)',
+    bulkTip: '已选中 {n} 个块，可为每个块分别指定样式',
+    bulkProgress: '已为 {n}/{total} 个块选择样式',
+    bulkProgressEmpty: '点右侧按钮，为每个块选择样式',
 };
 
 // 卡片样式作用的三个自定义属性（多处复用，集中定义）
@@ -1066,15 +1083,20 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if (!this._blockMenuArmed || (Date.now() - this._blockMenuArmed) > 2000) return;
         this._blockMenuArmed = 0;
 
-        // 防止重复插入：先清理已存在的菜单项（连同其前的分隔符）
-        const existing = document.querySelector("#North-CardView-Top");
-        if (existing) {
-            const prev = existing.previousElementSibling;
-            if (prev && prev.classList && prev.classList.contains("b3-menu__separator")) {
-                prev.remove();
-            }
-            existing.remove();
-        }
+        // 防止重复插入：先清理已存在的插件菜单项（连同它自带的分隔符）
+        const removePluginItem = (sel) => {
+            const el = document.querySelector(sel);
+            if (!el) return;
+            [el.previousElementSibling, el.nextElementSibling].forEach(sib => {
+                if (sib && sib.classList && sib.classList.contains("b3-menu__separator")
+                    && sib.getAttribute("data-id") === "deco-separator") {
+                    sib.remove();
+                }
+            });
+            el.remove();
+        };
+        removePluginItem("#North-BulkStyle-Top");
+        removePluginItem("#North-CardView-Top");
 
         const container = document.querySelector("#commonMenu .b3-menu__items");
         if (!container) return;
@@ -1107,6 +1129,20 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const tryInsert = (attempt = 0) => {
             const block = findBlockEl();
             if (block && block.dataset.nodeId) {
+                // 多选 ≥2 个块时，菜单最顶部额外提供「批量设置样式」入口
+                const selected = this._getSelectedBlockEls();
+                if (selected.length >= 2) {
+                    const bulkBtn = this.createBulkMenuButton(selected.length);
+                    const bulkSep = this.createSeparator();
+                    if (refItem && refItem.parentNode === container) {
+                        container.insertBefore(bulkBtn, refItem);
+                        container.insertBefore(bulkSep, refItem);
+                    } else {
+                        container.appendChild(bulkBtn);
+                        container.appendChild(bulkSep);
+                    }
+                }
+
                 const topBtn = this.createTopMenuButton(block.dataset.nodeId);
                 const sep = this.createSeparator();
                 if (refItem && refItem.parentNode === container) {
@@ -2814,6 +2850,540 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             await this.removeCardStyles(blockId);
         };
         return item;
+    }
+
+    // ============================================================================
+    //  批量设置样式：多选多个块 → 为每个块分别指定样式 → 一次性应用
+    //  入口只在「选中 ≥2 个块」时出现在块右键菜单最顶部。
+    // ============================================================================
+
+    // 取当前被选中的块元素。
+    // 主路径：多选时思源会给每个入选块挂 .protyle-wysiwyg--select；
+    // 兜底：个别版本/场景不挂类名时，从文本选区反推跨过的块。
+    // 返回按文档顺序排列、并剔除「被更外层选中块包含」的顶层块。
+    _getSelectedBlockEls() {
+        let els = Array.from(document.querySelectorAll('.protyle-wysiwyg--select[data-node-id]'));
+
+        if (els.length < 2) {
+            try {
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount && !sel.isCollapsed) {
+                    const range = sel.getRangeAt(0);
+                    const node = range.commonAncestorContainer;
+                    const nodeEl = node.nodeType === 1 ? node : node.parentElement;
+                    const scope = nodeEl && nodeEl.closest ? nodeEl.closest('.protyle-wysiwyg') : null;
+                    if (scope) {
+                        const fromRange = [];
+                        scope.querySelectorAll('[data-node-id]').forEach(n => {
+                            if (range.intersectsNode(n)) fromRange.push(n);
+                        });
+                        if (fromRange.length > els.length) els = fromRange;
+                    }
+                }
+            } catch (e) { /* 选区不可用则忽略，走下面的单块回退 */ }
+        }
+
+        if (!els.length) {
+            const one = document.querySelector('.protyle-wysiwyg--hl[data-node-id]');
+            return one ? [one] : [];
+        }
+
+        // 只保留最外层被选中的块，避免父块+子块重复出现
+        const set = new Set(els);
+        return els.filter(el => {
+            let p = el.parentElement;
+            while (p && !(p.classList && p.classList.contains('protyle-wysiwyg'))) {
+                if (set.has(p)) return false;
+                p = p.parentElement;
+            }
+            return true;
+        });
+    }
+
+    // 块内容预览（一行）
+    _blockPreviewText(el) {
+        let t = '';
+        try { t = el.innerText || el.textContent || ''; } catch (e) { t = ''; }
+        t = t.replace(/\s+/g, ' ').trim();
+        return t.length > 46 ? t.slice(0, 46) + '…' : t;
+    }
+
+    // 块类型标签（只用于面板上提示用户，不限制可选样式）
+    _blockKindLabel(el) {
+        const dt = el.getAttribute('data-type') || '';
+        if (dt === 'NodeBlockquote') return this.getText('blockQuote', '引述块');
+        if (dt === 'NodeImage' || el.querySelector('.img, [data-type="NodeImage"]')) return this.getText('blockImage', '图片相关');
+        if (dt === 'NodeHeading') return '标题';
+        if (dt === 'NodeCodeBlock') return '代码块';
+        if (dt === 'NodeTable') return '表格';
+        if (dt === 'NodeList' || dt === 'NodeListItem') return '列表';
+        return this.getText('blockNormal', '普通块');
+    }
+
+    // 把当前选中的块「拍平」成纯数据，供面板使用。
+    // 关键：必须在菜单收起之前调用——菜单关闭时思源会清掉块的选中态。
+    _describeSelectedBlocks() {
+        return this._getSelectedBlockEls().map(el => ({
+            id: el.getAttribute('data-node-id'),
+            text: this._blockPreviewText(el) || this.getText('bulkEmptyBlock', '(空块)'),
+            kind: this._blockKindLabel(el),
+            title: el.getAttribute('custom-deco-card-title') || ''
+        })).filter(r => r.id);
+    }
+
+    // 构建样式树：一级「引述块 / 普通块 / 自定义样式」→ 二级分类 → 三级具体样式。
+    // 层级直接复用 getMenuStructure()，与右键菜单完全同源；
+    // 被「样式显隐」隐藏的样式不出现在树里。
+    _buildBulkStyleTree() {
+        const hiddenSet = new Set(this.hiddenStyles || []);
+        const cards = this.getAllCardItems();
+        const tree = [];
+
+        this.getMenuStructure().forEach(parent => {
+            const l1 = {
+                id: 'g:' + parent.id,
+                name: this.getText(parent.labelKey, parent.id),
+                icon: parent.icon,
+                children: []
+            };
+
+            (parent.children || []).forEach(cat => {
+                const seen = new Set();
+                const items = [];
+                (cat.subGroups || []).forEach(group => {
+                    cards.forEach(item => {
+                        if (hiddenSet.has(item.key)) return;
+                        if (!group.filter(item.label, item.key)) return;
+                        if (seen.has(item.label)) return;
+                        seen.add(item.label);
+                        items.push({
+                            id: 'b:' + item.label,
+                            kind: 'builtin',
+                            key: item.key,
+                            name: item.label,
+                            styleLabel: item.label
+                        });
+                    });
+                });
+                if (!items.length) return;
+                l1.children.push({
+                    id: 'g:' + parent.id + '/' + cat.id,
+                    name: this.getText(cat.labelKey, cat.id),
+                    icon: cat.icon,
+                    items
+                });
+            });
+
+            if (l1.children.length) tree.push(l1);
+        });
+
+        // 自定义样式：按用户分组（文件夹）归类
+        if ((this.customStyles || []).length) {
+            const l1 = {
+                id: 'g:__custom__',
+                name: this.getText('customManage', '自定义样式'),
+                icon: '#iconDecoSparkle',
+                children: []
+            };
+            this._getGroupedByFolder().forEach(group => {
+                if (!group.items || !group.items.length) return;
+                l1.children.push({
+                    id: 'g:__custom__/' + group.id,
+                    name: group.name,
+                    icon: group.icon,
+                    items: group.items.map(cs => ({
+                        id: 'c:' + (cs.id || cs.name || cs.style),
+                        kind: 'custom',
+                        key: cs.style,
+                        name: cs.name,
+                        styleLabel: cs.style,
+                        icon: cs.icon || '',
+                        title: cs.title || ''
+                    }))
+                });
+            });
+            if (l1.children.length) tree.push(l1);
+        }
+
+        return tree;
+    }
+
+    // 把样式树拍平成一维列表（搜索、按 id 反查用）
+    _collectBulkStyles() {
+        const out = [];
+        this._buildBulkStyleTree().forEach(l1 => {
+            l1.children.forEach(l2 => {
+                l2.items.forEach(it => out.push(it));
+            });
+        });
+        return out;
+    }
+
+    // 层级图标渲染：'#iconQuote' / 'iconQuote' / emoji / 图片路径都吃得下
+    _bulkIconHtml(icon) {
+        const v = String(icon == null ? '' : icon).replace(/^#/, '');
+        return v ? this._renderIconHtml(v) : '';
+    }
+
+    // 由样式项推导要写入的块属性。
+    // 注意：这里的判断条件与 createCardItem 保持一致（那边逻辑未动，避免影响单块路径）。
+    _bulkStyleAttrs(entry, existingTitle) {
+        const attrs = { "custom-deco-style": entry.styleLabel };
+
+        if (entry.kind === 'custom') {
+            attrs["custom-deco-card-icon"] = entry.icon || '';
+            attrs["custom-deco-card-title"] = entry.title || '';
+            return attrs;
+        }
+
+        const key = entry.key || '';
+        const skipIconTitle = key.endsWith('QuoteCard') || key.includes('WhisperCard') || key.endsWith('ImageCard')
+            || key.startsWith('topLine') || key.startsWith('polka') || key.startsWith('titleBar')
+            || key.endsWith('MarkCard');
+
+        if (!skipIconTitle) {
+            const defaults = this.styleDefaults ? this.styleDefaults[entry.styleLabel] : null;
+            if (defaults) {
+                attrs["custom-deco-card-icon"] = defaults.icon || '';
+                if (!existingTitle) attrs["custom-deco-card-title"] = defaults.title || '';
+            }
+        }
+
+        if (key === 'diaryChatWhisperCard') {
+            const now = new Date();
+            const p2 = (n) => String(n).padStart(2, '0');
+            attrs["custom-deco-card-date"] =
+                `${now.getFullYear()}-${p2(now.getMonth() + 1)}-${p2(now.getDate())} ${p2(now.getHours())}:${p2(now.getMinutes())}`;
+        }
+
+        return attrs;
+    }
+
+    // 右键菜单里的「批量设置样式」入口
+    createBulkMenuButton(count) {
+        const btn = document.createElement("button");
+        btn.id = "North-BulkStyle-Top";
+        btn.className = "b3-menu__item";
+        btn.innerHTML = `<svg class="b3-menu__icon north-menu-icon"><use xlink:href="#iconDecoSparkle"></use></svg>
+                         <span class="b3-menu__label">${this.getText('bulkSet', '批量设置样式')}</span>
+                         <span class="cs-bulk-menu-count">${count}</span>`;
+
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            // 先抓选中块，再收菜单——菜单关闭会清掉块的选中态
+            const rows = this._describeSelectedBlocks();
+            try { window.siyuan?.menus?.menu?.remove(); } catch (err) { /* 菜单已关则忽略 */ }
+            setTimeout(() => this.openBulkStyleDialog(rows), 0);
+        };
+
+        return btn;
+    }
+
+    // ========== 批量设置面板 ==========
+    openBulkStyleDialog(rows) {
+        const self = this;
+        const list = Array.isArray(rows) && rows.length ? rows : this._describeSelectedBlocks();
+        if (!list.length) {
+            showMessage(this.getText('bulkNoBlock', '请先在编辑器中选中要设置的块'));
+            return;
+        }
+
+        const state = list.map((r, i) => ({
+            id: r.id,
+            index: i + 1,
+            text: r.text || this.getText('bulkEmptyBlock', '(空块)'),
+            kind: r.kind || '',
+            title: r.title || '',
+            entry: null
+        }));
+
+        const tip = this.getText('bulkTip', '已选中 {n} 个块，可为每个块分别指定样式').replace('{n}', String(state.length));
+
+        // 高度跟着行数走：只有两三个块时不至于撑出一大块空白（一行按两行文本估 78px）
+        const wantH = 186 + state.length * 78;
+        const dlgH = Math.max(300, Math.min(720, window.innerHeight - 24, wantH));
+
+        const dlg = new Dialog({
+            title: this.getText('bulkSet', '批量设置样式'),
+            width: Math.min(560, window.innerWidth - 24) + "px",
+            height: dlgH + "px",
+            destroyCallback: () => this._closeBulkPicker(),
+            content: `<div class="cs-bulk">
+                <div class="cs-bulk__bar">
+                    <div class="cs-bulk__bar-desc">${tip}</div>
+                    <div class="cs-bulk__quick">
+                        <button class="cs-bulk__quick-pick" id="cs-bulk-quick-pick">
+                            <span class="cs-bulk__quick-label">${this.getText('bulkQuickPick', '统一选择样式')}</span>
+                            <svg class="cs-bulk__caret"><use xlink:href="#iconRight"></use></svg>
+                        </button>
+                        <button class="cs-action-btn cs-action-btn--primary cs-bulk__quick-apply" id="cs-bulk-quick-apply" disabled>${this.getText('bulkApplyAll', '应用到全部')}</button>
+                    </div>
+                </div>
+                <div class="cs-bulk__body">
+                    <div class="cs-bulk__card" id="cs-bulk-list"></div>
+                </div>
+                <div class="cs-bulk__footer">
+                    <span class="cs-bulk__foot-hint" id="cs-bulk-hint"></span>
+                    <button class="cs-bulk__btn cs-bulk__btn--cancel" id="cs-bulk-cancel">${this.getText('cancel', '取消')}</button>
+                    <button class="cs-bulk__btn cs-bulk__btn--ok" id="cs-bulk-ok" disabled>${this.getText('bulkApply', '应用')}</button>
+                </div>
+            </div>`
+        });
+
+        const root = dlg.element;
+        const listEl = root.querySelector('#cs-bulk-list');
+        const okBtn = root.querySelector('#cs-bulk-ok');
+        const hintEl = root.querySelector('#cs-bulk-hint');
+        const quickApplyBtn = root.querySelector('#cs-bulk-quick-apply');
+        const quickPickBtn = root.querySelector('#cs-bulk-quick-pick');
+        let quickEntry = null;
+
+        const refreshFooter = () => {
+            const n = state.filter(r => r.entry).length;
+            okBtn.disabled = n === 0;
+            okBtn.textContent = n
+                ? this.getText('bulkApply', '应用') + '（' + n + '）'
+                : this.getText('bulkApply', '应用');
+            hintEl.textContent = n
+                ? this.getText('bulkProgress', '已为 {n}/{total} 个块选择样式')
+                    .replace('{n}', String(n)).replace('{total}', String(state.length))
+                : this.getText('bulkProgressEmpty', '点右侧按钮，为每个块选择样式');
+        };
+
+        const renderList = () => {
+            listEl.innerHTML = state.map((r, i) => `
+                <div class="cs-bulk__row${r.entry ? ' is-set' : ''}">
+                    <span class="cs-bulk__idx">${r.index}</span>
+                    <div class="cs-bulk__meta">
+                        <div class="cs-bulk__text">${this._escapeAttr(r.text)}</div>
+                        <span class="cs-bulk__kind">${this._escapeAttr(r.kind)}</span>
+                    </div>
+                    <button class="cs-bulk__pick${r.entry ? ' is-set' : ''}" data-idx="${i}">
+                        <span class="cs-bulk__pick-name">${r.entry ? this._escapeAttr(r.entry.name) : this.getText('bulkUnset', '未修改')}</span>
+                        <svg class="cs-bulk__caret"><use xlink:href="#iconRight"></use></svg>
+                    </button>
+                </div>`).join('');
+
+            listEl.querySelectorAll('.cs-bulk__pick').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const i = Number(btn.getAttribute('data-idx'));
+                    self._openBulkPicker(btn, state[i].entry ? state[i].entry.id : '', (entry) => {
+                        state[i].entry = entry;
+                        renderList();
+                        refreshFooter();
+                    });
+                });
+            });
+        };
+
+        renderList();
+        refreshFooter();
+
+        // 「统一选择样式」→ 再把同一个样式刷到所有行
+        quickPickBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            self._openBulkPicker(quickPickBtn, quickEntry ? quickEntry.id : '', (entry) => {
+                quickEntry = entry;
+                quickPickBtn.querySelector('.cs-bulk__quick-label').textContent =
+                    entry ? entry.name : self.getText('bulkQuickPick', '统一选择样式');
+                quickApplyBtn.disabled = !entry;
+            });
+        });
+
+        quickApplyBtn.addEventListener('click', () => {
+            if (!quickEntry) return;
+            state.forEach(r => { r.entry = quickEntry; });
+            renderList();
+            refreshFooter();
+        });
+
+        root.querySelector('#cs-bulk-cancel').addEventListener('click', () => dlg.destroy());
+
+        okBtn.addEventListener('click', async () => {
+            const todo = state.filter(r => r.entry);
+            if (!todo.length) {
+                showMessage(this.getText('bulkNone', '还没有为任何块选择样式'));
+                return;
+            }
+            dlg.destroy();
+            for (const r of todo) {
+                await self.setAttrs(r.id, self._bulkStyleAttrs(r.entry, r.title));
+            }
+            showMessage(this.getText('bulkApplied', '已批量设置样式：') + todo.length + ' 个块');
+        });
+    }
+
+    // ========== 样式选择浮层（搜索 + 分组列表）==========
+    _bulkPickerState = null;
+
+    _closeBulkPicker() {
+        const st = this._bulkPickerState;
+        if (!st) return;
+        try { st.el.remove(); } catch (e) { /* 已移除 */ }
+        document.removeEventListener('mousedown', st.onDoc, true);
+        window.removeEventListener('resize', st.onMove, true);
+        window.removeEventListener('scroll', st.onMove, true);
+        this._bulkPickerState = null;
+    }
+
+    _positionBulkPicker(el, anchorEl) {
+        if (!anchorEl || !document.body.contains(anchorEl)) return;
+        const r = anchorEl.getBoundingClientRect();
+        const w = el.offsetWidth, h = el.offsetHeight;
+        let left = r.right - w;
+        if (left < 8) left = 8;
+        if (left + w > window.innerWidth - 8) left = window.innerWidth - w - 8;
+        let top = r.bottom + 6;
+        if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+    }
+
+    _openBulkPicker(anchorEl, currentId, onPick) {
+        const self = this;
+
+        // 同一个按钮再点一次 = 收起浮层（开/收同一个入口，避免"关不掉"）
+        if (this._bulkPickerState && this._bulkPickerState.anchorEl === anchorEl) {
+            this._closeBulkPicker();
+            return;
+        }
+        this._closeBulkPicker();
+
+        const tree = this._buildBulkStyleTree();
+        const flat = this._collectBulkStyles();
+
+        const el = document.createElement('div');
+        el.className = 'cs-bulk-picker';
+        el.innerHTML = `<div class="cs-bulk-picker__search">
+                            <input type="text" placeholder="${this._escapeAttr(this.getText('bulkSearchStyle', '搜索样式...'))}">
+                        </div>
+                        <div class="cs-bulk-picker__list"></div>
+                        <div class="cs-bulk-picker__foot">
+                            <button class="cs-bulk-picker__clear">${this.getText('bulkClear', '清除选择')}</button>
+                        </div>`;
+
+        const listEl = el.querySelector('.cs-bulk-picker__list');
+        const input = el.querySelector('input');
+
+        el.querySelector('.cs-bulk-picker__clear').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this._closeBulkPicker();
+            onPick(null);
+        });
+
+        // 展开态：默认全部折叠，点一下才展开（和思源文档树的手感一致）
+        const expanded = new Set();
+
+        const render = (q) => {
+            const kw = String(q || '').trim().toLowerCase();
+            const hit = (s) => String(s == null ? '' : s).toLowerCase().indexOf(kw) >= 0;
+
+            // 搜索时只保留命中的叶子（命中父级名称则该分支整体保留），并把路径全部展开
+            const visible = [];
+            tree.forEach(l1 => {
+                const l1Hit = !!kw && hit(l1.name);
+                const cats = l1.children.map(l2 => {
+                    const l2Hit = l1Hit || (!!kw && hit(l2.name));
+                    const items = !kw ? l2.items : l2.items.filter(it => l2Hit || hit(it.name));
+                    return { data: l2, items };
+                }).filter(x => x.items.length).map(x => Object.assign({}, x.data, { items: x.items }));
+                if (cats.length) visible.push({ id: l1.id, name: l1.name, icon: l1.icon, children: cats });
+            });
+
+            if (!visible.length) {
+                listEl.innerHTML = `<div class="cs-bulk-picker__empty">${this.getText('noSearchResult', '未找到匹配的设置项')}</div>`;
+                return;
+            }
+
+            const leafHtml = (it) => `<button class="cs-bulk-tree__item cs-bulk-tree__leaf${it.id === currentId ? ' is-active' : ''}" data-id="${this._escapeAttr(it.id)}">
+                                            <span class="cs-bulk-tree__name">${this._escapeAttr(it.name)}</span>
+                                        </button>`;
+
+            let html = '';
+            for (const l1 of visible) {
+                const l1Open = !!kw || expanded.has(l1.id);
+                const total = l1.children.reduce((n, c) => n + c.items.length, 0);
+                let l2Html = '';
+                for (const l2 of l1.children) {
+                    const l2Open = !!kw || expanded.has(l2.id);
+                    l2Html += `<div class="cs-bulk-tree__node${l2Open ? '' : ' is-collapsed'}">
+                            <button class="cs-bulk-tree__item cs-bulk-tree__row cs-bulk-tree__row--l2" data-node="${this._escapeAttr(l2.id)}">
+                                <svg class="cs-bulk-tree__caret"><use xlink:href="#iconRight"></use></svg>
+                                <span class="cs-bulk-tree__icon">${this._bulkIconHtml(l2.icon)}</span>
+                                <span class="cs-bulk-tree__name">${this._escapeAttr(l2.name)}</span>
+                                <span class="cs-bulk-tree__count">${l2.items.length}</span>
+                            </button>
+                            <div class="cs-bulk-tree__children">${l2.items.map(leafHtml).join('')}</div>
+                        </div>`;
+                }
+                html += `<div class="cs-bulk-tree__node${l1Open ? '' : ' is-collapsed'}">
+                        <button class="cs-bulk-tree__item cs-bulk-tree__row cs-bulk-tree__row--l1" data-node="${this._escapeAttr(l1.id)}">
+                            <svg class="cs-bulk-tree__caret"><use xlink:href="#iconRight"></use></svg>
+                            <span class="cs-bulk-tree__icon">${this._bulkIconHtml(l1.icon)}</span>
+                            <span class="cs-bulk-tree__name">${this._escapeAttr(l1.name)}</span>
+                            <span class="cs-bulk-tree__count">${total}</span>
+                        </button>
+                        <div class="cs-bulk-tree__children">${l2Html}</div>
+                    </div>`;
+            }
+            listEl.innerHTML = html;
+
+            // 一级 / 二级：点整行折叠展开
+            listEl.querySelectorAll('[data-node]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-node');
+                    if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+                    render(input.value);
+                });
+            });
+            // 三级：点中即选中
+            listEl.querySelectorAll('.cs-bulk-tree__leaf').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id');
+                    self._closeBulkPicker();
+                    onPick(flat.find(x => x.id === id) || null);
+                });
+            });
+        };
+        render('');
+
+        document.body.appendChild(el);
+
+        const onDoc = (e) => {
+            if (el.contains(e.target)) return;
+            // 点的是「唤起它的那个按钮」时不在这里关：让按钮自己的 click 去走收起逻辑，
+            // 否则 mousedown 先关、click 又立刻重开，看着就像永远关不掉。
+            if (anchorEl && anchorEl.contains && anchorEl.contains(e.target)) return;
+            self._closeBulkPicker();
+        };
+        const onMove = () => {
+            if (!document.body.contains(anchorEl)) { self._closeBulkPicker(); return; }
+            self._positionBulkPicker(el, anchorEl);
+        };
+        this._bulkPickerState = { el, onDoc, onMove, anchorEl };
+
+        this._positionBulkPicker(el, anchorEl);
+
+        // 延后一帧再挂外部点击监听，避免吞掉「打开浮层」这一次点击
+        setTimeout(() => {
+            document.addEventListener('mousedown', onDoc, true);
+            window.addEventListener('resize', onMove, true);
+            window.addEventListener('scroll', onMove, true);
+            input.focus();
+        }, 0);
+
+        input.addEventListener('input', () => render(input.value));
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { e.stopPropagation(); self._closeBulkPicker(); return; }
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const first = listEl.querySelector('.cs-bulk-tree__leaf');
+                if (first) first.click();
+            }
+        });
     }
 
     // ========== 修改后的二级菜单生成方法（图标彩色） ==========
