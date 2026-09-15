@@ -22,6 +22,20 @@
       <div style="flex: 1; min-width: 150px; padding: 10px 12px; background: var(--b3-theme-background); border-radius: 6px; font-size: 13px; color: var(--b3-theme-on-background); display: flex; align-items: center; gap: 8px; box-sizing: border-box;"><span style="min-width: 22px; height: 22px; background: var(--b3-theme-primary); color: var(--b3-theme-on-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0;">3</span>选择喜欢的样式</div>
       <div style="flex: 1; min-width: 150px; padding: 10px 12px; background: var(--b3-theme-background); border-radius: 6px; font-size: 13px; color: var(--b3-theme-on-background); display: flex; align-items: center; gap: 8px; box-sizing: border-box;"><span style="min-width: 22px; height: 22px; background: var(--b3-theme-primary); color: var(--b3-theme-on-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0;">4</span>即时预览 ✨</div>
     </div>
+    <p style="margin: 12px 0 0; color: var(--b3-theme-on-surface-light); font-size: 13px; line-height: 1.6;">选中多个块后右键，菜单顶部会多出「批量设置样式」，可以在同一个面板里给每个块分别挑不同的样式，一次应用完成。</p>
+  </div>
+
+  <!-- 让 AI 帮你排版 -->
+  <div style="margin: 1.5em 0; padding: 1.5em; background: var(--b3-theme-surface); border-radius: 10px; border: 1px solid var(--b3-border-color); width: 100%; box-sizing: border-box;">
+    <h3 style="margin: 0 0 1em; color: var(--b3-theme-primary); font-size: 1.1em;">🤖 让 AI 帮你排版</h3>
+    <p style="margin: 0 0 10px; color: var(--b3-theme-on-surface-light); font-size: 14px; line-height: 1.7;">轻饰笔记的样式，本质上就是块上的几个自定义属性——谁写都生效。所以 AI 只要能读写块属性，就能直接指挥它，插件不需要对外开任何接口。</p>
+    <p style="margin: 0 0 12px; color: var(--b3-theme-on-surface-light); font-size: 14px; line-height: 1.7;"><b>思源 3.7 以上自带智能体和 MCP 服务器</b>，所以这件事几乎不用配置：插件启动时会把一份操作说明装进思源的技能库，AI 加载它就知道该怎么干活。</p>
+    <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+      <div style="padding: 10px 12px; background: var(--b3-theme-background); border-radius: 6px; font-size: 13px; color: var(--b3-theme-on-background); line-height: 1.7;"><b>1 · 用思源自带的智能体</b><br>直接把话说完事：「把这篇笔记整理一下：重点结论做成卡片，注意事项做成便签，引用别人的话用引述样式。只改样式，别改文字。」<br>它会自己加载轻饰笔记的技能、读样式清单、再给块套样式。<br><span style="opacity:.75;">（不用提代码块——思源自带的代码块已经有语言标签和复制按钮，套上卡片反而难看，技能里已经写明不要动它。）</span></div>
+      <div style="padding: 10px 12px; background: var(--b3-theme-background); border-radius: 6px; font-size: 13px; color: var(--b3-theme-on-background); line-height: 1.7;"><b>2 · 或者接外部 AI 客户端</b><br>把下面这个地址给 AI（Claude Code / Cursor / Cherry Studio 等都行），让它自己配 MCP：<br><code style="word-break: break-all;">http://127.0.0.1:6806/mcp?token=你的token</code><br>Token 在「思源 → 设置 → 关于 → API token」里复制；端口以思源实际使用的为准（默认 6806）。</div>
+      <div style="padding: 10px 12px; background: var(--b3-theme-background); border-radius: 6px; font-size: 13px; color: var(--b3-theme-on-background); line-height: 1.7;"><b>3 · 它手上有什么</b><br>思源内置 MCP 提供 <code>attr</code>（块属性读写）、<code>sql</code>（查询）、<code>file</code>（读工作区文件）、<code>skill</code>（加载技能）等工具。轻饰笔记的样式清单在 <code>data/storage/petal/siyuan-deco/ai-styles.json</code>，每条都标了中文名、适合的块类型（引述块 / 普通块 / 自定义）、默认图标与标题 —— AI 照着填就能选对。</div>
+    </div>
+    <p style="margin: 14px 0 0; color: var(--b3-theme-on-surface-light); font-size: 13px; line-height: 1.7;">📌 AI 写进去的就是块上的 <code>custom-deco-style</code>（样式名）、<code>custom-deco-card-icon</code>（图标）、<code>custom-deco-card-title</code>（标题）三个自定义属性。你也可以在块属性面板里手写，插件不区分是 AI 写的还是人写的。</p>
   </div>
 
   <!-- 励志标语 -->
@@ -29,12 +43,15 @@
 
 ### 更新日志
 
-#### v1.4.7
+#### v1.4.7 - v1.4.8
 
+- 【新增】支持 AI 自动排版：插件会把全部样式（含自定义）导出成一份机器可读的清单，并把一份操作说明自动装进思源技能库，配合思源自带的智能体（或任何接入思源 MCP 的 AI 客户端），一句话就能让它自动判断该给哪块配什么样式，详见「让 AI 帮你排版」
+- 【新增】AI 排版内置块类型判断规则：只动段落和引述块，标题、列表、表格、代码块一律不碰——尤其是代码块，思源自带的样式已经有语言标签和复制按钮，再套一层反而会打架
 - 【新增】支持批量设置样式：一次选中多个块后右键，即可在同一个面板里为每个块分别指定不同样式，最后一次性应用，不用再逐个打开菜单
-- 【新增】批量面板顶部提供「统一选择样式 + 应用到全部」，多选套用同一种样式也只需两步
+- 【新增】批量面板顶部提供「统一选择样式 + 应用到全部」，多选套用同一种样式只需两步
 - 【新增】样式选择器改为层级树：一级按「引述块 / 普通块 / 自定义样式」归类，二级为样式分类，三级为具体样式，分类与右键菜单完全一致
-- 【新增】样式选择器支持搜索和逐级展开折叠，默认全部折叠；输入分类名可命中整组
+- 【新增】样式选择器支持搜索和逐级展开折叠，默认全部折叠；输入分类名可命中整组；当前样式以整行高亮标识
+- 【新增】插件内部 API：`window.siyuan.deco` 提供列出样式、查询 / 设置 / 移除 / 批量设置样式等方法，供思源内的其它插件调用
 - 【优化】批量面板与「自定义块样式」设置面板视觉统一：块列表改用分组卡片和细分隔线，底部按钮同款
 - 【优化】批量面板高度随块数量自动伸缩，只有两三个块时不再留下大片空白
 - 【优化】块列表的鼠标悬停高亮改为不贴边的四角圆角块，已选样式的行用整行高亮标识

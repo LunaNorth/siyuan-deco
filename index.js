@@ -447,6 +447,7 @@ const TEXT = {
     bulkNoBlock: '请先在编辑器中选中要设置的块',
     bulkSearchStyle: '搜索样式...',
     bulkClear: '清除选择',
+    customStyleGroup: '自定义样式',
     bulkEmptyBlock: '(空块)',
     bulkTip: '已选中 {n} 个块，可为每个块分别指定样式',
     bulkProgress: '已为 {n}/{total} 个块选择样式',
@@ -635,6 +636,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         this.waitForMenu();
         this.addTitleClickListener();
         this.startAttributeRestoreObserver();
+
+        // ===== AI / MCP 对接 =====
+        // 顺序有讲究：先装 saveData 钩子，再挂对外 API，然后导出清单，最后装 skill
+        this._installAiApi();
+        this._wrapSaveDataForAiCatalog();
+        this.exportAiCatalog();
+        this._installAiSkill();   // 把操作说明写进思源 skill 库，供 AI 加载
 
     }
 
@@ -2981,7 +2989,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if ((this.customStyles || []).length) {
             const l1 = {
                 id: 'g:__custom__',
-                name: this.getText('customManage', '自定义样式'),
+                // 注意：别用 customManage（那个键的值是插件名「轻饰笔记」），这里要的是分组名
+                name: this.getText('customStyleGroup', '自定义样式'),
                 icon: '#iconDecoSparkle',
                 children: []
             };
@@ -3025,6 +3034,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         return v ? this._renderIconHtml(v) : '';
     }
 
+    // 这些样式靠 ::before 自己渲染装饰，不写图标和标题（与 createCardItem 的判断保持一致）。
+    // 抽成单独方法是为了让「批量设置」和「AI 样式清单」共用同一套规则，避免两处走偏。
+    _styleSkipsIconTitle(key) {
+        const k = key || '';
+        return k.endsWith('QuoteCard') || k.includes('WhisperCard') || k.endsWith('ImageCard')
+            || k.startsWith('topLine') || k.startsWith('polka') || k.startsWith('titleBar')
+            || k.endsWith('MarkCard');
+    }
+
     // 由样式项推导要写入的块属性。
     // 注意：这里的判断条件与 createCardItem 保持一致（那边逻辑未动，避免影响单块路径）。
     _bulkStyleAttrs(entry, existingTitle) {
@@ -3037,9 +3055,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
 
         const key = entry.key || '';
-        const skipIconTitle = key.endsWith('QuoteCard') || key.includes('WhisperCard') || key.endsWith('ImageCard')
-            || key.startsWith('topLine') || key.startsWith('polka') || key.startsWith('titleBar')
-            || key.endsWith('MarkCard');
+        const skipIconTitle = this._styleSkipsIconTitle(key);
 
         if (!skipIconTitle) {
             const defaults = this.styleDefaults ? this.styleDefaults[entry.styleLabel] : null;
@@ -3057,6 +3073,262 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         }
 
         return attrs;
+    }
+
+    // ============================================================================
+    //  AI / MCP 对接层
+    //  设计前提：本插件是"声明式"的 —— 样式就是块属性，谁写都生效。
+    //  所以对外只做两件事：
+    //    A. 把「有哪些样式、各自适合什么块」导出成机器可读的 JSON，供外部 MCP / AI 读取；
+    //    B. 把插件能力挂到 window.siyuan.deco，供思源内部的其他插件（含 AI 插件）直接调用。
+    //  AI 想给块套样式，最省的路径其实是直接调内核 /api/attr/setBlockAttrs，不经过这里。
+    // ============================================================================
+
+    // 生成 AI 用的样式清单（纯数据，不含任何 DOM）
+    _buildAiCatalog() {
+        const tree = this._buildBulkStyleTree();
+        const styles = [];
+
+        tree.forEach(l1 => {
+            // quote = 引述样式（只适合引述块）／block = 普通块样式／any = 用户自定义，不限定
+            const blockType = l1.id === 'g:quoteBlock' ? 'quote'
+                : (l1.id === 'g:__custom__' ? 'any' : 'block');
+            l1.children.forEach(l2 => {
+                l2.items.forEach(it => {
+                    const defaults = this.styleDefaults ? this.styleDefaults[it.styleLabel] : null;
+                    const skip = it.kind === 'custom' ? false : this._styleSkipsIconTitle(it.key || '');
+                    const icon = it.kind === 'custom' ? (it.icon || '') : ((defaults && defaults.icon) || '');
+                    const defTitle = it.kind === 'custom' ? (it.title || '') : ((defaults && defaults.title) || '');
+
+                    styles.push({
+                        name: it.name,
+                        group: [l1.name, l2.name],
+                        kind: it.kind,
+                        // 只是推荐，插件本身不校验块类型；写错了不会报错，只是视觉上不协调
+                        blockType: blockType,
+                        icon: icon,
+                        defaultTitle: defTitle,
+                        writesIcon: !skip && !!icon,
+                        writesTitle: !skip
+                    });
+                });
+            });
+        });
+
+        return {
+            plugin: 'siyuan-deco',
+            displayName: this.getText('cardview', '轻饰笔记'),
+            schema: 1,
+            generatedAt: new Date().toISOString(),
+            // 写入块属性时用的键名
+            attrs: {
+                style: 'custom-deco-style',
+                icon: 'custom-deco-card-icon',
+                title: 'custom-deco-card-title',
+                date: 'custom-deco-card-date'
+            },
+            // 直接说给 AI 听的使用要点
+            notes: [
+                '套用样式最少只需写 custom-deco-style，值取 styles[].name（样式中文名）。',
+                'writesIcon / writesTitle 为 true 时，通常要一并写入 attrs.icon 与 attrs.title，值可用该样式自己的 icon / defaultTitle。',
+                '写入用思源内核 API：POST /api/attr/setBlockAttrs，body 为 { id, attrs }。清空样式就把对应属性写成空字符串。',
+                '批量写入逐个块调用即可；块 ID 可以用 /api/query/sql 查（表 blocks，字段 id / type / subtype）。'
+            ],
+            // blockType 的取值含义
+            blockTypeHint: {
+                quote: '引述样式，适合引述块（blocks.type = "NodeBlockquote"，SQL 里可写 b.type = "NodeBlockquote"）',
+                block: '普通块样式，适合段落 / 标题 / 列表 / 表格 / 代码块',
+                any: '用户自定义样式，不限定块类型'
+            },
+            styles
+        };
+    }
+
+    // 把清单写到 data/storage/petal/siyuan-deco/ai-styles.json
+    // （saveData 的文件名就是 key 本身，所以 key 里带上扩展名）
+    // 说明：曾经想再镜像一份到 data/public 走 HTTP 直取，**实测行不通** ——
+    // 思源没有 /public/ 这条路由（404），/assets/ 和 /plugins/ 都要鉴权。
+    // 所以清单只留这一份正本，读取方式见 README「让 AI 帮你排版」一节。
+    async exportAiCatalog() {
+        try {
+            await this.saveData('ai-styles.json', this._buildAiCatalog());
+            return true;
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 导出 AI 样式清单失败', e);
+            return false;
+        }
+    }
+
+    // 按样式中文名反查样式项（拿内部结构，含 key，供属性推导用）
+    _findBulkStyleEntryByName(name) {
+        const n = String(name == null ? '' : name).trim();
+        if (!n) return null;
+        return this._collectBulkStyles().find(it => it.name === n) || null;
+    }
+
+    // 读某个块当前套的样式
+    async _apiGetStyle(blockId) {
+        const r = await this.callSiyuanAPI('/api/attr/getBlockAttrs', { id: blockId });
+        if (!r || r.code !== 0 || !r.data) return null;
+        const d = r.data;
+        return {
+            id: blockId,
+            style: d['custom-deco-style'] || null,
+            icon: d['custom-deco-card-icon'] || '',
+            title: d['custom-deco-card-title'] || '',
+            date: d['custom-deco-card-date'] || ''
+        };
+    }
+
+    // 给一个块套样式（opts 可覆盖 icon / title）
+    async _apiSetStyle(blockId, name, opts) {
+        const o = opts || {};
+        const entry = this._findBulkStyleEntryByName(name);
+        if (!entry) throw new Error('未知样式：' + name);
+
+        // 查一下块现有标题，避免把用户自己改过的标题覆盖掉（与右键菜单同一套规则）
+        const cur = await this._apiGetStyle(blockId);
+        const attrs = this._bulkStyleAttrs(entry, cur ? (cur.title || '') : '');
+
+        if (o.icon !== undefined) attrs['custom-deco-card-icon'] = o.icon == null ? '' : String(o.icon);
+        if (o.title !== undefined) attrs['custom-deco-card-title'] = o.title == null ? '' : String(o.title);
+
+        await this.setAttrs(blockId, attrs);
+        return { id: blockId, style: entry.name, attrs };
+    }
+
+    // 批量套样式：[{ id, style, icon?, title? }]
+    async _apiBatchSetStyles(list) {
+        const out = { total: 0, ok: 0, failed: [] };
+        if (!Array.isArray(list)) return out;
+        out.total = list.length;
+
+        for (const it of list) {
+            const id = it && (it.id || it.blockId);
+            const style = it && (it.style || it.name);
+            if (!id || !style) {
+                out.failed.push({ id: id || '', style: style || '', reason: '缺少 id 或 style' });
+                continue;
+            }
+            try {
+                await this._apiSetStyle(id, style, it);
+                out.ok += 1;
+            } catch (e) {
+                out.failed.push({ id, style, reason: String((e && e.message) || e) });
+            }
+        }
+        return out;
+    }
+
+    // 挂 window.siyuan.deco，并广播一个事件方便其它插件发现
+    _installAiApi() {
+        const self = this;
+        const api = {
+            plugin: 'siyuan-deco',
+            schema: 1,
+            listStyles: () => self._buildAiCatalog().styles,
+            describeStyle: (name) => self._findBulkStyleEntryByName(name),
+            getStyle: (blockId) => self._apiGetStyle(blockId),
+            setStyle: (blockId, name, opts) => self._apiSetStyle(blockId, name, opts),
+            removeStyle: (blockId) => self.removeCardStyles(blockId),
+            batchSetStyles: (list) => self._apiBatchSetStyles(list),
+            exportCatalog: () => self.exportAiCatalog(),
+            getCatalog: () => self._buildAiCatalog()
+        };
+
+        try {
+            if (!window.siyuan) window.siyuan = {};
+            window.siyuan.deco = api;
+            this._decoApi = api;
+            window.dispatchEvent(new CustomEvent('siyuan-deco-ready', { detail: api }));
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 挂载 AI API 失败', e);
+        }
+    }
+
+    // 自定义样式 / 分组一变，就顺手刷新磁盘上的 AI 清单（避免 AI 读到过期数据）
+    _wrapSaveDataForAiCatalog() {
+        if (this._origSaveData) return;
+        this._origSaveData = this.saveData.bind(this);
+        this.saveData = async (key, data) => {
+            const r = await this._origSaveData(key, data);
+            if (key === 'customStyles' || key === 'customFolders') {
+                this.exportAiCatalog().catch(() => { /* 不打扰用户 */ });
+            }
+            return r;
+        };
+    }
+
+    // ============================================================================
+    //  AI Skill：把操作说明"安装"进思源的 skill 库
+    //  思源 3.7+ 自带 MCP 服务器 + skill 机制：
+    //    · skill 存在 data/storage/ai/agent/skills/<名字>/SKILL.md
+    //    · 内置 MCP 的 skill 工具能 list / load 它
+    //  但实测：插件目录里的 skills/ 思源**不会**自动读取（这点和 task-horizon 一样），
+    //  所以插件启动时主动把自带的 SKILL.md 写过去一次。
+    //  之后 AI 就能 `skill load siyuan-deco-styling` 拿到操作说明，
+    //  再用内置的 sql / attr / file 工具干活 —— 插件不需要注册任何工具。
+    // ============================================================================
+
+    _pluginFilePath(rel) {
+        const name = this.name || 'siyuan-deco';
+        return 'data/plugins/' + name + '/' + rel;
+    }
+
+    // 读工作区内文件（getFile 返回的是原始文本，不是 JSON，所以不能走 callSiyuanAPI）
+    async _getWorkspaceFileText(relPath) {
+        try {
+            const token = (window.siyuan && window.siyuan.config && window.siyuan.config.api && window.siyuan.config.api.token) || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = 'Token ' + token;
+            const res = await fetch('/api/file/getFile', {
+                method: 'POST', headers, body: JSON.stringify({ path: relPath }),
+            });
+            if (!res.ok) return null;
+            return await res.text();
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // 写工作区内文件。注意：putFile 只吃 multipart，不能用 callSiyuanAPI（那个会 JSON 化 body）
+    async _putWorkspaceFile(relPath, text, mime) {
+        try {
+            const form = new FormData();
+            form.append('path', relPath);
+            form.append('isDir', 'false');
+            form.append('modTime', String(Date.now()));
+            form.append('file', new Blob([text], { type: mime || 'text/plain' }), relPath.split('/').pop());
+
+            const token = (window.siyuan && window.siyuan.config && window.siyuan.config.api && window.siyuan.config.api.token) || '';
+            const headers = {};
+            if (token) headers['Authorization'] = 'Token ' + token;
+
+            const res = await fetch('/api/file/putFile', { method: 'POST', headers, body: form });
+            const r = await res.json().catch(() => null);
+            return !!(r && r.code === 0);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    async _installAiSkill() {
+        const SKILL_DIR = 'siyuan-deco-styling';
+        const SRC = this._pluginFilePath('skills/' + SKILL_DIR + '/SKILL.md');
+        const DST = 'data/storage/ai/agent/skills/' + SKILL_DIR + '/SKILL.md';
+        try {
+            const text = await this._getWorkspaceFileText(SRC);
+            if (!text) {
+                console.warn('[CardStyleWorkshop] 读不到自带 SKILL.md，跳过 AI Skill 安装：', SRC);
+                return false;
+            }
+            const ok = await this._putWorkspaceFile(DST, text, 'text/markdown');
+            if (!ok) console.warn('[CardStyleWorkshop] AI Skill 安装失败（不影响插件其它功能）');
+            return ok;
+        } catch (e) {
+            console.warn('[CardStyleWorkshop] 安装 AI Skill 出错', e);
+            return false;
+        }
     }
 
     // 右键菜单里的「批量设置样式」入口
@@ -3980,6 +4252,13 @@ onunload() {
     if (this._timelineStyle && this._timelineStyle.parentNode) {
         this._timelineStyle.parentNode.removeChild(this._timelineStyle);
         this._timelineStyle = null;
+    }
+
+    // 撤掉对外 API（只撤自己挂的那个，别误删别人的）
+    if (this._decoApi && typeof window !== 'undefined'
+        && window.siyuan && window.siyuan.deco === this._decoApi) {
+        try { delete window.siyuan.deco; } catch (e) { window.siyuan.deco = undefined; }
+        this._decoApi = null;
     }
 }
 

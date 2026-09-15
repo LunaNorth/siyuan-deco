@@ -5,6 +5,7 @@ setlocal enabledelayedexpansion
 
 set OUTPUT=package.zip
 set PLUGIN_DIR=.
+set SKILLS_DIR=%PLUGIN_DIR%\skills
 
 if not exist "%PLUGIN_DIR%" (
     echo ❌ 错误: 未找到插件目录 '%PLUGIN_DIR%' >&2
@@ -24,6 +25,19 @@ if not exist "%TEMP_DIR%" (
 
 echo 📁 复制插件文件到临时目录...
 xcopy "%PLUGIN_DIR%\*" "%TEMP_DIR%\" /E /I /Q /H /Y >nul 2>&1
+
+REM ========== 新增：确保加入 skills 文件夹 ==========
+if exist "%SKILLS_DIR%" (
+    echo 📁 加入 skills 文件夹...
+    xcopy "%SKILLS_DIR%" "%TEMP_DIR%\skills\" /E /I /Q /H /Y >nul 2>&1
+) else (
+    echo ⚠️ 警告: 未找到 skills 文件夹 "%SKILLS_DIR%"，将创建空 skills 文件夹
+    mkdir "%TEMP_DIR%\skills" >nul 2>&1
+)
+
+REM 如果希望空的 skills 文件夹也能进 zip，保留下面这行；否则可删除
+if not exist "%TEMP_DIR%\skills\.keep" type nul > "%TEMP_DIR%\skills\.keep"
+REM ====================================================
 
 echo 🧹 清理不需要的文件和目录...
 
@@ -45,17 +59,17 @@ REM 按用户要求排除：i18n 文件夹 和 README_zh_CN.md
 if exist "%TEMP_DIR%\i18n" rd /s /q "%TEMP_DIR%\i18n" >nul 2>&1
 if exist "%TEMP_DIR%\README_zh_CN.md" del /q "%TEMP_DIR%\README_zh_CN.md" >nul 2>&1
 
-REM ========== 新增：排除 icons 文件夹 ==========
+REM ========== 排除 icons 文件夹 ==========
 if exist "%TEMP_DIR%\icons" rd /s /q "%TEMP_DIR%\icons" >nul 2>&1
 REM ============================================
 
-REM 删除 LICENSE（保留历史排除逻辑）
+REM 删除 LICENSE
 if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
 
 REM 删除旧的输出文件
 if exist "%ORIGINAL_DIR%\%OUTPUT%" del /q "%ORIGINAL_DIR%\%OUTPUT%" >nul 2>&1
 
-REM 使用 PowerShell 打包 (Windows 内置)
+REM 使用 PowerShell 打包
 echo 📦 正在打包...
 powershell -nologo -noprofile -command "Compress-Archive -Path '%TEMP_DIR%\*' -DestinationPath '%ORIGINAL_DIR%\%OUTPUT%' -Force" >nul 2>&1
 
@@ -75,5 +89,4 @@ if not exist "%ORIGINAL_DIR%\%OUTPUT%" (
 REM 清理临时目录
 rd /s /q "%TEMP_DIR%" >nul 2>&1
 
-REM 修改成功提示，明确说明排除了 icons 文件夹
-echo ✅ 打包成功，已排除 .git、node_modules、i18n、icons、README_zh_CN.md、LICENSE 等不需要的内容。
+echo ✅ 打包成功，已排除 .git、node_modules、i18n、icons、README_zh_CN.md、LICENSE 等不需要的内容，并已加入 skills 文件夹。
