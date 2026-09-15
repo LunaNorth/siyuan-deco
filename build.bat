@@ -1,46 +1,30 @@
 @echo off
 REM build.bat - 打包插件，排除开发、系统临时文件及指定内容
-
 setlocal enabledelayedexpansion
-
 set OUTPUT=package.zip
 set PLUGIN_DIR=.
 set SKILLS_DIR=%PLUGIN_DIR%\skills
-
 if not exist "%PLUGIN_DIR%" (
-    echo ❌ 错误: 未找到插件目录 '%PLUGIN_DIR%' >&2
-    exit /b 1
+echo [X] 错误: 未找到插件目录 '%PLUGIN_DIR%' >&2
+exit /b 1
 )
-
-REM ✅ 保存原始工作目录
+REM 保存原始工作目录
 set ORIGINAL_DIR=%cd%
-
 REM 创建临时目录
 set TEMP_DIR=%TEMP%\plugin_build_%RANDOM%
 mkdir "%TEMP_DIR%" 2>nul
 if not exist "%TEMP_DIR%" (
-    echo ❌ 错误: 无法创建临时目录 '%TEMP_DIR%' >&2
-    exit /b 1
+echo [X] 错误: 无法创建临时目录 '%TEMP_DIR%' >&2
+exit /b 1
 )
-
-echo 📁 复制插件文件到临时目录...
+echo [1/4] 复制插件文件到临时目录...
 xcopy "%PLUGIN_DIR%\*" "%TEMP_DIR%\" /E /I /Q /H /Y >nul 2>&1
-
-REM ========== 新增：确保加入 skills 文件夹 ==========
-if exist "%SKILLS_DIR%" (
-    echo 📁 加入 skills 文件夹...
-    xcopy "%SKILLS_DIR%" "%TEMP_DIR%\skills\" /E /I /Q /H /Y >nul 2>&1
-) else (
-    echo ⚠️ 警告: 未找到 skills 文件夹 "%SKILLS_DIR%"，将创建空 skills 文件夹
-    mkdir "%TEMP_DIR%\skills" >nul 2>&1
+REM 确保 skills 文件夹存在（正常情况 xcopy 已经带过来了）
+if not exist "%TEMP_DIR%\skills" (
+echo [!] 警告: 未找到 skills 文件夹 "%SKILLS_DIR%"，将创建空文件夹
+mkdir "%TEMP_DIR%\skills" >nul 2>&1
 )
-
-REM 如果希望空的 skills 文件夹也能进 zip，保留下面这行；否则可删除
-if not exist "%TEMP_DIR%\skills\.keep" type nul > "%TEMP_DIR%\skills\.keep"
-REM ====================================================
-
-echo 🧹 清理不需要的文件和目录...
-
+echo [2/4] 清理不需要的文件和目录...
 REM 删除版本控制及IDE相关目录
 if exist "%TEMP_DIR%\.git" rd /s /q "%TEMP_DIR%\.git" >nul 2>&1
 if exist "%TEMP_DIR%\.gitignore" del /q "%TEMP_DIR%\.gitignore" >nul 2>&1
@@ -48,45 +32,49 @@ if exist "%TEMP_DIR%\.history" rd /s /q "%TEMP_DIR%\.history" >nul 2>&1
 if exist "%TEMP_DIR%\.idea" rd /s /q "%TEMP_DIR%\.idea" >nul 2>&1
 if exist "%TEMP_DIR%\.DS_Store" del /q "%TEMP_DIR%\.DS_Store" >nul 2>&1
 if exist "%TEMP_DIR%\node_modules" rd /s /q "%TEMP_DIR%\node_modules" >nul 2>&1
-
-REM 删除构建脚本自身
+REM 开发过程产生的目录（.workbuddy 是协作记录，绝不能进包）
+if exist "%TEMP_DIR%\.workbuddy" rd /s /q "%TEMP_DIR%\.workbuddy" >nul 2>&1
 if exist "%TEMP_DIR%\build.sh" del /q "%TEMP_DIR%\build.sh" >nul 2>&1
 if exist "%TEMP_DIR%\build.bat" del /q "%TEMP_DIR%\build.bat" >nul 2>&1
 if exist "%TEMP_DIR%\.hotreload" del /q "%TEMP_DIR%\.hotreload" >nul 2>&1
 if exist "%TEMP_DIR%\update.sh" del /q "%TEMP_DIR%\update.sh" >nul 2>&1
-
 REM 按用户要求排除：i18n 文件夹 和 README_zh_CN.md
 if exist "%TEMP_DIR%\i18n" rd /s /q "%TEMP_DIR%\i18n" >nul 2>&1
 if exist "%TEMP_DIR%\README_zh_CN.md" del /q "%TEMP_DIR%\README_zh_CN.md" >nul 2>&1
-
-REM ========== 排除 icons 文件夹 ==========
+REM 排除 icons 文件夹
 if exist "%TEMP_DIR%\icons" rd /s /q "%TEMP_DIR%\icons" >nul 2>&1
-REM ============================================
-
 REM 删除 LICENSE
 if exist "%TEMP_DIR%\LICENSE" del /q "%TEMP_DIR%\LICENSE" >nul 2>&1
-
 REM 删除旧的输出文件
 if exist "%ORIGINAL_DIR%\%OUTPUT%" del /q "%ORIGINAL_DIR%\%OUTPUT%" >nul 2>&1
 
-REM 使用 PowerShell 打包
-echo 📦 正在打包...
-powershell -nologo -noprofile -command "Compress-Archive -Path '%TEMP_DIR%\*' -DestinationPath '%ORIGINAL_DIR%\%OUTPUT%' -Force" >nul 2>&1
-
+echo [3/4] 正在打包...
+REM ---------------------------------------------------------------
+REM 用 Windows 自带的 tar.exe（bsdtar）而不是 Compress-Archive。
+REM 原因：Windows PowerShell 5.1 的 Compress-Archive 给带层级的路径写
+REM   反斜杠（如 skills\xxx\SKILL.md），而 ZIP 规范要求正斜杠，
+REM   会被思源集市检查判为不合格。tar.exe 写的是 /，且会写入目录条目。
+REM 注意：-C 后面用通配符 *，这样条目名不会带 ./ 前缀。
+REM ---------------------------------------------------------------
+tar.exe -a -c -f "%ORIGINAL_DIR%\%OUTPUT%" -C "%TEMP_DIR%" * >nul 2>&1
 if %errorlevel% neq 0 (
-    echo ❌ 打包失败
-    rd /s /q "%TEMP_DIR%" >nul 2>&1
-    exit /b 1
+echo [X] 打包失败：请确认系统里有 tar.exe（Windows 10 1803 及以上自带）
+rd /s /q "%TEMP_DIR%" >nul 2>&1
+exit /b 1
 )
-
 REM 验证输出文件
 if not exist "%ORIGINAL_DIR%\%OUTPUT%" (
-    echo ❌ 错误: 打包文件未生成 '%OUTPUT%' >&2
-    rd /s /q "%TEMP_DIR%" >nul 2>&1
-    exit /b 1
+echo [X] 错误: 打包文件未生成 '%OUTPUT%' >&2
+rd /s /q "%TEMP_DIR%" >nul 2>&1
+exit /b 1
 )
-
 REM 清理临时目录
 rd /s /q "%TEMP_DIR%" >nul 2>&1
 
-echo ✅ 打包成功，已排除 .git、node_modules、i18n、icons、README_zh_CN.md、LICENSE 等不需要的内容，并已加入 skills 文件夹。
+echo [4/4] 校验包内路径分隔符（下面应该全是 /，出现 \ 就会被打回）
+tar.exe -tf "%ORIGINAL_DIR%\%OUTPUT%"
+
+echo.
+echo [OK] 打包成功：已排除 .git、node_modules、i18n、icons、.workbuddy、README_zh_CN.md、LICENSE 等
+echo      输出：%ORIGINAL_DIR%\%OUTPUT%
+endlocal
