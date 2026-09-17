@@ -615,6 +615,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             this.hiddenStyles = [];
         }
 
+        // 记下当前数据的签名，作为「外部实例改没改数据」的比对基线
+        this._snapshotPetalSigs();
+
         this.state = { menu: null, observer: null, restoreObserver: null };
 
         // 仅当刚在编辑器内右键、或点击块把手时才允许注入「轻饰笔记」菜单项，
@@ -641,6 +644,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         // 顺序有讲究：先装 saveData 钩子，再挂对外 API，然后导出清单，最后装 skill
         this._installAiApi();
         this._wrapSaveDataForAiCatalog();
+        // 清单只在内容变化时才落盘（内部有签名守卫）。
+        // 无条件写 petal 会把其它前端实例点燃成「重载 ⇄ 写盘」乒乓，伺服图标因此一直闪。
         this.exportAiCatalog();
         this._installAiSkill();   // 把操作说明写进思源 skill 库，供 AI 加载
 
@@ -655,6 +660,95 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             position: 'right',
             callback: () => this.openSetting()
         });
+    }
+
+    // ============================================================================
+    //  数据变更：伺服 / 多前端实例下的图标闪烁
+    //
+    //  机制：内核在写入 data/storage/petal/<插件名>/ 之后，会向**同一内核的其它前端
+    //  实例**广播数据变更（桌面主窗口 + 浏览器伺服页面就是两个实例，发起写入的那个
+    //  被排除）。此时如果插件没有覆盖 onDataChanged，思源加载器的判定
+    //        shouldReloadOnDataChange: plugin.onDataChanged === Plugin.prototype.onDataChanged
+    //  为真，会把插件整包卸载再加载。
+    //  再叠加 onload 里的无条件写盘，就成了「重载 → 写盘 → 广播 → 对面重载 → 再写盘」
+    //  的乒乓，表现就是图标一直闪 —— 所以只有开伺服才复现。
+    //
+    //  覆盖本方法后：防抖 → 只读重读 → 签名比对 → 按需就地刷新。全程不写盘。
+    // ============================================================================
+    onDataChanged() {
+        if (this._petalChangedTimer) clearTimeout(this._petalChangedTimer);
+        this._petalChangedTimer = setTimeout(() => {
+            this._petalChangedTimer = null;
+            this._reloadPetalData().catch(() => { /* 读取失败不打扰用户 */ });
+        }, 400);
+    }
+
+    // 需要跟随外部实例同步的 petal 数据键（同时也是本插件的内存字段名）
+    _petalSyncKeys() {
+        return ['customStyles', 'customFolders', 'showPreview', 'showCustomMenu', 'hiddenStyles'];
+    }
+
+    // 把磁盘读到的值规范化成内存里该字段该有的形状（与 onload 的读取规则保持一致）
+    _normalizePetalValue(key, val) {
+        switch (key) {
+            case 'customStyles':
+            case 'customFolders':
+            case 'hiddenStyles':
+                return Array.isArray(val) ? val : [];
+            case 'showPreview':
+                return val === true;
+            case 'showCustomMenu':
+                return val !== false;
+            default:
+                return val === undefined ? null : val;
+        }
+    }
+
+    // 记录当前内存数据的签名，作为「外部有没有改东西」的比对基线
+    _snapshotPetalSigs() {
+        const sigs = {};
+        for (const key of this._petalSyncKeys()) {
+            sigs[key] = JSON.stringify(this._normalizePetalValue(key, this[key]));
+        }
+        this._petalSigs = sigs;
+    }
+
+    // 重读磁盘数据。**只读不写** —— 任何写盘都会再次广播，把回环重新点燃
+    async _reloadPetalData() {
+        if (!this._petalSigs) this._snapshotPetalSigs();
+        let changed = false;
+
+        for (const key of this._petalSyncKeys()) {
+            let raw;
+            try {
+                raw = await this.loadData(key);
+            } catch (e) {
+                continue;   // 单个键读失败不影响其它键
+            }
+
+            const next = this._normalizePetalValue(key, raw);
+            const sig = JSON.stringify(next);
+            if (sig === this._petalSigs[key]) continue;   // 没真变就不动内存，也不重建界面
+
+            this._petalSigs[key] = sig;
+            this[key] = next;
+            changed = true;
+        }
+
+        if (changed) this._refreshUiAfterExternalDataChange();
+    }
+
+    // 外部数据变化后刷新界面：只在设置面板开着时才重建，且不打断正在输入的框
+    _refreshUiAfterExternalDataChange() {
+        const root = this._settingRootEl;
+        if (!root || !root.isConnected) return;
+
+        const active = document.activeElement;
+        if (active && root.contains(active) && /^(input|textarea|select)$/i.test(active.tagName)) {
+            return;   // 用户正在打字，内存已更新，界面下次打开自然是最新
+        }
+
+        this.renderCustomStyleManager(root);
     }
 
 
@@ -3149,9 +3243,35 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     // 说明：曾经想再镜像一份到 data/public 走 HTTP 直取，**实测行不通** ——
     // 思源没有 /public/ 这条路由（404），/assets/ 和 /plugins/ 都要鉴权。
     // 所以清单只留这一份正本，读取方式见 README「让 AI 帮你排版」一节。
-    async exportAiCatalog() {
+    // AI 清单的内容签名。generatedAt 每次构建都不同，比对前必须剔除，
+    // 否则签名永远不相等，这条守卫等于没写。
+    _aiCatalogSignature(catalog) {
+        if (!catalog || typeof catalog !== 'object') return '';
+        const copy = Object.assign({}, catalog);
+        delete copy.generatedAt;
+        return JSON.stringify(copy);
+    }
+
+    async exportAiCatalog(force) {
         try {
-            await this.saveData('ai-styles.json', this._buildAiCatalog());
+            const catalog = this._buildAiCatalog();
+
+            // onload 与每次保存样式后都会调到。只有内容真的变了才落盘 ——
+            // 往 petal 写一次就向其它前端实例广播一次，
+            // 无谓写盘正是「重载 ⇄ 写盘」乒乓的燃料，伺服图标因此一直闪。
+            if (!force) {
+                let cur = null;
+                try {
+                    cur = await this.loadData('ai-styles.json');
+                } catch (e) {
+                    cur = null;
+                }
+                if (cur && this._aiCatalogSignature(cur) === this._aiCatalogSignature(catalog)) {
+                    return true;
+                }
+            }
+
+            await this.saveData('ai-styles.json', catalog);
             return true;
         } catch (e) {
             console.warn('[CardStyleWorkshop] 导出 AI 样式清单失败', e);
@@ -3322,6 +3442,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 console.warn('[CardStyleWorkshop] 读不到自带 SKILL.md，跳过 AI Skill 安装：', SRC);
                 return false;
             }
+
+            // 目标文件内容已经一致就跳过写入：
+            // onload 每次都重写同一份文件纯属多余 IO，而「加载即写盘」正是
+            // 伺服下插件图标闪烁的燃料之一。
+            const cur = await this._getWorkspaceFileText(DST);
+            if (cur && cur === text) return true;
+
             const ok = await this._putWorkspaceFile(DST, text, 'text/markdown');
             if (!ok) console.warn('[CardStyleWorkshop] AI Skill 安装失败（不影响插件其它功能）');
             return ok;
@@ -4232,6 +4359,11 @@ if (key === 'diaryChatWhisperCard') {
 
 
 onunload() {
+    // 清掉数据变更防抖定时器，避免卸载后还去读数据
+    if (this._petalChangedTimer) {
+        clearTimeout(this._petalChangedTimer);
+        this._petalChangedTimer = null;
+    }
     this.state.observer?.disconnect();
     this._restoreObserver?.disconnect();
     if (this._interval) clearInterval(this._interval);
