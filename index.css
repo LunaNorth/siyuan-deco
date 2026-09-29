@@ -5509,3 +5509,451 @@
     .cs-bulk__foot-hint { display: none; }
     .cs-bulk-picker { width: calc(100vw - 24px); }
 }
+
+
+/* ============================================================================
+   原生 Callout 块外观美化（思源 3.8+ 的 NodeCallout 块，> [!NOTE] 语法创建）
+   ----------------------------------------------------------------------------
+   原生 Callout 的 DOM 结构（由内核 lute 渲染）：
+     <div class="callout" data-type="NodeCallout" data-subtype="NOTE|TIP|...">
+       <div class="callout-info"><span class="callout-icon">…</span><span class="callout-title">…</span></div>
+       <div class="callout-content">…子块…</div>
+     </div>
+   设计要点：
+   1. 皮肤只改外观版式，颜色统一取自思源自带的类型色变量 --b3-callout-*（随 data-subtype
+      自动切换 NOTE/TIP/IMPORTANT/WARNING/CAUTION 五色，自定义 subtype 回落 NOTE 色，
+      与思源原生行为一致），因此天然适配亮暗模式与第三方主题；
+   2. 折叠态（fold="1"）思源会给块固定高度，皮肤给题栏加了内边距后放开为自适应，避免裁切；
+   3. 全部选择器要求 .callout 类，套在普通块上不会产生半吊子效果；
+   4. 【约定】新增 / 修改皮肤必须同时验证默认主题与 Neo 主题：Neo 会给 .callout 根元素
+      上类型色文字并叠加 0.5px outline（见下方 Neo 适配段），皮肤不得依赖「正文继承类型色」
+      或「外描边」这类 Neo/默认表现不一致的特性。
+   ============================================================================ */
+
+/* ---- 类型色变量映射：所有「Callout·」皮肤共用 ---- */
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"] {
+    --cs-callout-c: var(--b3-callout-note, var(--b3-theme-primary));
+}
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"][data-subtype="TIP"] {
+    --cs-callout-c: var(--b3-callout-tip, var(--b3-theme-success));
+}
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"][data-subtype="IMPORTANT"] {
+    --cs-callout-c: var(--b3-callout-important, var(--b3-protyle-inline-blockref-color));
+}
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"][data-subtype="WARNING"] {
+    --cs-callout-c: var(--b3-callout-warning, #ff9632);
+}
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"][data-subtype="CAUTION"] {
+    --cs-callout-c: var(--b3-callout-caution, var(--b3-theme-error));
+}
+
+/* ---- 折叠态通用修正：皮肤题栏带内边距，固定折叠高度会把首行裁掉，放开为自适应 ---- */
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"][fold="1"] {
+    height: auto !important;
+}
+
+/* ===== 1. Callout·柔和衬色 —— Obsidian 经典款：浅色衬底 + 细描边 + 彩色标题 ===== */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·柔和衬色"] {
+    background: color-mix(in srgb, var(--cs-callout-c) 9%, var(--b3-theme-background)) !important;
+    border: 1px solid color-mix(in srgb, var(--cs-callout-c) 26%, transparent) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    overflow: hidden;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·柔和衬色"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·柔和衬色"] .callout-info {
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+    padding-bottom: 4px;
+}
+
+/* ===== 2. Callout·题栏卡片 —— 通栏色带标题 + 白底正文 =====
+   色带平直收边、无任何分割线（渐变会把矮卡片正文染色，线再淡也有痕迹，都不要），
+   仅靠色带与正文的底色差自然分区。色带浓度由 --cs-band-tint 统一控制，
+   亮暗模式共用一套表达式（暗色只调浓度变量）。 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"] {
+    --cs-band-tint: 14%;
+    background: var(--b3-theme-background) !important;
+    border: 1px solid var(--b3-border-color) !important;
+    border-radius: 10px !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"] .callout-info {
+    background: color-mix(in srgb, var(--cs-callout-c) var(--cs-band-tint), var(--b3-theme-background));
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+    padding: 7px 14px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"] .callout-content {
+    padding: 10px 14px 12px;
+}
+/* 折叠时只留题栏，更符合「收起」的直觉 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"][fold="1"] .callout-content {
+    display: none !important;
+}
+
+/* ===== 3. Callout·极简描边 —— 透明底 + 1.5px 同色描边 + 大圆角 ===== */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·极简描边"] {
+    background: transparent !important;
+    border: 1.5px solid color-mix(in srgb, var(--cs-callout-c) 55%, transparent) !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·极简描边"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·极简描边"] .callout-info {
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+    padding-bottom: 4px;
+}
+
+/* ===== 4. Callout·竖条卡片 —— 加厚版原生竖条 + 浅衬底圆角卡 ===== */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·竖条卡片"] {
+    background: color-mix(in srgb, var(--cs-callout-c) 5%, var(--b3-theme-background)) !important;
+    border-left: 4px solid var(--cs-callout-c) !important;
+    border-radius: 6px !important;
+    padding: 8px 14px 8px 16px !important;
+    overflow: hidden;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·竖条卡片"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·竖条卡片"] .callout-info {
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+}
+
+/* ===== 5. Callout·浮起卡片 —— 卡片 + 标题左侧同色小竖条（无阴影） ===== */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·浮起卡片"] {
+    background: var(--b3-theme-background) !important;
+    border: 1px solid var(--b3-border-color) !important;
+    border-radius: 12px !important;
+    padding: 10px 14px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·浮起卡片"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·浮起卡片"] .callout-info {
+    position: relative;
+    padding-left: 12px;
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·浮起卡片"] .callout-info::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 4px;
+    border-radius: 2px;
+    background: var(--cs-callout-c);
+}
+
+/* ===== 6. Callout·GitHub —— 复刻 GitHub GFM Alerts：无底色 + 左侧类型色竖条（0.25em）+ 同色标题 =====
+   GitHub 的标题与正文同字号、weight 500，标题行下留出呼吸空隙；其余交给类型色变量自动适配 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·GitHub"] {
+    background: transparent !important;
+    border: none !important;
+    border-left: 4px solid var(--cs-callout-c) !important;
+    border-radius: 3px !important;
+    padding: 4px 14px 6px 14px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·GitHub"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·GitHub"] .callout-info {
+    color: var(--cs-callout-c) !important;
+    font-weight: 500;
+    padding: 2px 0 6px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·GitHub"] .callout-title {
+    font-size: 100%;
+    opacity: 1;
+}
+
+/* ===== 8. Callout·虚线笔记 —— 手账虚线框：墨色虚线边框 + 无底色 + 深色加粗标题 =====
+   边框取「墨色」（on-background 半透明），随亮暗模式自动反转，不跟随类型色 ——
+   虚线框的笔记感来自中性笔触，染色反而破坏手写框的味道。 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·虚线笔记"] {
+    background: transparent !important;
+    border: 1px dashed color-mix(in srgb, var(--b3-theme-on-background) 55%, transparent) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·虚线笔记"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·虚线笔记"] .callout-info {
+    color: var(--b3-theme-on-background) !important;
+    font-weight: 600;
+    padding-bottom: 4px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·虚线笔记"] .callout-title {
+    font-size: 100%;
+    font-weight: 600;
+    opacity: 1;
+}
+
+/* ===== 9. Asri-Callout样式 —— 复刻 Asri 主题的 Callout：类型色衬底 + 0.5px 内嵌细环 + 右下角灰阶水印图标 =====
+   说明：
+   1. 调色板优先读取 Asri 主题自带的变量（--b3-callout-*-background / -text），运行 Asri 主题时自动跟随
+      主题配色；未运行时回落到本皮肤内置的同款亮暗配色，默认主题 / Neo 下观感一致；
+   2. 整卡文字为 Asri 标志性的低饱和类型色，标题加粗 + 英文大写；
+   3. 图标水印：绝对定位到卡片右下角、放大 4.2 倍旋转 -15° 的灰阶图标，亮色 color-burn / 暗色
+      color-dodge 混合；点击图标换图标的思源原生交互保留（hover 恢复不透明度）；
+   4. 本皮肤 label 不以「Callout·」开头，吃不到公共的类型色映射 / 折叠修正 / Neo 适配规则，
+      折叠放开与 outline 抵消已在下方自带，样式自包含。 */
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] {
+    /* 亮色调色板（优先取 Asri 主题定义） */
+    --asri-note-bg: var(--b3-callout-note-background, rgba(50, 154, 255, 0.1));
+    --asri-tip-bg: var(--b3-callout-tip-background, rgba(78, 178, 62, 0.1));
+    --asri-important-bg: var(--b3-callout-important-background, rgba(160, 125, 251, 0.1));
+    --asri-warning-bg: var(--b3-callout-warning-background, rgba(206, 136, 0, 0.1));
+    --asri-caution-bg: var(--b3-callout-caution-background, rgba(242, 96, 117, 0.1));
+    --asri-note-text: var(--b3-callout-note-text, rgba(57, 119, 184, 0.8));
+    --asri-tip-text: var(--b3-callout-tip-text, rgba(73, 133, 64, 0.8));
+    --asri-important-text: var(--b3-callout-important-text, rgba(121, 101, 180, 0.8));
+    --asri-warning-text: var(--b3-callout-warning-text, hsla(39, 103%, 31%, 0.8));
+    --asri-caution-text: var(--b3-callout-caution-text, rgba(175, 83, 94, 0.8));
+    /* 运行时变量：随 data-subtype 切换；自定义 subtype 回落 surface / on-surface（与 Asri 行为一致） */
+    --asri-text: var(--b3-theme-on-surface);
+    --asri-bg: var(--b3-theme-surface);
+
+    margin: 2px 0 !important;
+    padding: calc(.5em + 4px) .5em .5em .5em !important;
+    color: var(--asri-text) !important;
+    background-color: var(--asri-bg) !important;
+    box-shadow: 0 0 0 .5px inset color-mix(in srgb, currentColor 10%, transparent) !important;
+    outline: none !important;
+    overflow: hidden !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][data-subtype="NOTE"] {
+    --asri-text: var(--asri-note-text);
+    --asri-bg: var(--asri-note-bg);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][data-subtype="TIP"] {
+    --asri-text: var(--asri-tip-text);
+    --asri-bg: var(--asri-tip-bg);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][data-subtype="IMPORTANT"] {
+    --asri-text: var(--asri-important-text);
+    --asri-bg: var(--asri-important-bg);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][data-subtype="WARNING"] {
+    --asri-text: var(--asri-warning-text);
+    --asri-bg: var(--asri-warning-bg);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][data-subtype="CAUTION"] {
+    --asri-text: var(--asri-caution-text);
+    --asri-bg: var(--asri-caution-bg);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] .callout-icon {
+    font-size: 120% !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] .callout-title {
+    margin-left: calc(.4166666667em + 4px) !important;
+    font-size: 100% !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+    color: inherit !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] .callout-content {
+    padding-left: .5em !important;
+    padding-right: .5em !important;
+}
+
+/* 右下角水印图标：锚定到卡片根元素（position:relative）右下角，缩放旋转后裁切在卡内 */
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .callout-info > .callout-icon {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    transform: scale(4.2) rotate(-15deg) translate(-2%, -12%) !important;
+    opacity: .8 !important;
+    transition: opacity .2s .125s !important;
+    filter: grayscale(1) contrast(0.6) brightness(0.7) !important;
+    mix-blend-mode: color-burn !important;
+}
+/* Windows 下字形基线略有偏移，Asri 原样式对 win32 单独修正位移 */
+.body--win32 .protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .callout-info > .callout-icon {
+    transform: scale(4.2) rotate(-15deg) translate(-15%, -17%) !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] {
+    /* 暗色调色板（优先取 Asri 主题定义） */
+    --asri-note-bg: var(--b3-callout-note-background, rgba(58, 161, 255, 0.1));
+    --asri-tip-bg: var(--b3-callout-tip-background, rgba(85, 185, 69, 0.1));
+    --asri-important-bg: var(--b3-callout-important-background, rgba(166, 132, 255, 0.1));
+    --asri-warning-bg: var(--b3-callout-warning-background, rgba(212, 142, 19, 0.1));
+    --asri-caution-bg: var(--b3-callout-caution-background, rgba(249, 102, 123, 0.1));
+    --asri-note-text: var(--b3-callout-note-text, hsla(211, 104%, 83%, 0.8));
+    --asri-tip-text: var(--b3-callout-tip-text, rgba(178, 219, 170, 0.8));
+    --asri-important-text: var(--b3-callout-important-text, rgba(208, 196, 254, 0.8));
+    --asri-warning-text: var(--b3-callout-warning-text, rgba(238, 198, 147, 0.8));
+    --asri-caution-text: var(--b3-callout-caution-text, rgba(254, 185, 190, 0.8));
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .callout-info > .callout-icon {
+    filter: grayscale(1) contrast(0.6) brightness(0.8) !important;
+    mix-blend-mode: color-dodge !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .callout-info > .callout-icon:hover {
+    background: none !important;
+    opacity: 1 !important;
+}
+/* 折叠放开（本 label 不匹配公共 ^="Callout·" 折叠修正，需自带）与相邻间距 / 属性栏微调 */
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"][fold="1"] {
+    height: auto !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] + .callout[custom-deco-style="Asri-Callout样式"] {
+    margin-top: 0 !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .protyle-attr {
+    top: 4px !important;
+    right: 24px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Asri-Callout样式"] > .protyle-attr > div {
+    color: inherit !important;
+}
+
+/* ===== 10. Callout·斜纹警示 —— 工业警示带质感：类型色斜纹背景 + 同色细描边 =====
+   复刻参考实现的斜纹卡片：-45° 重复条纹（9px 条 / 9px 隔）叠在 5% 浅衬底上，
+   1px 同色描边收边；标题用加深的类型色，图标保持纯类型色，正文中性色。
+   颜色全部由 color-mix 从类型色派生，亮暗模式自动适配。 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·斜纹警示"] {
+    background-color: color-mix(in srgb, var(--cs-callout-c) 5%, var(--b3-theme-background)) !important;
+    background-image: repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--cs-callout-c) 13%, transparent) 0 9px,
+        transparent 9px 18px
+    ) !important;
+    border: 1px solid color-mix(in srgb, var(--cs-callout-c) 34%, transparent) !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    overflow: hidden;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·斜纹警示"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·斜纹警示"] .callout-info {
+    color: var(--cs-callout-c) !important;
+    font-weight: 600;
+    padding-bottom: 4px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·斜纹警示"] .callout-title {
+    color: color-mix(in srgb, var(--cs-callout-c) 72%, var(--b3-theme-on-background)) !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·斜纹警示"] .callout-content {
+    padding: 0 2px;
+}
+
+/* ===== 11. Callout·图标方块 —— 图标放进类型色圆角方块的卡片式布局 =====
+   复刻参考实现的图标卡片：38px 圆角方块（15% 类型色衬底）承载图标，白卡细描边 + 轻阴影；
+   标题用加深的类型色（72% 混正文色），正文中性色。 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] {
+    background: var(--b3-theme-background) !important;
+    border: 1px solid color-mix(in srgb, var(--cs-callout-c) 16%, transparent) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    padding: 12px 16px !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] .callout-info {
+    gap: 10px;
+    padding-bottom: 0px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] .callout-icon {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 !important;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--cs-callout-c) 15%, transparent);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] .callout-title {
+    color: color-mix(in srgb, var(--cs-callout-c) 72%, var(--b3-theme-on-background)) !important;
+    font-size: 100%;
+    font-weight: 600;
+    opacity: 1;
+}
+/* 正文与标题左对齐：缩进 = 图标方块 38px + 间距 10px，正文起点落在标题正下方 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] .callout-content {
+    padding-left: 48px !important;
+}
+
+/* ===== 7. Callout·题栏竖条 —— 题栏 × 竖条：全高类型色竖条 + 色带标题 + 净色正文 =====
+   结构与题栏卡片一致（色带只在标题区、正文净色、无分割线），叠加一条贯通上下、
+   随卡片圆角的左侧类型色竖条；标题文字用正文色加粗、图标保持类型色。 */
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] {
+    --cs-band-tint: 14%;
+    background: var(--b3-theme-background) !important;
+    border: 1px solid var(--b3-border-color) !important;
+    border-left: 4px solid var(--cs-callout-c) !important;
+    /* 左侧圆角收小：粗圆角会把竖条两端削出明显内弧（右侧保持 8px 不变） */
+    border-radius: 4px 8px 8px 4px !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"]::before {
+    content: none !important;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] .callout-info {
+    background: color-mix(in srgb, var(--cs-callout-c) var(--cs-band-tint), var(--b3-theme-background));
+    color: var(--b3-theme-on-background) !important;
+    font-weight: 600;
+    padding: 7px 14px;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] .callout-icon {
+    color: var(--cs-callout-c);
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] .callout-title {
+    font-size: 100%;
+    font-weight: 600;
+    opacity: 1;
+}
+.protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] .callout-content {
+    padding: 10px 14px 12px;
+}
+
+/* ---- 暗色模式微调：题栏浓度略提亮、柔和衬色描边略提亮，衬色由 color-mix 自动适配无需处理 ---- */
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Callout·题栏卡片"] {
+    --cs-band-tint: 20%;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Callout·题栏竖条"] {
+    --cs-band-tint: 20%;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Callout·图标方块"] {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+:root[data-theme-mode="dark"] .protyle-wysiwyg .callout[custom-deco-style="Callout·柔和衬色"] {
+    border-color: color-mix(in srgb, var(--cs-callout-c) 34%, transparent) !important;
+}
+
+/* ============================================================================
+   Neo 主题适配（Callout 皮肤）
+   ----------------------------------------------------------------------------
+   Neo 对原生 Callout 做了整体定制：给块根元素直接上类型色文字（正文文字随之变色）、
+   加 0.5px 同色 outline、隐藏原生竖条。这两项在默认主题下本就是「中性文字色 / 无
+   outline」，因此对套了皮肤的 Callout 统一拉回与默认主题一致的基线，皮肤观感在两套
+   主题下保持一致；其余不受影响 —— 原生 Callout（未套皮肤）仍是 Neo 自己的样子，
+   Neo 的行内代码 / 标签 / kbd / 批注类型色染制（--neo-*-color 钩子）原样保留。
+   ============================================================================ */
+.protyle-wysiwyg .callout[custom-deco-style^="Callout·"] {
+    color: var(--b3-theme-on-surface) !important;
+    outline: none !important;
+}

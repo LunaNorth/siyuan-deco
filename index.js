@@ -207,6 +207,21 @@ const CARD_ITEMS = [
     { key: 'todoCalloutCard',       label: 'Callout-待办',   icon: '✅' },
     { key: 'ideaCalloutCard',       label: 'Callout-想法',   icon: '💡' },
 
+    // 原生 Callout 皮肤组（思源 3.8+ 的原生 Callout 块，NodeCallout）
+    // key 统一以 callout 开头，方便 startsWith 过滤；皮肤颜色跟随 Callout 自身的类型色（--b3-callout-*），
+    // 不写图标/标题属性 —— Callout 的图标与标题由思源自带交互编辑
+    { key: 'calloutTint',      label: 'Callout·柔和衬色', icon: '' },
+    { key: 'calloutTitleBand', label: 'Callout·题栏卡片', icon: '' },
+    { key: 'calloutOutline',   label: 'Callout·极简描边', icon: '' },
+    { key: 'calloutSideBar',   label: 'Callout·竖条卡片', icon: '' },
+    { key: 'calloutBandBar',   label: 'Callout·题栏竖条', icon: '' },
+    { key: 'calloutGitHub',    label: 'Callout·GitHub',  icon: '' },
+    { key: 'calloutDashed',    label: 'Callout·虚线笔记', icon: '' },
+    { key: 'calloutAsri',      label: 'Asri-Callout样式', icon: '' },
+    { key: 'calloutStriped',   label: 'Callout·斜纹警示', icon: '' },
+    { key: 'calloutIconBox',   label: 'Callout·图标方块', icon: '' },
+    { key: 'calloutElevated',  label: 'Callout·浮起卡片', icon: '' },
+
     // 渐变色卡片组（GradientCard）
     { key: 'lifeFragmentGradientCard', label: '生活碎片', icon: '🎈' },
     { key: 'warmMomentGradientCard', label: '温暖时刻', icon: '🌇' },
@@ -324,6 +339,11 @@ const TEXT = {
     blockQuote: '引述块',
     blockNormal: '普通块',
     blockImage: '图片相关',
+    blockCallout: 'Callout块',
+
+    // 原生 Callout 皮肤（一级「Callout块」下的二级分类与组）
+    categoryCalloutSkin: '外观美化',
+    calloutSkinGroup: 'Callout外观',
 
     // 二级分类（块内细分类）
     categoryQuote: '引述类',
@@ -933,6 +953,10 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         // 覆盖 QuoteCard/ExcerptCard/WhisperCard/ThinWhisper/topLine/polka 及自定义样式。
         if (this._isQuoteStyle(style)) return;
 
+        // Callout块（calloutBlock 父级）皮肤同理：Callout 的图标与标题由思源自带交互编辑，
+        // 点标题区弹出本插件的编辑框会打架
+        if (this._isStyleInParent(style, 'calloutBlock')) return;
+
         // 日记私语等 WhisperCard 变体仍允许弹编辑框（保留旧例外的意图）：
         // 原逻辑是 WhisperCard 全部排除但 diaryChatWhisperCard 例外——上面 _isQuoteStyle 不会命中 normalBlock 的 chatWhisper，
         // 所以 diaryChatWhisperCard 仍会走到这里，保留编辑入口。
@@ -968,12 +992,17 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     // 判断 label 是否属于「引述块（quoteBlock）」父级（顶层第一个 Tab）。
     // 用于：点击标题时不弹编辑框。复用 getMenuStructure 的分类，避免硬编码 key 后缀。
     _isQuoteStyle(label) {
+        return this._isStyleInParent(label, 'quoteBlock');
+    }
+
+    // 判断 label 是否属于某个一级父级（如 quoteBlock / calloutBlock）下的任意分组
+    _isStyleInParent(label, parentId) {
         if (!label) return false;
         const cardKey = this.getCardKeyByLabel(label);
         const structure = this.getMenuStructure();
-        const quoteParent = structure.find(p => p.id === 'quoteBlock');
-        if (!quoteParent) return false;
-        for (const cat of quoteParent.children) {
+        const parent = structure.find(p => p.id === parentId);
+        if (!parent) return false;
+        for (const cat of parent.children) {
             for (const group of cat.subGroups) {
                 // 未注册标签（自定义样式等）没有 key，传空串避免过滤器对 null 调字符串方法
                 if (typeof group.filter === 'function' && group.filter(label, cardKey || '')) return true;
@@ -1050,6 +1079,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const defaults = self.styleDefaults[label] || { icon: '', title: label };
             const ico = (iconPreviewEl.dataset.icon || '').trim() || defaults.icon;
             const ttl = titleInput.value.trim() || defaults.title;
+            const previewKey = self.getCardKeyByLabel(label);
+            if (previewKey && previewKey.startsWith('callout')) {
+                // 原生 Callout 皮肤：渲染真实 Callout DOM，否则皮肤选择器命中不了
+                previewInnerEl.innerHTML = self._calloutPreviewHtml(label, ico, ttl);
+                return;
+            }
             const isBuiltin = /^icon[A-Z]/.test(ico);
             const iconAttr = isBuiltin ? '' : ico;
             previewInnerEl.innerHTML =
@@ -1681,6 +1716,13 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             // 所以预览时对内置图标不传 custom-deco-card-icon，让 CSS 用默认 emoji fallback
             const isBuiltinIcon = /^icon[A-Z]/.test(rawIconVal);
             const iconAttr = isBuiltinIcon ? '' : rawIconVal;
+
+            const baseKey = self.getCardKeyByLabel(label);
+            if (baseKey && baseKey.startsWith('callout')) {
+                // 原生 Callout 皮肤：渲染真实 Callout DOM，否则皮肤选择器命中不了
+                previewContainer.innerHTML = self._calloutPreviewHtml(label, rawIconVal, titleVal);
+                return;
+            }
 
             previewContainer.innerHTML =
                 '<div class="protyle-wysiwyg"><div custom-deco-style="' + escapeAttr(label) + '"' +
@@ -2658,13 +2700,19 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
                 const isBuiltin = /^icon[A-Z]/.test(ico);
                 const iconAttr = (ico && !isBuiltin) ? ico : '';
                 const titleAttr = ttl || label;
-                hoverPreview.innerHTML =
-                    '<div class="protyle-wysiwyg">' +
-                    '<div custom-deco-style="' + self._escapeAttr(label) + '"' +
-                    (iconAttr ? ' custom-deco-card-icon="' + self._escapeAttr(iconAttr) + '"' : '') +
-                    (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
-                    ' style="padding:10px 14px;" data-type="NodeParagraph">&nbsp;</div>' +
-                    '</div>';
+                const hoverKey = self.getCardKeyByLabel(label);
+                if (hoverKey && hoverKey.startsWith('callout')) {
+                    // 原生 Callout 皮肤：渲染真实 Callout DOM，否则皮肤选择器命中不了
+                    hoverPreview.innerHTML = self._calloutPreviewHtml(label);
+                } else {
+                    hoverPreview.innerHTML =
+                        '<div class="protyle-wysiwyg">' +
+                        '<div custom-deco-style="' + self._escapeAttr(label) + '"' +
+                        (iconAttr ? ' custom-deco-card-icon="' + self._escapeAttr(iconAttr) + '"' : '') +
+                        (titleAttr ? ' custom-deco-card-title="' + self._escapeAttr(titleAttr) + '"' : '') +
+                        ' style="padding:10px 14px;" data-type="NodeParagraph">&nbsp;</div>' +
+                        '</div>';
+                }
                 const rect = row.getBoundingClientRect();
                 hoverPreview.style.display = 'block';
                 const pw = hoverPreview.offsetWidth, ph = hoverPreview.offsetHeight;
@@ -3014,6 +3062,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
     _blockKindLabel(el) {
         const dt = el.getAttribute('data-type') || '';
         if (dt === 'NodeBlockquote') return this.getText('blockQuote', '引述块');
+        if (dt === 'NodeCallout') return this.getText('blockCallout', 'Callout块');
         if (dt === 'NodeImage' || el.querySelector('.img, [data-type="NodeImage"]')) return this.getText('blockImage', '图片相关');
         if (dt === 'NodeHeading') return '标题';
         if (dt === 'NodeCodeBlock') return '代码块';
@@ -3130,11 +3179,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
     // 这些样式靠 ::before 自己渲染装饰，不写图标和标题（与 createCardItem 的判断保持一致）。
     // 抽成单独方法是为了让「批量设置」和「AI 样式清单」共用同一套规则，避免两处走偏。
+    // callout 开头的是原生 Callout 皮肤：Callout 自带图标与标题，同样不写
     _styleSkipsIconTitle(key) {
         const k = key || '';
         return k.endsWith('QuoteCard') || k.includes('WhisperCard') || k.endsWith('ImageCard')
             || k.startsWith('topLine') || k.startsWith('polka') || k.startsWith('titleBar')
-            || k.endsWith('MarkCard');
+            || k.endsWith('MarkCard') || k.startsWith('callout');
     }
 
     // 由样式项推导要写入的块属性。
@@ -3184,9 +3234,11 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const styles = [];
 
         tree.forEach(l1 => {
-            // quote = 引述样式（只适合引述块）／block = 普通块样式／any = 用户自定义，不限定
+            // quote = 引述样式（只适合引述块）／callout = Callout 皮肤（只对原生 Callout 块生效）
+            // ／block = 普通块样式／any = 用户自定义，不限定
             const blockType = l1.id === 'g:quoteBlock' ? 'quote'
-                : (l1.id === 'g:__custom__' ? 'any' : 'block');
+                : (l1.id === 'g:calloutBlock' ? 'callout'
+                : (l1.id === 'g:__custom__' ? 'any' : 'block'));
             l1.children.forEach(l2 => {
                 l2.items.forEach(it => {
                     const defaults = this.styleDefaults ? this.styleDefaults[it.styleLabel] : null;
@@ -3231,6 +3283,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             // blockType 的取值含义
             blockTypeHint: {
                 quote: '引述样式，适合引述块（blocks.type = "NodeBlockquote"，SQL 里可写 b.type = "NodeBlockquote"）',
+                callout: 'Callout 皮肤，只对原生 Callout 块生效（思源 3.8+，SQL 里 b.type = "NodeCallout"，即 > [!NOTE] 语法创建的块）。皮肤不写图标和标题 —— Callout 自带',
                 block: '普通块样式，适合段落 / 标题 / 列表 / 表格 / 代码块',
                 any: '用户自定义样式，不限定块类型'
             },
@@ -3833,7 +3886,7 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const attrs = { "custom-deco-style": label };
 
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
-            && !key.startsWith('polka') && !key.startsWith('titleBar') && !key.endsWith('MarkCard')) {
+            && !key.startsWith('polka') && !key.startsWith('titleBar') && !key.endsWith('MarkCard') && !key.startsWith('callout')) {
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     if (!existingTitle) {
@@ -3891,9 +3944,13 @@ if (key === 'diaryChatWhisperCard') {
             headHtml = '<span style="margin-right:6px;">' + icon + '</span>';
         }
         // 只传 custom-deco-style 让 CSS ::before 自动渲染图标+标题；内部只放占位符避免重复
-        el.innerHTML =
-            '<div class="protyle-wysiwyg"><div custom-deco-style="' + styleLabel + '"' +
-            ' style="padding:14px 16px;border-radius:8px;" data-type="NodeParagraph">&nbsp;</div></div>';
+        // 原生 Callout 皮肤例外：皮肤选择器要求 .callout 结构，需渲染真实的 Callout DOM 才有预览效果
+        const previewKey = this.getCardKeyByLabel(styleLabel);
+        const isCalloutSkin = !!(previewKey && previewKey.startsWith('callout'));
+        el.innerHTML = isCalloutSkin
+            ? this._calloutPreviewHtml(styleLabel)
+            : '<div class="protyle-wysiwyg"><div custom-deco-style="' + styleLabel + '"' +
+              ' style="padding:14px 16px;border-radius:8px;" data-type="NodeParagraph">&nbsp;</div></div>';
 
         el.style.display = 'block';
         const rect = targetEl.getBoundingClientRect();
@@ -3914,6 +3971,21 @@ if (key === 'diaryChatWhisperCard') {
         if (!el) return;
         el.style.opacity = '0';
         setTimeout(() => { if (el && el.style.opacity === '0') { el.style.display = 'none'; } }, 160);
+    }
+
+    // 原生 Callout 皮肤的预览：渲染思源真实的 Callout DOM 结构（class="callout" + callout-info/content），
+    // 皮肤选择器才能命中。配色取 TIP（跟随思源自带的 --b3-callout-tip 类型色）。
+    _calloutPreviewHtml(styleLabel, icon, title) {
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        const ico = escapeAttr(icon || '💡');
+        const ttl = escapeAttr(title || 'Tip');
+        return '<div class="protyle-wysiwyg"><div class="callout" data-type="NodeCallout" data-subtype="TIP"' +
+            ' custom-deco-style="' + escapeAttr(styleLabel) + '" style="padding:14px 16px;border-radius:8px;">' +
+            '<div class="callout-info"><span class="callout-icon">' + ico + '</span>' +
+            '<span class="callout-title">' + ttl + '</span></div>' +
+            '<div class="callout-content"><div data-node-id="preview" data-type="NodeParagraph">' +
+            '这是原生 Callout 块的皮肤预览，配色跟随 Callout 自身的类型色。</div></div>' +
+            '</div></div>';
     }
 
     // ========== 新增：基于字符串生成彩色HSL的方法 ==========
@@ -4295,6 +4367,23 @@ if (key === 'diaryChatWhisperCard') {
                             { id: "topLineStyle", labelKey: "topLineGroup", icon: "#iconQuote", filter: (label, key) => key.startsWith('topLine') },
                             { id: "polkaStyle", labelKey: "polkaGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('polka') },
                             { id: "titleBarStyle", labelKey: "titleBarGroup", icon: "#iconSparkles", filter: (label, key) => key.startsWith('titleBar') }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "calloutBlock",
+                labelKey: "blockCallout",
+                icon: "#iconDecoSparkle",
+                children: [
+                    {
+                        id: "calloutSkinCategory",
+                        labelKey: "categoryCalloutSkin",
+                        icon: "#iconInfo",
+                        subGroups: [
+                            // 只匹配原生 Callout 皮肤（key 以 callout 开头）；
+                            // 旧的 Callout-xxx 样式组（endsWith('CalloutCard')）仍留在「普通块」下，互不影响
+                            { id: "calloutSkinGroup", labelKey: "calloutSkinGroup", icon: "#iconInfo", filter: (label, key) => typeof key === 'string' && key.startsWith('callout') }
                         ]
                     }
                 ]
