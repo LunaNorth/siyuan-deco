@@ -52,6 +52,14 @@ const PLUGIN_ICON = `
     <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
     <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/>
     <path d="M6 3v5a1 1 0 0 0 1 1h7"/>
+</symbol>
+<symbol id="iconDecoTable" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2"/>
+    <path d="M12 5v14"/>
+    <path d="M3 10h18"/>
+</symbol>
+<symbol id="iconDecoDivider" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 12h18"/>
 </symbol>`;
 
 
@@ -302,6 +310,95 @@ const CARD_ITEMS = [
     { key: 'nightCloudCard',   label: '云笺·星空', icon: '🌌' },
     { key: 'peachCloudCard',   label: '云笺·蜜桃', icon: '🍑' },
     { key: 'limeCloudCard',    label: '云笺·青柠', icon: '🍋' },
+
+    // 数据表格组（TableCard）—— 思源原生表格块（NodeTable）的外观皮肤；
+    // 表格自带结构，不写图标和标题属性。
+    // 数据网格：key 以 TableCard 结尾；三线表：key 以 ThreeLineTableCard 结尾，
+    // 数据网格的 filter 要排除 ThreeLine，两者才能各自归组
+    { key: 'classicBlueTableCard', label: '表格·经典蓝', icon: '' },
+    { key: 'blueThreeLineTableCard', label: '表格·三线深蓝', icon: '' },
+    { key: 'stdThreeLineTableCard', label: '表格·标准三线', icon: '' },
+    { key: 'boldThreeLineTableCard', label: '表格·三线加粗', icon: '' },
+    { key: 'darkRedThreeLineTableCard', label: '表格·三线暗红', icon: '' },
+    { key: 'doubleLineThreeLineTableCard', label: '表格·三线双线', icon: '' },
+    { key: 'underlineThreeLineTableCard', label: '表格·三线古典', icon: '' },
+
+    // 彩色三线系列（线浓字浓：顶/底 2px 彩色 + 表头线 1px + 表头文字同色）
+    // key 统一 c3 前缀，菜单按前缀归入「彩色款」组；demo 酒红 #991b1b 与已有三线暗红同色，不重复添加
+    { key: 'c3NavyThreeLineTableCard',     label: '表格·三线藏蓝', icon: '' },
+    { key: 'c3RoyalThreeLineTableCard',    label: '表格·三线宝蓝', icon: '' },
+    { key: 'c3IndigoThreeLineTableCard',   label: '表格·三线靛蓝', icon: '' },
+    { key: 'c3CyanThreeLineTableCard',     label: '表格·三线青蓝', icon: '' },
+    { key: 'c3TealThreeLineTableCard',     label: '表格·三线湖绿', icon: '' },
+    { key: 'c3MintThreeLineTableCard',     label: '表格·三线薄荷绿', icon: '' },
+    { key: 'c3ForestThreeLineTableCard',   label: '表格·三线森绿', icon: '' },
+    { key: 'c3OliveThreeLineTableCard',    label: '表格·三线橄榄绿', icon: '' },
+    { key: 'c3AmberThreeLineTableCard',    label: '表格·三线琥珀', icon: '' },
+    { key: 'c3OrangeThreeLineTableCard',   label: '表格·三线橙红', icon: '' },
+    { key: 'c3RoseThreeLineTableCard',     label: '表格·三线玫红', icon: '' },
+    { key: 'c3VioletThreeLineTableCard',   label: '表格·三线紫罗兰', icon: '' },
+    { key: 'c3PlumThreeLineTableCard',     label: '表格·三线深紫', icon: '' },
+    { key: 'c3SlateThreeLineTableCard',    label: '表格·三线石板灰', icon: '' },
+    { key: 'c3BrownThreeLineTableCard',    label: '表格·三线棕褐', icon: '' },
+
+    // 彩色三线 · 仅线条彩色（线彩、表头文字跟主题正文字色）
+    { key: 'wineLineOnlyThreeLineTableCard', label: '表格·三线酒红线', icon: '' },
+    { key: 'navyLineOnlyThreeLineTableCard', label: '表格·三线藏蓝线', icon: '' },
+
+    // ===== 数据网格系列（蓝底白字表头 + 斑马纹的网格皮肤） =====
+    // key 前缀分组：g3=彩色款 / bd=边框款 / hl=白底款 / zb=斑马款，均不含 ThreeLine 不会串组。
+    // demo 15 色中的「蓝色 #4a8af4」= 已有表格·经典蓝，不重复添加
+    { key: 'g3NavyTableCard',   label: '表格·深蓝', icon: '' },
+    { key: 'g3CyanTableCard',   label: '表格·青色', icon: '' },
+    { key: 'g3MintTableCard',   label: '表格·薄荷绿', icon: '' },
+    { key: 'g3ForestTableCard', label: '表格·森绿', icon: '' },
+    { key: 'g3LimeTableCard',   label: '表格·黄绿', icon: '' },
+    { key: 'g3YellowTableCard', label: '表格·黄色', icon: '' },
+    { key: 'g3OrangeTableCard', label: '表格·橙色', icon: '' },
+    { key: 'g3RedTableCard',    label: '表格·红色', icon: '' },
+    { key: 'g3PinkTableCard',   label: '表格·粉色', icon: '' },
+    { key: 'g3PurpleTableCard', label: '表格·紫色', icon: '' },
+    { key: 'g3IndigoTableCard', label: '表格·靛蓝', icon: '' },
+    { key: 'g3GrayTableCard',   label: '表格·灰色', icon: '' },
+    { key: 'g3SlateTableCard',  label: '表格·石板灰', icon: '' },
+    { key: 'g3BlackTableCard',  label: '表格·黑色', icon: '' },
+
+    // 边框款（蓝色系三种边框形态）
+    { key: 'bdLineBlueTableCard', label: '表格·横线蓝', icon: '' },
+    { key: 'bdOutBlueTableCard',  label: '表格·外框蓝', icon: '' },
+    { key: 'bdNoneBlueTableCard', label: '表格·素面蓝', icon: '' },
+
+    // 白底款（白底彩字表头，更克制的现代款）
+    { key: 'hlBlueTableCard', label: '表格·白底蓝', icon: '' },
+    { key: 'hlGreenTableCard', label: '表格·白底绿', icon: '' },
+    { key: 'hlRedTableCard', label: '表格·白底红', icon: '' },
+
+    // 斑马款（斑马纹开关变体）
+    { key: 'zbNoSlateTableCard',    label: '表格·无纹石板灰', icon: '' },
+    { key: 'zbOddOrangeTableCard',  label: '表格·反纹橙', icon: '' },
+    { key: 'zbYellowLineTableCard', label: '表格·黄调横线', icon: '' },
+
+    // ===== 分割线皮肤（NodeThematicBreak，输入 --- 生成的分割线） =====
+    // key 统一以 DividerCard 结尾；颜色走主题变量，默认主题 / Neo 自动适配
+    { key: 'fadeGradientDividerCard', label: '分割线·渐隐渐变', icon: '' },
+    { key: 'dashedDividerCard',       label: '分割线·虚线', icon: '' },
+    { key: 'waveDividerCard',         label: '分割线·波浪线', icon: '' },
+    { key: 'elegantWaveDividerCard',  label: '分割线·优雅波浪', icon: '' },
+    { key: 'fadeDashedDividerCard',   label: '分割线·虚线渐隐', icon: '' },
+    { key: 'fadeDotsDividerCard',     label: '分割线·点阵渐隐', icon: '' },
+    { key: 'starDividerCard',         label: '分割线·旋转星芒', icon: '' },
+    { key: 'stripeDividerCard',       label: '分割线·斜纹带', icon: '' },
+    { key: 'threeBarsDividerCard',    label: '分割线·三竖线', icon: '' },
+    { key: 'flowerDividerCard',       label: '分割线·四瓣花', icon: '' },
+
+    // ===== 页签块皮肤（NodeTabs，思源 3.8+ 原生页签块）=====
+    // key 统一以 TabCard 结尾；页签的切换 / 显隐 / 重命名由思源自身交互处理，皮肤只负责外观
+    // 垂直侧边 = 皮肤自己摆侧边布局；其余四种为顶栏形态 = 皮肤自己摆顶部布局，均不依赖 tabs-position
+    { key: 'verticalSideTabCard', label: '页签·垂直侧边', icon: '' },
+    { key: 'slideUnderlineTabCard', label: '页签·滑动下划线', icon: '' },
+    { key: 'pillCapsuleTabCard', label: '页签·药丸胶囊', icon: '' },
+    { key: 'liftCardTabCard', label: '页签·卡片抬起', icon: '' },
+    { key: 'segmentedTabCard', label: '页签·分段控制器', icon: '' },
 ];
 
 // 历史标签别名：样式改名后，旧块上的 custom-deco-style 标签仍能映射到新 key
@@ -340,10 +437,32 @@ const TEXT = {
     blockNormal: '普通块',
     blockImage: '图片相关',
     blockCallout: 'Callout块',
+    blockTable: '表格块',
+    blockDivider: '分割线',
+    blockTab: '页签块',
 
     // 原生 Callout 皮肤（一级「Callout块」下的二级分类与组）
     categoryCalloutSkin: '外观美化',
     calloutSkinGroup: 'Callout外观',
+
+    // 数据网格 / 三线表（一级「表格块」下的二级分类与组）
+    categoryTable: '数据网格',
+    tableGroup: '数据网格',
+    gridClassicGroup: '经典款',
+    gridColorGroup: '彩色款',
+    gridBorderGroup: '边框款',
+    gridHeadGroup: '白底款',
+    gridZebraGroup: '斑马款',
+    categoryThreeLine: '三线表',
+    threeLineGroup: '三线表',
+    threeLineBasicGroup: '经典款',
+    threeLineColorGroup: '彩色款',
+    threeLineLineOnlyGroup: '线稿款',
+    categoryDivider: '分割线',
+    dividerGroup: '分割线样式',
+
+    // 页签块（一级「页签块」下的分类与组，NodeTabs）
+    tabGroup: '页签样式',
 
     // 二级分类（块内细分类）
     categoryQuote: '引述类',
@@ -957,6 +1076,15 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         // 点标题区弹出本插件的编辑框会打架
         if (this._isStyleInParent(style, 'calloutBlock')) return;
 
+        // 表格（tableBlock 父级）皮肤同理：表格没有图标/标题概念，不弹编辑框
+        if (this._isStyleInParent(style, 'tableBlock')) return;
+
+        // 分割线（dividerBlock 父级）皮肤同理
+        if (this._isStyleInParent(style, 'dividerBlock')) return;
+
+        // 页签块（tabBlock 父级）皮肤同理：页签标题由思源自带的页签交互编辑，不弹编辑框
+        if (this._isStyleInParent(style, 'tabBlock')) return;
+
         // 日记私语等 WhisperCard 变体仍允许弹编辑框（保留旧例外的意图）：
         // 原逻辑是 WhisperCard 全部排除但 diaryChatWhisperCard 例外——上面 _isQuoteStyle 不会命中 normalBlock 的 chatWhisper，
         // 所以 diaryChatWhisperCard 仍会走到这里，保留编辑入口。
@@ -1359,13 +1487,30 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         // 二级细分类（如 引述类 / 时间轴 / 线条装饰）
         let hasVisible = false;
-        parent.children.forEach(category => {
-            const catBtn = this.createCategoryButton(blockId, category);
-            if (catBtn) {
-                itemsContainer.appendChild(catBtn);
-                hasVisible = true;
-            }
-        });
+        if (parent.flat) {
+            // 平铺模式（flat: true 的一级入口）：跳过分类层，条目直接进本子菜单，
+            // 避免「分割线」点开里面又是一个「分割线」标题的重复层级
+            const hiddenSet = new Set(this.hiddenStyles || []);
+            parent.children.forEach(category => {
+                category.subGroups.forEach(group => {
+                    this.getAllCardItems().forEach(item => {
+                        if (hiddenSet.has(item.key)) return;
+                        if (group.filter(item.label, item.key)) {
+                            itemsContainer.appendChild(this.createCardItem(blockId, item.label, item.key));
+                            hasVisible = true;
+                        }
+                    });
+                });
+            });
+        } else {
+            parent.children.forEach(category => {
+                const catBtn = this.createCategoryButton(blockId, category);
+                if (catBtn) {
+                    itemsContainer.appendChild(catBtn);
+                    hasVisible = true;
+                }
+            });
+        }
         // 一级入口下没有任何可见分类时，整个入口不显示
         if (!hasVisible) return null;
 
@@ -3066,7 +3211,9 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         if (dt === 'NodeImage' || el.querySelector('.img, [data-type="NodeImage"]')) return this.getText('blockImage', '图片相关');
         if (dt === 'NodeHeading') return '标题';
         if (dt === 'NodeCodeBlock') return '代码块';
-        if (dt === 'NodeTable') return '表格';
+        if (dt === 'NodeTable') return this.getText('blockTable', '表格块');
+        if (dt === 'NodeTabs') return this.getText('blockTab', '页签块');
+        if (dt === 'NodeThematicBreak') return '分割线';
         if (dt === 'NodeList' || dt === 'NodeListItem') return '列表';
         return this.getText('blockNormal', '普通块');
     }
@@ -3184,7 +3331,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
         const k = key || '';
         return k.endsWith('QuoteCard') || k.includes('WhisperCard') || k.endsWith('ImageCard')
             || k.startsWith('topLine') || k.startsWith('polka') || k.startsWith('titleBar')
-            || k.endsWith('MarkCard') || k.startsWith('callout');
+            || k.endsWith('MarkCard') || k.startsWith('callout') || k.endsWith('TableCard')
+            || k.endsWith('DividerCard');
     }
 
     // 由样式项推导要写入的块属性。
@@ -3235,10 +3383,12 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
 
         tree.forEach(l1 => {
             // quote = 引述样式（只适合引述块）／callout = Callout 皮肤（只对原生 Callout 块生效）
-            // ／block = 普通块样式／any = 用户自定义，不限定
+            // ／table = 表格皮肤（只对表格块生效）／divider = 分割线皮肤／block = 普通块样式／any = 用户自定义，不限定
             const blockType = l1.id === 'g:quoteBlock' ? 'quote'
                 : (l1.id === 'g:calloutBlock' ? 'callout'
-                : (l1.id === 'g:__custom__' ? 'any' : 'block'));
+                : (l1.id === 'g:tableBlock' ? 'table'
+                : (l1.id === 'g:dividerBlock' ? 'divider'
+                : (l1.id === 'g:__custom__' ? 'any' : 'block'))));
             l1.children.forEach(l2 => {
                 l2.items.forEach(it => {
                     const defaults = this.styleDefaults ? this.styleDefaults[it.styleLabel] : null;
@@ -3284,6 +3434,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             blockTypeHint: {
                 quote: '引述样式，适合引述块（blocks.type = "NodeBlockquote"，SQL 里可写 b.type = "NodeBlockquote"）',
                 callout: 'Callout 皮肤，只对原生 Callout 块生效（思源 3.8+，SQL 里 b.type = "NodeCallout"，即 > [!NOTE] 语法创建的块）。皮肤不写图标和标题 —— Callout 自带',
+                table: '表格皮肤，只对表格块生效（SQL 里 b.type = "NodeTable"）。皮肤不写图标和标题 —— 表格没有这两个概念',
+                divider: '分割线皮肤，只对分割线块生效（输入 --- 生成，SQL 里 b.type = "NodeThematicBreak"）。皮肤不写图标和标题',
                 block: '普通块样式，适合段落 / 标题 / 列表 / 表格 / 代码块',
                 any: '用户自定义样式，不限定块类型'
             },
@@ -3886,7 +4038,8 @@ module.exports = class CardStyleWorkshopPlugin extends siyuan.Plugin {
             const attrs = { "custom-deco-style": label };
 
             if (!key.endsWith('QuoteCard') && !key.includes('WhisperCard') && !key.endsWith('ImageCard') && !key.startsWith('topLine')
-            && !key.startsWith('polka') && !key.startsWith('titleBar') && !key.endsWith('MarkCard') && !key.startsWith('callout')) {
+            && !key.startsWith('polka') && !key.startsWith('titleBar') && !key.endsWith('MarkCard') && !key.startsWith('callout')
+            && !key.endsWith('TableCard') && !key.endsWith('DividerCard')) {
                 if (defaults) {
                     attrs["custom-deco-card-icon"] = defaults.icon || '';
                     if (!existingTitle) {
@@ -3945,12 +4098,22 @@ if (key === 'diaryChatWhisperCard') {
         }
         // 只传 custom-deco-style 让 CSS ::before 自动渲染图标+标题；内部只放占位符避免重复
         // 原生 Callout 皮肤例外：皮肤选择器要求 .callout 结构，需渲染真实的 Callout DOM 才有预览效果
+        // 表格皮肤同理：需渲染真实的 NodeTable DOM 才有预览效果
         const previewKey = this.getCardKeyByLabel(styleLabel);
         const isCalloutSkin = !!(previewKey && previewKey.startsWith('callout'));
+        const isTableSkin = !!(previewKey && previewKey.endsWith('TableCard'));
+        const isDividerSkin = !!(previewKey && previewKey.endsWith('DividerCard'));
+        const isTabSkin = !!(previewKey && previewKey.endsWith('TabCard'));
         el.innerHTML = isCalloutSkin
             ? this._calloutPreviewHtml(styleLabel)
-            : '<div class="protyle-wysiwyg"><div custom-deco-style="' + styleLabel + '"' +
-              ' style="padding:14px 16px;border-radius:8px;" data-type="NodeParagraph">&nbsp;</div></div>';
+            : (isTableSkin
+                ? this._tablePreviewHtml(styleLabel)
+                : (isDividerSkin
+                    ? this._dividerPreviewHtml(styleLabel)
+                    : (isTabSkin
+                        ? this._tabsPreviewHtml(styleLabel)
+                        : '<div class="protyle-wysiwyg"><div custom-deco-style="' + styleLabel + '"' +
+                          ' style="padding:14px 16px;border-radius:8px;" data-type="NodeParagraph">&nbsp;</div></div>')));
 
         el.style.display = 'block';
         const rect = targetEl.getBoundingClientRect();
@@ -3985,6 +4148,57 @@ if (key === 'diaryChatWhisperCard') {
             '<span class="callout-title">' + ttl + '</span></div>' +
             '<div class="callout-content"><div data-node-id="preview" data-type="NodeParagraph">' +
             '这是原生 Callout 块的皮肤预览，配色跟随 Callout 自身的类型色。</div></div>' +
+            '</div></div>';
+    }
+
+    // 表格皮肤的预览：渲染思源真实的 NodeTable DOM 结构（div.table > table），
+    // 皮肤选择器才能命中，悬停时直接看到表头配色与斑马纹效果
+    _tablePreviewHtml(styleLabel) {
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        return '<div class="protyle-wysiwyg"><div class="table" data-type="NodeTable"' +
+            ' custom-deco-style="' + escapeAttr(styleLabel) + '">' +
+            '<table><thead><tr><th>名称</th><th>类型</th><th>数值</th></tr></thead>' +
+            '<tbody>' +
+            '<tr><td>示例</td><td>A</td><td>25</td></tr>' +
+            '<tr><td>示例</td><td>B</td><td>40</td></tr>' +
+            '<tr><td>示例</td><td>C</td><td>90</td></tr>' +
+            '</tbody></table></div></div>';
+    }
+
+    // 分割线皮肤的预览：渲染思源真实的 NodeThematicBreak DOM（div.hr > div），
+    // 皮肤选择器才能命中，悬停时直接看到线条效果
+    _dividerPreviewHtml(styleLabel) {
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        return '<div class="protyle-wysiwyg"><div class="hr" data-type="NodeThematicBreak"' +
+            ' custom-deco-style="' + escapeAttr(styleLabel) + '"><div></div></div></div>';
+    }
+
+    // 页签块皮肤的预览：渲染思源真实的 NodeTabs DOM（.tabs > .tabs-header + .tab-item），
+    // 皮肤选择器才能命中，悬停时直接看到页签栏与选中态效果（静态 mock，不接交互）
+    // 垂直侧边用 vertical mock，其余顶栏形态皮肤用 horizontal mock
+    _tabsPreviewHtml(styleLabel) {
+        const escapeAttr = s => String(s || '').replace(/"/g, '&quot;').replace(/&/g, '&amp;');
+        const vertical = this.getCardKeyByLabel(styleLabel) === 'verticalSideTabCard';
+        const orientation = vertical ? 'vertical' : 'horizontal';
+        const labels = vertical ? ['账户', '通知设置', '安全中心'] : ['首页', '组件', '文档'];
+        const body = vertical
+            ? '垂直侧边皮肤预览：页签栏在左侧，选中项带渐变衬底与竖条光晕。'
+            : '顶部页签皮肤预览：选中项的样式由当前皮肤决定。';
+        const tab = (label, selected) =>
+            '<button class="tabs-tab" type="button" role="tab" aria-selected="' + selected + '">' +
+            '<span class="tabs-tab-label">' + label + '</span></button>';
+        const item = (hidden, text) =>
+            '<div class="tab-item" data-tabs-hidden="' + (hidden ? 'true' : 'false') + '">' +
+            '<div class="tab-item-content"><div data-node-id="preview" data-type="NodeParagraph">' + text + '</div></div></div>';
+        return '<div class="protyle-wysiwyg"><div class="tabs" data-type="NodeTabs" data-tabs-ready="true"' +
+            ' data-tabs-orientation="' + orientation + '" custom-deco-style="' + escapeAttr(styleLabel) + '">' +
+            '<div class="tabs-divider protyle-action"></div>' +
+            '<div class="tabs-header protyle-action"><div class="tabs-list" role="tablist">' +
+            tab(labels[0], 'true') + tab(labels[1], 'false') + tab(labels[2], 'false') +
+            '</div></div>' +
+            item(false, body) +
+            item(true, '面板 2 的内容。') +
+            item(true, '面板 3 的内容。') +
             '</div></div>';
     }
 
@@ -4432,6 +4646,83 @@ if (key === 'diaryChatWhisperCard') {
                             { id: "morandiGroup",  labelKey: "morandiGroup",  icon: "#iconSparkles", filter: (label, key) => key.endsWith('MorandiCard') },
                             { id: "markerGroup",   labelKey: "markerGroup",   icon: "#iconSparkles", filter: (label, key) => key.endsWith('MarkCard') },
                             { id: 'cloudGroup', labelKey: 'cloudGroup', icon: '#iconSparkles', filter: (label, key) => key.endsWith('CloudCard') }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "tableBlock",
+                labelKey: "blockTable",
+                icon: "#iconDecoTable",
+                children: [
+                    {
+                        id: "tableCategory",
+                        labelKey: "categoryTable",
+                        icon: "#iconDecoTable",
+                        // 三级分组：经典款 / 彩色款 / 边框款 / 白底款 / 斑马款（多组时菜单自动多一层子菜单）
+                        subGroups: [
+                            // 经典款：蓝底白字 + 斑马纹的原点款
+                            { id: "gridClassic", labelKey: "gridClassicGroup", icon: "#iconDecoTable", filter: (label, key) => key === 'classicBlueTableCard' },
+                            // 彩色款：g3 前缀 14 色
+                            { id: "gridColor", labelKey: "gridColorGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.startsWith('g3') },
+                            // 边框款：bd 前缀（横线 / 外框 / 素面）
+                            { id: "gridBorder", labelKey: "gridBorderGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.startsWith('bd') },
+                            // 白底款：hl 前缀（白底彩字表头）
+                            { id: "gridHead", labelKey: "gridHeadGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.startsWith('hl') },
+                            // 斑马款：zb 前缀（斑马纹开关变体）
+                            { id: "gridZebra", labelKey: "gridZebraGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.startsWith('zb') }
+                        ]
+                    },
+                    {
+                        id: "threeLineCategory",
+                        labelKey: "categoryThreeLine",
+                        icon: "#iconDecoTable",
+                        // 三级分组：经典款 / 彩色款 / 线稿款（多组时菜单自动多出一层子菜单）
+                        subGroups: [
+                            // 经典款：墨色系与结构变体（标准/深蓝/加粗/双线/古典）
+                            { id: "threeLineBasic", labelKey: "threeLineBasicGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.endsWith('ThreeLineTableCard') && !key.startsWith('c3') && !key.includes('LineOnly') },
+                            // 彩色款：c3 前缀的 15 色
+                            { id: "threeLineColor", labelKey: "threeLineColorGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.startsWith('c3') },
+                            // 线稿款：仅线条彩色
+                            { id: "threeLineLineOnly", labelKey: "threeLineLineOnlyGroup", icon: "#iconDecoTable", filter: (label, key) => typeof key === 'string' && key.includes('LineOnly') }
+                        ]
+                    }
+                ]
+            },
+            {
+                // 分割线：一级入口，与表格块平级（排在表格块下面）
+                // flat: true —— 只有一个分类时条目直接平铺进一级子菜单，不再套一层「分割线」标题
+                id: "dividerBlock",
+                labelKey: "blockDivider",
+                icon: "#iconDecoDivider",
+                flat: true,
+                children: [
+                    {
+                        id: "dividerCategory",
+                        labelKey: "categoryDivider",
+                        icon: "#iconDecoDivider",
+                        subGroups: [
+                            // 分割线皮肤（NodeThematicBreak）；单组直接平铺条目
+                            { id: "dividerStyle", labelKey: "dividerGroup", icon: "#iconDecoDivider", filter: (label, key) => typeof key === 'string' && key.endsWith('DividerCard') }
+                        ]
+                    }
+                ]
+            },
+            {
+                // 页签块：一级入口（NodeTabs，思源 3.8+ 原生页签块），与分割线平级
+                // flat: true —— 只有一个分类时条目直接平铺进一级子菜单
+                id: "tabBlock",
+                labelKey: "blockTab",
+                icon: "#iconLayout",
+                flat: true,
+                children: [
+                    {
+                        id: "tabCategory",
+                        labelKey: "tabGroup",
+                        icon: "#iconLayout",
+                        subGroups: [
+                            // 页签块皮肤（NodeTabs）；单组直接平铺条目
+                            { id: "tabStyle", labelKey: "tabGroup", icon: "#iconLayout", filter: (label, key) => typeof key === 'string' && key.endsWith('TabCard') }
                         ]
                     }
                 ]

@@ -43,6 +43,12 @@
 
 ### 更新日志
 
+
+### v1.5.2
+
+- 新增表格 | 分割线 | 页签块 样式
+
+
 #### v1.5.1
 
 - 【新增】右键菜单新增「Callout块」一级分类：为思源 3.8+ 的原生 Callout 块（`> [!NOTE]` 语法创建，或块菜单「转换 → Callout」）提供 11 款外观皮肤，颜色自动跟随 Callout 自身的类型色（Note / Tip / Important / Warning / Caution 五色随 `data-subtype` 切换，自定义类型回落 Note 色），默认主题、Neo与亮暗模式全部自动适配：
