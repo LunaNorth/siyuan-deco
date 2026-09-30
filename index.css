@@ -6797,13 +6797,15 @@
    ============================================================ */
 
 /* ---------- 容器与变量 ---------- */
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·垂直侧边"]:not([fold="1"]) {
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·垂直侧边"]:not([fold="1"]) {
     --dtab-accent: var(--b3-theme-primary);
     --dtab-accent-2: color-mix(in srgb, var(--b3-theme-primary) 45%, #9333ea);
     --dtab-line: color-mix(in srgb, var(--b3-theme-on-background) 10%, transparent);
     --dtab-hover-bg: color-mix(in srgb, var(--dtab-accent) 7%, transparent);
     --dtab-active-text: color-mix(in srgb, var(--dtab-accent) 65%, var(--b3-theme-on-background));
-    border-color: var(--dtab-line);
+    /* 用完整 border 而非 border-color：思源默认给 .tabs 根块画 1px 实线，
+       Neo 会把根块 border: unset（只补颜色救不回宽度 / 线型） */
+    border: 1px solid var(--dtab-line);
 }
 :root[data-theme-mode=dark] .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·垂直侧边"]:not([fold="1"]) {
     --dtab-line: color-mix(in srgb, var(--b3-theme-on-background) 13%, transparent);
@@ -6816,7 +6818,8 @@
     grid-template-columns: fit-content(min(200px, 40%)) minmax(0, 1fr);
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·垂直侧边"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-divider {
-    display: block;
+    /* !important：Neo 把 divider 藏成 display:none !important，垂直布局需要它撑满高分隔线 */
+    display: block !important;
     grid-area: 1 / 1;
     border-right: 1px solid var(--dtab-line);
     pointer-events: none;
@@ -6968,16 +6971,18 @@
    ============================================================ */
 
 /* ---------- 共享变量：四种顶栏皮肤 ---------- */
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"]),
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"]),
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"]),
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·分段控制器"]:not([fold="1"]) {
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"]),
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"]),
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"]),
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·分段控制器"]:not([fold="1"]) {
     --dtab-accent: var(--b3-theme-primary);
     --dtab-accent-2: color-mix(in srgb, var(--b3-theme-primary) 45%, #9333ea);
     --dtab-line: color-mix(in srgb, var(--b3-theme-on-background) 10%, transparent);
     --dtab-hover-bg: color-mix(in srgb, var(--dtab-accent) 7%, transparent);
     --dtab-active-text: color-mix(in srgb, var(--dtab-accent) 65%, var(--b3-theme-on-background));
-    border-color: transparent;
+    /* 完整 border 保持与默认主题相同的盒子尺寸（默认 1px 实线不可见，
+       Neo 把根块 border: unset 后若不补回来，内容区会多出 2px） */
+    border: 1px solid transparent;
     box-shadow: none;
 }
 :root[data-theme-mode=dark] .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"]),
@@ -7044,6 +7049,39 @@
     padding: 10px 12px;
 }
 
+/* ---------- Neo 主题适配（页签皮肤） ----------
+   Neo（theme.css）给原生页签块叠了一整套装饰，会从皮肤上漏出来，逐项压回
+   默认主题基线，皮肤在两套主题下渲染一致；未套皮肤的页签块维持 Neo 原样：
+   ① .tabs-tab::before 的 1px 竖向分隔线（水平朝向才显示，五款皮肤都不要）；
+   ② 选中页签的 --neo-main-shadow 立体阴影与 neo-tab-focus 缩放动画
+     （动画会盖掉卡片抬起选中态的 translateY，阴影会叠在滑动下划线上）；
+   ③ .tabs-header / .tabs-list 的滚动渐隐 mask + scroll 时间线动画、42px 最小高；
+   ④ .tab-item 的着色圆角底（默认主题下内容面板无底色）；
+   ⑤ superellipse 超椭圆角（皮肤自带圆角形状）。
+   注意：选中态重置必须先于各皮肤自己的选中态规则 —— 同优先级后者胜，
+   药丸 / 卡片 / 分段在其后重新声明的阴影不会被打掉。 */
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] .tabs-tab::before {
+    content: none; /* ① */
+}
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"] {
+    /* ② 只关动画：阴影由各皮肤自己的选中态规则声明（滑动下划线在上方补 box-shadow:none），
+       这里若也兜底 box-shadow 会以更高优先级打掉药丸 / 卡片 / 分段的阴影 */
+    animation: none;
+}
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header,
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list {
+    mask-image: none; /* ③ */
+    animation: none;
+    min-height: 0; /* ③ 仅 Neo 给 header 加了 42px 最小高，list 上为空操作 */
+}
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item {
+    background: transparent !important; /* ④ Neo 的着色圆角面板，无论加载顺序一律压掉 */
+    border-radius: 0 !important;
+}
+.protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style^="页签·"]:not([fold="1"])[data-tabs-ready="true"] .tabs-tab {
+    corner-shape: round; /* ⑤ 浏览器不支持 corner-shape 时本条自动忽略 */
+}
+
 /* ---------- 共享：「+」按钮 ---------- */
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"]) > .tabs-header > .tabs-control,
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"]) > .tabs-header > .tabs-control,
@@ -7053,6 +7091,8 @@
     color: var(--b3-theme-on-surface);
     background: transparent;
     border-radius: 8px;
+    /* 对齐思源默认的 margin: 6px 0，压掉 Neo 加的 margin-left: 9px */
+    margin: 6px 0;
     transition: background-color .2s ease, color .2s ease;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"]) > .tabs-header > .tabs-control:hover,
@@ -7087,6 +7127,8 @@
     color: var(--dtab-active-text);
     font-weight: 600;
     background: transparent;
+    /* 压掉 Neo 选中页签的 --neo-main-shadow 立体阴影（皮肤选中态无阴影） */
+    box-shadow: none;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"]::after {
     content: "";
@@ -7104,45 +7146,96 @@
     align-self: center;
 }
 
-/* ---------- 02 药丸胶囊：整条胶囊轨道 + 选中项渐变填充 ---------- */
+/* ---------- Neo 主题专属：滑动下划线 / 卡片抬起贴合 Neo 原生页签 ----------
+   仅在 Neo 下生效（以思源写在 html 上的主题名属性 data-light-theme /
+   data-dark-theme 判定），默认主题维持原设计，未列出的皮肤不受影响：
+   ① 滑动下划线：页签栏保持皮肤自己的设计 —— 去掉整条底部基线（Neo 原生
+     没有），选中页签保留渐变下划条并叠一层半透明卡片底（box-shadow 保持
+     none，不叠加 Neo 原生的 --neo-main-shadow 阴影圈）；
+   ② 滑动下划线 / 卡片抬起：内容面板恢复 Neo 原生的灰色圆角底
+     （oklch 5% on-background + 11px 圆角，支持 corner-shape 的浏览器为
+     14px 超椭圆），并按原生给页签栏留 6px 下间距；需要 !important +
+     更高优先级，才能越过上方「Neo 适配」段落对 .tab-item 的 transparent / 0
+     全局重置。垂直侧边此前已明确不要灰底面板，故不做前缀式放开。 */
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header,
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header {
+    border-bottom: none;
+    margin-bottom: 6px;
+}
+/* 卡片抬起：同样按原生给页签栏与内容面板之间留 6px 间距 */
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header,
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header {
+    margin-bottom: 6px;
+}
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"],
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"]:hover,
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"],
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"]:hover {
+    background-color: oklch(from var(--b3-theme-background) l c h/0.7);
+    border-radius: 9px;
+}
+/* 内容面板恢复 Neo 原生的灰色圆角底（覆盖「Neo 适配」段对 .tab-item 的全局重置） */
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+:root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+:root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item {
+    background-color: oklch(from var(--b3-theme-on-background) l c h/0.05) !important;
+    border-radius: 11px !important;
+    padding: 6px 12px;
+}
+@supports (corner-shape: superellipse(1.4)) {
+    :root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+    :root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·滑动下划线"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+    :root[data-light-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item,
+    :root[data-dark-theme="Neo"] .protyle-wysiwyg .tabs[data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tab-item {
+        border-radius: 14px !important;
+    }
+}
+
+/* ---------- 02 药丸胶囊：雾光玻璃轨道 + 选中项主题色填充 ---------- */
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header {
     width: fit-content;
     max-width: 100%;
-    margin: 6px 8px 0;
-    padding: 5px 6px;
-    gap: 4px;
-    background: var(--b3-theme-background);
+    margin: 3px 8px 0;
+    padding: 2px 3px;
+    gap: 2px;
+    font-size: 13px;
+    background: color-mix(in srgb, var(--b3-theme-background) 62%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    backdrop-filter: blur(12px) saturate(150%);
     border: 1px solid var(--dtab-line);
     border-radius: 999px;
-    box-shadow: 0 10px 26px -20px color-mix(in srgb, var(--b3-theme-on-background) 55%, transparent);
+    box-shadow: none;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list {
-    gap: 4px;
+    gap: 2px;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab {
-    min-height: 32px;
-    padding: 8px 18px;
+    min-height: 22px;
+    padding: 3px 12px;
     border-radius: 999px;
     color: var(--b3-theme-on-surface);
     font-weight: 500;
     background: transparent;
+    box-shadow: none;
     transition: background-color .2s ease, color .2s ease;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab:hover {
     color: var(--b3-theme-on-background);
+    background: var(--dtab-hover-bg);
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"],
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"]:hover {
     color: #ffffff;
     font-weight: 500;
-    background: linear-gradient(135deg, var(--dtab-accent), var(--dtab-accent-2));
-    box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--dtab-accent) 85%, transparent);
+    background: var(--b3-theme-primary);
+    box-shadow: none;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·药丸胶囊"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-control {
     border-radius: 999px;
 }
 
-/* ---------- 03 卡片抬起：页签即卡片，选中上浮 + 渐变描边 ---------- */
+/* ---------- 03 卡片抬起：页签即卡片，选中渐变描边（无上浮、无阴影、无下划条） ---------- */
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header {
     align-items: stretch;
     gap: 10px;
@@ -7150,6 +7243,7 @@
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list {
     flex: 1 1 auto;
+    flex-wrap: wrap;
     gap: 10px;
 }
 .protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab {
@@ -7179,21 +7273,8 @@
     background: linear-gradient(180deg,
         color-mix(in srgb, var(--dtab-accent) 10%, transparent),
         color-mix(in srgb, var(--dtab-accent-2) 5%, transparent));
-    box-shadow:
-        0 16px 32px -20px color-mix(in srgb, var(--dtab-accent) 80%, transparent),
-        inset 0 1px 0 color-mix(in srgb, var(--b3-theme-background) 90%, transparent);
-    transform: translateY(-2px);
-}
-.protyle-wysiwyg [data-type="NodeTabs"][custom-deco-style="页签·卡片抬起"]:not([fold="1"])[data-tabs-ready="true"] > .tabs-header > .tabs-list > .tabs-tab[aria-selected="true"]::after {
-    content: "";
-    position: absolute;
-    left: 14px;
-    bottom: 5px;
-    width: 26px;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, var(--dtab-accent), var(--dtab-accent-2));
-    pointer-events: none;
+    /* 选中不做上浮与阴影：显式 none，压住 Neo 原生选中态的 --neo-main-shadow */
+    box-shadow: none;
 }
 
 /* ---------- 05 分段控制器：浅色轨道 + 选中项白色滑块 ---------- */
