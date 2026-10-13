@@ -316,7 +316,7 @@
     background: #fff !important;
     border: 1px solid #ffe2e2 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -359,7 +359,7 @@
     background: #fff !important;
     border: 1px solid #ffdec2 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -402,7 +402,7 @@
     background: #fff !important;
     border: 1px solid #f9e9b3 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -445,7 +445,7 @@
     background: #fff !important;
     border: 1px solid #d1e9cd !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -488,7 +488,7 @@
     background: #fff !important;
     border: 1px solid #c2f0f0 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -531,7 +531,7 @@
     background: #fff !important;
     border: 1px solid #ecd4f0 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -574,7 +574,7 @@
     background: #fff !important;
     border: 1px solid #c2d9f0 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -617,7 +617,7 @@
     background: #fff !important;
     border: 1px solid #fad1e6 !important;
     border-radius: 8px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 15px 0 !important;
     font-family: inherit;
@@ -671,7 +671,7 @@
     background: #1e1e1e !important;
     border: 1px solid #333 !important;
     border-radius: 6px !important;
-    padding: 45px 20px 20px 20px !important;  
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */  
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1008,7 +1008,7 @@
     background: #f9f7ff !important;
     border: 1px solid #e0d6ff !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1041,7 +1041,7 @@
     background: #f8fdfa !important;
     border: 1px solid #a7f3d0 !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1074,7 +1074,7 @@
     background: #fff8f8 !important;
     border: 1px solid #fca5a5 !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1107,7 +1107,7 @@
     background: #f8fbff !important;
     border: 1px solid #93c5fd !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1140,7 +1140,7 @@
     background: #fffdf5 !important;
     border: 1px solid #fcd34d !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1173,7 +1173,7 @@
     background: #fafafa !important;
     border: 1px solid #d4d4d4 !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1206,7 +1206,7 @@
     background: #f6feff !important;
     border: 1px solid #7dd3fc !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1239,7 +1239,7 @@
     background: #fefbff !important;
     border: 1px solid #e9d5ff !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0px !important;
     font-family: inherit;
@@ -1272,7 +1272,7 @@
     background: #fff9e6 !important;
     border: 1px solid #ffecb3 !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -1305,7 +1305,7 @@
     background: #f0f9ff !important;
     border: 1px solid #bae6fd !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -1338,7 +1338,7 @@
     background: #fff7f9 !important;
     border: 1px solid #fbcfe8 !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -1371,7 +1371,7 @@
     background: #ecfdf5 !important;
     border: 1px solid #7dd3ac !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -1404,7 +1404,7 @@
     background: #fdf8f3 !important;
     border: 1px solid #f5c49a !important;
     border-radius: 12px !important;
-    padding: 45px 20px 20px 20px !important;
+    padding: calc(1.6em + 19px) 20px 20px 20px !important;  /* 预留 = 标题行高 1.6em + 12px 偏移 + 7px 间距，随字号自适应 */
     position: relative !important;
     margin: 2px 0 !important;
     font-family: inherit;
@@ -1442,7 +1442,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1450,10 +1450,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="系统通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #eff6ff !important;
     padding: 14px 20px !important;
     color: #1e40af !important;
@@ -1480,7 +1481,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1488,10 +1489,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="成功通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #f0fdf4 !important;
     padding: 14px 20px !important;
     color: #166534 !important;
@@ -1518,7 +1520,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1526,10 +1528,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="警告通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #fffbeb !important;
     padding: 14px 20px !important;
     color: #854d0e !important;
@@ -1556,7 +1559,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1564,10 +1567,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="错误通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #fef2f2 !important;
     padding: 14px 20px !important;
     color: #991b1b !important;
@@ -1594,7 +1598,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1602,10 +1606,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="信息通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #e0f2fe !important;
     padding: 14px 20px !important;
     color: #0369a1 !important;
@@ -1632,7 +1637,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1640,10 +1645,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="疑问通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #f3e8ff !important;
     padding: 14px 20px !important;
     color: #6b21a8 !important;
@@ -1670,7 +1676,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1678,10 +1684,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="重要通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #fff1f0 !important;
     padding: 14px 20px !important;
     color: #b91c1c !important;
@@ -1708,7 +1715,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1716,10 +1723,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="提醒通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #fef9c3 !important;
     padding: 14px 20px !important;
     color: #854d0e !important;
@@ -1746,7 +1754,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 66px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -1754,10 +1762,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="邮件通知"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     background: #f1f5f9 !important;
     padding: 14px 20px !important;
     color: #334155 !important;
@@ -1785,7 +1794,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #374151 !important;
     font-size: var(--b3-font-size-editor);
@@ -1793,10 +1802,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="重点总结"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2071,7 +2081,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2079,10 +2089,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="新特性"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #8b5cf6, #3b82f6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2109,7 +2120,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2117,10 +2128,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="成长笔记"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #10b981, #34d399) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2147,7 +2159,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2155,10 +2167,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="重要提醒"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #f97316, #f43f5e) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2185,7 +2198,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2193,10 +2206,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="技术要点"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #0ea5e9, #06b6d4) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2223,7 +2237,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2231,10 +2245,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="今日心情"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #ec4899, #f472b6) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2261,7 +2276,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2269,10 +2284,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="专业建议"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #1e1e1e, #333) !important;
     padding: 12px 20px !important;
     color: #ffd700 !important;
@@ -2299,7 +2315,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2307,10 +2323,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="创意灵感"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
     padding: 12px 20px !important;
     color: #1c1917 !important;
@@ -2337,7 +2354,7 @@
     margin: 2px 0px !important;
     font-family: inherit;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    padding: 60px 20px 20px 20px !important;
+    padding: 0 20px 20px 20px !important;  /* 头部改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     color: #333333 !important;
     font-size: var(--b3-font-size-editor);
@@ -2345,10 +2362,11 @@
 }
 .protyle-wysiwyg [custom-deco-style="万能提示"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    margin-top: 0 !important;
+    margin-left: -20px !important;   /* 负边距外扩，整条铺满卡片宽 */
+    margin-right: -20px !important;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
     background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b) !important;
     padding: 12px 20px !important;
     color: #ffffff !important;
@@ -2834,7 +2852,7 @@
     color: #333333 !important;
     box-shadow: none !important;
     border: 1px solid #e5e7eb !important;
-    padding: 50px 20px 50px 20px !important;  /* 为标题和日期留出空间 */
+    padding: 0 20px 12px 20px !important;  /* 标题/日期改为文档流元素，内边距不再承担预留职责 */
     position: relative !important;
     line-height: 1.7 !important;
 }
@@ -2842,9 +2860,9 @@
 /* 标题（左上角）- 支持动态图标和标题 */
 .protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 16px !important;
-    left: 20px !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    display: block !important;  /* 伪元素默认 inline，需显式转块级 */
+    padding-top: 16px !important;
     color: #10b981 !important;
     font-size: var(--b3-font-size-editor);
     font-weight: 500 !important;
@@ -2853,15 +2871,15 @@
     text-overflow: ellipsis;
     max-width: calc(100% - 40px);
     line-height: normal;
+    margin-bottom: 10px !important;  /* 与正文的间距 */
 }
 
 /* 日期（底部，右对齐，带分割线）- 支持动态日期 */
 .protyle-wysiwyg:not(.protyle-wysiwyg--hl, .protyle-wysiwyg--select) [custom-deco-style="碎碎念"]:not([fold="1"])::after {
     content: attr(custom-deco-card-date);
-    position: absolute !important;
-    bottom: 12px !important;
-    left: 20px !important;
-    right: 20px !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    display: block !important;  /* 伪元素默认 inline，需显式转块级 */
+    margin-top: 12px !important;
     color: #9ca3af !important;
     font-size: var(--b3-font-size-editor);
     border-top: 1px solid #f3f4f6 !important;
@@ -4805,7 +4823,7 @@
 
 /* -------------------- 一、便利贴：柔色便签纸 + 右下折角 -------------------- */
 .protyle-wysiwyg [custom-deco-style^="便利贴·"]:not([fold="1"]) {
-    padding: 48px 18px 16px !important;
+    padding: 0 18px 16px !important;  /* 标题改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     margin: 14px 0 !important;
     background-color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 26%, var(--b3-theme-background)) !important;
@@ -4816,10 +4834,11 @@
 }
 .protyle-wysiwyg [custom-deco-style^="便利贴·"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 9px !important;
-    left: 14px !important;
-    right: 16px !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    display: block !important;  /* 伪元素默认 inline，需显式转块级 */
+    padding-top: 9px !important;
+    margin-left: -4px !important;   /* 文字左沿与原 left:14px 对齐 */
+    margin-bottom: 13px !important;  /* 与正文的间距 */
     font-size: var(--b3-font-size-editor);
     font-weight: 700 !important;
     color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 42%, var(--b3-theme-on-background)) !important;
@@ -4852,7 +4871,7 @@
 
 /* -------------------- 二、莫兰迪色卡：低饱和淡底 + 同色描边 + 灰调标题 -------------------- */
 .protyle-wysiwyg [custom-deco-style^="莫兰迪·"]:not([fold="1"]) {
-    padding: 48px 18px 14px 18px !important;
+    padding: 0 18px 14px 18px !important;  /* 标题改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     margin: 10px 0 !important;
     background-color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 10%, var(--b3-theme-surface)) !important;
@@ -4862,10 +4881,10 @@
 }
 .protyle-wysiwyg [custom-deco-style^="莫兰迪·"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 10px !important;
-    left: 18px !important;
-    right: 16px !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    display: block !important;  /* 伪元素默认 inline，需显式转块级 */
+    padding-top: 10px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     font-size: var(--b3-font-size-editor);
     font-weight: 700 !important;
     color: color-mix(in srgb, var(--sticky-accent, var(--b3-theme-primary)) 55%, var(--b3-theme-on-background)) !important;
@@ -4901,7 +4920,7 @@
 
 /* -------------------- 四、云霞渐变：马卡龙色柔和晕染渐变卡 -------------------- */
 .protyle-wysiwyg [custom-deco-style^="云笺·"]:not([fold="1"]) {
-    padding: 48px 20px 16px !important;
+    padding: 0 20px 16px !important;  /* 标题改为文档流元素，顶部不再预留固定高度 */
     position: relative !important;
     margin: 12px 0 !important;
     background: linear-gradient(135deg,
@@ -4922,10 +4941,10 @@
 }
 .protyle-wysiwyg [custom-deco-style^="云笺·"]:not([fold="1"])::before {
     content: attr(custom-deco-card-icon) " " attr(custom-deco-card-title);
-    position: absolute !important;
-    top: 10px !important;
-    left: 20px !important;
-    right: 20px !important;
+    position: static !important;  /* 进入文档流：头部有多高，正文自然往下让多少 */
+    display: block !important;  /* 伪元素默认 inline，需显式转块级 */
+    padding-top: 10px !important;
+    margin-bottom: 12px !important;  /* 与正文的间距 */
     font-size: var(--b3-font-size-editor);
     font-weight: 700 !important;
     color: color-mix(in srgb, var(--cg1, var(--b3-theme-primary)) 42%, var(--b3-theme-on-background)) !important;
